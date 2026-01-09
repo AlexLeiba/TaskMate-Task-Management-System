@@ -1,6 +1,26 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-export default clerkMiddleware();
+const isProtectedRoute = createRouteMatcher([
+  "/dashboard(.*)",
+  "/organization(.*)",
+  "/new-organization(.*)",
+]);
+
+export default clerkMiddleware(
+  async (auth, req) => {
+    if (isProtectedRoute(req)) await auth.protect();
+  },
+  {
+    organizationSyncOptions: {
+      organizationPatterns: [
+        "/dashboard/", // Match the org slug
+        "/select-organization/(.*)", // Wildcard match for optional trailing path segments
+      ],
+    },
+  }
+);
+// grants you access to user authentication state throughout your app.
+//Use auth.protect() if you want to redirect unauthenticated users to the sign-in route automatically.
 
 export const config = {
   matcher: [

@@ -1,6 +1,6 @@
 import { Spacer } from "@/components/ui/spacer";
 
-export default function Home() {
+export default async function Home() {
   return (
     <div className="flex  font-sans  w-full">
       <Spacer size={10} />

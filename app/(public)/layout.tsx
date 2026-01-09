@@ -1,15 +1,15 @@
-import { Footer } from "@/components/layout/Footer/Footer";
-import { Header } from "@/components/layout/Header/Header";
+import { FooterLanding } from "@/components/layout/Public/Footer/FooterLanding";
+import { HeaderLanding } from "@/components/layout/Public/Header/HeaderLanding";
 import React from "react";
 
 function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
-      <div className="flex flex-1  py-10  max-w-4xl px-4 mx-auto w-full">
+      <HeaderLanding />
+      <main className="flex flex-1  py-15  max-w-4xl px-4 mx-auto w-full">
         {children}
-      </div>
-      <Footer />
+      </main>
+      <FooterLanding />
     </div>
   );
 }

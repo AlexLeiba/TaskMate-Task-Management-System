@@ -1,15 +1,23 @@
-export const NAV_LINKS = [
-  {
-    pathname: "/sign-in",
-    name: "Sign In",
+export const NAV_LINKS = {
+  landing: {
+    href: "/",
+    label: "Home",
   },
-  {
-    pathname: "/sign-up",
-    name: "Sign Up",
+  signin: {
+    href: "/sign-in",
+    label: "Sign in",
   },
-  {
-    pathname: "/about",
-    name: "About",
+  signup: {
+    href: "/sign-up",
+    label: "Sign up",
   },
-];
+  about: {
+    href: "/about",
+    label: "About",
+  },
+  dashboard: {
+    href: "/dashboard",
+    label: "Dashboard",
+  },
+};
 export const BREAKPOINTS = [{}];

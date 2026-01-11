@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: true,
   images: {
-    domains: ["img.clerk.com"], // ← whitelist Clerk images
+    domains: ["img.clerk.com", "picsum.photos"], // ← whitelist Clerk images
   },
 };
 

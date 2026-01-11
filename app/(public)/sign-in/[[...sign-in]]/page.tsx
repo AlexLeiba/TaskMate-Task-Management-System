@@ -1,12 +1,4 @@
-import {
-  SignedIn,
-  SignedOut,
-  SignIn,
-  SignInButton,
-  SignOutButton,
-  SignUpButton,
-  UserButton,
-} from "@clerk/nextjs";
+import { SignIn } from "@clerk/nextjs";
 import React from "react";
 
 function SignInPage() {

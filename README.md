@@ -42,3 +42,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ### Content width: 56rem = 896px , TW Utility: max-w-4xl;
 
 ### Layout Padding Top Bottom: 3.75rem = 60px , TW Utility: 15;
+
+### Main Protected Page Title: font-size: 24px, font-weight:500, TW utilities: text-2xl font-medium

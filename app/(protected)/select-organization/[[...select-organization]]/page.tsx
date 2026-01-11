@@ -5,8 +5,8 @@ function SelectOrganizationPage() {
     <div className="flex justify-center items-center w-full">
       <OrganizationList
         hidePersonal={true}
-        afterSelectOrganizationUrl={"/dashboard"}
-        afterCreateOrganizationUrl={"/dashboard"}
+        afterSelectOrganizationUrl={"/dashboard/:id"}
+        afterCreateOrganizationUrl={"/dashboard/:id"}
       />
     </div>
   );

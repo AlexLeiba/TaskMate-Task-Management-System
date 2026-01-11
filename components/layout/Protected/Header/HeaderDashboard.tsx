@@ -1,29 +1,45 @@
-import {
-  OrganizationList,
-  OrganizationProfile,
-  OrganizationSwitcher,
-  UserButton,
-} from "@clerk/nextjs";
+"use client";
+
 import { Logo } from "../../Logo/Logo";
 import { Button } from "@/components/ui/button";
 
-export function HeaderDashboard() {
+import dynamic from "next/dynamic";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+const OrganizationSwitcher = dynamic(
+  () => import("@clerk/nextjs").then((m) => m.OrganizationSwitcher),
+  { ssr: false }
+);
+
+const UserButton = dynamic(
+  () => import("@clerk/nextjs").then((m) => m.UserButton),
+  { ssr: false }
+);
+
+type Props = {
+  type?: "dashboard" | "board";
+};
+export function HeaderDashboard({ type = "dashboard" }: Props) {
   return (
-    <header className="fixed top-0 left-0 right-0 bg-gray-400 z-50">
-      <div className="max-w-4xl px-4 py-2 mx-auto">
+    <header className="fixed top-0 left-0 right-0 bg-gray-400 z-50 px-4 ">
+      <div className="max-w-4xl py-2 mx-auto">
         <div className="flex justify-between">
           <div className="flex gap-2 items-center">
+            {type === "dashboard" && <SidebarTrigger title="Sidebar" />}
             <Logo />
-            <Button>Create</Button>
           </div>
 
           {/* <Links /> */}
           <div className="flex gap-2">
+            <Button title="Create new board">Create</Button>
             <OrganizationSwitcher
-              afterLeaveOrganizationUrl="/dashboard"
-              afterCreateOrganizationUrl="/dashboard"
+              afterLeaveOrganizationUrl="/select-organization"
+              afterCreateOrganizationUrl="/dashboard/:id"
               afterSelectOrganizationUrl={"/dashboard/:id"}
-              afterSelectPersonalUrl={"/dashboard/:id"}
+              appearance={{
+                elements: {
+                  rootBox: {},
+                },
+              }}
             />
 
             <UserButton

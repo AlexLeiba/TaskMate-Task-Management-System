@@ -1,23 +1,13 @@
 "use client";
-import {
-  Activity,
-  Calendar,
-  Grid,
-  Home,
-  Inbox,
-  Plus,
-  Search,
-  Settings,
-} from "lucide-react";
+import { Activity, CreditCard, Grid, Plus, Settings } from "lucide-react";
 
 import {
-  Sidebar,
+  Sidebar as SidebarContainer,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
@@ -28,41 +18,18 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { useOrganization, useOrganizationList, useUser } from "@clerk/nextjs";
+import { useAuth, useOrganizationList, useUser } from "@clerk/nextjs";
 import Image from "next/image";
-import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { usePathname, useRouter } from "next/navigation";
 
-// Menu items.
-const items = [
-  {
-    title: "Home",
-    url: "#",
-    icon: Home,
-  },
-  {
-    title: "Inbox",
-    url: "#",
-    icon: Inbox,
-  },
-  {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-  },
-];
-
-export function AppSidebar() {
+export function Sidebar() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const selectedPage = pathname.split("/").at(-1);
   const { user } = useUser();
+  const { orgId: selectedOrgId } = useAuth();
+  const { setActive } = useOrganizationList();
 
   const organizationsData = user?.organizationMemberships.map((org) => {
     return {
@@ -77,28 +44,48 @@ export function AppSidebar() {
         },
         {
           title: "Activity",
-          pathname: `/activity/${org.organization.id}`,
+          pathname: `/dashboard/${org.organization.id}/activity`,
           icon: <Activity />,
         },
         ,
         {
           title: "Settings",
-          pathname: `/settings/${org.organization.id}`,
+          pathname: `/dashboard/${org.organization.id}/settings`,
           icon: <Settings />,
+        },
+        {
+          title: "Billings",
+          pathname: `/dashboard/${org.organization.id}/billings`,
+          icon: <CreditCard />,
         },
       ],
     };
   });
 
+  async function handleSelectOrganization(orgId: string, pathname?: string) {
+    if (setActive && pathname) {
+      setActive({ organization: orgId });
+      router.push(pathname);
+    }
+  }
+
+  function handleAddNewOrganization() {
+    router.push("/select-organization");
+  }
+
   return (
-    <Sidebar className=" top-13 ">
-      <SidebarContent className="h-50">
-        <SidebarGroup>
+    <SidebarContainer className=" top-13  ">
+      <SidebarContent className="h-50 ">
+        <SidebarGroup className="">
           <div className="flex justify-between mb-2 p-2">
             <SidebarGroupLabel className="text-lg">
               Organizations
             </SidebarGroupLabel>
-            <Button className="rounded-full size-8">
+            <Button
+              title="New organization"
+              className="rounded-full size-8"
+              onClick={handleAddNewOrganization}
+            >
               <Plus />
             </Button>
           </div>
@@ -106,9 +93,19 @@ export function AppSidebar() {
             <SidebarMenu>
               {organizationsData?.map((item) => (
                 <SidebarMenuItem key={item.id}>
-                  <Accordion type="single" collapsible>
+                  <Accordion
+                    type="single"
+                    collapsible
+                    defaultValue={selectedOrgId === item.id ? item.name : ""}
+                  >
                     <AccordionItem value={item.name}>
-                      <AccordionTrigger className="p-4 hover:bg-gray-700 cursor-pointer flex justify-between items-center">
+                      <AccordionTrigger
+                        className={cn(
+                          selectedOrgId === item.id ? "bg-gray-800" : "bg-none",
+                          "p-4 hover:bg-gray-900 cursor-pointer flex justify-between items-center",
+                          "transition-all duration-200 ease-in-out"
+                        )}
+                      >
                         <div className="flex gap-2 items-center">
                           {item.image && (
                             <Image
@@ -122,10 +119,25 @@ export function AppSidebar() {
                         </div>
                       </AccordionTrigger>
                       <AccordionContent className="pl-8 pt-2 flex flex-col gap-1 ">
-                        {item.data.map((data) => (
-                          <Link key={data?.title} href={data?.pathname || ""}>
+                        {item.data.map((data) => {
+                          const currentPathname = data?.pathname
+                            .split("/")
+                            .at(-1);
+                          return (
                             <Button
-                              className="w-full justify-start"
+                              onClick={() =>
+                                handleSelectOrganization(
+                                  item.id,
+                                  data?.pathname
+                                )
+                              }
+                              className={cn(
+                                selectedPage === currentPathname &&
+                                  selectedOrgId === item.id
+                                  ? "bg-gray-600"
+                                  : "",
+                                "w-full justify-start"
+                              )}
                               size={"lg"}
                               variant={"ghost"}
                               key={data?.title}
@@ -133,8 +145,8 @@ export function AppSidebar() {
                               {data?.icon}
                               {data?.title}
                             </Button>
-                          </Link>
-                        ))}
+                          );
+                        })}
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
@@ -144,6 +156,6 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-    </Sidebar>
+    </SidebarContainer>
   );
 }

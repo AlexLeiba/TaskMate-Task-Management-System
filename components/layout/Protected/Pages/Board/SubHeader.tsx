@@ -9,6 +9,7 @@ import {
 } from "@/lib/schemas";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export function SubHeader({
   boardId,
@@ -30,18 +31,23 @@ export function SubHeader({
 
   const title =
     boardTitle.length > 45 ? `${boardTitle.slice(0, 45)}...` : boardTitle;
-  function handleCloseBoard() {}
+
+  function handleCloseBoard() {
+    setShowTitleInput(false);
+  }
+
   function handleEditBoardTitle() {
     setShowTitleInput(true);
   }
 
   function handleSubmitForm(data: EditBoardTitleSchemaType) {
+    // TODO, submit to api server
     console.log("🚀 ~ handleEditBoardTitle ~ data:", data);
     setShowTitleInput(false);
   }
   return (
-    <div className="p-4 bg-gray-800/50 w-full  text-white ">
-      <div className="flex justify-between items-center max-w-4xl mx-auto">
+    <div className=" py-1 bg-gray-800/50 w-full  text-white ">
+      <div className="px-4 flex justify-between items-center max-w-7xl mx-auto">
         {showTitleInput ? (
           <div className="flex gap-1 items-center">
             <form action="" onSubmit={handleSubmit(handleSubmitForm)}>
@@ -49,37 +55,34 @@ export function SubHeader({
                 autoFocus
                 {...register("title")}
                 error={errors.title?.message}
+                placeholder="board title..."
               />
             </form>
-            <button
-              onClick={() => setShowTitleInput(false)}
-              className="p-2 cursor-pointer hover:opacity-70"
+            <Button
+              variant={"ghost"}
+              onClick={handleCloseBoard}
               title="Close board"
             >
               <X size={15} />
-            </button>
+            </Button>
           </div>
         ) : (
           <div className="flex gap-1 items-center">
             <p className="text-lg font-bold line-clamp-1">{title}</p>
-            <button
+            <Button
+              variant={"ghost"}
               onClick={handleEditBoardTitle}
-              className="p-2 cursor-pointer hover:opacity-70"
               title="Edit board title"
             >
               <Edit size={15} />
-            </button>
+            </Button>
           </div>
         )}
+        {/* TODO add org id from params */}
         <Link href={`/dashboard/${boardId}`}>
-          {/* TODO add org id from params */}
-          <button
-            onClick={handleCloseBoard}
-            className="p-2 cursor-pointer hover:opacity-70"
-            title="Close board"
-          >
+          <Button variant={"ghost"} title="Close board">
             <X />
-          </button>
+          </Button>
         </Link>
       </div>
     </div>

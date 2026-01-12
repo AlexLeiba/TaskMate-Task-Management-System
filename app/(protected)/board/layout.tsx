@@ -4,6 +4,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import React from "react";
 
 function ProtectedLayout({ children }: { children: React.ReactNode }) {
+  // TODO get bg image of the board layout renders only once, so the req will be made once
   return (
     <>
       <SidebarProvider>

@@ -20,8 +20,8 @@ type Props = {
 };
 export function HeaderDashboard({ type = "dashboard" }: Props) {
   return (
-    <header className="fixed top-0 left-0 right-0 bg-gray-400 z-50 px-4 ">
-      <div className="max-w-4xl py-2 mx-auto">
+    <header className="fixed top-0 left-0 right-0 bg-gray-400 z-50  ">
+      <div className="max-w-7xl py-2 mx-auto px-4">
         <div className="flex justify-between">
           <div className="flex gap-2 items-center">
             {type === "dashboard" && <SidebarTrigger title="Sidebar" />}

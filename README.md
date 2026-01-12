@@ -39,7 +39,9 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Breakpoints of Grid Container
 
-### Content width: 56rem = 896px , TW Utility: max-w-4xl;
+### Content width: 64rem = 1024px , TW Utility: max-w-5xl;
+
+### Content Board width: 72rem = 1152px , TW Utility: max-w-6xl;
 
 ### Layout Padding Top Bottom: 3.75rem = 60px , TW Utility: 15;
 

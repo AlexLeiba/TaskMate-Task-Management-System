@@ -1,4 +1,5 @@
 "use client";
+import { IconButton } from "@/components/ui/iconButton";
 import { X } from "lucide-react";
 import { ComponentProps } from "react";
 
@@ -22,7 +23,8 @@ export function BoardCard({
         className="relative overflow-hidden bg-cover bg-center rounded-md"
         style={{ backgroundImage: `url(${imageUrl})` }}
       >
-        <button
+        <IconButton
+          aria-label={title}
           title={title}
           className="w-full  rounded-md p-2 h-28  overflow-hidden cursor-pointer hover:opacity-70 flex items-start justify-start"
           onClick={handleSelectBoard}
@@ -33,14 +35,15 @@ export function BoardCard({
           <p className="text-left line-clamp-3 text-sm text-white font-bold z-20 relative">
             {title}
           </p>
-        </button>
-        <button
-          title={`delete ${title}`}
+        </IconButton>
+        <IconButton
+          title={`Delete - ${title}`}
+          aria-label={`Delete - ${title}`}
           onClick={handleModalDeleteBoard}
           className="absolute top-2 right-2 rounded-full p-1 z-20 bg-gray-800/30 cursor-pointer hover:bg-gray-800 text-gray-500 hover:text-white"
         >
           <X className="" size={20} />
-        </button>
+        </IconButton>
       </div>
     </>
   );

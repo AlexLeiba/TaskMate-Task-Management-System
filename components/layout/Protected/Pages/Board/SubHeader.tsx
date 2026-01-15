@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { AddNewInput } from "./AddNewInput";
 
 export function SubHeader({
   boardId,
@@ -40,33 +41,21 @@ export function SubHeader({
     setShowTitleInput(true);
   }
 
-  function handleSubmitForm(data: EditBoardTitleSchemaType) {
+  function handleSubmitForm(data: { [inputName: string]: string }) {
     // TODO, submit to api server
     console.log("🚀 ~ handleEditBoardTitle ~ data:", data);
     setShowTitleInput(false);
   }
   return (
-    <div className=" py-1 bg-gray-800/50 w-full  text-white ">
-      <div className="px-4 flex justify-between items-center max-w-7xl mx-auto">
-        {showTitleInput ? (
-          <div className="flex gap-1 items-center">
-            <form action="" onSubmit={handleSubmit(handleSubmitForm)}>
-              <Input
-                autoFocus
-                {...register("title")}
-                error={errors.title?.message}
-                placeholder="board title..."
-              />
-            </form>
-            <Button
-              variant={"ghost"}
-              onClick={handleCloseBoard}
-              title="Close board"
-            >
-              <X size={15} />
-            </Button>
-          </div>
-        ) : (
+    <div className=" bg-gray-800/70 w-full  text-white ">
+      <div className="px-4 flex justify-between items-center max-w-350 mx-auto">
+        <AddNewInput
+          handleSubmitValue={(v) => handleSubmitForm(v)}
+          inputName="title"
+          placeholder="Edit board title here..."
+          setIsOpenedTitleInput={setShowTitleInput}
+          isOpenedTitleInput={showTitleInput}
+        >
           <div className="flex gap-1 items-center">
             <p className="text-lg font-bold line-clamp-1">{title}</p>
             <Button
@@ -77,7 +66,8 @@ export function SubHeader({
               <Edit size={15} />
             </Button>
           </div>
-        )}
+        </AddNewInput>
+
         {/* TODO add org id from params */}
         <Link href={`/dashboard/${boardId}`}>
           <Button variant={"ghost"} title="Close board">

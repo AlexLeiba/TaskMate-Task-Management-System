@@ -9,7 +9,7 @@ async function DashboardPage({
 }: {
   params: Promise<{ organizationId: string }>;
 }) {
-  //TODO get cards data on server side
+  //TODO get cards data on server side api req
   const boardData: BoardType[] = [
     {
       title: "Boards",
@@ -32,8 +32,8 @@ async function DashboardPage({
       id: "4",
     },
   ];
-  const organizationId = params;
-  const orgId = (await organizationId).organizationId;
+
+  const orgId = (await params).organizationId;
   const {} = await auth();
 
   return (

@@ -1,5 +1,47 @@
-import React from "react";
+"use client";
+import { CardTicketType } from "@/lib/types";
+import { TicketCardHeader } from "./TicketCardHeader";
+import { TicketCardBody } from "./TicketCardBody";
+import { useState } from "react";
+import { TicketCardDetails } from "./TicketCardDetails/TicketCardDetails";
+import { KEYBOARD } from "@/lib/consts";
 
-export function TicketCard() {
-  return <div>TicketCard</div>;
+type Prop = {
+  data: CardTicketType;
+};
+export function TicketCard({ data }: Prop) {
+  const [isCardDetailsOpened, setIsCardDetailsOpened] = useState(false);
+  // OPEN TICKET CARD DETAILS
+  function handleOpenTicketDetails() {
+    console.log("opened");
+    setIsCardDetailsOpened(true);
+  }
+
+  return (
+    <>
+      <div
+        tabIndex={0}
+        onKeyDown={(e) => e.key === KEYBOARD.ENTER && handleOpenTicketDetails()}
+        title={`open - ${data.title}`}
+        aria-label={`open ${data.title}`}
+        onClick={handleOpenTicketDetails}
+        className="w-full cursor-pointer dark:hover:ring-gray-400 dark:hover:ring p-2 dark:bg-gray-600 rounded-sm flex flex-col justify-start items-start gap-2"
+      >
+        {/* TICKET CARD HEADER */}
+        <TicketCardHeader title={data.title} cardId={data.id.toString()} />
+
+        {/* TICKET CARD BODY */}
+        <TicketCardBody priority={data.priority} />
+      </div>
+
+      {/* TICKET CARD DETAILS MODAL*/}
+      <TicketCardDetails
+        cardId={data.id.toString()}
+        listId={data.listId}
+        listTitle={data.listName}
+        isCardDetailsOpened={isCardDetailsOpened}
+        setIsCardDetailsOpened={setIsCardDetailsOpened}
+      />
+    </>
+  );
 }

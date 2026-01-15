@@ -17,6 +17,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+
 import { Button } from "@/components/ui/button";
 import { useAuth, useOrganizationList, useUser } from "@clerk/nextjs";
 import Image from "next/image";
@@ -26,7 +27,8 @@ import { usePathname, useRouter } from "next/navigation";
 export function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
-  const selectedPage = pathname.split("/").at(-1);
+  const selectedSidebarPage = pathname.split("/").at(-1);
+
   const { user } = useUser();
   const { orgId: selectedOrgId } = useAuth();
   const { setActive } = useOrganizationList();
@@ -82,6 +84,7 @@ export function Sidebar() {
               Organizations
             </SidebarGroupLabel>
             <Button
+              aria-label="New organization"
               title="New organization"
               className="rounded-full size-8"
               onClick={handleAddNewOrganization}
@@ -118,13 +121,15 @@ export function Sidebar() {
                           {item.name}
                         </div>
                       </AccordionTrigger>
-                      <AccordionContent className="pl-8 pt-2 flex flex-col gap-1 ">
+                      <AccordionContent className=" pt-2 flex flex-col gap-1 ">
                         {item.data.map((data) => {
                           const currentPathname = data?.pathname
                             .split("/")
                             .at(-1);
                           return (
                             <Button
+                              title={data?.title}
+                              aria-label={data?.title}
                               onClick={() =>
                                 handleSelectOrganization(
                                   item.id,
@@ -132,9 +137,9 @@ export function Sidebar() {
                                 )
                               }
                               className={cn(
-                                selectedPage === currentPathname &&
+                                selectedSidebarPage === currentPathname &&
                                   selectedOrgId === item.id
-                                  ? "bg-gray-600"
+                                  ? "bg-gray-800"
                                   : "",
                                 "w-full justify-start"
                               )}
@@ -142,8 +147,10 @@ export function Sidebar() {
                               variant={"ghost"}
                               key={data?.title}
                             >
-                              {data?.icon}
-                              {data?.title}
+                              <div className="flex gap-2 items-center">
+                                {data?.icon}
+                                {data?.title}
+                              </div>
                             </Button>
                           );
                         })}

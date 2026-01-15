@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-import { SidebarProvider } from "@/components/ui/sidebar";
 
 // for non layouts shifts font loading
 // fonts load once, applied to the entire app
@@ -31,9 +30,9 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
         >
-          <main className="dark">{children}</main>
+          {children}
         </body>
       </html>
     </ClerkProvider>

@@ -4,66 +4,67 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Check, Circle, X } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { LIST_STATUSES } from "@/lib/consts";
-import { Button } from "@/components/ui/button";
+
+import { StatusType } from "@/lib/types";
+import { IconButton } from "@/components/ui/iconButton";
 
 type Props = {
   selectedStatus: string;
 };
 export function ListStatuses({ selectedStatus }: Props) {
-  const [status, setStatus] = useState(selectedStatus);
+  const [statusData, setStatusData] = useState<StatusType>(
+    LIST_STATUSES.find((s) => s.value === selectedStatus)!
+  );
   const [isOpenedStatus, setIsOpenedStatus] = useState(false);
-  const [isOpenedOptions, setIsOpenedOptions] = useState(false);
-  const [isOpenedAddACard, setIsOpenedAddACard] = useState(false);
 
-  function handleSelectStatus(status: string) {
+  function handleSelectStatus(status: StatusType) {
     // TODO api req with new status
     // If success show optimistic status
-    setStatus(status);
+    setStatusData(status); //if api req issuccess then set Optimistic status and close p[popover]
     // setIsOpenedStatus(false);
   }
   return (
     <Popover open={isOpenedStatus} onOpenChange={setIsOpenedStatus}>
       <PopoverTrigger asChild>
-        <button className="cursor-pointer hover:opacity-80">
-          <Circle size={25} />
-        </button>
+        <IconButton title="List Statuses" aria-label="List Statuses">
+          <p>{statusData?.icon}</p>
+        </IconButton>
       </PopoverTrigger>
-      <PopoverContent align="start" className="max-w-50 bg-gray-800 text-white">
+      <PopoverContent align="start" className="max-w-50 bg-gray-900 text-white">
         <div className="flex justify-between items-center mb-4">
           <p className="text-xl font-medium">List Status</p>
-          <button
+          <IconButton
             onClick={() => setIsOpenedStatus(false)}
-            className="cursor-pointer hover:opacity-80"
             title="Close list status"
           >
             <X />
-          </button>
+          </IconButton>
         </div>
 
         <div className="flex flex-col ">
           {LIST_STATUSES.map((status) => (
-            <Button
+            <IconButton
+              aria-label={status.label}
               title={status.label}
-              variant="ghost"
-              onClick={() => handleSelectStatus(status.value)}
+              onClick={() => handleSelectStatus(status)}
               key={status.value}
-              className="flex gap-2 hover:opacity-80 cursor-pointer"
+              className="p-2"
             >
-              <div className="flex justify-between items-center w-full">
-                <div className="flex gap-2">
+              <div className="flex justify-between">
+                <div className="flex gap-2 items-center ">
                   {status.icon}
                   <p key={status.label}>{status.label}</p>
                 </div>
 
-                {selectedStatus === status.value && (
-                  <Check size={20} className="text-green-500" />
+                {statusData?.value === status.value && (
+                  <Check size={20} className="text-green-500 " />
                 )}
               </div>
-            </Button>
+            </IconButton>
           ))}
-          {/* todo add custom status card */}
+          {/* TODO update add custom status card */}
         </div>
       </PopoverContent>
     </Popover>

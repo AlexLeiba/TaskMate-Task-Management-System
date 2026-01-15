@@ -47,11 +47,13 @@ function Button({
   asChild = false,
   loading = false,
   disabled = false,
+  classNameChildren,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
     loading?: boolean;
+    classNameChildren?: string;
   }) {
   const Comp = asChild ? Slot : "button";
 
@@ -65,12 +67,18 @@ function Button({
       {...props}
     >
       {/* <div className="w-full"> */}
-      <div>
-        <span className={cn("w-full", loading ? "opacity-0" : "opacity-100")}>
-          {props.children}
-        </span>
-        <Loader className={loading ? "opacity-100" : "opacity-0"} />
-      </div>
+
+      {/* <span
+        className={cn(
+          "w-full",
+          loading ? "opacity-0" : "opacity-100",
+          classNameChildren
+        )}
+      > */}
+      {props.children}
+      {/* </span> */}
+      <Loader className={loading ? "opacity-100" : "opacity-0"} />
+
       {/* </div> */}
     </Comp>
   );

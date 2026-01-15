@@ -10,23 +10,23 @@ function Links() {
   console.log("🚀 ~ Header ~ user:", isSignedIn);
   return (
     <nav>
-      {(pathname === NAV_LINKS.signin.href ||
-        pathname === NAV_LINKS.landing.href) && (
+      {(pathname === NAV_LINKS.signin.pathname ||
+        pathname === NAV_LINKS.landing.pathname) && (
         <div className="flex gap-2">
           <Button variant={"secondary"}>
-            <Link href={NAV_LINKS.signup.href}>
+            <Link href={NAV_LINKS.signup.pathname}>
               <p className="text-base">Join for free</p>
             </Link>
           </Button>
           <Button>
-            <Link href={NAV_LINKS.signin.href}>
+            <Link href={NAV_LINKS.signin.pathname}>
               <p className="text-base">Login</p>
             </Link>
           </Button>
         </div>
       )}
-      {pathname === NAV_LINKS.signup.href && (
-        <Link href={NAV_LINKS.signin.href}>
+      {pathname === NAV_LINKS.signup.pathname && (
+        <Link href={NAV_LINKS.signin.pathname}>
           <Button>
             <p className="text-base">Login</p>
           </Button>

@@ -1,4 +1,3 @@
-"use client";
 import { ListDataType } from "@/lib/types";
 
 import { ListCard } from "./ListCard/ListCard";
@@ -13,16 +12,27 @@ const listData: ListDataType[] = [
       {
         id: 1,
         title: "Card 1",
-        priority: "Low", //selected priority will go here
-        assignedEmail: "email", //assigned email will go here
-        assignedName: "name",
+        priority: "low", //selected priority will go here
+        assignedTo: {
+          email: "email",
+          name: "name 2",
+          avatar: `https://picsum.photos/300/300`,
+        },
+        listName: "List 2",
+        listId: "2",
       },
       {
         id: 2,
         title: "Card 2",
-        priority: "High",
-        assignedEmail: "email",
-        assignedName: "name 2",
+        priority: "high",
+
+        assignedTo: {
+          email: "email",
+          name: "name 2",
+          avatar: `https://picsum.photos/300/300`,
+        },
+        listName: "List 2",
+        listId: "2",
       },
     ],
   },
@@ -34,23 +44,38 @@ const listData: ListDataType[] = [
       {
         id: 1,
         title: "Card 3",
-        priority: "Medium",
-        assignedEmail: "email",
-        assignedName: "name 3",
+        priority: "medium",
+        assignedTo: {
+          email: "email",
+          name: "name 2",
+          avatar: `https://picsum.photos/300/300`,
+        },
+        listName: "List 2",
+        listId: "2",
       },
       {
         id: 2,
         title: "Card 4",
-        priority: "High",
-        assignedEmail: "email",
-        assignedName: "name 4",
+        priority: "high",
+        assignedTo: {
+          email: "email",
+          name: "name 2",
+          avatar: `https://picsum.photos/300/300`,
+        },
+        listName: "List 2",
+        listId: "2",
       },
       {
         id: 3,
         title: "Card 5",
-        priority: "Low",
-        assignedEmail: "email",
-        assignedName: "name 5",
+        priority: "low",
+        assignedTo: {
+          email: "email",
+          name: "name 2",
+          avatar: `https://picsum.photos/300/300`,
+        },
+        listName: "List 2",
+        listId: "2",
       },
     ],
   },
@@ -62,57 +87,88 @@ const listData: ListDataType[] = [
       {
         id: 1,
         title: "Card 3",
-        priority: "Medium",
-        assignedEmail: "email",
-        assignedName: "name 3",
+        priority: "medium",
+        assignedTo: {
+          email: "email",
+          name: "name 2",
+          avatar: `https://picsum.photos/300/300`,
+        },
+        listName: "List 2",
+        listId: "2",
       },
       {
         id: 2,
         title: "Card 4",
-        priority: "High",
-        assignedEmail: "email",
-        assignedName: "name 4",
+        priority: "high",
+        assignedTo: {
+          email: "email",
+          name: "name 2",
+          avatar: `https://picsum.photos/300/300`,
+        },
+        listName: "List 2",
+        listId: "2",
       },
       {
         id: 3,
         title: "Card 5",
-        priority: "Low",
-        assignedEmail: "email",
-        assignedName: "name 5",
+        priority: "low",
+        assignedTo: {
+          email: "email",
+          name: "name 2",
+          avatar: `https://picsum.photos/300/300`,
+        },
+        listName: "List 2",
+        listId: "2",
       },
     ],
   },
   {
     id: 4,
     title: "List 2",
-    status: "DONE",
+    status: "done",
     cards: [
       {
         id: 1,
         title: "Card 3",
         priority: "Medium",
-        assignedEmail: "email",
-        assignedName: "name 3",
+        assignedTo: {
+          email: "email",
+          name: "name 2",
+          avatar: `https://picsum.photos/300/300`,
+        },
+        listName: "List 2",
+        listId: "2",
       },
       {
         id: 2,
         title: "Card 4",
         priority: "High",
-        assignedEmail: "email",
-        assignedName: "name 4",
+        assignedTo: {
+          email: "email",
+          name: "name 2",
+          avatar: `https://picsum.photos/300/300`,
+        },
+        listName: "List 2",
+        listId: "2",
       },
       {
         id: 3,
         title: "Card 5",
         priority: "Low",
-        assignedEmail: "email",
-        assignedName: "name 5",
+        assignedTo: {
+          email: "email",
+          name: "name 2",
+          avatar: `https://picsum.photos/300/300`,
+        },
+        listName: "List 2",
+        listId: "2",
       },
     ],
   },
 ];
 
 export function ListCards() {
+  // TODO fetch list data here
   return (
     <ol className="flex gap-4 w-full ">
       {listData.map((list) => (

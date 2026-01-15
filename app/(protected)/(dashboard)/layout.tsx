@@ -13,7 +13,7 @@ function ProtectedLayout({ children }: { children: React.ReactNode }) {
 
         <div className="min-h-screen flex flex-col w-full">
           <HeaderDashboard />
-          <main className="flex flex-1  py-18  max-w-5xl px-4 mx-auto w-full">
+          <main className="flex flex-1  py-18  max-w-7xl px-4 mx-auto w-full">
             {children}
           </main>
           <FooterDashboard />

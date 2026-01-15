@@ -16,22 +16,25 @@ import {
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { NewBoard } from "./NewBoard";
+import { IconButton } from "@/components/ui/iconButton";
 
 export function CreateNewBoardCard() {
-  const [newBoardDialogOpen, setNewBoardDialogOpen] = useState(false);
-  // TODO add logic for create card
+  const [isNewBoardDialogOpen, setIsNewBoardDialogOpen] = useState(false);
+  // TODO add api and UI for create card modal
   return (
     <>
-      <button
-        onClick={() => setNewBoardDialogOpen(true)}
+      <IconButton
+        classNameChildren="group flex flex-col w-full justify-center items-center"
+        onClick={() => setIsNewBoardDialogOpen(true)}
         title="Create new board"
-        className="relative group flex flex-col w-full justify-center items-center  rounded-md p-2 h-28  overflow-hidden cursor-pointer hover:bg-gray-300  bg-gray-200"
+        aria-label="Create new board"
+        className="relative group   rounded-md p-2 h-28  overflow-hidden  hover:bg-gray-500  bg-gray-200 hover:text-white"
       >
         <p className="text-xl">Create new board</p>
 
-        <Plus className="size-10  p-1 z-20  cursor-pointer  text-gray-700 group-hover:text-white" />
+        <Plus className="size-10  p-1 z-20  text-gray-700 group-hover:text-white" />
 
-        <p className="w-full text-right text-gray-500">5 remained</p>
+        <p className="w-full text-right">5 remained</p>
 
         <Tooltip>
           <TooltipTrigger
@@ -47,10 +50,13 @@ export function CreateNewBoardCard() {
             </p>
           </TooltipContent>
         </Tooltip>
-      </button>
+      </IconButton>
 
       {/* DIALOG CREATE NEW BOARD */}
-      <Dialog open={newBoardDialogOpen} onOpenChange={setNewBoardDialogOpen}>
+      <Dialog
+        open={isNewBoardDialogOpen}
+        onOpenChange={setIsNewBoardDialogOpen}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-2xl">New board</DialogTitle>

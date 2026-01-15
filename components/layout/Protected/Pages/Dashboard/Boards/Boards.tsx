@@ -28,11 +28,13 @@ export function Boards({ data: boardData }: Props) {
     console.log("first");
     router.push(`/board/${boardId}`);
   }
-  function handleModalDeleteBoard() {
+  function handleOpenModalDeleteBoard() {
     setDeleteDialogOpen(true);
   }
   // TODO add delete board request
-  function handleDeleteBoard(boardId: string) {}
+  function handleDeleteBoard(boardId: string) {
+    console.log("🚀 ~ handleDeleteBoard ~ boardId:", boardId);
+  }
   return (
     <div>
       <div className="flex gap-2 items-center">
@@ -45,11 +47,11 @@ export function Boards({ data: boardData }: Props) {
         <CreateNewBoardCard />
 
         {/*CREATED BOARDS */}
-        {boardData.map((board) => (
+        {boardData?.map((board) => (
           <div key={board.id}>
             <BoardCard
               data={board}
-              handleModalDeleteBoard={handleModalDeleteBoard}
+              handleModalDeleteBoard={handleOpenModalDeleteBoard}
               handleSelectBoard={() => handleSelectBoard(board.id)}
             />
 

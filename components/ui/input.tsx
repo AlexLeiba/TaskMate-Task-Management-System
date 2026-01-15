@@ -9,7 +9,7 @@ function Input({
   ...props
 }: React.ComponentProps<"input"> & { error?: string }) {
   return (
-    <>
+    <div className="flex flex-col justify-start items-start gap-1">
       <input
         type={type}
         data-slot="input"
@@ -21,8 +21,8 @@ function Input({
         )}
         {...props}
       />
-      {error && <span className="text-destructive">{error}</span>}
-    </>
+      {error && <p className="text-destructive text-xs">{error}</p>}
+    </div>
   );
 }
 

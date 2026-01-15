@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
+
 /* This comes instead of older version: darkMode: "class" */
 /* Makes dark white theme Class based Theme mode not System based */
 /* Enables manual theme toggling */
@@ -132,4 +133,32 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* QUILL RICH EDITOR */
+.quill .ql-toolbar .ql-formats button svg .ql-stroke {
+  color: white !important;
+  stroke: white !important;
+}
+
+/* innactive */
+.quill .ql-toolbar .ql-formats button:hover {
+  opacity: 0.5;
+}
+
+/* active */
+.quill .ql-toolbar .ql-formats .ql-active {
+  opacity: 0.5;
+}
+
+.ql-picker-label {
+  color: white !important;
+  stroke: white !important;
+}
+.ql-picker-label svg .ql-picker-options {
+  color: white !important;
+  stroke: white !important;
+}
+.ql-picker-label:hover {
+  opacity: 0.5;
 }

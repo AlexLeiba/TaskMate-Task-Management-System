@@ -1,40 +1,37 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Plus, X } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useState } from "react";
+import { AddNewInput } from "../../AddNewInput";
+import { IconButton } from "@/components/ui/iconButton";
 
 export function AddNewListCard() {
   const [isOpen, setIsOpen] = useState(false);
+
+  function handleAddNewList(value: { [inputName: string]: string }) {
+    console.log("🚀 ~ handleAddNewList ~ value:", value);
+  }
   return (
-    <>
-      {isOpen ? (
-        <div className="flex flex-col justify-between py-2 px-4 bg-gray-500 text-white min-w-62 rounded-sm ">
-          <div className="flex justify-between">
-            <p>Add new list</p>
-            <button
-              className="cursor-pointer hover:opacity-80"
-              title="Close add new list"
-              onClick={() => setIsOpen(false)}
-            >
-              <X />
-            </button>
-          </div>
-          <Input autoFocus placeholder="List name..." />
+    <li className="shrink-0 h-full flex flex-col justify-between p-2 dark:bg-gray-500 dark:text-white w-70 rounded-sm ">
+      <AddNewInput
+        handleSubmitValue={(v) => handleAddNewList(v)}
+        inputName="title"
+        placeholder="List title here..."
+        label="Add new list"
+        setIsOpenedTitleInput={setIsOpen}
+        isOpenedTitleInput={isOpen}
+      >
+        <div className="flex justify-between">
+          <p>Add new list</p>
+          <IconButton
+            title="Add new list card"
+            aria-label="Add new list card"
+            onClick={() => setIsOpen(false)}
+          >
+            <Plus />
+          </IconButton>
         </div>
-      ) : (
-        <Button
-          variant={"ghost"}
-          onClick={() => setIsOpen(true)}
-          title="Add new list"
-          className="flex  cursor-pointer py-2 px-4 bg-gray-500 text-white min-w-62 rounded-md hover:opacity-80"
-        >
-          <div className="flex gap-2 items-center">
-            <Plus className="text-white" size={20} /> <p>Add new list</p>
-          </div>
-        </Button>
-      )}
-    </>
+      </AddNewInput>
+    </li>
   );
 }

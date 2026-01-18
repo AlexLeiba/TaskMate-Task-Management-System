@@ -12,7 +12,7 @@ export function AddNewListCard() {
     console.log("🚀 ~ handleAddNewList ~ value:", value);
   }
   return (
-    <li className="shrink-0 h-full flex flex-col justify-between p-2 dark:bg-gray-500 dark:text-white w-70 rounded-sm ">
+    <li className="shrink-0 h-full flex flex-col justify-between p-2  dark:bg-gray-700 dark:text-white w-70 rounded-sm ">
       <AddNewInput
         handleSubmitValue={(v) => handleAddNewList(v)}
         inputName="title"
@@ -22,7 +22,7 @@ export function AddNewListCard() {
         isOpenedTitleInput={isOpen}
       >
         <div className="flex justify-between">
-          <p>Add new list</p>
+          <p className="text-base font-medium">Add new list</p>
           <IconButton
             title="Add new list card"
             aria-label="Add new list card"

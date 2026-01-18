@@ -3,12 +3,9 @@ import { Edit, X } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  EditBoardTitleSchema,
-  type EditBoardTitleSchemaType,
-} from "@/lib/schemas";
+import { EditBoardTitleSchema } from "@/lib/schemas";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
+
 import { Button } from "@/components/ui/button";
 import { AddNewInput } from "./AddNewInput";
 
@@ -48,7 +45,7 @@ export function SubHeader({
   }
   return (
     <div className=" bg-gray-800/70 w-full  text-white ">
-      <div className="px-4 flex justify-between items-center max-w-350 mx-auto">
+      <div className="px-4 flex justify-between items-center max-w-400 mx-auto">
         <AddNewInput
           handleSubmitValue={(v) => handleSubmitForm(v)}
           inputName="title"

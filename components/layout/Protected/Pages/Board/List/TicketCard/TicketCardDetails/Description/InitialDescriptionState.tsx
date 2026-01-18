@@ -8,7 +8,7 @@ export function InitialDescriptionState({ children, ...props }: Props) {
   return (
     <IconButton
       {...props}
-      className="p-2 h-[222.84px] hover:bg-gray-800 overflow-y-auto"
+      className="p-2 h-[283.54px] hover:bg-gray-800 overflow-y-auto rounded-bl-md rounded-br-md"
     >
       {children}
     </IconButton>

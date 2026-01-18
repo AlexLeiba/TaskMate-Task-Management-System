@@ -3,6 +3,8 @@ import { Activity } from "lucide-react";
 import { Spacer } from "@/components/ui/spacer";
 import { ActivityCard } from "./ActivityCard";
 import { ActivityCardSkeleton } from "./ActivityCardSkeleton";
+import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
 
 // TODO fetch activities when open the tab
 // show skeleton while downloading
@@ -64,6 +66,8 @@ type Props = {
   listId: string | undefined;
 };
 export function Activities({ cardId, listId }: Props) {
+  const { orgId } = useAuth();
+
   // fetch activities based on card and list id
   if (!activitiesData) return <ActivityCardSkeleton />;
   return (
@@ -73,9 +77,19 @@ export function Activities({ cardId, listId }: Props) {
           <Activity />
           <h5 className="text-xl font-medium">Activities</h5>
         </div>
+        <Link
+          href={`/dashboard/${orgId}/activity`}
+          target="_blank"
+          title="All activities"
+          aria-label="All activities"
+        >
+          <p className="text-base text-gray-300  underline underline-offset-2">
+            All Activities
+          </p>
+        </Link>
       </div>
       <Spacer size={4} />
-      <div className="flex flex-col gap-4 overflow-y-auto h-54">
+      <div className="flex flex-col gap-4 overflow-y-auto h-75">
         {/* ATTACHMENTS */}
         {activitiesData?.map((activity) => (
           <ActivityCard key={activity.id} data={activity} />

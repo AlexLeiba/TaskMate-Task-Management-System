@@ -60,19 +60,24 @@ export function Description({ data }: Props) {
       </div>
       <Spacer size={2} />
       {isQuillVisible ? (
-        <ReactQuill theme="snow" value={value} onChange={setValue} />
+        <div className="h-[283.54px]">
+          <ReactQuill theme="snow" value={value} onChange={setValue} />
+        </div>
       ) : (
         <InitialDescriptionState
           onClick={() => setIsQuillVisible(true)}
-          classNameChildren="flex flex-col justify-start h-full"
+          classNameChildren="flex flex-col justify-start h-full wrap-break-word "
         >
           {data.description ? (
             <div
-              className=" text-left max-w-full text-gray-300 html-content"
+              className=" text-left max-w-full text-gray-300  wrap-break-word  html-content "
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(data.description), //Prevent XSS attacks.
+                __html: DOMPurify.sanitize(data.description).replace(
+                  /&nbsp;/g,
+                  " "
+                ), //Prevent XSS attacks.
               }}
-            ></div>
+            />
           ) : (
             <p className="text-gray-300">No description</p>
           )}

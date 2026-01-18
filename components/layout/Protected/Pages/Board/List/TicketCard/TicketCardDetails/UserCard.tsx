@@ -16,7 +16,7 @@ const cardVariants = cva("", {
   },
 });
 
-const nameVariants = cva("text-base text-gray-300", {
+const nameVariants = cva("text-base text-gray-300 line-clamp-1", {
   variants: {
     size: {
       sm: "text-sm",

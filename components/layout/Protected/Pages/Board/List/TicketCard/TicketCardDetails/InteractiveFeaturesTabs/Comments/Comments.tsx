@@ -58,7 +58,7 @@ export function Comments({ data }: Props) {
       <Spacer size={4} />
 
       {/* SCROLLABLE COMMENTS SECTION */}
-      <div className="flex flex-col  overflow-y-auto h-54 ">
+      <div className="flex flex-col  overflow-y-auto h-75 ">
         <AddNewInput
           buttonDirection="column"
           className="py-0"

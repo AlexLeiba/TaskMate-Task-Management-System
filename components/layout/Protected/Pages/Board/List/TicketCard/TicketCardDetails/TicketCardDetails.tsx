@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -35,8 +34,7 @@ export function TicketCardDetails({
   // TODO, fetch card details when open it
   const now = new Date("2023-01-01T00:00:00").getTime();
   const cardDetails: CardDetailsType = {
-    description:
-      "This is a sample description for the ticket card. It provides detailed information about the task, its requirements, and any other relevant details that team members need to know.",
+    description: `<p>This&nbsp;is&nbsp;a&nbsp;sample&nbsp;description&nbsp;for&nbsp;the&nbsp;ticket&nbsp;card.&nbsp;It&nbsp;provides&nbsp;detailed&nbsp;information&nbsp;about&nbsp;the&nbsp;task,&nbsp;its&nbsp;requirements,&nbsp;and&nbsp;any&nbsp;other&nbsp;relevant&nbsp;details&nbsp;that&nbsp;team&nbsp;members&nbsp;need&nbsp;to&nbsp;know.</p>`,
     id: "123",
     title: "Sample Ticket Card",
     priority: "high",
@@ -189,10 +187,7 @@ export function TicketCardDetails({
   };
   return (
     <Dialog open={isCardDetailsOpened} onOpenChange={setIsCardDetailsOpened}>
-      <DialogContent className="min-w-200 h-200 flex flex-col overflow-hidden">
-        <DialogClose>
-          <X size={20} />
-        </DialogClose>
+      <DialogContent className="md:min-w-[80%] md:max-h-[90%] md:min-h-[90%] lg:min-h-[90%]  lg:max-h-[80%] lg:min-w-[80%] sm:min-w-full sm:min-h-full  flex flex-col overflow-y-auto h-full">
         <DialogHeader>
           <DialogTitle className="text-2xl">{cardDetails.title}</DialogTitle>
           <div className="flex gap-2">
@@ -203,9 +198,9 @@ export function TicketCardDetails({
         </DialogHeader>
         <Spacer size={2} />
         {/* CARD DETAILS CONTENT GRID */}
-        <div className=" grid grid-cols-[2fr_1fr] gap-8">
+        <div className=" grid md:grid-cols-[2fr_1fr] gap-8 ">
           {/* 1COL */}
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-8 ">
             <Description data={cardDetails} />
             <InteractiveFeaturesTabs data={cardDetails} />
           </div>

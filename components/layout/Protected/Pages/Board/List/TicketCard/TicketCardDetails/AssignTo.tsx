@@ -24,7 +24,7 @@ export function AssignTo({ data }: Props) {
     <div className="flex flex-col">
       <div className="flex gap-2 items-center">
         <UserPlus />
-        <p className="text-xl font-medium">Assigne to</p>
+        <p className="text-xl font-medium">Assign to</p>
       </div>
 
       <Spacer size={4} />
@@ -37,7 +37,7 @@ export function AssignTo({ data }: Props) {
           <SelectGroup>
             <SelectLabel>Assign to</SelectLabel>
             <SelectItem value="none" className="h-12">
-              <p className="text-base">No assignee</p>
+              <p className="text-base">No assigned</p>
             </SelectItem>
             {data.map((item) => (
               <SelectItem key={item.email} value={item.email}>

@@ -150,16 +150,16 @@
 
 /* active */
 .quill .ql-toolbar .ql-formats .ql-active {
-  color: var(--quill-active-button-color) !important;
-  stroke: 1px solid var(--quill-active-button-color) !important;
-  /* background: var( --quill-active-button-color); */
-  border: 1px solid var(--quill-active-button-color);
+  color: var(--color-gray-400) !important;
+  stroke: 1px solid var(--color-gray-400) !important;
+  /* background: var( --color-gray-400); */
+  border: 1px solid var(--color-gray-400);
 }
 .quill .ql-toolbar .ql-formats .ql-bold .ql-active {
-  color: var(--quill-active-button-color) !important;
-  stroke: 1px solid var(--quill-active-button-color) !important;
-  /* background: var( --quill-active-button-color); */
-  border: 1px solid var(--quill-active-button-color);
+  color: var(--color-gray-400) !important;
+  stroke: 1px solid var(--color-gray-400) !important;
+  /* background: var( --color-gray-400); */
+  border: 1px solid var(--color-gray-400);
 }
 
 .ql-picker-label {
@@ -178,6 +178,12 @@
  */
 
 /* QUILL EDITOR and HTML text styles */
+
+.quill {
+  background-color: var(--color-gray-800) !important;
+  max-height: 240.84px !important;
+  height: 240.84px;
+}
 .quill .ql-container p,
 .html-content p {
   font-size: 14px;

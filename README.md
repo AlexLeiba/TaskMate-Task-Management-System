@@ -41,7 +41,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ### Content width: 64rem = 1024px , TW Utility: max-w-5xl;
 
-### Content Board width: 72rem = 1152px , TW Utility: max-w-6xl;
+### Content Board width: 100rem = 1600px , TW Utility: max-w-400;
 
 ### Layout Padding Top Bottom: 3.75rem = 60px , TW Utility: 15;
 

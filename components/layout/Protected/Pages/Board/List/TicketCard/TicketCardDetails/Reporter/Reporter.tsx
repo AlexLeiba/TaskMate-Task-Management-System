@@ -15,7 +15,7 @@ export function Reporter({ data }: Props) {
         <p className="text-xl font-medium">Reporter</p>
       </div>
       <Spacer size={4} />
-      <UserCard data={data} />
+      <UserCard data={data} size={"sm"} />
     </div>
   );
 }

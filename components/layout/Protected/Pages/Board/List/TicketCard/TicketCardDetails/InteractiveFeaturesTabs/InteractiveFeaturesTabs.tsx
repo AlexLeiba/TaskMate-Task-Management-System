@@ -37,7 +37,12 @@ export function InteractiveFeaturesTabs({ data }: Props) {
         {/* TABS */}
         {TAB_ELEMENTS.map((data) => (
           <div key={data.value}>
-            <IconButton className={cn()} onClick={() => setTab(data.value)}>
+            <IconButton
+              className={cn()}
+              onClick={() => setTab(data.value)}
+              title={data.label}
+              aria-label={data.label}
+            >
               <p
                 className={cn(
                   tab === data.value ? "text-white" : "text-gray-400",

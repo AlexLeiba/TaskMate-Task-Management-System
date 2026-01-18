@@ -34,7 +34,7 @@ export function TicketCardBody({ priority }: Props) {
       {/* PRIORITIES  */}
       <Popover open={isOpenedOptions} onOpenChange={setIsOpenedOptions}>
         <PopoverTrigger asChild>
-          <button
+          <IconButton
             aria-label="Priority"
             title="Priority"
             onClick={(e) => {
@@ -45,14 +45,15 @@ export function TicketCardBody({ priority }: Props) {
                 e.stopPropagation();
               }
             }}
-            className="ring ring-white flex justify-center items-center p-2 size-7 cursor-pointer hover:opacity-70 rounded-sm"
+            className=""
+            classNameChildren="ring ring-white flex justify-center items-center p-2 size-7 cursor-pointer hover:opacity-70 rounded-sm"
           >
             {selectedPriority.icon ? (
               <span className="text-lg">{selectedPriority.icon}</span>
             ) : (
               <span className="text-sm">...</span>
             )}
-          </button>
+          </IconButton>
         </PopoverTrigger>
         <PopoverContent
           align="start"

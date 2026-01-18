@@ -97,7 +97,7 @@ export const CARD_PRIORITIES = [
   {
     label: "None",
     value: "none",
-    icon: <></>,
+    icon: <>...</>,
   },
   {
     label: "Urgent",

@@ -31,7 +31,7 @@ export function Priority({ data }: Props) {
 
       <Select onValueChange={(v) => handleSelectPriority(v)}>
         <SelectTrigger className="w-full flex justify-between text-left h-14!">
-          <SelectValue placeholder="Assign to" className="h-10" />
+          <SelectValue placeholder="Select Priority" className="h-10" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>

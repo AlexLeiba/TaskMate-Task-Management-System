@@ -1,7 +1,6 @@
 import { IconButton } from "@/components/ui/iconButton";
 import { UploadedFileType } from "@/lib/types";
 import { X } from "lucide-react";
-import React from "react";
 
 type Props = {
   data: UploadedFileType;
@@ -13,7 +12,6 @@ export function DownloadFileCard({
   handleDownloadFile,
   handleDeleteFile,
 }: Props) {
-  // todo add anchor to download file
   return (
     <div className="w-full px-3 relative">
       <IconButton
@@ -31,8 +29,8 @@ export function DownloadFileCard({
           handleDeleteFile(data.id);
         }}
         className="absolute -top-6 right-2 text-red-600 p-2 hover:bg-gray-600 rounded-full hover:text-white"
-        title="Detele image"
-        aria-label="Delete image"
+        title="Detele file"
+        aria-label="Delete file"
       >
         <X size={15} />
       </IconButton>

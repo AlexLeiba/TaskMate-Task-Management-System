@@ -11,7 +11,7 @@ async function BoardPage({ params }: { params: Promise<{ boardId: string }> }) {
       <SubHeader boardId={boardId} boardTitle="Board title dsds dsds" />
 
       {/* BOARD CONTENT */}
-      <div className="max-w-350 mx-auto p-4 overflow-x-auto h-full ">
+      <div className="max-w-400 mx-auto p-4 overflow-x-auto h-full ">
         {/* LIST CARDS */}
         <ListCards />
       </div>

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 
 import dynamic from "next/dynamic";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 const OrganizationSwitcher = dynamic(
   () => import("@clerk/nextjs").then((m) => m.OrganizationSwitcher),
   { ssr: false }
@@ -21,7 +22,12 @@ type Props = {
 export function HeaderDashboard({ type = "dashboard" }: Props) {
   return (
     <header className="fixed top-0 left-0 right-0 dark:bg-gray-400 z-50  ">
-      <div className="max-w-350 py-2 mx-auto px-4">
+      <div
+        className={cn(
+          type === "dashboard" ? "max-w-7xl" : "max-w-400",
+          " py-2 mx-auto px-4"
+        )}
+      >
         <div className="flex justify-between">
           <div className="flex gap-2 items-center">
             {type === "dashboard" && <SidebarTrigger title="Sidebar" />}

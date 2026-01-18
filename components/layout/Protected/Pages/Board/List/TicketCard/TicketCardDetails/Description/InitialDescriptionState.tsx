@@ -6,7 +6,10 @@ type Props = ComponentProps<typeof IconButton> & {
 };
 export function InitialDescriptionState({ children, ...props }: Props) {
   return (
-    <IconButton {...props} className="p-2 h-[201.84px] hover:bg-gray-800">
+    <IconButton
+      {...props}
+      className="p-2 h-[222.84px] hover:bg-gray-800 overflow-y-auto"
+    >
       {children}
     </IconButton>
   );

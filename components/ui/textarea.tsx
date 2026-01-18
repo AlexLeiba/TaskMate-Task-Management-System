@@ -8,7 +8,7 @@ function Textarea({
   ...props
 }: React.ComponentProps<"textarea"> & { error?: string }) {
   return (
-    <div className="flex flex-col justify-start items-start gap-1">
+    <div className="flex flex-col justify-start items-start gap-1 w-full">
       <textarea
         data-slot="textarea"
         className={cn(

@@ -15,8 +15,9 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { NewBoard } from "./NewBoard";
+
 import { IconButton } from "@/components/ui/iconButton";
+import { NewBoardImagePicker } from "./NewBoardImagePicker";
 
 export function CreateNewBoardCard() {
   const [isNewBoardDialogOpen, setIsNewBoardDialogOpen] = useState(false);
@@ -62,7 +63,7 @@ export function CreateNewBoardCard() {
             <DialogTitle className="text-2xl">New board</DialogTitle>
           </DialogHeader>
 
-          <NewBoard />
+          <NewBoardImagePicker />
 
           <DialogFooter className="flex ">
             <Button

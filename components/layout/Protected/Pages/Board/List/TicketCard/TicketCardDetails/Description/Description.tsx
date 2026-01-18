@@ -8,6 +8,7 @@ import React, { useState } from "react";
 import "react-quill-new/dist/quill.snow.css";
 import { InitialDescriptionState } from "./InitialDescriptionState";
 import { CardDetailsType } from "@/lib/types";
+import DOMPurify from "dompurify";
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
 type Props = {
@@ -59,12 +60,7 @@ export function Description({ data }: Props) {
       </div>
       <Spacer size={2} />
       {isQuillVisible ? (
-        <ReactQuill
-          theme="snow"
-          value={value}
-          onChange={setValue}
-          className="h-40"
-        />
+        <ReactQuill theme="snow" value={value} onChange={setValue} />
       ) : (
         <InitialDescriptionState
           onClick={() => setIsQuillVisible(true)}
@@ -72,8 +68,10 @@ export function Description({ data }: Props) {
         >
           {data.description ? (
             <div
-              className=" text-left max-w-full text-gray-300"
-              dangerouslySetInnerHTML={{ __html: data.description }}
+              className=" text-left max-w-full text-gray-300 html-content"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(data.description), //Prevent XSS attacks.
+              }}
             ></div>
           ) : (
             <p className="text-gray-300">No description</p>

@@ -13,7 +13,6 @@ export function TicketCard({ data }: Prop) {
   const [isCardDetailsOpened, setIsCardDetailsOpened] = useState(false);
   // OPEN TICKET CARD DETAILS
   function handleOpenTicketDetails() {
-    console.log("opened");
     setIsCardDetailsOpened(true);
   }
 
@@ -21,11 +20,25 @@ export function TicketCard({ data }: Prop) {
     <>
       <div
         tabIndex={0}
-        onKeyDown={(e) => e.key === KEYBOARD.ENTER && handleOpenTicketDetails()}
+        onKeyDown={(e) => {
+          if (e.key === KEYBOARD.ENTER) {
+            const target = e.target as HTMLElement; // TypeScript now knows it’s an HTMLElement
+            const ticketCard = target.closest(".ticket-card");
+
+            if (ticketCard) handleOpenTicketDetails();
+          }
+        }}
         title={`open - ${data.title}`}
         aria-label={`open ${data.title}`}
-        onClick={handleOpenTicketDetails}
-        className="w-full cursor-pointer dark:hover:ring-gray-400 dark:hover:ring p-2 dark:bg-gray-600 rounded-sm flex flex-col justify-start items-start gap-2"
+        onClick={(e) => {
+          const target = e.target as HTMLElement; // TypeScript now knows it’s an HTMLElement
+          const ticketCard = target.closest(".ticket-card");
+
+          if (ticketCard) {
+            handleOpenTicketDetails();
+          }
+        }}
+        className="ticket-card w-full cursor-pointer dark:hover:ring-gray-400 dark:hover:ring p-2 dark:bg-gray-600 rounded-sm flex flex-col justify-start items-start gap-2 "
       >
         {/* TICKET CARD HEADER */}
         <TicketCardHeader title={data.title} cardId={data.id.toString()} />

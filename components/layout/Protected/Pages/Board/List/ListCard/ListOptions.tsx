@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { useStore } from "@/store/useStore";
 import { IconButton } from "@/components/ui/iconButton";
+import React from "react";
 
 type Props = {
   listId: string;
@@ -82,7 +83,7 @@ export function ListOptions({ listId }: Props) {
             if (option.value === "delete-list") {
               // DELETE BUTTON
               return (
-                <>
+                <React.Fragment key={option.value}>
                   <Separator className="my-4 w-full h-px bg-gray-700" />
                   <IconButton
                     aria-label={option.label}
@@ -94,7 +95,7 @@ export function ListOptions({ listId }: Props) {
                     {option.icon}
                     <p key={option.label}>{option.label}</p>
                   </IconButton>
-                </>
+                </React.Fragment>
               );
             }
             return (

@@ -14,7 +14,7 @@ type Props = {
 export function ListCardHeader({ status, title, listId }: Props) {
   const [isOpenedTitleInput, setIsOpenedTitleInput] = useState(false);
   const { openTitleInput, setOpenTitleInput } = useStore();
-  console.log("🚀 ~ ListCardHeader ~ isOpenedTitleInput:", openTitleInput);
+
   const isInputOpened =
     openTitleInput.id === listId ? openTitleInput.isOpen : isOpenedTitleInput;
 

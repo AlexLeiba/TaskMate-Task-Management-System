@@ -97,6 +97,7 @@ export const CARD_PRIORITIES = [
   {
     label: "None",
     value: "none",
+    icon: <></>,
   },
   {
     label: "Urgent",
@@ -150,3 +151,27 @@ export const KEYBOARD = {
   ENTER: "Enter",
   SPACE: " ",
 } as const;
+
+export const FILES_MIME_TYPES = [
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/vnd.ms-powerpoint",
+  "application/vnd.oasis.opendocument.presentation",
+  "application/vnd.oasis.opendocument.spreadsheet",
+  "application/vnd.oasis.opendocument.text",
+  "text/plain",
+  "text/html",
+  "text/css",
+  "text/javascript",
+] as const;
+
+export const IMAGES_MIME_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+  "image/svg+xml",
+] as const;

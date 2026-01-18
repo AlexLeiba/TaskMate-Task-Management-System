@@ -90,6 +90,7 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --quill-active-button-color: rgb(2, 171, 2);
 }
 
 .dark {
@@ -124,6 +125,7 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --quill-active-button-color: rgb(2, 171, 2);
 }
 
 @layer base {
@@ -148,7 +150,16 @@
 
 /* active */
 .quill .ql-toolbar .ql-formats .ql-active {
-  opacity: 0.5;
+  color: var(--quill-active-button-color) !important;
+  stroke: 1px solid var(--quill-active-button-color) !important;
+  /* background: var( --quill-active-button-color); */
+  border: 1px solid var(--quill-active-button-color);
+}
+.quill .ql-toolbar .ql-formats .ql-bold .ql-active {
+  color: var(--quill-active-button-color) !important;
+  stroke: 1px solid var(--quill-active-button-color) !important;
+  /* background: var( --quill-active-button-color); */
+  border: 1px solid var(--quill-active-button-color);
 }
 
 .ql-picker-label {
@@ -162,3 +173,79 @@
 .ql-picker-label:hover {
   opacity: 0.5;
 }
+
+/* 
+ */
+
+/* QUILL EDITOR and HTML text styles */
+.quill .ql-container p,
+.html-content p {
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.quill .ql-container h1,
+.html-content h1 {
+  font-size: 26px;
+  line-height: 24px;
+  font-weight: 400;
+}
+.quill .ql-container h2,
+.html-content h2 {
+  font-size: 19.5px;
+  line-height: 22px;
+  font-weight: 400;
+}
+.quill .ql-container h3,
+.html-content h3 {
+  font-size: 15.21px;
+  line-height: 24px;
+  font-weight: 400;
+}
+
+.quill > .ql-container > .ql-editor.ql-blank::before {
+  color: var(--baseline-400) !important;
+  font-style: normal !important;
+}
+.quill data-placeholder {
+  color: var(--baseline-800) !important;
+}
+.ql-container.ql-snow {
+  border: none !important;
+}
+
+.ql-editor {
+  min-height: 180px !important;
+  overflow-y: auto;
+  padding-bottom: 1rem; /* Add space for readability */
+  overflow-y: auto; /* Add vertical scrolling if content is too long */
+  /* padding-top: 62px !important; */
+  border: solid 1px rgb(209 213 219 / var(--tw-text-opacity, 1));
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.html-content a {
+  text-decoration: underline;
+  color: var(--primary-400);
+}
+
+.html-content ul {
+  font-size: 13px;
+  list-style-type: disc; /* Ensure bullets appear */
+  margin-left: 40px !important; /* Add indentation */
+}
+
+.html-content ol {
+  font-size: 13px;
+  list-style-type: decimal; /* Ensure numbers appear */
+  margin-left: 40px !important;
+}
+
+.html-content li {
+  margin-bottom: 5px; /* Optional: Add spacing */
+}
+
+/* .ql-tooltip {
+  left: 5px !important;
+} */

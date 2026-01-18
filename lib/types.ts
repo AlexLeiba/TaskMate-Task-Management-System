@@ -1,12 +1,57 @@
-export type ActivityType = {
-  id: number;
-  imageUrl: string;
+import { FILES_MIME_TYPES, IMAGES_MIME_TYPES } from "./consts";
+
+// REUSABLE TYPES
+export type ActivityActionType =
+  | "Created"
+  | "Deleted"
+  | "Updated"
+  | "Added"
+  | "Removed";
+
+export type PrioritiesType =
+  | "low"
+  | "medium"
+  | "high"
+  | "urgent"
+  | "none"
+  | string;
+
+export type ListStatusType =
+  | "todo"
+  | "progress"
+  | "review"
+  | "done"
+  | "backlog"
+  | string;
+
+export type UserType = {
+  id: string;
   name: string;
+  avatar: string;
   email: string;
+};
+
+export type ImageMimeType = (typeof IMAGES_MIME_TYPES)[number];
+export type FileMimeType = (typeof FILES_MIME_TYPES)[number];
+
+export type UploadedFileType = {
+  id: string;
+  name?: string;
+  url: string;
+};
+
+/////////////////////////////////////////////////
+
+export type ActivityType = {
+  id: string;
   createdAt: number;
-  activity: string;
-  boardName: string;
-  activityType: string;
+  activity: string; //act message
+  boardName: string; //in which board
+  listName: string; //in which list
+  boardId: string;
+  listId: string;
+  activityType: ActivityActionType;
+  author: UserType;
 };
 
 export type BoardType = {
@@ -18,10 +63,12 @@ export type BoardType = {
 export type CardTicketType = {
   id: number;
   title: string;
-  priority: "low" | "medium" | "high" | "urgent" | "none" | string;
+  priority: PrioritiesType;
   assignedTo: AssignedToType;
   listName: string;
   listId: string;
+  createdAt: number;
+  updatedAt: number;
 };
 
 export type PriorityType = {
@@ -30,17 +77,10 @@ export type PriorityType = {
   icon?: React.ReactNode;
 };
 
-export type UserType = {
-  id: string;
-  name: string;
-  avatar: string;
-  email: string;
-};
-
 export type ListDataType = {
   id: number;
   title: string;
-  status: "todo" | "progress" | "review" | "done" | "backlog" | string;
+  status: ListStatusType;
   cards: CardTicketType[];
 };
 
@@ -61,14 +101,26 @@ export type AssignedToType = {
   avatar: string;
 };
 
-export type PrioritiesType =
-  | "low"
-  | "medium"
-  | "high"
-  | "urgent"
-  | "none"
-  | string;
+export type CommentsType = {
+  id: string;
+  createdAt: number;
+  comment: string;
+  author: UserType; //who commented
+};
 
+export type FileType = ImageMimeType | FileMimeType;
+
+export type AttachmentsType = {
+  files: {
+    type: FileType; //what type of file has been uploaded
+    id: string;
+    url: string;
+    name?: string;
+  }[];
+
+  createdAt: number;
+  author: UserType; //who have added attach
+};
 export type CardDetailsType = {
   listName?: string;
   listId?: string;
@@ -82,7 +134,14 @@ export type CardDetailsType = {
   createdAt?: number;
   updatedAt?: number;
   //
-  attachments?: string[];
-  comments?: string[];
+  attachments?: AttachmentsType[];
+  comments?: CommentsType[];
   activity?: ActivityType[];
 };
+
+export function isImageMimeType(type: string): type is ImageMimeType {
+  return IMAGES_MIME_TYPES.includes(type as ImageMimeType);
+}
+export function isFileMimeType(type: string): type is ImageMimeType {
+  return FILES_MIME_TYPES.includes(type as FileMimeType);
+}

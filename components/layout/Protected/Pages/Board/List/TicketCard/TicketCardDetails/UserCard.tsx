@@ -6,7 +6,7 @@ import Image from "next/image";
 const cardVariants = cva("", {
   variants: {
     size: {
-      sm: "size-6",
+      sm: "size-8",
       md: "size-10",
       lg: "size-14",
     },
@@ -16,7 +16,7 @@ const cardVariants = cva("", {
   },
 });
 
-const nameVariants = cva("text-base", {
+const nameVariants = cva("text-base text-gray-300", {
   variants: {
     size: {
       sm: "text-sm",
@@ -28,7 +28,7 @@ const nameVariants = cva("text-base", {
     size: "md",
   },
 });
-const emailVariants = cva("opacity-80", {
+const emailVariants = cva("text-gray-400", {
   variants: {
     size: {
       sm: "text-xs",

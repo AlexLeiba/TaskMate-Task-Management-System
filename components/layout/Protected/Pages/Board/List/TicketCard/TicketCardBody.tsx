@@ -5,7 +5,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CARD_PRIORITIES, FAKE_USERS } from "@/lib/consts";
+import { CARD_PRIORITIES, FAKE_USERS, KEYBOARD } from "@/lib/consts";
 import { Check, UserPlus, X } from "lucide-react";
 import { PriorityType, UserType } from "@/lib/types";
 import Image from "next/image";
@@ -31,7 +31,7 @@ export function TicketCardBody({ priority }: Props) {
   }
   return (
     <div className="flex justify-between w-full">
-      {/* OPTIONS  */}
+      {/* PRIORITIES  */}
       <Popover open={isOpenedOptions} onOpenChange={setIsOpenedOptions}>
         <PopoverTrigger asChild>
           <button
@@ -39,6 +39,11 @@ export function TicketCardBody({ priority }: Props) {
             title="Priority"
             onClick={(e) => {
               e.stopPropagation();
+            }}
+            onKeyDown={(e) => {
+              if (e.key === KEYBOARD.ENTER) {
+                e.stopPropagation();
+              }
             }}
             className="ring ring-white flex justify-center items-center p-2 size-7 cursor-pointer hover:opacity-70 rounded-sm"
           >
@@ -56,7 +61,16 @@ export function TicketCardBody({ priority }: Props) {
           <div className="flex justify-between items-center mb-4">
             <p className="text-xl font-medium">Priority</p>
             <button
-              onClick={() => setIsOpenedOptions(false)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsOpenedOptions(false);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === KEYBOARD.ENTER) {
+                  e.stopPropagation();
+                  setIsOpenedOptions(false);
+                }
+              }}
               className="cursor-pointer hover:opacity-80"
               title="Close list status"
             >
@@ -73,12 +87,19 @@ export function TicketCardBody({ priority }: Props) {
                 key={priority.value}
                 className=" p-1.5 w-full"
                 classNameChildren=" flex items-center justify-between gap-1  rounded-sm "
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   handleSelectPriority(priority);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === KEYBOARD.ENTER) {
+                    e.stopPropagation();
+                    handleSelectPriority(priority);
+                  }
                 }}
               >
                 <div className="flex gap-2">
-                  <p className="text-lg">{priority.icon}</p>
+                  {priority.icon}
                   <p className="text-lg">{priority.label}</p>
                 </div>
                 {selectedPriority.value === priority.value && (
@@ -98,6 +119,11 @@ export function TicketCardBody({ priority }: Props) {
             title="Assign"
             onClick={(e) => {
               e.stopPropagation();
+            }}
+            onKeyDown={(e) => {
+              if (e.key === KEYBOARD.ENTER) {
+                e.stopPropagation();
+              }
             }}
             className="hover:ring hover:ring-white   rounded-sm size-7   "
             classNameChildren=" flex justify-center items-center  cursor-pointer hover:opacity-70 rounded-sm"
@@ -122,7 +148,16 @@ export function TicketCardBody({ priority }: Props) {
           <div className="flex justify-between items-center mb-4">
             <p className="text-xl font-medium">Assign</p>
             <IconButton
-              onClick={() => setIsOpenedAssign(false)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsOpenedAssign(false);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === KEYBOARD.ENTER) {
+                  e.stopPropagation();
+                  setIsOpenedAssign(false);
+                }
+              }}
               className="cursor-pointer hover:opacity-80"
               title="Close assign"
               aria-label="Close assign"
@@ -140,8 +175,15 @@ export function TicketCardBody({ priority }: Props) {
                 key={user.id}
                 className=" p-1.5 w-full "
                 classNameChildren="flex items-center justify-between gap-1"
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   setSelectedUser(user);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === KEYBOARD.ENTER) {
+                    e.stopPropagation();
+                    setSelectedUser(user);
+                  }
                 }}
               >
                 <div className="flex gap-4 items-center">

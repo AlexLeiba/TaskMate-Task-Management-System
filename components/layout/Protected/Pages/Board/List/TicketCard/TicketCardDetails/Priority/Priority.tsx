@@ -21,7 +21,7 @@ export function Priority({ data }: Props) {
   }
   if (!data) return null;
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full">
       <div className="flex gap-2 items-center">
         <Wifi />
         <p className="text-xl font-medium">Priority</p>

@@ -1,0 +1,123 @@
+import { useState } from "react";
+import { ProgressBar } from "./ProgressBar";
+import { AddNewInput } from "../../../../../AddNewInput";
+import { Spacer } from "@/components/ui/spacer";
+import { CheckSquare } from "lucide-react";
+import { ChecklistCard } from "./ChecklistCard";
+import { Button } from "@/components/ui/button";
+
+const checklistData = [
+  {
+    id: "1",
+    title: "To do task1",
+    isCompleted: false,
+  },
+  {
+    id: "2",
+    title: "To do task2",
+    isCompleted: true,
+  },
+  {
+    id: "243",
+    title: "To do task2",
+    isCompleted: true,
+  },
+  {
+    id: "432",
+    title: "To do task2",
+    isCompleted: true,
+  },
+  {
+    id: "24dsds3",
+    title: "To do task2",
+    isCompleted: true,
+  },
+  {
+    id: "2dsd43",
+    title: "To do task2",
+    isCompleted: true,
+  },
+  {
+    id: "2asd43",
+    title: "To do task2",
+    isCompleted: true,
+  },
+  {
+    id: "24qwew3",
+    title: "To do task2",
+    isCompleted: true,
+  },
+];
+
+type Props = {
+  cardId: string;
+  listId: string | undefined;
+};
+export function Checklist({ cardId, listId }: Props) {
+  const [isOpenedTitleInput, setIsOpenedTitleInput] = useState(false);
+
+  function handleSelectChecklist(id: string) {
+    console.log("🚀 ~ handleSelectChecklist ~ id:", id);
+  }
+
+  function handleDeleteChecklist(id: string) {
+    console.log("🚀 ~ handleDeleteChecklist ~ id:", id);
+  }
+
+  function handleAddChecklist(value: { [inputName: string]: string }) {
+    console.log("🚀 ~ handleAddChecklist ~ value:", value);
+  }
+  return (
+    <div>
+      <div className="flex gap-2 items-center">
+        <CheckSquare />
+        <p className="text-xl font-medium">Checklist</p>
+      </div>
+
+      <Spacer size={4} />
+      <div className="overflow-y-auto h-64">
+        {checklistData.length === 0 ? (
+          <AddNewInput
+            handleSubmitValue={(v) => console.log(v)}
+            inputName="title"
+            isOpenedTitleInput={isOpenedTitleInput}
+            setIsOpenedTitleInput={setIsOpenedTitleInput}
+            classNameContainer="p-0 ml-8"
+          >
+            <Button className="w-27.5">Add an item</Button>
+          </AddNewInput>
+        ) : (
+          <>
+            <ProgressBar
+              percentage={Math.round(
+                (checklistData?.filter((item) => item.isCompleted).length /
+                  checklistData.length) *
+                  100
+              )}
+            />
+            <Spacer size={4} />
+            <div className="flex flex-col gap-3">
+              {checklistData.map((item) => (
+                <ChecklistCard
+                  data={item}
+                  key={item.id}
+                  handleDeleteChecklist={() => handleDeleteChecklist(item.id)}
+                  handleSelectChecklist={() => handleSelectChecklist(item.id)}
+                />
+              ))}
+              <AddNewInput
+                handleSubmitValue={(v) => handleAddChecklist(v)}
+                inputName="title"
+                isOpenedTitleInput={isOpenedTitleInput}
+                setIsOpenedTitleInput={setIsOpenedTitleInput}
+                classNameContainer="p-0 ml-8"
+              >
+                <Button className="w-27.5">Add an item</Button>
+              </AddNewInput>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}

@@ -139,6 +139,12 @@ export type CardDetailsType = {
   activity?: ActivityType[];
 };
 
+export type ChecklistType = {
+  id: string;
+  title: string;
+  isCompleted: boolean;
+};
+
 export function isImageMimeType(type: string): type is ImageMimeType {
   return IMAGES_MIME_TYPES.includes(type as ImageMimeType);
 }

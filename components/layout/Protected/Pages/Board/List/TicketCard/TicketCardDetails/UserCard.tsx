@@ -2,6 +2,7 @@ import { ReporterType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import Image from "next/image";
+import { ComponentProps } from "react";
 
 const cardVariants = cva("", {
   variants: {
@@ -41,13 +42,19 @@ const emailVariants = cva("text-gray-400", {
   },
 });
 
-type Props = VariantProps<typeof cardVariants> & {
-  data: ReporterType | undefined;
-};
-export function UserCard({ data, size }: Props) {
+type Props = VariantProps<typeof cardVariants> &
+  ComponentProps<"div"> & {
+    data: ReporterType | undefined;
+  };
+export function UserCard({ data, size, className }: Props) {
   if (!data) return null;
   return (
-    <div className="flex gap-4 items-center overflow-hidden">
+    <div
+      className={cn(
+        "flex gap-4 items-center overflow-hidden text-left",
+        className
+      )}
+    >
       {data.avatar && (
         <div className="rounded-full overflow-hidden">
           <Image

@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { CommentsType } from "@/lib/types";
-
 import { IconButton } from "@/components/ui/iconButton";
 import { MessageCircle, Plus } from "lucide-react";
 import {
@@ -13,7 +12,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-
 import { AddNewInput } from "../../../../../AddNewInput";
 import { CommentCard } from "./CommentCard";
 import { Spacer } from "@/components/ui/spacer";
@@ -58,7 +56,7 @@ export function Comments({ data }: Props) {
       <Spacer size={4} />
 
       {/* SCROLLABLE COMMENTS SECTION */}
-      <div className="flex flex-col  overflow-y-auto h-75 ">
+      <div className="flex flex-col  overflow-y-auto h-64 ">
         <AddNewInput
           buttonDirection="column"
           className="py-0"

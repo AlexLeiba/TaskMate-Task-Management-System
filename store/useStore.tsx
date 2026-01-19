@@ -15,6 +15,12 @@ type StoreType = {
     isOpen: boolean;
     id: string;
   }) => void;
+
+  selectedTab: "checklist" | "comments" | "activities" | "attachments";
+
+  setSelectTab: (
+    value: "checklist" | "comments" | "activities" | "attachments"
+  ) => void;
 };
 export const useStore = create<StoreType>((set) => ({
   openTitleInput: { id: "", isOpen: false },
@@ -24,4 +30,7 @@ export const useStore = create<StoreType>((set) => ({
   openNewCardInput: { isOpen: false, id: "" },
   setOpenNewCardInput: ({ isOpen, id }: { isOpen: boolean; id: string }) =>
     set({ openNewCardInput: { isOpen, id } }),
+
+  selectedTab: "comments",
+  setSelectTab: (value) => set({ selectedTab: value }),
 }));

@@ -60,7 +60,7 @@ export function Description({ data }: Props) {
       </div>
       <Spacer size={2} />
       {isQuillVisible ? (
-        <div className="h-[283.54px]">
+        <div className="h-[223.67px]">
           <ReactQuill theme="snow" value={value} onChange={setValue} />
         </div>
       ) : (

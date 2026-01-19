@@ -122,12 +122,6 @@ export const CARD_PRIORITIES = [
 ] as const;
 export const FAKE_USERS = [
   {
-    id: "4",
-    name: "No assignee",
-    avatar: "",
-    email: "",
-  },
-  {
     id: "1",
     name: "Alice Johnson",
     avatar: "https://picsum.photos/id/1005/200/200",
@@ -174,4 +168,23 @@ export const IMAGES_MIME_TYPES = [
   "image/gif",
   "image/webp",
   "image/svg+xml",
+] as const;
+
+export const TAB_ELEMENTS = [
+  {
+    label: "Comments",
+    value: "comments",
+  },
+  {
+    label: "Attachments",
+    value: "attachments",
+  },
+  {
+    label: "Activities",
+    value: "activities",
+  },
+  {
+    label: "Checklist",
+    value: "checklist",
+  },
 ] as const;

@@ -15,6 +15,8 @@ import { Priority } from "./Priority/Priority";
 import { Actions } from "./Actions";
 import { DateTime } from "./DateTime";
 import { InteractiveFeaturesTabs } from "./InteractiveFeaturesTabs/InteractiveFeaturesTabs";
+import { DueDate } from "./DueDate/DueDate";
+import { ChecklistList } from "./ChecklistList";
 
 type Props = {
   setIsCardDetailsOpened: Dispatch<SetStateAction<boolean>>;
@@ -30,7 +32,6 @@ export function TicketCardDetails({
   listId,
   listTitle,
 }: Props) {
-  console.log("🚀 ~ TicketCardDetails ~ cardId:", cardId, listId, listTitle);
   // TODO, fetch card details when open it
   const now = new Date("2023-01-01T00:00:00").getTime();
   const cardDetails: CardDetailsType = {
@@ -185,9 +186,10 @@ export function TicketCardDetails({
       },
     ],
   };
+
   return (
     <Dialog open={isCardDetailsOpened} onOpenChange={setIsCardDetailsOpened}>
-      <DialogContent className="md:min-w-[80%] md:max-h-[90%] md:min-h-[90%] lg:min-h-[90%]  lg:max-h-[80%] lg:min-w-[80%] sm:min-w-full sm:min-h-full  flex flex-col overflow-y-auto h-full">
+      <DialogContent className="md:min-w-[80%] md:max-h-200 md:min-h-100 lg:min-h-125  lg:max-h-200 lg:min-w-[80%] sm:min-w-full sm:min-h-full  flex flex-col overflow-y-auto h-full">
         <DialogHeader>
           <DialogTitle className="text-2xl">{cardDetails.title}</DialogTitle>
           <div className="flex gap-2">
@@ -200,25 +202,34 @@ export function TicketCardDetails({
         {/* CARD DETAILS CONTENT GRID */}
         <div className=" grid md:grid-cols-[2fr_1fr] gap-8 ">
           {/* 1COL */}
-          <div className="flex flex-col gap-8 ">
+          <div className="flex flex-col gap-6 ">
             <Description data={cardDetails} />
             <InteractiveFeaturesTabs data={cardDetails} />
           </div>
 
           {/* 2COL */}
-          <div className="flex flex-col gap-8">
-            <Reporter data={cardDetails.reporter} />
-            <AssignTo data={cardDetails.assignedTo} />
-            <Priority data={cardDetails.priority} />
+          <div className="flex flex-col gap-6">
+            <div className="flex items-end justify-between w-full ">
+              <Reporter data={cardDetails.reporter} />
+              <DateTime
+                createdAt={cardDetails.createdAt}
+                updatedAt={cardDetails.updatedAt}
+              />
+            </div>
+            <div className="flex items-center gap-2 w-full ">
+              <AssignTo data={cardDetails.assignedTo} />
+              <Priority data={cardDetails.priority} />
+            </div>
             <Actions
               cardId={cardDetails.id}
               listId={cardDetails.listId}
               cardTitle={cardDetails.title}
             />
 
-            <DateTime
-              createdAt={cardDetails.createdAt}
-              updatedAt={cardDetails.updatedAt}
+            <DueDate />
+            <ChecklistList
+              cardId={cardDetails.id}
+              listId={cardDetails.listId}
             />
           </div>
         </div>

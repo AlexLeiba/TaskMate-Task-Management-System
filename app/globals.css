@@ -180,9 +180,9 @@
 /* QUILL EDITOR and HTML text styles */
 
 .quill {
-  background-color: var(--color-gray-800) !important;
-  max-height: 240.84px !important;
-  height: 240.84px;
+  /* background-color: var(--color-gray-800) !important; */
+  max-height: 180.84px !important;
+  height: 180.84px;
 }
 .quill .ql-container p,
 .html-content p {

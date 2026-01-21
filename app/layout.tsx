@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { TanstackQueryProvider } from "@/lib/provider";
 
 // for non layouts shifts font loading
 // fonts load once, applied to the entire app
@@ -32,7 +33,7 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
         >
-          {children}
+          <TanstackQueryProvider>{children}</TanstackQueryProvider>
         </body>
       </html>
     </ClerkProvider>

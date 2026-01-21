@@ -22,6 +22,7 @@ import { NewBoardImagePicker } from "./NewBoardImagePicker";
 export function CreateNewBoardCard() {
   const [isNewBoardDialogOpen, setIsNewBoardDialogOpen] = useState(false);
   // TODO add api and UI for create card modal
+  // API with input board title and url image
   return (
     <>
       <IconButton
@@ -29,7 +30,7 @@ export function CreateNewBoardCard() {
         onClick={() => setIsNewBoardDialogOpen(true)}
         title="Create new board"
         aria-label="Create new board"
-        className="relative group   rounded-md p-2 h-28  overflow-hidden  hover:bg-gray-500  bg-gray-200 hover:text-white"
+        className="relative group   rounded-md p-2 h-28  overflow-hidden text-black  hover:bg-gray-500  bg-gray-200 hover:text-white"
       >
         <p className="text-xl">Create new board</p>
 

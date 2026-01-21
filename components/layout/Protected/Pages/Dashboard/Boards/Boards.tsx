@@ -17,6 +17,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { BoardType } from "@/lib/types";
 import { useRouter } from "next/navigation";
+import { BoardCardSkeleton } from "./BoardCardSkeleton";
 
 type Props = {
   data: BoardType[];
@@ -35,6 +36,8 @@ export function Boards({ data: boardData }: Props) {
   function handleDeleteBoard(boardId: string) {
     console.log("🚀 ~ handleDeleteBoard ~ boardId:", boardId);
   }
+
+  if (!boardData) return <BoardCardSkeleton />;
   return (
     <div>
       <div className="flex gap-2 items-center">
@@ -47,6 +50,7 @@ export function Boards({ data: boardData }: Props) {
         <CreateNewBoardCard />
 
         {/*CREATED BOARDS */}
+        {/* MODAL DELETE BOARD */}
         {boardData?.map((board) => (
           <div key={board.id}>
             <BoardCard
@@ -55,7 +59,6 @@ export function Boards({ data: boardData }: Props) {
               handleSelectBoard={() => handleSelectBoard(board.id)}
             />
 
-            {/* MODAL DELETE BOARD */}
             <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
               <DialogContent>
                 <DialogHeader>
@@ -87,6 +90,7 @@ export function Boards({ data: boardData }: Props) {
             </Dialog>
           </div>
         ))}
+        {/* <BoardCardSkeleton /> */}
       </div>
     </div>
   );

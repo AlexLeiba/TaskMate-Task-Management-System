@@ -10,7 +10,7 @@ import { Spacer } from "@/components/ui/spacer";
 import { Description } from "./Description/Description";
 import { Reporter } from "./Reporter/Reporter";
 import { CardDetailsType } from "@/lib/types";
-import { AssignTo } from "./AssignTo";
+import { AssignTo } from "./AssignTo/AssignTo";
 import { Priority } from "./Priority/Priority";
 import { Actions } from "./Actions";
 import { DateTime } from "./DateTime";
@@ -24,6 +24,7 @@ type Props = {
   cardId: string;
   listId: string | undefined;
   listTitle: string;
+  cardTitle: string;
 };
 export function TicketCardDetails({
   setIsCardDetailsOpened,
@@ -31,6 +32,7 @@ export function TicketCardDetails({
   cardId,
   listId,
   listTitle,
+  cardTitle,
 }: Props) {
   // TODO, fetch card details when open it
   const now = new Date("2023-01-01T00:00:00").getTime();
@@ -44,23 +46,13 @@ export function TicketCardDetails({
       name: "Sample User",
       avatar: `https://picsum.photos/300/300`,
     },
-    assignedTo: [
-      {
-        email: "sample@example1.com",
-        name: "Sample User",
-        avatar: `https://picsum.photos/300/300`,
-      },
-      {
-        email: "sample@example2.com",
-        name: "Sample User 2",
-        avatar: `https://picsum.photos/300/300`,
-      },
-      {
-        email: "sample@example3.com",
-        name: "Sample User 2",
-        avatar: `https://picsum.photos/300/300`,
-      },
-    ],
+    assignedTo: {
+      //selected user from list of members
+      email: "sample@example1.com",
+      name: "Sample User",
+      avatar: `https://picsum.photos/300/300`,
+    },
+
     listName: "List name",
     createdAt: now,
     updatedAt: now,
@@ -103,6 +95,15 @@ export function TicketCardDetails({
     ],
     attachments: [
       {
+        createdAt: now,
+
+        author: {
+          email: "sample@example.com",
+          name: "Sample User",
+          avatar: `https://picsum.photos/300/300`,
+          id: "1232",
+        },
+
         files: [
           {
             type: "image/png",
@@ -123,15 +124,8 @@ export function TicketCardDetails({
             url: "https://picsum.photos/300/300",
           },
         ],
-        createdAt: now,
-
-        author: {
-          email: "sample@example.com",
-          name: "Sample User",
-          avatar: `https://picsum.photos/300/300`,
-          id: "1232",
-        },
       },
+
       {
         files: [
           {
@@ -185,22 +179,43 @@ export function TicketCardDetails({
         },
       },
     ],
+    checklist: [
+      {
+        id: "1",
+        title: "To do task1",
+        isCompleted: true,
+      },
+      {
+        id: "12",
+        title: "To do task1",
+        isCompleted: true,
+      },
+      {
+        id: "12",
+        title: "To do task1",
+        isCompleted: false,
+      },
+    ],
+    dueDate: {
+      date: now,
+      time: now,
+    },
   };
 
   return (
     <Dialog open={isCardDetailsOpened} onOpenChange={setIsCardDetailsOpened}>
       <DialogContent className="md:min-w-[80%] md:max-h-200 md:min-h-100 lg:min-h-125  lg:max-h-200 lg:min-w-[80%] sm:min-w-full sm:min-h-full  flex flex-col overflow-y-auto h-full">
         <DialogHeader>
-          <DialogTitle className="text-2xl">{cardDetails.title}</DialogTitle>
+          <DialogTitle className="text-2xl">{cardTitle}</DialogTitle>
           <div className="flex gap-2">
             <MapPin />
             <span className="opacity-70">From list - </span>{" "}
-            <span className="underline">{cardDetails.listName}</span>
+            <span className="underline">{listTitle}</span>
           </div>
         </DialogHeader>
         <Spacer size={2} />
         {/* CARD DETAILS CONTENT GRID */}
-        <div className=" grid md:grid-cols-[2fr_1fr] gap-8 ">
+        <div className=" grid lg:grid-cols-[2fr_1fr] gap-8 ">
           {/* 1COL */}
           <div className="flex flex-col gap-6 ">
             <Description data={cardDetails} />
@@ -211,26 +226,30 @@ export function TicketCardDetails({
           <div className="flex flex-col gap-6">
             <div className="flex items-end justify-between w-full ">
               <Reporter data={cardDetails.reporter} />
-              <DateTime
-                createdAt={cardDetails.createdAt}
-                updatedAt={cardDetails.updatedAt}
-              />
             </div>
             <div className="flex items-center gap-2 w-full ">
               <AssignTo data={cardDetails.assignedTo} />
               <Priority data={cardDetails.priority} />
             </div>
-            <Actions
-              cardId={cardDetails.id}
-              listId={cardDetails.listId}
-              cardTitle={cardDetails.title}
-            />
-
-            <DueDate />
             <ChecklistList
               cardId={cardDetails.id}
               listId={cardDetails.listId}
+              data={cardDetails.checklist}
             />
+            <DueDate data={cardDetails.dueDate} />
+            <div className="flex flex-col justify-between h-full ">
+              <Actions
+                cardId={cardDetails.id}
+                listId={cardDetails.listId}
+                cardTitle={cardDetails.title}
+              />
+              <div className="flex justify-end my-4">
+                <DateTime
+                  createdAt={cardDetails.createdAt}
+                  updatedAt={cardDetails.updatedAt}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </DialogContent>

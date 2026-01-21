@@ -23,6 +23,7 @@ import { useAuth, useOrganizationList, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
+import { SidebarSkeleton } from "./SidebarSkeleton";
 
 export function Sidebar() {
   const router = useRouter();
@@ -84,8 +85,9 @@ export function Sidebar() {
               Organizations
             </SidebarGroupLabel>
             <Button
-              aria-label="New organization"
-              title="New organization"
+              variant={"secondary"}
+              aria-label="Add New organization"
+              title="Add New organization"
               className="rounded-full size-8"
               onClick={handleAddNewOrganization}
             >
@@ -94,71 +96,79 @@ export function Sidebar() {
           </div>
           <SidebarGroupContent>
             <SidebarMenu>
-              {organizationsData?.map((item) => (
-                <SidebarMenuItem key={item.id}>
-                  <Accordion
-                    type="single"
-                    collapsible
-                    defaultValue={selectedOrgId === item.id ? item.name : ""}
-                  >
-                    <AccordionItem value={item.name}>
-                      <AccordionTrigger
-                        className={cn(
-                          selectedOrgId === item.id ? "bg-gray-800" : "bg-none",
-                          "p-4 hover:bg-gray-900 cursor-pointer flex justify-between items-center",
-                          "transition-all duration-200 ease-in-out"
-                        )}
-                      >
-                        <div className="flex gap-2 items-center">
-                          {item.image && (
-                            <Image
-                              src={item.image}
-                              alt={item.name}
-                              width={30}
-                              height={30}
-                            />
+              {organizationsData && organizationsData.length > 0 ? (
+                organizationsData?.map((item) => (
+                  <SidebarMenuItem key={item.id}>
+                    <Accordion
+                      type="single"
+                      collapsible
+                      defaultValue={selectedOrgId === item.id ? item.name : ""}
+                    >
+                      <AccordionItem value={item.name}>
+                        <AccordionTrigger
+                          title={item.name}
+                          aria-label={item.name}
+                          className={cn(
+                            selectedOrgId === item.id
+                              ? "bg-gray-800"
+                              : "bg-none",
+                            "p-4 hover:bg-gray-900 cursor-pointer flex justify-between items-center",
+                            "transition-all duration-200 ease-in-out",
                           )}
-                          {item.name}
-                        </div>
-                      </AccordionTrigger>
-                      <AccordionContent className=" pt-2 flex flex-col gap-1 ">
-                        {item.data.map((data) => {
-                          const currentPathname = data?.pathname
-                            .split("/")
-                            .at(-1);
-                          return (
-                            <Button
-                              title={data?.title}
-                              aria-label={data?.title}
-                              onClick={() =>
-                                handleSelectOrganization(
-                                  item.id,
-                                  data?.pathname
-                                )
-                              }
-                              className={cn(
-                                selectedSidebarPage === currentPathname &&
-                                  selectedOrgId === item.id
-                                  ? "bg-gray-800"
-                                  : "",
-                                "w-full justify-start"
-                              )}
-                              size={"lg"}
-                              variant={"ghost"}
-                              key={data?.title}
-                            >
-                              <div className="flex gap-2 items-center">
-                                {data?.icon}
-                                {data?.title}
-                              </div>
-                            </Button>
-                          );
-                        })}
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                </SidebarMenuItem>
-              ))}
+                        >
+                          <div className="flex gap-2 items-center">
+                            {item.image && (
+                              <Image
+                                src={item.image}
+                                alt={item.name}
+                                width={30}
+                                height={30}
+                              />
+                            )}
+                            {item.name}
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent className=" pt-2 flex flex-col gap-1 ">
+                          {item.data.map((data) => {
+                            const currentPathname = data?.pathname
+                              .split("/")
+                              .at(-1);
+                            return (
+                              <Button
+                                title={`${item.name} - ${data?.title}`}
+                                aria-label={`${item.name} - ${data?.title}`}
+                                onClick={() =>
+                                  handleSelectOrganization(
+                                    item.id,
+                                    data?.pathname,
+                                  )
+                                }
+                                className={cn(
+                                  selectedSidebarPage === currentPathname &&
+                                    selectedOrgId === item.id
+                                    ? "bg-gray-800"
+                                    : "",
+                                  "w-full justify-start",
+                                )}
+                                size={"lg"}
+                                variant={"ghost"}
+                                key={data?.title}
+                              >
+                                <div className="flex gap-2 items-center">
+                                  {data?.icon}
+                                  {data?.title}
+                                </div>
+                              </Button>
+                            );
+                          })}
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  </SidebarMenuItem>
+                ))
+              ) : (
+                <SidebarSkeleton />
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

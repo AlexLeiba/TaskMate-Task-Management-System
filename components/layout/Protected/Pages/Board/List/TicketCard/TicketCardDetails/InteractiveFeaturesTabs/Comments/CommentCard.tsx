@@ -1,5 +1,5 @@
 import React from "react";
-import { UserCard } from "../../UserCard";
+import { UserCard } from "../../UserCard/UserCard";
 import { IconButton } from "@/components/ui/iconButton";
 import { X } from "lucide-react";
 import { Separator } from "@/components/ui/separator";

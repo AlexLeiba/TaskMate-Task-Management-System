@@ -1,15 +1,20 @@
 "use client";
+import { useState } from "react";
 import { IconButton } from "@/components/ui/iconButton";
 import { Spacer } from "@/components/ui/spacer";
 import { Check, List, SquarePen, X } from "lucide-react";
 import dynamic from "next/dynamic";
-import React, { useState } from "react";
 
 import "react-quill-new/dist/quill.snow.css";
 import { InitialDescriptionState } from "./InitialDescriptionState";
 import { CardDetailsType } from "@/lib/types";
 import DOMPurify from "dompurify";
-const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
+import { DescriptionSkeleton } from "./DescriptionSkeleton";
+
+const ReactQuill = dynamic(() => import("react-quill-new"), {
+  ssr: false,
+  loading: () => <InitialDescriptionState />,
+});
 
 type Props = {
   data: CardDetailsType;
@@ -63,7 +68,7 @@ export function Description({ data }: Props) {
         <div className="h-[223.67px]">
           <ReactQuill theme="snow" value={value} onChange={setValue} />
         </div>
-      ) : (
+      ) : data ? (
         <InitialDescriptionState
           onClick={() => setIsQuillVisible(true)}
           classNameChildren="flex flex-col justify-start h-full wrap-break-word "
@@ -74,7 +79,7 @@ export function Description({ data }: Props) {
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(data.description).replace(
                   /&nbsp;/g,
-                  " "
+                  " ",
                 ), //Prevent XSS attacks.
               }}
             />
@@ -82,6 +87,8 @@ export function Description({ data }: Props) {
             <p className="text-gray-300">No description</p>
           )}
         </InitialDescriptionState>
+      ) : (
+        <DescriptionSkeleton />
       )}
     </div>
   );

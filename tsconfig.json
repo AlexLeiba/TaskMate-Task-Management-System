@@ -1,34 +1,50 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "react-jsx",
+    // These control how TypeScript checks and understands your code.
+
+    "target": "ES2017", //ts will compile JS in this ES2017 version of JS-Good balance between modern features and compatibility: browser and node can handle this version
+
+    "lib": ["dom", "dom.iterable", "esnext"], //defines built in api TS knows about (dom - window,document)(dom.iterable - NodeList) (esnext - Latest JS features)
+
+    "allowJs": true, //Allows .js files in the project.
+
+    "skipLibCheck": true, //Skips type checking for node_modules.
+
+    "strict": true, //Enables all strict type checks:Strongest type safety (recommended)
+
+    "noEmit": true, //typeScript does not output JS files.. Next.js / bundlers handle compilation
+    // TypeScript is used only for type checking
+
+    "esModuleInterop": true, //Improves compatibility between:CommonJS (require) ES modules (import)
+
+    "module": "esnext", //Uses modern ES module syntax.
+
+    "moduleResolution": "bundler", //How modules are resolved. Optimized for modern bundlers (Next.js, Vite)
+
+    "resolveJsonModule": true, //Allows importing JSON files:
+
+    "isolatedModules": true, //Ensures every file can be compiled independently.
+
+    "jsx": "react-jsx", //Uses the new React JSX transform. No need for import React from "react" Faster and cleaner
+
     "incremental": true,
+
     "plugins": [
       {
-        "name": "next"
+        "name": "next" ////Enables Next.js-specific TypeScript features. // App Router typings Route type safety Next-specific validations
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"] //path alias for cleaner imports
     }
   },
   "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    "next-env.d.ts", //global types next.js
+    "**/*.ts", //all ts files
+    "**/*.tsx", //all tsx files
+    ".next/types/**/*.ts", //generated next types
+    ".next/dev/types/**/*.ts", //dev only next types
+    "**/*.mts" //ES modules ts files
   ],
   "exclude": ["node_modules"]
 }

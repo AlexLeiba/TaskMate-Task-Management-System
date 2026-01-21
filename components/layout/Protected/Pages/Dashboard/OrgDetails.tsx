@@ -3,6 +3,7 @@
 import { useOrganization } from "@clerk/nextjs";
 import { CreditCard } from "lucide-react";
 import Image from "next/image";
+import { OrganizationCardSkeleton } from "./Boards/OrganizationCardSkeleton";
 
 export function OrgDetails() {
   const { organization } = useOrganization();
@@ -10,6 +11,8 @@ export function OrgDetails() {
     name: organization?.name,
     imageUrl: organization?.imageUrl,
   };
+
+  if (!organization) return <OrganizationCardSkeleton />;
   return (
     <div className="flex items-center gap-2">
       <div className="p-2 rounded-md bg-gray-800">

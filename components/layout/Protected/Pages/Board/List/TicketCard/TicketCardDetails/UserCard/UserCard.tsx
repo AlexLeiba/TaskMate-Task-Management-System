@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import Image from "next/image";
 import { ComponentProps } from "react";
+import { UserCardSkeleton } from "./UserCardSkeleton";
 
 const cardVariants = cva("", {
   variants: {
@@ -47,12 +48,12 @@ type Props = VariantProps<typeof cardVariants> &
     data: ReporterType | undefined;
   };
 export function UserCard({ data, size, className }: Props) {
-  if (!data) return null;
+  if (!data) return <UserCardSkeleton size={size} />;
   return (
     <div
       className={cn(
         "flex gap-4 items-center overflow-hidden text-left",
-        className
+        className,
       )}
     >
       {data.avatar && (

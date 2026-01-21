@@ -1,7 +1,7 @@
 "use client";
 import { CardTicketType } from "@/lib/types";
 import { TicketCardHeader } from "./TicketCardHeader";
-import { TicketCardBody } from "./TicketCardBody";
+import { TicketCardBody } from "./TicketCardBody/TicketCardBody";
 import { useState } from "react";
 import { TicketCardDetails } from "./TicketCardDetails/TicketCardDetails";
 import { KEYBOARD } from "@/lib/consts";
@@ -44,11 +44,12 @@ export function TicketCard({ data }: Prop) {
         <TicketCardHeader title={data.title} cardId={data.id.toString()} />
 
         {/* TICKET CARD BODY */}
-        <TicketCardBody priority={data.priority} />
+        <TicketCardBody priority={data.priority} assignedTo={data.assignedTo} />
       </div>
 
       {/* TICKET CARD DETAILS MODAL*/}
       <TicketCardDetails
+        cardTitle={data.title}
         cardId={data.id.toString()}
         listId={data.listId}
         listTitle={data.listName}

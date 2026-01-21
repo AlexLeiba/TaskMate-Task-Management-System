@@ -5,8 +5,10 @@ import { Spacer } from "@/components/ui/spacer";
 import { CheckSquare } from "lucide-react";
 import { ChecklistCard } from "./ChecklistCard";
 import { Button } from "@/components/ui/button";
+import { ChecklistSkeleton } from "./ChecklistSkeleton";
+import { ChecklistType } from "@/lib/types";
 
-const checklistData = [
+const checklistData: ChecklistType[] = [
   {
     id: "1",
     title: "To do task1",
@@ -67,6 +69,8 @@ export function Checklist({ cardId, listId }: Props) {
   function handleAddChecklist(value: { [inputName: string]: string }) {
     console.log("🚀 ~ handleAddChecklist ~ value:", value);
   }
+
+  if (!checklistData) return <ChecklistSkeleton />;
   return (
     <div>
       <div className="flex gap-2 items-center">
@@ -92,7 +96,7 @@ export function Checklist({ cardId, listId }: Props) {
               percentage={Math.round(
                 (checklistData?.filter((item) => item.isCompleted).length /
                   checklistData.length) *
-                  100
+                  100,
               )}
             />
             <Spacer size={4} />

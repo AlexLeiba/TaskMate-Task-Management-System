@@ -2,11 +2,11 @@ import { FILES_MIME_TYPES, IMAGES_MIME_TYPES } from "./consts";
 
 // REUSABLE TYPES
 export type ActivityActionType =
-  | "Created"
-  | "Deleted"
-  | "Updated"
-  | "Added"
-  | "Removed";
+  | "created"
+  | "deleted"
+  | "updated"
+  | "added"
+  | "removed";
 
 export type PrioritiesType =
   | "low"
@@ -58,10 +58,11 @@ export type BoardType = {
   id: string;
   title: string;
   imageUrl: string;
+  orgId: string;
 };
 
 export type CardTicketType = {
-  id: number;
+  id: string;
   title: string;
   priority: PrioritiesType;
   assignedTo: AssignedToType;
@@ -78,7 +79,8 @@ export type PriorityType = {
 };
 
 export type ListDataType = {
-  id: number;
+  id: string;
+  orgId: string;
   title: string;
   status: ListStatusType;
   cards: CardTicketType[];
@@ -129,7 +131,7 @@ export type CardDetailsType = {
   description: string;
   priority: PrioritiesType;
   reporter?: ReporterType;
-  assignedTo?: AssignedToType[];
+  assignedTo?: AssignedToType;
 
   createdAt?: number;
   updatedAt?: number;
@@ -137,12 +139,19 @@ export type CardDetailsType = {
   attachments?: AttachmentsType[];
   comments?: CommentsType[];
   activity?: ActivityType[];
+  checklist?: ChecklistType[];
+  dueDate?: DueDateType;
 };
 
 export type ChecklistType = {
   id: string;
   title: string;
   isCompleted: boolean;
+};
+
+export type DueDateType = {
+  date: number;
+  time: number;
 };
 
 export function isImageMimeType(type: string): type is ImageMimeType {

@@ -2,18 +2,20 @@
 
 import { Logo } from "../../Logo/Logo";
 import { Button } from "@/components/ui/button";
-
 import dynamic from "next/dynamic";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { UserProfileSkeleton } from "./UserProfileSkeleton";
+import { OrganizationSwitchSkeleton } from "./OrganizationSwitchSkeleton";
+
 const OrganizationSwitcher = dynamic(
   () => import("@clerk/nextjs").then((m) => m.OrganizationSwitcher),
-  { ssr: false }
+  { ssr: false, loading: () => <OrganizationSwitchSkeleton /> },
 );
 
 const UserButton = dynamic(
   () => import("@clerk/nextjs").then((m) => m.UserButton),
-  { ssr: false }
+  { ssr: false, loading: () => <UserProfileSkeleton /> },
 );
 
 type Props = {
@@ -21,11 +23,11 @@ type Props = {
 };
 export function HeaderDashboard({ type = "dashboard" }: Props) {
   return (
-    <header className="fixed top-0 left-0 right-0 dark:bg-gray-400 z-50  ">
+    <header className="fixed top-0 left-0 right-0 dark:bg-gray-900 z-50  ">
       <div
         className={cn(
           type === "dashboard" ? "max-w-7xl" : "max-w-400",
-          " py-2 mx-auto px-4"
+          " py-2 mx-auto px-4",
         )}
       >
         <div className="flex justify-between">
@@ -37,21 +39,42 @@ export function HeaderDashboard({ type = "dashboard" }: Props) {
           {/* <Links /> */}
           <div className="flex gap-2">
             <Button title="Create new board">Create</Button>
+
             <OrganizationSwitcher
               afterLeaveOrganizationUrl="/select-organization"
               afterCreateOrganizationUrl="/dashboard/:id"
               afterSelectOrganizationUrl={"/dashboard/:id"}
               appearance={{
+                variables: {
+                  colorBackground: "#0f172a", // dark background
+                  colorText: "#ffffff",
+                  colorInputBackground: "#020617",
+                  colorInputText: "#ffffff",
+                },
+
                 elements: {
-                  rootBox: {},
+                  organizationSwitcherTrigger: "!bg-slate-900 !text-white",
+                  organizationSwitcherPopoverCard: "!bg-slate-900 ",
+                  organizationSwitcherPopoverActionButton:
+                    "!text-white hover:opacity-70",
+                  organizationPreviewTextContainer: "text-white",
+                  organizationSwitcherButton: " text-white",
                 },
               }}
             />
 
             <UserButton
               appearance={{
+                variables: {
+                  colorBackground: "#0f172a", // dark background
+                  colorText: "#ffffff",
+                  colorInputBackground: "#020617",
+                  colorInputText: "#ffffff",
+                },
+
                 elements: {
-                  avatarBox: {},
+                  userButtonPopoverActionButton:
+                    "!bg-slate-900 !text-white hover:opacity-70",
                 },
               }}
             />

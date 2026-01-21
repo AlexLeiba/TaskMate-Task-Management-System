@@ -15,21 +15,25 @@ async function DashboardPage({
       title: "Boards",
       imageUrl: "https://picsum.photos/500/500",
       id: "1",
+      orgId: "1",
     },
     {
       title: "Activity",
       imageUrl: "https://picsum.photos/500/500",
       id: "2",
+      orgId: "1",
     },
     {
       title: "Members",
       imageUrl: "https://picsum.photos/500/500",
       id: "3",
+      orgId: "1",
     },
     {
       title: "Settings",
       imageUrl: "https://picsum.photos/500/500",
       id: "4",
+      orgId: "1",
     },
   ];
 

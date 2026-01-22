@@ -15,7 +15,7 @@ import { AssignToUserSkeleton } from "./AssignToUserSkeleton";
 import { useQuery } from "@tanstack/react-query";
 
 type Props = {
-  assignedTo: AssignedToType | null;
+  assignedTo: AssignedToType | undefined;
 };
 export function AssignTo({ assignedTo }: Props) {
   const [isOpenedAssign, setIsOpenedAssign] = useState(false);

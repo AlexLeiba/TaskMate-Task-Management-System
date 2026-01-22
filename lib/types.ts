@@ -65,7 +65,8 @@ export type CardTicketType = {
   id: string;
   title: string;
   priority: PrioritiesType;
-  assignedTo: AssignedToType;
+  assignedTo?: AssignedToType;
+  assignedToId?: string;
   listName: string;
   listId: string;
   createdAt: number;
@@ -80,6 +81,7 @@ export type PriorityType = {
 
 export type ListDataType = {
   id: string;
+  boardId: string;
   orgId: string;
   title: string;
   status: ListStatusType;
@@ -108,6 +110,7 @@ export type CommentsType = {
   createdAt: number;
   comment: string;
   author: UserType; //who commented
+  cardId: string;
 };
 
 export type FileType = ImageMimeType | FileMimeType;
@@ -119,7 +122,7 @@ export type AttachmentsType = {
     url: string;
     name?: string;
   }[];
-
+  cardId: string;
   createdAt: number;
   author: UserType; //who have added attach
 };
@@ -147,11 +150,14 @@ export type ChecklistType = {
   id: string;
   title: string;
   isCompleted: boolean;
+  cardId: string;
 };
 
 export type DueDateType = {
+  id: string;
   date: number;
   time: number;
+  cardId: string;
 };
 
 export function isImageMimeType(type: string): type is ImageMimeType {

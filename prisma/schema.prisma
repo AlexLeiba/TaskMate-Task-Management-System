@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../lib/generated/prisma"
+  output   = "../lib/generated/prisma"//generates Prisma client code/adter running npx prisma generate/ prisma creates a fully Typed database client based on the schema
 }
 
 datasource db {
@@ -17,5 +17,170 @@ model Board {
 id String @id @default(uuid())
 title String
 imageUrl String
+orgId String
+lists List[]//will end up if using includes query
+createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+enum StatusType {
+  todo
+  progress
+  review
+  done
+  backlog
+}
+model List { //fetch list based on board id
+id String @id @default(uuid())
+boardId String //take boardid from url when creating a list
+title String
+status StatusType @default(todo)
+cards Card[] //when create a card will end up here
+board Board @relation(fields: [boardId], references:[id])
+createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
+enum PriorityType {
+  low
+  medium
+  high
+  urgent
+  none
+}
+
+model User {
+  id String @id @default(uuid())
+  name String
+  email String
+  avatar String?
+
+  attachments Attachments[]
+  comments Comment[]
+  activitys Activity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reportedCards Card[] @relation("Reported")//inverse relation/ wont be included in req , unless using property include
+  assignedCards Card[] @relation("Assigned")//inverse relation/ wont be included in req , unless using property include
+}
+
+model Card {
+id String @id @default(uuid())
+title String
+priority PriorityType @default(none)
+assignedToId String? //
+listId String @unique //to reference in which list is located
+listName String
+reporterId String//who has created the card/is mandatory
+details CardDetails?
+
+createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+list List @relation(fields:[listId],references:[id])
+reporter User @relation("Reported",fields:[reporterId],references: [id])
+assignedTo User? @relation("Assigned", fields:[assignedToId],references: [id])
+}
+
+model CardDetails {
+  id String @id @default(uuid())
+  cardId String @unique
+  description String?
+  attachments Attachments[]
+  comments Comment[]
+  checklist Checklist[]
+  activities Activity[]
+  dueDate DueDate[]
+  
+
+  //adds priorities assigned ids
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  card Card @relation(fields:[cardId],references: [id])
+}
+
+
+
+model UploadedFile {
+  id String @id @default(uuid())
+  name String?
+  url String
+ type String
+ attachmentId String //to relate of which attachment it belongs
+
+ attachment Attachments @relation(fields:[attachmentId],references: [id])
+}
+
+// when create an attachment: set cardId / based on that id we will know which card belongs to the attach
+model Attachments {
+  id String @id @default(uuid())
+  cardId String
+  card CardDetails @relation(fields:[cardId],references: [id])//determine on which card was attached file
+  files UploadedFile[]//all uploaded files based on attach id
+
+  authorId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author User @relation(fields:[authorId],references: [id])
+}
+
+model Comment {
+  id String @id @default(uuid())
+  comment String
+  cardId String //if cardId from CardDetails matches with local cardId then it will end up in the table
+  authorId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author User @relation(fields:[authorId],references: [id])
+  cardDetails CardDetails @relation(fields:[cardId],references: [id])
+}
+
+enum ActivityType {
+  created
+  updated
+  deleted
+}
+
+model Activity {
+  id String @id @default(uuid())
+  activity String
+  cardId String
+  cardDetails CardDetails @relation(fields:[cardId],references: [id])
+  authorId String
+  author User @relation(fields:[authorId],references: [id])
+  boardName String
+  listName String
+  type ActivityType
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// register all activities to see who checked something
+model Checklist {
+  id String @id @default(uuid())
+  title String
+  isCompleted Boolean
+  cardId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cardDetails CardDetails @relation(fields:[cardId],references: [id])
+}
+
+model DueDate {
+  id String @id @default(uuid())
+  date String
+  time String //will store date in ISO string, is Timezone-safe, works across browsers,servers,DBs, parse format in localtime on using it
+  cardId String
+  cardDetails CardDetails @relation(fields:[cardId],references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

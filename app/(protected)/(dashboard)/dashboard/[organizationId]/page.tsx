@@ -1,6 +1,7 @@
 import { Boards } from "@/components/layout/Protected/Pages/Dashboard/Boards/Boards";
 import { OrgDetails } from "@/components/layout/Protected/Pages/Dashboard/OrgDetails";
 import { Separator } from "@/components/ui/separator";
+import { prisma } from "@/lib/prisma";
 import { BoardType } from "@/lib/types";
 import { auth } from "@clerk/nextjs/server";
 
@@ -39,6 +40,12 @@ async function DashboardPage({
 
   const orgId = (await params).organizationId;
   const {} = await auth();
+
+  // const board = await prisma.board.findMany({
+  //   where: {
+  //     orgId: orgId,
+  //   },
+  // });
 
   return (
     <div className="w-full">

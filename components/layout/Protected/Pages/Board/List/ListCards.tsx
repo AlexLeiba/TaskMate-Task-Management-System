@@ -6,6 +6,7 @@ import { AddNewListCard } from "./ListCard/AddNewListCard";
 const listData: ListDataType[] = [
   {
     orgId: "1",
+    boardId: "1",
     id: "1",
     title: "List 1",
     status: "todo", //selected status will go here
@@ -42,6 +43,7 @@ const listData: ListDataType[] = [
     ],
   },
   {
+    boardId: "1",
     orgId: "1",
     id: "b",
     title: "List 2",
@@ -92,6 +94,7 @@ const listData: ListDataType[] = [
     ],
   },
   {
+    boardId: "1",
     orgId: "1",
     id: "3",
     title: "List 2",
@@ -142,6 +145,7 @@ const listData: ListDataType[] = [
     ],
   },
   {
+    boardId: "1",
     orgId: "1",
     id: " 4",
     title: "List 2",

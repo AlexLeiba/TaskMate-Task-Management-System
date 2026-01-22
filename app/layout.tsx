@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TanstackQueryProvider } from "@/lib/provider";
+import { Toaster } from "react-hot-toast";
 
 // for non layouts shifts font loading
 // fonts load once, applied to the entire app
@@ -33,6 +34,33 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
         >
+          <Toaster
+            position="top-center"
+            reverseOrder={false}
+            gutter={8}
+            containerClassName=""
+            containerStyle={{}}
+            toasterId="default"
+            //           toastOptions={{
+            //
+            //             className: "",
+            //             duration: 5000,
+            //             removeDelay: 1000,
+            //             style: {
+            //               background: "#363636",
+            //               color: "#fff",
+            //             },
+            //
+            //
+            //             success: {
+            //               duration: 3000,
+            //               iconTheme: {
+            //                 primary: "green",
+            //                 secondary: "black",
+            //               },
+            //             },
+            //           }}
+          />
           <TanstackQueryProvider>{children}</TanstackQueryProvider>
         </body>
       </html>

@@ -9,6 +9,6 @@ export default defineConfig({
     path: "prisma/migrations", //path where migration files are stored
   },
   datasource: {
-    url: process.env["DATABASE_URL"], //points to env file
+    url: process.env["DATABASE_URL"], //points to env file of DB
   },
 });

@@ -2,7 +2,7 @@
 import { Spacer } from "@/components/ui/spacer";
 import { Grid } from "lucide-react";
 import { BoardCard } from "./BoardCard";
-import { CreateNewBoardCard } from "./CreateNewBoardCard";
+import { CreateNewBoardCard } from "./CreateNewBoard/CreateNewBoardCard";
 
 import {
   Dialog,
@@ -45,7 +45,7 @@ export function Boards({ data: boardData }: Props) {
         <p className="text-xl font-medium">Boards</p>
       </div>
       <Spacer size={4} />
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-2">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,220px))] gap-2">
         {/* CREATE NEW BOARD */}
         <CreateNewBoardCard />
 
@@ -56,7 +56,7 @@ export function Boards({ data: boardData }: Props) {
             <BoardCard
               data={board}
               handleModalDeleteBoard={handleOpenModalDeleteBoard}
-              handleSelectBoard={() => handleSelectBoard(board.id)}
+              handleSelectBoard={() => handleSelectBoard(board?.id)}
             />
 
             <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

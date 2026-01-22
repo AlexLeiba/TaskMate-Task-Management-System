@@ -160,6 +160,16 @@ export type DueDateType = {
   cardId: string;
 };
 
+export type UnsplashImagesType = {
+  id: string;
+  urls: {
+    small: string;
+    regular: string;
+    full: string;
+  };
+  title: string;
+};
+
 export function isImageMimeType(type: string): type is ImageMimeType {
   return IMAGES_MIME_TYPES.includes(type as ImageMimeType);
 }

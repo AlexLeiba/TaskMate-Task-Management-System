@@ -37,7 +37,7 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
+  },
 );
 
 function Button({
@@ -68,15 +68,15 @@ function Button({
     >
       {/* <div className="w-full"> */}
 
-      {/* <span
+      <span
         className={cn(
           "w-full",
           loading ? "opacity-0" : "opacity-100",
-          classNameChildren
+          classNameChildren,
         )}
-      > */}
-      {props.children}
-      {/* </span> */}
+      >
+        {props.children}
+      </span>
       <Loader className={loading ? "opacity-100" : "opacity-0"} />
 
       {/* </div> */}

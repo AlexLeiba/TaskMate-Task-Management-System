@@ -1,7 +1,7 @@
 import React from "react";
 import { DialogBoardCard } from "./DialogBoardCard";
 import { Input } from "@/components/ui/input";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getUnsplashImagesAction } from "@/app/actions/unsplash-images";
 import { DialogBoardCardSkeleton } from "./DialogBoardCardSkeleton";
 import { UNSPLASH_DEFAULT_IMAGES } from "@/lib/consts";
@@ -23,6 +23,10 @@ function DialogBoardDetails() {
     queryFn: getUnsplashImagesAction,
     queryKey: ["unsplash-images"],
     staleTime: 1000 * 60 * 60,
+  });
+
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: createNewBoardAction,
   });
 
   const pathname = usePathname();
@@ -49,25 +53,28 @@ function DialogBoardDetails() {
   async function onSubmitNewBoard(data: InputTitleSchemaType) {
     if (!selectedImage?.urls.full || !selectedImage?.urls.regular) {
       setError("title", { message: "Please select an image" });
-      toast.error("Please select an image");
+      return toast.error("Please select an image");
     }
     if (!organizationId) {
       return toast.error("Please select an organization");
     }
+
     const newBoardData: Omit<BoardType, "id"> = {
       title: data.title,
-      imageUrl: selectedImage?.urls.full || selectedImage?.urls.regular || "",
+      cardImageUrl:
+        selectedImage?.urls.small || selectedImage?.urls.regular || "",
+      bgImageUrl: selectedImage?.urls.full || selectedImage?.urls.regular || "",
       orgId: organizationId,
     };
-    const response = await createNewBoardAction(newBoardData);
-    if (response.data) {
-      setValue("title", "");
-      setSelectedImage(undefined);
-      return toast.success("Board created successfully");
-    }
+    const response = await mutateAsync(newBoardData);
+
     if (response.error.message) {
       return toast.error("Error creating board, please try again");
     }
+
+    setValue("title", "");
+    setSelectedImage(undefined);
+    return toast.success("Board created successfully");
   }
 
   return (
@@ -117,8 +124,8 @@ function DialogBoardDetails() {
           />
         </div>
         <Button
-          disabled={isLoading}
-          loading={isLoading}
+          disabled={isLoading || isPending}
+          loading={isLoading || isPending}
           onClick={handleSubmit(onSubmitNewBoard)}
           size={"lg"}
           type="button"

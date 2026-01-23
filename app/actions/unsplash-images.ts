@@ -14,34 +14,34 @@ export async function getUnsplashImagesAction(): Promise<{
     message: string;
   };
 }> {
-  const result = await serverApi.photos.getRandom({
-    collectionIds: ["317099"],
-    count: 10,
-  });
+  try {
+    const result = await serverApi.photos.getRandom({
+      collectionIds: ["317099"],
+      count: 10,
+    });
 
-  if (result.errors) {
-    return {
-      data: undefined,
-      error: { message: result.errors[0] },
-    };
+    if (!Array.isArray(result.response)) {
+      return { data: undefined, error: { message: "Invalid response" } };
+    }
+
+    const splashImagesData: UnsplashImagesType[] = result.response?.map(
+      (data) => {
+        return {
+          id: data.id,
+          urls: {
+            small: data.urls.small,
+            regular: data.urls.regular,
+            full: data.urls.full,
+          },
+          title: data.user.location || "Unknown",
+        };
+      },
+    );
+
+    return { data: splashImagesData, error: { message: "" } };
+  } catch (error) {
+    console.log("🚀 ~ getUnsplashImagesAction ~ error:", error);
+
+    return { data: undefined, error: { message: "Something went wrong" } };
   }
-  if (!Array.isArray(result.response)) {
-    return { data: undefined, error: { message: "Invalid response" } };
-  }
-
-  const splashImagesData: UnsplashImagesType[] = result.response?.map(
-    (data) => {
-      return {
-        id: data.id,
-        urls: {
-          small: data.urls.small,
-          regular: data.urls.regular,
-          full: data.urls.full,
-        },
-        title: data.user.location || "Unknown",
-      };
-    },
-  );
-
-  return { data: splashImagesData, error: { message: "" } };
 }

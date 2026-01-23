@@ -9,7 +9,7 @@ import { Check, UserPlus, X } from "lucide-react";
 import { AssignedToType, UserType } from "@/lib/types";
 import Image from "next/image";
 import { IconButton } from "@/components/ui/iconButton";
-import { UserCard } from "../TicketCardDetails/UserCard/UserCard";
+import { UserCard } from "../../../../../UserCard/UserCard";
 import { useOrganization } from "@clerk/nextjs";
 import { AssignToUserSkeleton } from "./AssignToUserSkeleton";
 import { useQuery } from "@tanstack/react-query";

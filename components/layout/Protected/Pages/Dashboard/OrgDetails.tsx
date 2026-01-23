@@ -7,6 +7,7 @@ import { OrganizationCardSkeleton } from "./Boards/OrganizationCardSkeleton";
 
 export function OrgDetails() {
   const { organization } = useOrganization();
+
   const orgDetails = {
     name: organization?.name,
     imageUrl: organization?.imageUrl,

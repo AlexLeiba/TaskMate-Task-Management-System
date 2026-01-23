@@ -15,29 +15,41 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { BoardType } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { BoardCardSkeleton } from "./BoardCardSkeleton";
+import { deleteBoardAction } from "@/app/actions/dashboard";
+import toast from "react-hot-toast";
+import { BoardType } from "@/lib/types";
 
-type Props = {
-  data: BoardType[];
-};
-export function Boards({ data: boardData }: Props) {
+export function Boards({ data }: { data: BoardType[] }) {
   const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   function handleSelectBoard(boardId: string) {
-    console.log("first");
     router.push(`/board/${boardId}`);
   }
   function handleOpenModalDeleteBoard() {
     setDeleteDialogOpen(true);
   }
-  // TODO add delete board request
-  function handleDeleteBoard(boardId: string) {
-    console.log("🚀 ~ handleDeleteBoard ~ boardId:", boardId);
+
+  async function handleDeleteBoard(boardId: string) {
+    setDeleteDialogOpen(false);
+    const response = await deleteBoardAction(boardId);
+    if (response.error.message) return toast.error(response.error.message);
+
+    toast.success("Board deleted successfully");
   }
 
-  if (!boardData) return <BoardCardSkeleton />;
+  if (!data)
+    return (
+      <>
+        <div className="flex gap-2 items-center">
+          <Grid />
+          <p className="text-xl font-medium">Boards</p>
+        </div>
+        <Spacer size={4} />
+        <BoardCardSkeleton />
+      </>
+    );
   return (
     <div>
       <div className="flex gap-2 items-center">
@@ -49,9 +61,8 @@ export function Boards({ data: boardData }: Props) {
         {/* CREATE NEW BOARD */}
         <CreateNewBoardCard />
 
-        {/*CREATED BOARDS */}
-        {/* MODAL DELETE BOARD */}
-        {boardData?.map((board) => (
+        {/* BOARDS */}
+        {data?.map((board) => (
           <div key={board.id}>
             <BoardCard
               data={board}
@@ -59,6 +70,7 @@ export function Boards({ data: boardData }: Props) {
               handleSelectBoard={() => handleSelectBoard(board?.id)}
             />
 
+            {/* MODAL DELETE BOARD */}
             <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
               <DialogContent>
                 <DialogHeader>
@@ -90,7 +102,6 @@ export function Boards({ data: boardData }: Props) {
             </Dialog>
           </div>
         ))}
-        {/* <BoardCardSkeleton /> */}
       </div>
     </div>
   );

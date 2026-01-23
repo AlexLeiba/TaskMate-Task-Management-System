@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { AttachmentsType, isImageMimeType } from "@/lib/types";
-import { UserCard } from "../../UserCard/UserCard";
+import { UserCard } from "../../../../../../../UserCard/UserCard";
 import { PreviewImageCard } from "./PreviewImageCard";
 import { DownloadFileCard } from "./DownloadFileCard";
 import { format } from "date-fns";

@@ -1,11 +1,20 @@
 "use client";
-import { Suspense } from "react";
 
 import { AssignedToType } from "@/lib/types";
 
-import { AssignTo } from "./AssignTo";
+const AssignTo = dynamic(
+  () => {
+    return import("./AssignTo").then((m) => m.AssignTo);
+  },
+  {
+    ssr: false,
+    loading: () => <AssignToUserSkeleton />,
+  },
+);
+
 import { Priority } from "./Priority";
 import { AssignToUserSkeleton } from "./AssignToUserSkeleton";
+import dynamic from "next/dynamic";
 
 type Props = {
   priority: string;
@@ -18,9 +27,8 @@ export function TicketCardBody({ priority, assignedTo }: Props) {
       <Priority priority={priority} />
 
       {/* ASSIGN  */}
-      <Suspense fallback={<AssignToUserSkeleton />}>
-        <AssignTo assignedTo={assignedTo} />
-      </Suspense>
+
+      <AssignTo assignedTo={assignedTo} />
     </div>
   );
 }

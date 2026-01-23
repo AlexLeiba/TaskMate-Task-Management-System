@@ -6,14 +6,14 @@ import { ComponentProps } from "react";
 type Props = ComponentProps<"button"> & {
   data: {
     title: string;
-    imageUrl: string;
+    cardImageUrl: string;
     id: string;
   };
   handleModalDeleteBoard: () => void;
   handleSelectBoard: () => void;
 };
 export function BoardCard({
-  data: { title, imageUrl, ...props },
+  data: { title, cardImageUrl },
   handleModalDeleteBoard,
   handleSelectBoard,
 }: Props) {
@@ -21,7 +21,7 @@ export function BoardCard({
     <>
       <div
         className="relative overflow-hidden bg-cover bg-center rounded-md "
-        style={{ backgroundImage: `url(${imageUrl})` }}
+        style={{ backgroundImage: `url(${cardImageUrl})` }}
       >
         <IconButton
           aria-label={title}

@@ -1,6 +1,11 @@
+import { getActivitiesAction } from "@/app/actions/activity";
 import { ActivityCard } from "@/components/layout/Protected/Pages/Activities/ActivityCard";
+import { PaginationButton } from "@/components/layout/Protected/Pages/Activities/PaginationButton";
+import { UserCard } from "@/components/layout/Protected/UserCard/UserCard";
+import { UserCardSkeleton } from "@/components/layout/Protected/UserCard/UserCardSkeleton";
 import { Separator } from "@/components/ui/separator";
 import { Spacer } from "@/components/ui/spacer";
+
 import { Activity } from "lucide-react";
 
 const activitiesData = [
@@ -35,7 +40,17 @@ const activitiesData = [
     boardName: "board name",
   },
 ];
-function ActivitiesPage() {
+async function ActivitiesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { page } = await searchParams;
+  console.log("🚀 ~ ActivitiesPage ~ page:", page);
+  const { data: activityData, count } = await getActivitiesAction({
+    limit: 10,
+    page: Number(page) || 1,
+  });
   return (
     <div className="w-full">
       <div className="flex gap-2 items-center">
@@ -44,10 +59,25 @@ function ActivitiesPage() {
       </div>
       <Separator className="bg-gray-600 w-full my-4" />
 
-      <div className="flex flex-col gap-4">
-        {activitiesData.map((activity) => (
-          <ActivityCard key={activity.id} data={activity} />
-        ))}
+      <div className="flex flex-col gap-2 justify-between h-full">
+        <div className="flex flex-col gap-4 ">
+          {activitiesData ? (
+            activityData?.map((activity) => (
+              // <ActivityCard key={activity.id} data={activity} />
+              <UserCard
+                key={activity.id}
+                data={activity.author}
+                description={activity.activity}
+                createdAt={activity.createdAt.toString()}
+                type="activity"
+              />
+            ))
+          ) : (
+            <UserCardSkeleton size={"md"} />
+          )}
+        </div>
+
+        <PaginationButton dataLength={count} />
       </div>
     </div>
   );

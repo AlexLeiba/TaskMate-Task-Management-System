@@ -16,20 +16,13 @@ import { useState } from "react";
 
 import { IconButton } from "@/components/ui/iconButton";
 import DialogBoardDetails from "./DialogBoardDetails";
-import { getUnsplashImagesAction } from "@/app/actions/unsplash-images";
 
 export function CreateNewBoardCard() {
   const [isNewBoardDialogOpen, setIsNewBoardDialogOpen] = useState(false);
-  // TODO add api and UI for create card modal
-  // API with input board title and url image'
-
-  async function handleGetNewImages() {
-    const images = await getUnsplashImagesAction();
-    console.log("🚀 ~ handleGetNewImages ~ images:", images);
-  }
 
   return (
     <>
+      {/* CREATE CARD */}
       <IconButton
         classNameChildren="group flex flex-col w-full justify-center items-center "
         onClick={() => setIsNewBoardDialogOpen(true)}
@@ -68,7 +61,7 @@ export function CreateNewBoardCard() {
           <DialogHeader>
             <DialogTitle className="text-2xl">Create new board</DialogTitle>
           </DialogHeader>
-
+          {/* CREATE CARD FORM */}
           <DialogBoardDetails />
         </DialogContent>
       </Dialog>

@@ -1,7 +1,7 @@
 import { Spacer } from "@/components/ui/spacer";
 import { ReporterType } from "@/lib/types";
 import { UserCog } from "lucide-react";
-import { UserCard } from "../UserCard/UserCard";
+import { UserCard } from "../../../../../../UserCard/UserCard";
 
 type Props = {
   data: ReporterType | undefined;

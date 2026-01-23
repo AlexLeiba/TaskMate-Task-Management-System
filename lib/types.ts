@@ -1,12 +1,7 @@
 import { FILES_MIME_TYPES, IMAGES_MIME_TYPES } from "./consts";
 
 // REUSABLE TYPES
-export type ActivityActionType =
-  | "created"
-  | "deleted"
-  | "updated"
-  | "added"
-  | "removed";
+export type ActivityActionType = "created" | "deleted" | "updated";
 
 export type PrioritiesType =
   | "low"
@@ -25,10 +20,12 @@ export type ListStatusType =
   | string;
 
 export type UserType = {
-  id: string;
+  id?: string;
   name: string;
-  avatar: string;
   email: string;
+  avatar: string | null;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export type ImageMimeType = (typeof IMAGES_MIME_TYPES)[number];
@@ -43,21 +40,24 @@ export type UploadedFileType = {
 /////////////////////////////////////////////////
 
 export type ActivityType = {
+  orgId: string;
+  activity: string;
   id: string;
-  createdAt: number;
-  activity: string; //act message
-  boardName: string; //in which board
-  listName: string; //in which list
-  boardId: string;
-  listId: string;
-  activityType: ActivityActionType;
+  authorId: string;
+
+  cardId: string | null;
+  boardId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  type: ActivityActionType;
   author: UserType;
 };
 
 export type BoardType = {
   id: string;
   title: string;
-  imageUrl: string;
+  cardImageUrl: string;
+  bgImageUrl: string;
   orgId: string;
 };
 

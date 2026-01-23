@@ -1,9 +1,10 @@
-import { ReporterType } from "@/lib/types";
+import { ActivityType, ReporterType, UserType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import Image from "next/image";
 import { ComponentProps } from "react";
 import { UserCardSkeleton } from "./UserCardSkeleton";
+import { format } from "date-fns";
 
 const cardVariants = cva("", {
   variants: {
@@ -45,9 +46,19 @@ const emailVariants = cva("text-gray-400", {
 
 type Props = VariantProps<typeof cardVariants> &
   ComponentProps<"div"> & {
-    data: ReporterType | undefined;
-  };
-export function UserCard({ data, size, className }: Props) {
+    data: UserType;
+    type?: string;
+    description?: string;
+    createdAt?: string;
+  } & { size?: "sm" | "md" | "lg" };
+export function UserCard({
+  data,
+  size,
+  type = "user",
+  description,
+  createdAt,
+  className,
+}: Props) {
   if (!data) return <UserCardSkeleton size={size} />;
   return (
     <div
@@ -71,6 +82,14 @@ export function UserCard({ data, size, className }: Props) {
         <p className={cn(nameVariants({ size }))}>{data.name}</p>
         <p className={cn(emailVariants({ size }))}>{data.email}</p>
       </div>
+      {type === "activity" && (
+        <div className="flex flex-col gap-2 items-start">
+          <p className="text-lg font-medium">{description}</p>
+          <p className="text-xs text-gray-300">
+            {createdAt && format(new Date(createdAt), "MMM d yyyy a HH:mm")}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

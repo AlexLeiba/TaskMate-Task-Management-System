@@ -19,8 +19,11 @@ type StoreType = {
   selectedTab: "checklist" | "comments" | "activities" | "attachments";
 
   setSelectTab: (
-    value: "checklist" | "comments" | "activities" | "attachments"
+    value: "checklist" | "comments" | "activities" | "attachments",
   ) => void;
+
+  newBoardDialogOpen: boolean;
+  setNewBoardDialogOpen: (open: boolean) => void;
 };
 export const useStore = create<StoreType>((set) => ({
   openTitleInput: { id: "", isOpen: false },
@@ -33,4 +36,7 @@ export const useStore = create<StoreType>((set) => ({
 
   selectedTab: "comments",
   setSelectTab: (value) => set({ selectedTab: value }),
+
+  newBoardDialogOpen: false,
+  setNewBoardDialogOpen: (open) => set({ newBoardDialogOpen: open }),
 }));

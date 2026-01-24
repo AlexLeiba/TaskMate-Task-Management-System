@@ -15,8 +15,10 @@ import { BoardType, UnsplashImagesType } from "@/lib/types";
 import toast from "react-hot-toast";
 import { usePathname } from "next/navigation";
 import { createNewBoardAction } from "@/app/actions/dashboard";
+import { useStore } from "@/store/useStore";
 
 function DialogBoardDetails() {
+  const { setNewBoardDialogOpen } = useStore();
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
@@ -74,6 +76,7 @@ function DialogBoardDetails() {
 
     setValue("title", "");
     setSelectedImage(undefined);
+    setNewBoardDialogOpen(false);
     return toast.success("Board created successfully");
   }
 

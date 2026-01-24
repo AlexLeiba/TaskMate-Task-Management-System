@@ -1,0 +1,35 @@
+import { UserCard } from "../../UserCard/UserCard";
+import { getActivitiesAction } from "@/app/actions/activity";
+import { PaginationButton } from "./PaginationButton";
+
+type Props = {
+  page: string | undefined;
+};
+export async function ActivityServerRender({ page }: Props) {
+  const { data: activityData, count } = await getActivitiesAction({
+    limit: 10,
+    page: Number(page) || 1,
+  });
+  if (activityData.length === 0)
+    return (
+      <div className="flex justify-center items-center h-full w-full">
+        <h5 className="text-2xl text-gray-200">No activities</h5>
+      </div>
+    );
+  return (
+    <div className="flex flex-col gap-2 justify-between h-full">
+      <div className="flex flex-col gap-4">
+        {activityData?.map((activity) => (
+          <UserCard
+            key={activity.id}
+            data={activity.author}
+            description={activity.activity}
+            createdAt={activity.createdAt.toString()}
+            type="activity"
+          />
+        ))}
+      </div>
+      <PaginationButton dataLength={count} />
+    </div>
+  );
+}

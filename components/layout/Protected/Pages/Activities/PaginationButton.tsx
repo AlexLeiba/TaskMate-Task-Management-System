@@ -3,8 +3,6 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import React from "react";
-
 type Props = {
   dataLength: number;
 };
@@ -28,14 +26,16 @@ export function PaginationButton({ dataLength }: Props) {
     }
   }
   return (
-    <div className="flex justify-between">
+    <div className="flex justify-between gap-4">
       <Button
+        variant={"secondary"}
         onClick={() => handlePageChange("prev")}
         disabled={currentPage === "1"}
       >
         <ChevronLeft />
       </Button>
       <Button
+        variant={"secondary"}
         onClick={() => handlePageChange("next")}
         disabled={Number(currentPage) * 10 >= dataLength}
       >

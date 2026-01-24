@@ -12,20 +12,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useState } from "react";
 
 import { IconButton } from "@/components/ui/iconButton";
 import DialogBoardDetails from "./DialogBoardDetails";
+import { useStore } from "@/store/useStore";
 
 export function CreateNewBoardCard() {
-  const [isNewBoardDialogOpen, setIsNewBoardDialogOpen] = useState(false);
+  const { newBoardDialogOpen, setNewBoardDialogOpen } = useStore();
 
   return (
     <>
       {/* CREATE CARD */}
       <IconButton
         classNameChildren="group flex flex-col w-full justify-center items-center "
-        onClick={() => setIsNewBoardDialogOpen(true)}
+        onClick={() => setNewBoardDialogOpen(true)}
         title="Create new board"
         aria-label="Create new board"
         className="relative group   rounded-md p-2  overflow-hidden text-black  hover:bg-gray-500  bg-gray-200 hover:text-white "
@@ -53,10 +53,7 @@ export function CreateNewBoardCard() {
       </IconButton>
 
       {/* DIALOG CREATE NEW BOARD */}
-      <Dialog
-        open={isNewBoardDialogOpen}
-        onOpenChange={setIsNewBoardDialogOpen}
-      >
+      <Dialog open={newBoardDialogOpen} onOpenChange={setNewBoardDialogOpen}>
         <DialogContent className="lg:min-w-200!">
           <DialogHeader>
             <DialogTitle className="text-2xl">Create new board</DialogTitle>

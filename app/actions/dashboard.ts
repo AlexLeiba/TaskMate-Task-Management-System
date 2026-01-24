@@ -1,57 +1,13 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { ActivityActionType, BoardType } from "@/lib/types";
+import { createNewActivity } from "@/lib/server/createActivity";
+import { currentActiveUser } from "@/lib/server/currentActiveUser";
+import { BoardType } from "@/lib/types";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
-async function currentUserInDBData(userData: {
-  email: string;
-  name: string;
-  imageUrl: string;
-}) {
-  let activeUser = await prisma.user.findFirst({
-    where: { email: userData.email },
-  });
-
-  if (!activeUser) {
-    activeUser = await prisma.user.create({
-      data: {
-        name: userData.name,
-        email: userData.email,
-        avatar: userData.imageUrl,
-      },
-    });
-  }
-
-  return activeUser;
-}
-
-async function createNewActivity({
-  boardId,
-  authorId,
-  orgId,
-  activity,
-  type,
-}: {
-  boardId: string;
-  authorId: string;
-  orgId: string;
-  activity: string;
-  type: ActivityActionType;
-}) {
-  await prisma.activity.create({
-    data: {
-      boardId: type === "deleted" ? null : boardId,
-      orgId,
-      activity,
-      authorId,
-      type,
-    },
-  });
-}
-
-export async function getBoardsAction(): Promise<{
+export async function getBoardsAction(orgId: string): Promise<{
   data: BoardType[];
   error: { message: string };
 }> {
@@ -62,7 +18,14 @@ export async function getBoardsAction(): Promise<{
   }
 
   try {
-    const boards = await prisma.board.findMany({});
+    const boards = await prisma.board.findMany({
+      where: {
+        orgId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
 
     return { data: boards, error: { message: "" } };
   } catch (error) {
@@ -85,7 +48,7 @@ export async function createNewBoardAction(
   try {
     const createdBoard = await prisma.board.create({ data: boardData });
 
-    const activeUser = await currentUserInDBData({
+    const activeUser = await currentActiveUser({
       email: userEmail,
       name: `${user?.firstName} ${user?.lastName}`,
       imageUrl: user?.imageUrl,
@@ -127,7 +90,7 @@ export async function deleteBoardAction(
     if (!deletedBoard)
       return { data: false, error: { message: "Board not found" } };
 
-    const activeUser = await currentUserInDBData({
+    const activeUser = await currentActiveUser({
       email: userEmail,
       name: `${user?.firstName} ${user?.lastName}`,
       imageUrl: user?.imageUrl,

@@ -20,23 +20,54 @@ import {
 import { useStore } from "@/store/useStore";
 import { IconButton } from "@/components/ui/iconButton";
 import React from "react";
+import { useMutation } from "@tanstack/react-query";
+import { copyListAction, deleteListAction } from "@/app/actions/list";
+import { usePathname } from "next/navigation";
+import toast from "react-hot-toast";
 
 type Props = {
   listId: string;
 };
 export function ListOptions({ listId }: Props) {
-  const { setOpenTitleInput, setOpenNewCardInput } = useStore();
-  // get list id here TODO
+  const pathname = usePathname();
+  const boardId = pathname.split("/").at(-1) || "";
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [option, setOption] = useState("");
   const [isOpenedStatus, setIsOpenedStatus] = useState(false);
+  const { setOpenTitleInput, setOpenNewCardInput } = useStore();
+
+  const { mutate: mutateDeleteList, isPending: isPendingDeleteList } =
+    useMutation({
+      mutationFn: deleteListAction,
+      onSuccess: () => {
+        toast.dismiss("delete-list");
+        toast.success("List deleted");
+        setDeleteDialogOpen(false);
+      },
+      onError: () => {
+        toast.dismiss("delete-list");
+        toast.error("Error deleting list, please try again");
+      },
+    });
+
+  const { mutate: mutateCopyList, isPending: isPendingCopyList } = useMutation({
+    mutationFn: copyListAction,
+    onSuccess: () => {
+      toast.dismiss("copy-list");
+      toast.success("List copied");
+      setDeleteDialogOpen(false);
+    },
+    onError: () => {
+      toast.dismiss("copy-list");
+      toast.error("Error deleting list, please try again");
+    },
+  });
+
+  function handleCopyList() {
+    mutateCopyList({ listId, boardId });
+    toast.loading("Copying list...", { id: "copy-list" });
+  }
 
   function handleSelectOption(option: string) {
-    // TODO api req with new status
-    // If success show optimistic status
-    setOption(option);
-    // setIsOpenedStatus(false);
-
     switch (option) {
       case "edit-list-title":
         setOpenTitleInput({ id: listId, isOpen: true });
@@ -46,6 +77,9 @@ export function ListOptions({ listId }: Props) {
         break;
       case "add-card":
         setOpenNewCardInput({ id: listId, isOpen: true });
+        break;
+      case "copy-list":
+        handleCopyList();
         break;
       default:
         break;
@@ -57,7 +91,9 @@ export function ListOptions({ listId }: Props) {
   }
   // TODO add delete board api request
   function handleDeleteList(listId: string) {
-    console.log("🚀 ~ handleDeleteList ~ listId:", listId);
+    mutateDeleteList({ listId, boardId });
+    toast.loading("Deleting list...", { id: "delete-list" });
+    setDeleteDialogOpen(false);
   }
   return (
     <Popover open={isOpenedStatus} onOpenChange={setIsOpenedStatus}>
@@ -86,6 +122,7 @@ export function ListOptions({ listId }: Props) {
                 <React.Fragment key={option.value}>
                   <Separator className="my-4 w-full h-px bg-gray-700" />
                   <IconButton
+                    disabled={isPendingDeleteList || isPendingCopyList}
                     aria-label={option.label}
                     title={option.label}
                     onClick={() => handleSelectOption(option.value)}
@@ -100,6 +137,7 @@ export function ListOptions({ listId }: Props) {
             }
             return (
               <IconButton
+                disabled={isPendingDeleteList || isPendingCopyList}
                 aria-label={option.label}
                 title={option.label}
                 onClick={() => handleSelectOption(option.value)}
@@ -129,11 +167,18 @@ export function ListOptions({ listId }: Props) {
 
             <DialogFooter className="flex ">
               <DialogClose asChild>
-                <Button size={"lg"} type="button" variant="default">
+                <Button
+                  size={"lg"}
+                  type="button"
+                  variant="default"
+                  disabled={isPendingDeleteList || isPendingCopyList}
+                >
                   Cancel
                 </Button>
               </DialogClose>
               <Button
+                loading={isPendingDeleteList || isPendingCopyList}
+                disabled={isPendingDeleteList || isPendingCopyList}
                 size={"lg"}
                 type="button"
                 variant="destructive"

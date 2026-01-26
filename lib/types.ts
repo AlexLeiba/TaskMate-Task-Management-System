@@ -90,7 +90,7 @@ export type ListDataType = {
 
 export type StatusType = {
   label: string;
-  value: string;
+  value: "todo" | "progress" | "review" | "done" | "backlog";
   icon?: React.ReactNode;
 };
 

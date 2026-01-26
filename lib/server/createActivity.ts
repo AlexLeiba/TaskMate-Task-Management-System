@@ -1,19 +1,23 @@
+import { auth } from "@clerk/nextjs/server";
 import { prisma } from "../prisma";
 import { ActivityActionType } from "../types";
 
 export async function createNewActivity({
   boardId,
   authorId,
-  orgId,
+
   activity,
   type,
 }: {
   boardId: string;
   authorId: string;
-  orgId: string;
   activity: string;
   type: ActivityActionType;
 }) {
+  const { orgId } = await auth();
+
+  if (!orgId) throw new Error("User not authenticated");
+
   await prisma.activity.create({
     data: {
       boardId: type === "deleted" ? null : boardId,

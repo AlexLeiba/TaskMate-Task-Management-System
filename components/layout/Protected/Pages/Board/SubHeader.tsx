@@ -1,33 +1,43 @@
 "use client";
 import { Edit, X } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { AddNewInput } from "./AddNewInput";
 import { useMutation } from "@tanstack/react-query";
 import { editBoardTitleAction } from "@/app/actions/board";
 import toast from "react-hot-toast";
+import { Board } from "@/lib/generated/prisma/client";
 
-export function SubHeader({
-  boardId,
-  boardTitle,
-}: {
+type Props = {
+  data: {
+    data: Board | null;
+    error: { message: string };
+  };
   boardId: string;
-  boardTitle: string;
-}) {
+};
+export function SubHeader({ data: { data: board, error }, boardId }: Props) {
+  useEffect(() => {
+    if (error.message) {
+      toast.error(error.message);
+    }
+  }, [error.message]);
+
   const { mutate, isPending } = useMutation({
     mutationFn: editBoardTitleAction,
     onSuccess: () => {
       toast.success("Board title updated");
       setShowTitleInput(false);
     },
-    onError: () => toast.error("Error updating board title"),
+    onError: ({ message }) =>
+      toast.error(message || "Error updating board title, please try again"),
   });
   const [showTitleInput, setShowTitleInput] = useState(false);
 
-  const title =
-    boardTitle.length > 45 ? `${boardTitle.slice(0, 45)}...` : boardTitle;
+  if (!board) return;
 
+  const title =
+    board.title.length > 45 ? `${board.title.slice(0, 45)}...` : board.title;
   function handleEditBoardTitle() {
     setShowTitleInput(true);
   }
@@ -63,7 +73,7 @@ export function SubHeader({
         </AddNewInput>
 
         {/* TODO add org id from params */}
-        <Link href={`/dashboard/${boardId}`}>
+        <Link href={`/dashboard/${board.id}`}>
           <Button variant={"ghost"} title="Close board">
             <X />
           </Button>

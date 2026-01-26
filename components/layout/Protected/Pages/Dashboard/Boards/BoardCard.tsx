@@ -16,6 +16,7 @@ export function BoardCard({
   data: { title, cardImageUrl },
   handleModalDeleteBoard,
   handleSelectBoard,
+  disabled = false,
 }: Props) {
   return (
     <>
@@ -24,6 +25,7 @@ export function BoardCard({
         style={{ backgroundImage: `url(${cardImageUrl})` }}
       >
         <IconButton
+          disabled={disabled}
           aria-label={title}
           title={title}
           className="w-full  rounded-md p-2 h-28  overflow-hidden cursor-pointer hover:opacity-70 flex items-start justify-start"

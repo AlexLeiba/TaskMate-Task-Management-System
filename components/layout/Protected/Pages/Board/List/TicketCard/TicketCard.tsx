@@ -1,13 +1,13 @@
 "use client";
-import { CardTicketType } from "@/lib/types";
 import { TicketCardHeader } from "./TicketCardHeader";
 import { TicketCardBody } from "./TicketCardBody/TicketCardBody";
 import { useState } from "react";
 import { TicketCardDetails } from "./TicketCardDetails/TicketCardDetails";
 import { KEYBOARD } from "@/lib/consts";
+import { Card } from "@/lib/generated/prisma/client";
 
 type Prop = {
-  data: CardTicketType;
+  data: Card;
 };
 export function TicketCard({ data }: Prop) {
   const [isCardDetailsOpened, setIsCardDetailsOpened] = useState(false);
@@ -44,7 +44,10 @@ export function TicketCard({ data }: Prop) {
         <TicketCardHeader title={data.title} cardId={data.id.toString()} />
 
         {/* TICKET CARD BODY */}
-        <TicketCardBody priority={data.priority} assignedTo={data.assignedTo} />
+        <TicketCardBody
+          priority={data.priority}
+          assignedTo={data.assignedToId}
+        />
       </div>
 
       {/* TICKET CARD DETAILS MODAL*/}

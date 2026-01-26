@@ -1,24 +1,23 @@
 "use server";
 
+import { Board } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
-import { getActiveUser } from "@/lib/server/currentActiveUser";
-import { BoardType } from "@/lib/types";
+import { currentActiveUser } from "@/lib/server/currentActiveUser";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
 export async function getBoardDataAction(boardId: string): Promise<{
-  data: BoardType | null;
+  data: Board | null;
   error: { message: string };
 }> {
   try {
-    const user = await auth();
+    const { data: activeUser } = await currentActiveUser();
+
     const { orgId } = await auth();
-    if (!orgId || !user.userId) {
-      return {
-        data: null,
-        error: { message: "User not authenticated" },
-      };
+
+    if (!orgId || !activeUser) {
+      throw new Error("User not authenticated");
     }
 
     const response = await prisma.board.findFirst({
@@ -29,10 +28,13 @@ export async function getBoardDataAction(boardId: string): Promise<{
     });
 
     return { data: response, error: { message: "" } };
-  } catch (error) {
+  } catch (error: any) {
     console.log("🚀 ~ getBoardDataAction ~ error:", error);
 
-    return { data: null, error: { message: "Something went wrong" } };
+    return {
+      data: null,
+      error: { message: error.message || "Something went wrong" },
+    };
   }
 }
 
@@ -42,45 +44,46 @@ export async function editBoardTitleAction({
 }: {
   boardId: string;
   title: string;
-}): Promise<{ data: BoardType | null; error: { message: string } }> {
-  try {
-    const user = await getActiveUser();
-    const { orgId } = await auth();
-    if (!orgId || !user) {
-      return {
-        data: null,
-        error: { message: "User not authenticated" },
-      };
-    }
-    const prevBoardData = await prisma.board.findFirst({
-      where: {
-        orgId,
-        id: boardId,
-      },
-    });
+}): Promise<{ data: Board | null; error: { message: string } }> {
+  const { data: activeUser } = await currentActiveUser();
 
-    const response = await prisma.board.update({
-      where: {
-        id: boardId,
-        orgId,
-      },
-      data: {
-        title,
-      },
-    });
-
-    await createNewActivity({
-      boardId,
-      authorId: user.id,
-      activity: `Updated board title from "${prevBoardData?.title}" to "${response.title}"`,
-      type: "updated",
-      orgId: orgId,
-    });
-
-    revalidatePath("/board");
-    return { data: response, error: { message: "" } };
-  } catch (error) {
-    console.log("🚀 ~ editBoardTitleAction ~ error:", error);
-    return { data: null, error: { message: "Something went wrong" } };
+  const { orgId } = await auth();
+  if (!orgId) {
+    throw new Error("User not authenticated");
   }
+
+  if (!activeUser) {
+    throw new Error("User not authorized");
+  }
+
+  const prevBoardData = await prisma.board.findFirst({
+    where: {
+      orgId,
+      id: boardId,
+    },
+  });
+
+  if (!prevBoardData) {
+    throw new Error("Board not found");
+  }
+
+  const response = await prisma.board.update({
+    where: {
+      id: boardId,
+      orgId,
+    },
+    data: {
+      title,
+    },
+  });
+
+  await createNewActivity({
+    boardId,
+    authorId: activeUser.id,
+    activity: `Updated board title from "${prevBoardData?.title}" to "${response.title}"`,
+    type: "updated",
+  });
+
+  revalidatePath("/board");
+  return { data: response, error: { message: "" } };
 }

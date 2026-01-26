@@ -1,5 +1,6 @@
 "use server";
 
+import { Board } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
 import { currentActiveUser } from "@/lib/server/currentActiveUser";
@@ -11,13 +12,13 @@ export async function getBoardsAction(orgId: string): Promise<{
   data: BoardType[];
   error: { message: string };
 }> {
-  const user = await currentUser();
-
-  if (!user) {
-    return { data: [], error: { message: "User not authenticated" } };
-  }
-
   try {
+    const user = await currentUser();
+
+    if (!user) {
+      return { data: [], error: { message: "User not authenticated" } };
+    }
+
     const boards = await prisma.board.findMany({
       where: {
         orgId,
@@ -28,93 +29,75 @@ export async function getBoardsAction(orgId: string): Promise<{
     });
 
     return { data: boards, error: { message: "" } };
-  } catch (error) {
+  } catch (error: any) {
     console.log("🚀 ~ getBoardsAction ~ error:", error);
-    return { data: [], error: { message: "Something went wrong" } };
+    return {
+      data: [],
+      error: { message: error.message || "Something went wrong" },
+    };
   }
 }
 
 export async function createNewBoardAction(
-  boardData: Omit<BoardType, "id">,
+  boardData: Omit<Board, "id" | "createdAt" | "updatedAt">,
 ): Promise<{ data: boolean; error: { message: string } }> {
-  const user = await currentUser();
-  const userEmail = user?.emailAddresses[0].emailAddress;
+  const { data: activeUser } = await currentActiveUser();
   const { orgId } = await auth();
 
-  if (!user || !userEmail || !orgId) {
-    return { data: false, error: { message: "User not authenticated" } };
+  if (!orgId) {
+    throw new Error("User not authenticated");
+  }
+  if (!activeUser) {
+    throw new Error("User not authorized");
   }
 
-  try {
-    const createdBoard = await prisma.board.create({ data: boardData });
+  const createdBoard = await prisma.board.create({ data: boardData });
 
-    const activeUser = await currentActiveUser({
-      email: userEmail,
-      name: `${user?.firstName} ${user?.lastName}`,
-      imageUrl: user?.imageUrl,
-    });
+  await createNewActivity({
+    boardId: createdBoard.id,
+    authorId: activeUser.id,
+    activity: `Created new board "${createdBoard.title}"`,
+    type: "created",
+  });
 
-    if (!activeUser) {
-      throw new Error("User not found");
-    }
-
-    await createNewActivity({
-      boardId: createdBoard.id,
-      authorId: activeUser.id,
-      activity: `Created new board "${createdBoard.title}"`,
-      type: "created",
-      orgId: createdBoard.orgId,
-    });
-
-    revalidatePath("/dashboard");
-    return { data: true, error: { message: "" } };
-  } catch (error) {
-    console.log("🚀 ~ createNewBoardAction ~ error:", error);
-    return { data: false, error: { message: "" } };
-  }
+  revalidatePath("/dashboard");
+  return { data: true, error: { message: "" } };
 }
 
 export async function deleteBoardAction(
   boardId: string,
 ): Promise<{ data: boolean; error: { message: string } }> {
-  const user = await currentUser();
-  const userEmail = user?.emailAddresses[0].emailAddress;
+  const { data: activeUser } = await currentActiveUser();
+
   const { orgId } = await auth();
-  if (!user || !userEmail || !orgId) {
-    return { data: false, error: { message: "User not authenticated" } };
+
+  if (!orgId) {
+    throw new Error("User not authenticated");
+  }
+  if (!activeUser) {
+    throw new Error("User not authorized");
   }
 
-  try {
-    const deletedBoard = await prisma.board.delete({ where: { id: boardId } });
+  const boardToDelete = await prisma.board.findFirst({
+    where: {
+      id: boardId,
+      orgId,
+    },
+  });
 
-    if (!deletedBoard)
-      return { data: false, error: { message: "Board not found" } };
-
-    const activeUser = await currentActiveUser({
-      email: userEmail,
-      name: `${user?.firstName} ${user?.lastName}`,
-      imageUrl: user?.imageUrl,
-    });
-
-    if (!activeUser) {
-      throw new Error("User not found");
-    }
-
-    await createNewActivity({
-      boardId,
-      authorId: activeUser.id,
-      activity: `Deleted board "${deletedBoard.title}"`,
-      type: "deleted",
-      orgId: deletedBoard.orgId,
-    });
-
-    revalidatePath("/dashboard");
-    return { data: true, error: { message: "" } };
-  } catch (error) {
-    console.log("🚀 ~ deleteBoardAction ~ error:", error);
-    return {
-      data: false,
-      error: { message: "Something went wrong, please try again" },
-    };
+  if (!boardToDelete) {
+    throw new Error("Board not found");
   }
+
+  const deletedBoard = await prisma.board.delete({ where: { id: boardId } });
+
+  await createNewActivity({
+    boardId,
+    authorId: activeUser.id,
+    activity: `Deleted board "${deletedBoard.title}"`,
+    type: "deleted",
+  });
+
+  revalidatePath("/dashboard");
+  return { data: true, error: { message: "" } };
 }

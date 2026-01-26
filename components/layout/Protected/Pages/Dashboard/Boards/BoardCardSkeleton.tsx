@@ -1,6 +1,5 @@
 import { Spacer } from "@/components/ui/spacer";
 import { Grid } from "lucide-react";
-import React from "react";
 
 export function BoardCardSkeleton() {
   return (

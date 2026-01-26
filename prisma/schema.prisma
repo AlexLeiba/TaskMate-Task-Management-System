@@ -21,8 +21,8 @@ bgImageUrl String
 orgId String
 lists List[]//will end up if using includes query
 activity Activity[]
-createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 enum StatusType {
   todo
@@ -37,9 +37,9 @@ boardId String //take boardid from url when creating a list
 title String
 status StatusType @default(todo)
 cards Card[] //when create a card will end up here
-board Board @relation(fields: [boardId], references:[id])
-createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+board Board @relation(fields: [boardId], references:[id],onDelete: Cascade)
+createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 enum PriorityType {
@@ -53,15 +53,15 @@ enum PriorityType {
 model User {
   id String @id @default(uuid())
   name String
-  email String
+  email String @unique
   avatar String?
 
   attachments Attachments[]
   comments Comment[]
   activitys Activity[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 
   reportedCards Card[] @relation("Reported")//inverse relation/ wont be included in req , unless using property include
   assignedCards Card[] @relation("Assigned")//inverse relation/ wont be included in req , unless using property include
@@ -71,18 +71,18 @@ model Card {
 id String @id @default(uuid())
 title String
 priority PriorityType @default(none)
-assignedToId String? //
-listId String @unique //to reference in which list is located
+assignedToEmail String? @unique //
+listId String  //to reference in which list is located
 listName String
 reporterId String//who has created the card/is mandatory
 details CardDetails?
 
-createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 
-list List @relation(fields:[listId],references:[id])
+list List @relation(fields:[listId],references:[id] ,onDelete: Cascade)
 reporter User @relation("Reported",fields:[reporterId],references: [id])
-assignedTo User? @relation("Assigned", fields:[assignedToId],references: [id])
+assignedTo User? @relation("Assigned", fields:[assignedToEmail],references: [email])
 }
 
 model CardDetails {
@@ -97,8 +97,8 @@ model CardDetails {
   
 
   //adds priorities assigned ids
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 
   card Card @relation(fields:[cardId],references: [id])
 }
@@ -124,8 +124,8 @@ model Attachments {
 
   authorId String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 
   author User @relation(fields:[authorId],references: [id])
 }
@@ -136,8 +136,8 @@ model Comment {
   cardId String //if cardId from CardDetails matches with local cardId then it will end up in the table
   authorId String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 
   author User @relation(fields:[authorId],references: [id])
   cardDetails CardDetails @relation(fields:[cardId],references: [id])
@@ -163,8 +163,8 @@ model Activity {
   cardDetails CardDetails? @relation(fields:[cardId],references: [id])
   board Board? @relation(fields:[boardId],references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 // register all activities to see who checked something
@@ -174,8 +174,8 @@ model Checklist {
   isCompleted Boolean
   cardId String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 
   cardDetails CardDetails @relation(fields:[cardId],references: [id])
 }
@@ -186,6 +186,6 @@ model DueDate {
   time String //will store date in ISO string, is Timezone-safe, works across browsers,servers,DBs, parse format in localtime on using it
   cardId String
   cardDetails CardDetails @relation(fields:[cardId],references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }

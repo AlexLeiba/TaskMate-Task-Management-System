@@ -1,7 +1,9 @@
 import { BoardCardSkeleton } from "@/components/layout/Protected/Pages/Dashboard/Boards/BoardCardSkeleton";
 import { OrgDetails } from "@/components/layout/Protected/Pages/Dashboard/OrgDetails";
 import { Separator } from "@/components/ui/separator";
+
 import dynamic from "next/dynamic";
+
 const BoardsServerRender = dynamic(
   () =>
     import("@/components/layout/Protected/Pages/Dashboard/BoardsServerRender").then(

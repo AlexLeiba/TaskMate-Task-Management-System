@@ -1,9 +1,11 @@
 "use server";
 
+import { Activity, User } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { ActivityType } from "@/lib/types";
+import { currentActiveUser } from "@/lib/server/currentActiveUser";
 import { auth } from "@clerk/nextjs/server";
 
+export type ActivityWithAuthor = Activity & { author: User };
 export async function getActivitiesAction({
   limit = 10,
   page = 1,
@@ -11,18 +13,15 @@ export async function getActivitiesAction({
   limit?: number;
   page?: number;
 }): Promise<{
-  data: ActivityType[];
+  data: ActivityWithAuthor[];
   count: number;
   error: { message: string };
 }> {
   try {
+    const { data: activeUser } = await currentActiveUser();
     const { orgId } = await auth();
-    if (!orgId) {
-      return {
-        data: [],
-        count: 0,
-        error: { message: "Something went wrong" },
-      };
+    if (!orgId || !activeUser) {
+      throw new Error("User not authenticated");
     }
 
     const [count, response] = await Promise.all([

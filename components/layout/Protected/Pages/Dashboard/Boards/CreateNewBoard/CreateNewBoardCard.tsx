@@ -17,13 +17,17 @@ import { IconButton } from "@/components/ui/iconButton";
 import DialogBoardDetails from "./DialogBoardDetails";
 import { useStore } from "@/store/useStore";
 
-export function CreateNewBoardCard() {
+type Props = {
+  disabled?: boolean;
+};
+export function CreateNewBoardCard({ disabled = false }: Props) {
   const { newBoardDialogOpen, setNewBoardDialogOpen } = useStore();
 
   return (
     <>
       {/* CREATE CARD */}
       <IconButton
+        disabled={disabled}
         classNameChildren="group flex flex-col w-full justify-center items-center "
         onClick={() => setNewBoardDialogOpen(true)}
         title="Create new board"

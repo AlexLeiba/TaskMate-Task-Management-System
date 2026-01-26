@@ -9,22 +9,43 @@ import { LIST_STATUSES } from "@/lib/consts";
 
 import { StatusType } from "@/lib/types";
 import { IconButton } from "@/components/ui/iconButton";
+import toast from "react-hot-toast";
+import { useMutation } from "@tanstack/react-query";
+import { updateListStatusAction } from "@/app/actions/list";
+import { usePathname } from "next/navigation";
 
 type Props = {
   selectedStatus: string;
+  listId: string;
 };
-export function ListStatuses({ selectedStatus }: Props) {
+export function ListStatuses({ selectedStatus, listId }: Props) {
+  const pathname = usePathname();
+  const boardId = pathname.split("/").at(-1) || "";
+  const { mutate: mutateChangeStatus, isPending: isPendingChangeStatus } =
+    useMutation({
+      mutationFn: updateListStatusAction,
+      onSuccess: () => {
+        toast.dismiss("list-status");
+        toast.success("List status changed");
+      },
+      onError: ({ message }) => {
+        toast.dismiss("list-status");
+        toast.error(message || "Error changing list status, please try again");
+      },
+    });
+  // get list id here TODO
   const [statusData, setStatusData] = useState<StatusType>(
-    LIST_STATUSES.find((s) => s.value === selectedStatus)!
+    LIST_STATUSES.find((s) => s.value === selectedStatus)!,
   );
   const [isOpenedStatus, setIsOpenedStatus] = useState(false);
 
   function handleSelectStatus(status: StatusType) {
-    // TODO api req with new status
-    // If success show optimistic status
-    setStatusData(status); //if api req issuccess then set Optimistic status and close p[popover]
-    // setIsOpenedStatus(false);
+    setStatusData(status);
+
+    mutateChangeStatus({ boardId, listId, status: status.value });
+    toast.loading("Changing list status...", { id: "list-status" });
   }
+
   return (
     <Popover open={isOpenedStatus} onOpenChange={setIsOpenedStatus}>
       <PopoverTrigger asChild>
@@ -46,6 +67,7 @@ export function ListStatuses({ selectedStatus }: Props) {
         <div className="flex flex-col ">
           {LIST_STATUSES.map((status) => (
             <IconButton
+              disabled={isPendingChangeStatus}
               aria-label={status.label}
               title={status.label}
               onClick={() => handleSelectStatus(status)}

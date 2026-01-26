@@ -1,10 +1,10 @@
-import { ListDataType } from "@/lib/types";
 import { AddTicketCard } from "./AddTicketCard";
 import { TicketCard } from "../TicketCard/TicketCard";
 import { ListCardHeader } from "./ListCardHeader";
+import { ListAndCardsType } from "@/app/actions/list";
 
 type Props = {
-  listData: ListDataType;
+  listData: ListAndCardsType;
 };
 export function ListCard({ listData }: Props) {
   return (
@@ -24,10 +24,7 @@ export function ListCard({ listData }: Props) {
       </div>
 
       {/*ADD NEW TICKET CARD */}
-      <AddTicketCard
-        listId={listData.id.toString()}
-        listTitle={listData.title}
-      />
+      <AddTicketCard listId={listData.id.toString()} />
     </li>
   );
 }

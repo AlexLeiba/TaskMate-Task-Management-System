@@ -7,5 +7,5 @@ type Props = {
 };
 export async function BoardsServerRender({ orgId }: Props) {
   const boards = await getBoardsAction(orgId);
-  return <Boards data={boards.data} />;
+  return <Boards data={boards} />;
 }

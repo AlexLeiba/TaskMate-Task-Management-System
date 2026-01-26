@@ -11,11 +11,12 @@ import { Spacer } from "@/components/ui/spacer";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { InputTitleSchema, InputTitleSchemaType } from "@/lib/schemas";
-import { BoardType, UnsplashImagesType } from "@/lib/types";
+import { UnsplashImagesType } from "@/lib/types";
 import toast from "react-hot-toast";
 import { usePathname } from "next/navigation";
 import { createNewBoardAction } from "@/app/actions/dashboard";
 import { useStore } from "@/store/useStore";
+import { Board } from "@/lib/generated/prisma/client";
 
 function DialogBoardDetails() {
   const { setNewBoardDialogOpen } = useStore();
@@ -27,8 +28,15 @@ function DialogBoardDetails() {
     staleTime: 1000 * 60 * 60,
   });
 
-  const { mutateAsync, isPending } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: createNewBoardAction,
+    onSuccess: () => {
+      setValue("title", "");
+      setSelectedImage(undefined);
+      setNewBoardDialogOpen(false);
+      toast.success("Board created successfully");
+    },
+    onError: ({ message }) => toast.error(message || "Error creating board"),
   });
 
   const pathname = usePathname();
@@ -61,23 +69,14 @@ function DialogBoardDetails() {
       return toast.error("Please select an organization");
     }
 
-    const newBoardData: Omit<BoardType, "id"> = {
+    const newBoardData: Omit<Board, "id" | "createdAt" | "updatedAt"> = {
       title: data.title,
       cardImageUrl:
         selectedImage?.urls.small || selectedImage?.urls.regular || "",
       bgImageUrl: selectedImage?.urls.full || selectedImage?.urls.regular || "",
       orgId: organizationId,
     };
-    const response = await mutateAsync(newBoardData);
-
-    if (response.error.message) {
-      return toast.error("Error creating board, please try again");
-    }
-
-    setValue("title", "");
-    setSelectedImage(undefined);
-    setNewBoardDialogOpen(false);
-    return toast.success("Board created successfully");
+    mutate(newBoardData);
   }
 
   return (

@@ -116,7 +116,7 @@ export function AddNewInput({
       setError(inputName as keyof typeof register, { message: "" });
       setValue(inputName, "");
     }
-  }, [isOpenedTitleInput, setError, inputName, register]);
+  }, [isOpenedTitleInput, setError, inputName, register, setValue]);
 
   return (
     <div
@@ -184,7 +184,7 @@ export function AddNewInput({
               className={cn(
                 "flex",
                 buttonDirection === "row" ? "flex" : "flex-col",
-                "gap-1"
+                "gap-1",
               )}
             >
               <Button
@@ -204,7 +204,6 @@ export function AddNewInput({
                 disabled={loading || props.disabled}
                 title={`Close ${inputName} input`}
                 aria-label={`Close ${inputName} input`}
-                loading={loading}
                 variant={"ghost"}
                 onClick={(e) => {
                   e.stopPropagation();

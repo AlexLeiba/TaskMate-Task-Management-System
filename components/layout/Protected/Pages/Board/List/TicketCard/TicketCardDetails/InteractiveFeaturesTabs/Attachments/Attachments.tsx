@@ -1,104 +1,37 @@
 import { useRef } from "react";
 import { IconButton } from "@/components/ui/iconButton";
 import { Image, ImageDown, Plus } from "lucide-react";
-import { AttachmentsType, isFileMimeType, isImageMimeType } from "@/lib/types";
+import { isFileMimeType, isImageMimeType } from "@/lib/types";
 import { downloadAsZip, DownloadZipTypeProps } from "@/lib/utils";
 import { Spacer } from "@/components/ui/spacer";
 import { AttachmentCard } from "./AttachmentCard";
 import { AttachmentCardSkeleton } from "./AttachmentCardSkeleton";
+import { useQuery } from "@tanstack/react-query";
+import {
+  UploadedFile,
+  User,
+  type Attachments,
+} from "@/lib/generated/prisma/client";
 
 // TODO, fetch attachments on opening this tab, show skeleton while is downloading in browser
 const now = new Date("2023-01-01T00:00:00").getTime();
-const attachmentsData: AttachmentsType[] = [
-  {
-    files: [
-      {
-        type: "image/png",
-        id: "123",
-        name: "image.png",
-        url: "https://picsum.photos/300/300",
-      },
-      {
-        type: "image/png",
-        id: "1236",
-        name: "image.png",
-        url: "https://picsum.photos/300/300",
-      },
-      {
-        type: "image/png",
-        id: "123556",
-        name: "image.png",
-        url: "https://picsum.photos/300/300",
-      },
-    ],
-    createdAt: now,
 
-    author: {
-      email: "sample@example.com",
-      name: "Sample User",
-      avatar: `https://picsum.photos/300/300`,
-      id: "1232",
-    },
-  },
-  {
-    files: [
-      {
-        type: "image/png",
-        id: "1672ds3",
-        name: "image.png",
-        url: "https://picsum.photos/300/300",
-      },
-      {
-        type: "application/pdf",
-        id: "1672dsds3",
-        name: "my-file2.pdf",
-        url: "https://picsum.photos/300/300",
-      },
-      {
-        type: "application/pdf",
-        id: "1672ddsdss3",
-        name: "my-file.pdf",
-        url: "https://picsum.photos/300/300",
-      },
-    ],
-    createdAt: now,
-    author: {
-      email: "sample@example.com",
-      name: "Sample User",
-      avatar: `https://picsum.photos/300/300`,
-      id: "12763",
-    },
-  },
-  {
-    files: [
-      {
-        type: "image/png",
-        id: "127ds673",
-        name: "image.png",
-        url: "https://picsum.photos/300/300",
-      },
-      {
-        type: "image/png",
-        id: "127dsd673",
-        name: "image.png",
-        url: "https://picsum.photos/300/300",
-      },
-    ],
-    createdAt: now,
-    author: {
-      email: "sample@example.com",
-      name: "Sample User 2",
-      avatar: `https://picsum.photos/300/300`,
-      id: "1267333",
-    },
-  },
-];
 type Props = {
   cardId: string;
   listId: string | undefined;
 };
 export function Attachments({ cardId, listId }: Props) {
   const uploadFileRef = useRef<HTMLInputElement>(null);
+  const attachmentsData: (Attachments & {
+    files: UploadedFile[];
+    author: User;
+  })[] = [];
+  const { data, isLoading } = useQuery({
+    queryFn: () => {},
+    queryKey: ["attachments"],
+    staleTime: 1000 * 60 * 60,
+  });
+
   function handleDeleteFile(fileId: string) {
     console.log("🚀 ~ handleDeleteFile ~ fileId:", fileId);
   }
@@ -112,7 +45,7 @@ export function Attachments({ cardId, listId }: Props) {
   }
 
   async function handleChangeUploadedFile(
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) {
     console.log("🚀 ~ handleChangeUploadedFile ~ event:", event);
 
@@ -125,7 +58,7 @@ export function Attachments({ cardId, listId }: Props) {
       const previewFileUrl = URL.createObjectURL(event.target.files[0]);
       console.log(
         "🚀 ~ handleChangeUploadedFile ~ previewFileUrl:",
-        previewFileUrl
+        previewFileUrl,
       );
       // TODO apir req, update frontend with new file
 
@@ -137,7 +70,7 @@ export function Attachments({ cardId, listId }: Props) {
       const previewFileUrl = URL.createObjectURL(event.target.files[0]);
       console.log(
         "🚀 ~ handleChangeUploadedFile ~ previewFileUrl:",
-        previewFileUrl
+        previewFileUrl,
       );
 
       // TODO, make api req with file blob
@@ -149,7 +82,7 @@ export function Attachments({ cardId, listId }: Props) {
   async function handleDownloadZipFile() {
     const allFilesData: DownloadZipTypeProps["files"] = [];
     attachmentsData?.forEach((attachments) => {
-      attachments.files.forEach((file) => {
+      attachments?.files.forEach((file) => {
         allFilesData.push({
           name: file.name || "file",
           url: file.url,

@@ -4,9 +4,11 @@ import { UserPlus } from "lucide-react";
 import { AssignToDropdown } from "./AssignToDropdown";
 
 type Props = {
-  data: AssignedToType | undefined;
+  assignedTo: string | undefined;
+  listId: string | undefined;
+  cardId: string;
 };
-export function AssignTo({ data }: Props) {
+export function AssignTo({ assignedTo, listId, cardId }: Props) {
   return (
     <div className="flex flex-col w-full">
       <div className="flex gap-2 items-center">
@@ -14,7 +16,11 @@ export function AssignTo({ data }: Props) {
         <p className="text-xl font-medium">Assign to</p>
       </div>
       <Spacer size={4} />
-      <AssignToDropdown data={data} />
+      <AssignToDropdown
+        assignedTo={assignedTo}
+        listId={listId}
+        cardId={cardId}
+      />
     </div>
   );
 }

@@ -2,11 +2,14 @@ import { format } from "date-fns";
 import React from "react";
 
 type Props = {
-  createdAt: number | undefined;
-  updatedAt: number | undefined;
+  createdAt: Date | undefined | null;
+  updatedAt: Date | undefined | null;
 };
 export function DateTime({ createdAt, updatedAt }: Props) {
-  if (!createdAt || !updatedAt) return null;
+  if (!createdAt || !updatedAt)
+    return (
+      <div className="h-10 bg-gray-700 animate-pulse rounded-md w-44.25"></div>
+    );
   return (
     <div className="flex flex-col gap-2 dark:text-gray-400 ">
       <div className="flex gap-2 items-center">

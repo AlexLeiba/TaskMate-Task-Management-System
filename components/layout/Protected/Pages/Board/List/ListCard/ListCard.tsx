@@ -19,7 +19,7 @@ export function ListCard({ listData }: Props) {
       {/* TICKET CARDS */}
       <div className="flex flex-col gap-2">
         {listData?.cards?.map((card) => (
-          <TicketCard key={card.id} data={card} />
+          <TicketCard key={card.id} data={card} boardId={listData.boardId} />
         ))}
       </div>
 

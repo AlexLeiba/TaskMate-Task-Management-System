@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 type Props = { boardId: string };
 export function AddNewListCard({ boardId }: Props) {
   const { mutate, isPending } = useMutation({
+    mutationKey: ["create-list"],
     mutationFn: createListAction,
     onSuccess: () => {
       toast.dismiss("create-list");
@@ -29,7 +30,7 @@ export function AddNewListCard({ boardId }: Props) {
     toast.loading("Creating list...", { id: "create-list" });
   }
   return (
-    <li className="shrink-0 h-full flex flex-col justify-between p-2  dark:bg-gray-700 dark:text-white w-70 rounded-sm ">
+    <li className="shrink-0 h-full flex flex-col justify-between  dark:bg-gray-700 dark:text-white w-70 rounded-sm ">
       <AddNewInput
         disabled={isPending}
         loading={isPending}
@@ -40,7 +41,7 @@ export function AddNewListCard({ boardId }: Props) {
         setIsOpenedTitleInput={setIsOpen}
         isOpenedTitleInput={isOpen}
       >
-        <div className="flex justify-between">
+        <div className="flex justify-between p-1">
           <p className="text-base font-medium">Add new list</p>
           <IconButton
             title="Add new list card"

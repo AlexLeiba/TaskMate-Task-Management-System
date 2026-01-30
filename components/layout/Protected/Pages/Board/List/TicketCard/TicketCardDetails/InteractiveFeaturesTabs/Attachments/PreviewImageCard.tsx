@@ -1,12 +1,12 @@
 import { IconButton } from "@/components/ui/iconButton";
 import { KEYBOARD } from "@/lib/consts";
-import { UploadedFileType } from "@/lib/types";
+import { UploadedFile } from "@/lib/generated/prisma/client";
+
 import { X } from "lucide-react";
 import Image from "next/image";
-import React from "react";
 
 type Props = {
-  data: UploadedFileType;
+  data: UploadedFile;
   handleDeleteImage: (imageId: string) => void;
   handleViewImage: (url: string, name?: string) => void;
 };
@@ -26,7 +26,7 @@ export function PreviewImageCard({
           handleViewImage(data.id);
         }
       }}
-      onClick={() => handleViewImage(data.url, data.name)}
+      onClick={() => handleViewImage(data.url, data?.name || "")}
       className="relative w-25 border border-px rounded-md cursor-zoom-in"
     >
       <div className="w-full h-17.5 overflow-hidden p">

@@ -6,15 +6,17 @@ import { Comments } from "./Comments/Comments";
 import { Activities } from "./Activities/Activities";
 import { Attachments } from "./Attachments/Attachments";
 import { Spacer } from "@/components/ui/spacer";
-import { CardDetailsType } from "@/lib/types";
 import { Checklist } from "./Checklist/Checklist";
 import { useStore } from "@/store/useStore";
 import { TAB_ELEMENTS } from "@/lib/consts";
+import { Comment, User } from "@/lib/generated/prisma/client";
 
 type Props = {
-  data: CardDetailsType;
+  cardId: string;
+  listId: string;
+  comments: (Comment & { author: User })[] | undefined;
 };
-export function InteractiveFeaturesTabs({ data }: Props) {
+export function InteractiveFeaturesTabs({ cardId, listId, comments }: Props) {
   const { selectedTab, setSelectTab } = useStore();
 
   function handleSelectTab(data: (typeof TAB_ELEMENTS)[number]) {
@@ -35,7 +37,7 @@ export function InteractiveFeaturesTabs({ data }: Props) {
               <p
                 className={cn(
                   selectedTab === data.value ? "text-white" : "text-gray-400",
-                  "text-lg font-medium"
+                  "text-lg font-medium",
                 )}
               >
                 {data.label}
@@ -49,15 +51,15 @@ export function InteractiveFeaturesTabs({ data }: Props) {
       </div>
       <Spacer size={6} />
       <div className="pl-2">
-        {selectedTab === "comments" && <Comments data={data.comments} />}
+        {selectedTab === "comments" && <Comments data={comments} />}
         {selectedTab === "attachments" && (
-          <Attachments cardId={data.id} listId={data.listId} />
+          <Attachments cardId={cardId} listId={listId} />
         )}
         {selectedTab === "activities" && (
-          <Activities cardId={data.id} listId={data.listId} />
+          <Activities cardId={cardId} listId={listId} />
         )}
         {selectedTab === "checklist" && (
-          <Checklist cardId={data.id} listId={data.listId} />
+          <Checklist cardId={cardId} listId={listId} />
         )}
       </div>
     </div>

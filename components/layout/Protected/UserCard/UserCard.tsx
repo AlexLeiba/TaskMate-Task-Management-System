@@ -5,6 +5,7 @@ import Image from "next/image";
 import { ComponentProps } from "react";
 import { UserCardSkeleton } from "./UserCardSkeleton";
 import { format } from "date-fns";
+import { User } from "@/lib/generated/prisma/client";
 
 const cardVariants = cva("", {
   variants: {
@@ -46,7 +47,7 @@ const emailVariants = cva("text-gray-400", {
 
 type Props = VariantProps<typeof cardVariants> &
   ComponentProps<"div"> & {
-    data: UserType;
+    data: Omit<User, "id" | "createdAt" | "updatedAt"> | undefined;
     type?: string;
     description?: string;
     createdAt?: string;

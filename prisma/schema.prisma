@@ -71,7 +71,7 @@ model Card {
 id String @id @default(uuid())
 title String
 priority PriorityType @default(none)
-assignedToEmail String? @unique //
+assignedToEmail String?  //
 listId String  //to reference in which list is located
 listName String
 reporterId String//who has created the card/is mandatory
@@ -100,7 +100,7 @@ model CardDetails {
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
 
-  card Card @relation(fields:[cardId],references: [id])
+  card Card @relation(fields:[cardId],references: [id] ,onDelete: Cascade)
 }
 
 

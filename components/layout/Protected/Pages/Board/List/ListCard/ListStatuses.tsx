@@ -23,6 +23,7 @@ export function ListStatuses({ selectedStatus, listId }: Props) {
   const boardId = pathname.split("/").at(-1) || "";
   const { mutate: mutateChangeStatus, isPending: isPendingChangeStatus } =
     useMutation({
+      mutationKey: ["update-list-status"],
       mutationFn: updateListStatusAction,
       onSuccess: () => {
         toast.dismiss("list-status");

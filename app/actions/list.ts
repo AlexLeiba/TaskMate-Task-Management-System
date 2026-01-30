@@ -351,6 +351,19 @@ export async function createListCardAction({
       listId,
       reporterId: activeUser.id,
       listName: listData.title,
+
+      details: {
+        create: {
+          description: "",
+
+          dueDate: {
+            create: {
+              date: "",
+              time: "",
+            },
+          },
+        },
+      },
     },
   });
 

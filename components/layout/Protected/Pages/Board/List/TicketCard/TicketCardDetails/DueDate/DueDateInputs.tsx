@@ -4,28 +4,27 @@ import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { ChevronDownIcon, Plus } from "lucide-react";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { KEYBOARD } from "@/lib/consts";
 import { DueDateCard } from "./DueDateCard";
-import { DueDateType } from "@/lib/types";
 import { DueDateSkeleton } from "./DueDateSkeleton";
+import { DueDate } from "@/lib/generated/prisma/client";
+
+import dynamic from "next/dynamic";
+
+const DeleteDialog = dynamic(() =>
+  import("@/components/layout/Protected/DeleteDialog/DeleteDialog").then(
+    (m) => m.DeleteDialog,
+  ),
+);
 type Props = {
-  data: DueDateType | undefined;
+  data: DueDate[] | undefined;
+  cardId: string | undefined;
+  listId: string | undefined;
 };
 export function DueDateInputs({ data }: Props) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -109,49 +108,11 @@ export function DueDateInputs({ data }: Props) {
         />
       )}
 
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="text-2xl">
-              Are you absolutely sure?
-            </DialogTitle>
-            <DialogDescription className="text-xl">
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
-            </DialogDescription>
-          </DialogHeader>
-
-          <DialogFooter className="flex ">
-            <DialogClose asChild>
-              <Button
-                size={"lg"}
-                type="button"
-                variant="default"
-                onClick={(e) => e.stopPropagation()}
-              >
-                Cancel
-              </Button>
-            </DialogClose>
-            <Button
-              size={"lg"}
-              type="button"
-              variant="destructive"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDeleteDuedate();
-              }}
-              onKeyDown={(e) => {
-                if (e.key === KEYBOARD.ENTER) {
-                  e.stopPropagation();
-                  handleDeleteDuedate();
-                }
-              }}
-            >
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DeleteDialog
+        deleteDialogOpen={deleteDialogOpen}
+        setDeleteDialogOpen={setDeleteDialogOpen}
+        handleDelete={handleDeleteDuedate}
+      />
     </div>
   );
 }

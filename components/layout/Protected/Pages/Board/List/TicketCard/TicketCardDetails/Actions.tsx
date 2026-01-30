@@ -14,8 +14,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 type Props = {
-  cardId: string;
-  cardTitle: string;
+  cardId: string | undefined;
+  cardTitle: string | undefined;
   listId: string | undefined;
 };
 export function Actions({ cardId, listId, cardTitle }: Props) {

@@ -6,50 +6,8 @@ import { CheckSquare } from "lucide-react";
 import { ChecklistCard } from "./ChecklistCard";
 import { Button } from "@/components/ui/button";
 import { ChecklistSkeleton } from "./ChecklistSkeleton";
-import { ChecklistType } from "@/lib/types";
-
-const checklistData: ChecklistType[] = [
-  {
-    id: "1",
-    title: "To do task1",
-    isCompleted: false,
-  },
-  {
-    id: "2",
-    title: "To do task2",
-    isCompleted: true,
-  },
-  {
-    id: "243",
-    title: "To do task2",
-    isCompleted: true,
-  },
-  {
-    id: "432",
-    title: "To do task2",
-    isCompleted: true,
-  },
-  {
-    id: "24dsds3",
-    title: "To do task2",
-    isCompleted: true,
-  },
-  {
-    id: "2dsd43",
-    title: "To do task2",
-    isCompleted: true,
-  },
-  {
-    id: "2asd43",
-    title: "To do task2",
-    isCompleted: true,
-  },
-  {
-    id: "24qwew3",
-    title: "To do task2",
-    isCompleted: true,
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import { type Checklist } from "@/lib/generated/prisma/client";
 
 type Props = {
   cardId: string;
@@ -57,6 +15,14 @@ type Props = {
 };
 export function Checklist({ cardId, listId }: Props) {
   const [isOpenedTitleInput, setIsOpenedTitleInput] = useState(false);
+
+  const checklistData: Checklist[] = [];
+
+  const { data, isLoading } = useQuery({
+    queryFn: () => {},
+    queryKey: ["checklist"],
+    staleTime: 1000 * 60 * 60,
+  });
 
   function handleSelectChecklist(id: string) {
     console.log("🚀 ~ handleSelectChecklist ~ id:", id);

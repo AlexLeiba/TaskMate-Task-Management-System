@@ -3,12 +3,15 @@ import { Spacer } from "@/components/ui/spacer";
 import { Calendar1Icon } from "lucide-react";
 
 import { DueDateInputs } from "./DueDateInputs";
-import { DueDateType } from "@/lib/types";
+import { type DueDate } from "@/lib/generated/prisma/client";
 
 type Props = {
-  data: DueDateType | undefined;
+  data: DueDate[] | undefined;
+
+  cardId: string | undefined;
+  listId: string | undefined;
 };
-export function DueDate({ data }: Props) {
+export function DueDate({ data, cardId, listId }: Props) {
   return (
     <div className="flex flex-col">
       <div className="flex justify-between items-center">
@@ -18,7 +21,7 @@ export function DueDate({ data }: Props) {
         </div>
       </div>
       <Spacer size={4} />
-      <DueDateInputs data={data} />
+      <DueDateInputs data={data} cardId={cardId} listId={listId} />
 
       {/* DELETE CARD DIALOG */}
     </div>

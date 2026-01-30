@@ -24,6 +24,7 @@ export function SubHeader({ data: { data: board, error }, boardId }: Props) {
   }, [error.message]);
 
   const { mutate, isPending } = useMutation({
+    mutationKey: ["edit-board-title"],
     mutationFn: editBoardTitleAction,
     onSuccess: () => {
       toast.success("Board title updated");

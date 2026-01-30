@@ -4,10 +4,11 @@ import { IconButton } from "@/components/ui/iconButton";
 import { X } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
-import { CommentsType } from "@/lib/types";
+
+import { Comment, User } from "@/lib/generated/prisma/client";
 
 type Props = {
-  data: CommentsType;
+  data: Comment & { author: User };
   handleOpenDeleteModal: () => void;
 };
 export function CommentCard({ data: comment, handleOpenDeleteModal }: Props) {
@@ -17,7 +18,7 @@ export function CommentCard({ data: comment, handleOpenDeleteModal }: Props) {
       <p>{comment.comment}</p>
       <div className="flex justify-between items-center px-2">
         <p className="text-xs text-gray-400">
-          {format(new Date(comment.createdAt), "MMM d yyyy a HH:mm")}
+          {format(new Date(comment?.createdAt as Date), "MMM d yyyy a HH:mm")}
         </p>
 
         <IconButton

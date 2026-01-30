@@ -29,6 +29,7 @@ function DialogBoardDetails() {
   });
 
   const { mutate, isPending } = useMutation({
+    mutationKey: ["create-new-board"],
     mutationFn: createNewBoardAction,
     onSuccess: () => {
       setValue("title", "");

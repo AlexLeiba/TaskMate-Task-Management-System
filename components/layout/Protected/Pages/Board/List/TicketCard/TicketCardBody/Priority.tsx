@@ -1,36 +1,64 @@
+import { editPriorityAction } from "@/app/actions/card";
 import { IconButton } from "@/components/ui/iconButton";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CARD_PRIORITIES, FAKE_USERS, KEYBOARD } from "@/lib/consts";
-import { PriorityType, UserType } from "@/lib/types";
+import { CARD_PRIORITIES, KEYBOARD } from "@/lib/consts";
+import { PriorityType } from "@/lib/types";
+import { useMutation } from "@tanstack/react-query";
 import { Check, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 type Props = {
   priority: string;
+  boardId: string;
+  listId: string;
+  cardId: string;
 };
-export function Priority({ priority }: Props) {
+export function Priority({ priority, boardId, listId, cardId }: Props) {
   const [isOpenedOptions, setIsOpenedOptions] = useState(false);
-  const [isOpenedAssign, setIsOpenedAssign] = useState(false);
-  const [selectedPriority, setSelectedPriority] = useState<PriorityType>(
-    CARD_PRIORITIES.find((p) => p.value === priority) || {
-      label: "No Priority",
-      value: "no-priority",
+  const [selectedPriority, setSelectedPriority] = useState<PriorityType>({
+    label: "None",
+    value: "none",
+  });
+
+  useEffect(() => {
+    // eslint-disable-next-line
+    setSelectedPriority(
+      CARD_PRIORITIES.find((p) => p.value === priority) || {
+        label: "None",
+        value: "none",
+      },
+    );
+  }, [priority]);
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: editPriorityAction,
+    mutationKey: ["priority"],
+    onSuccess: () => {
+      toast.dismiss("priority");
+      toast.success("Card priority was changed");
     },
-  );
-  const [selectedUser, setSelectedUser] = useState<UserType>(FAKE_USERS[0]);
+    onError: ({ message }) => {
+      toast.dismiss("priority");
+      toast.error(message || "Error editing card priority, please try again");
+    },
+  });
 
   function handleSelectPriority(priorityValue: PriorityType) {
-    setSelectedPriority(priorityValue);
+    toast.dismiss("priority");
+    mutate({ priority: priorityValue.value, boardId, listId, cardId });
+
     setIsOpenedOptions(false);
   }
   return (
     <Popover open={isOpenedOptions} onOpenChange={setIsOpenedOptions}>
       <PopoverTrigger asChild>
         <IconButton
+          disabled={isPending}
           aria-label="Priority"
           title="Priority"
           onClick={(e) => {
@@ -55,6 +83,7 @@ export function Priority({ priority }: Props) {
         <div className="flex justify-between items-center mb-4">
           <p className="text-xl font-medium">Priority</p>
           <button
+            disabled={isPending}
             onClick={(e) => {
               e.stopPropagation();
               setIsOpenedOptions(false);
@@ -76,6 +105,7 @@ export function Priority({ priority }: Props) {
           {/* PRIORITIES */}
           {CARD_PRIORITIES.map((priority) => (
             <IconButton
+              disabled={isPending}
               title={priority.label}
               aria-label={priority.label}
               key={priority.value}
@@ -92,7 +122,7 @@ export function Priority({ priority }: Props) {
                 }
               }}
             >
-              <div className="flex gap-2">
+              <div className="flex gap-2 items-center">
                 {priority.icon}
                 <p className="text-lg">{priority.label}</p>
               </div>

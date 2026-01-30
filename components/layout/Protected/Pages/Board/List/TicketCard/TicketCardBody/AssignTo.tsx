@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -12,12 +12,17 @@ import { IconButton } from "@/components/ui/iconButton";
 import { UserCard } from "../../../../../UserCard/UserCard";
 import { useOrganization } from "@clerk/nextjs";
 import { AssignToUserSkeleton } from "./AssignToUserSkeleton";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { assignToCardAction, unassigneCardAction } from "@/app/actions/card";
+import toast from "react-hot-toast";
 
 type Props = {
-  assignedTo: AssignedToType | undefined;
+  assignedTo: AssignedToType["email"] | null;
+  boardId: string;
+  listId: string;
+  cardId: string;
 };
-export function AssignTo({ assignedTo }: Props) {
+export function AssignTo({ assignedTo, boardId, listId, cardId }: Props) {
   const [isOpenedAssign, setIsOpenedAssign] = useState(false);
 
   const [selectedUser, setSelectedUser] = useState<UserType>(FAKE_USERS[0]);
@@ -25,9 +30,67 @@ export function AssignTo({ assignedTo }: Props) {
 
   const { isLoading, data: members } = useQuery({
     queryFn: fetchMembers,
-    queryKey: ["members"], //is tied to unique key/ can be used with any Promise based method GET/POST
-    // UNIOQUE KEY IS USED INTERNALLY FOR REFETCHING , Caching and sharing
+    queryKey: ["members"],
   });
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: assignToCardAction,
+    mutationKey: ["assign-to"],
+    onSuccess: () => {
+      toast.dismiss("assign-card");
+      toast.success("Card assigned");
+
+      if (foundSelectedUser) {
+        const selectedUser = {
+          id: foundSelectedUser.id,
+          email: foundSelectedUser.publicUserData?.identifier || "",
+          name: foundSelectedUser.publicUserData?.firstName || "",
+          avatar: foundSelectedUser.publicUserData?.imageUrl || "",
+        };
+
+        setSelectedUser(selectedUser);
+      }
+    },
+    onError: ({ message }) => {
+      toast.dismiss("assign-card");
+      toast.error(message || "Error assigning card, please try again");
+    },
+  });
+
+  const { mutate: unnasignMutation, isPending: isPendingUnassigne } =
+    useMutation({
+      mutationFn: unassigneCardAction,
+      mutationKey: ["unassign-to"],
+      onSuccess: () => {
+        toast.dismiss("unassign-card");
+        toast.success("Card unassigned");
+      },
+      onError: ({ message }) => {
+        toast.dismiss("unassign-card");
+        toast.error(message || "Error unassigning card, please try again");
+      },
+    });
+
+  useEffect(() => {
+    const foundSelectedUser = members?.find(
+      (member) => member.publicUserData?.identifier === assignedTo,
+    );
+
+    if (foundSelectedUser) {
+      const selectedUser = {
+        id: foundSelectedUser.id,
+        email: foundSelectedUser.publicUserData?.identifier || "",
+        name: foundSelectedUser.publicUserData?.firstName || "",
+        avatar: foundSelectedUser.publicUserData?.imageUrl || "",
+      };
+      // eslint-disable-next-line
+      setSelectedUser(selectedUser);
+    }
+  }, [members, assignedTo]);
+
+  const foundSelectedUser = members?.find(
+    (member) => member.publicUserData?.identifier === assignedTo,
+  );
 
   async function fetchMembers() {
     if (!isLoaded || !organization || !organization.getMemberships()) return;
@@ -38,7 +101,33 @@ export function AssignTo({ assignedTo }: Props) {
   }
 
   function handleAssignTo(memberEmail: string) {
-    console.log("🚀 ~ handleAssignTo ~ user:", memberEmail);
+    mutate({
+      assignedUserData: {
+        email: memberEmail,
+        name: selectedUser.name,
+        avatar: selectedUser.avatar,
+      },
+      boardId,
+      listId,
+      cardId,
+    });
+    toast.loading("Assigning to user...", { id: "assign-card" });
+    setIsOpenedAssign(false);
+  }
+
+  function handleUnassigneUser() {
+    unnasignMutation({
+      assignedUserData: {
+        email: selectedUser.email,
+        name: selectedUser.name,
+        avatar: selectedUser.avatar,
+      },
+      boardId,
+      listId,
+      cardId,
+    });
+    toast.loading("Unassigning user...", { id: "unassign-card" });
+    setIsOpenedAssign(false);
   }
 
   return (
@@ -46,6 +135,7 @@ export function AssignTo({ assignedTo }: Props) {
       {/* TRIGGER */}
       <PopoverTrigger asChild>
         <IconButton
+          disabled={isPending || isPendingUnassigne}
           aria-label="Assign to"
           title="Assign to"
           onClick={(e) => {
@@ -61,13 +151,14 @@ export function AssignTo({ assignedTo }: Props) {
         >
           {isLoading ? (
             <AssignToUserSkeleton />
-          ) : assignedTo?.avatar ? (
+          ) : foundSelectedUser ? (
             <div className="rounded-sm overflow-hidden">
               <Image
-                src={assignedTo?.avatar}
-                width={40}
-                height={40}
-                alt="avatar"
+                src={foundSelectedUser.publicUserData?.imageUrl || ""}
+                alt={foundSelectedUser.publicUserData?.firstName || ""}
+                className="rounded-sm"
+                width={20}
+                height={20}
               />
             </div>
           ) : (
@@ -83,6 +174,7 @@ export function AssignTo({ assignedTo }: Props) {
         <div className="flex justify-between items-center mb-4">
           <p className="text-xl font-medium">Assign to</p>
           <IconButton
+            disabled={isPending || isPendingUnassigne}
             onClick={(e) => {
               e.stopPropagation();
               setIsOpenedAssign(false);
@@ -104,14 +196,10 @@ export function AssignTo({ assignedTo }: Props) {
         <div className="flex flex-col gap-2 items-start pl-2 ">
           {/* ASSIGN USER*/}
           <IconButton
+            disabled={isPending || isPendingUnassigne}
             onClick={(e) => {
               e.stopPropagation();
-              setSelectedUser({
-                id: "",
-                name: "",
-                avatar: "",
-                email: "",
-              });
+              handleUnassigneUser();
             }}
             onKeyDown={(e) => {
               if (e.key === KEYBOARD.ENTER) {
@@ -137,6 +225,7 @@ export function AssignTo({ assignedTo }: Props) {
           </IconButton>
           {members?.map((user) => (
             <IconButton
+              disabled={isPending || isPendingUnassigne}
               title={
                 user.publicUserData?.firstName +
                 " " +
@@ -173,7 +262,7 @@ export function AssignTo({ assignedTo }: Props) {
                 size={"sm"}
               />
 
-              {assignedTo?.email === user.publicUserData?.identifier && (
+              {assignedTo === user.publicUserData?.identifier && (
                 <Check className="text-green-600" />
               )}
             </IconButton>

@@ -1,9 +1,14 @@
 "use server";
 
-import { Card, PriorityType } from "@/lib/generated/prisma/client";
+import { Card, PriorityType, User } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
-import { currentActiveUser } from "@/lib/server/currentActiveUser";
+import {
+  createNewUser,
+  currentActiveUser,
+} from "@/lib/server/currentActiveUser";
+
+import { revalidatePath } from "next/cache";
 
 type EditCardTitleProps = {
   cardId: string;
@@ -53,6 +58,7 @@ export async function editCardTitleAction({
     activity: `Updated card title from "${foundCard.title}" to "${response.title}" from list: "${foundCard.listName}"`,
     type: "updated",
   });
+  revalidatePath(`/board/${boardId}`);
   return { data: response, error: { message: "" } };
 }
 
@@ -90,7 +96,7 @@ export async function copyCardAction({
     data: {
       listId,
       listName: foundCard.listName,
-      title: foundCard.title,
+      title: foundCard.title + " - copy",
       priority: foundCard.priority,
       assignedToEmail: foundCard.assignedToEmail || null,
       reporterId: activeUser.data.id,
@@ -103,7 +109,7 @@ export async function copyCardAction({
     activity: `Created a copy of card: "${foundCard.title}" in new card: "${response.title}" from list: "${foundCard.listName}"`,
     type: "created",
   });
-
+  revalidatePath(`/board/${boardId}`);
   return { data: response, error: { message: "" } };
 }
 
@@ -149,6 +155,8 @@ export async function deleteCardAction({
     activity: `Deleted card: "${response.title}" from list: "${response.listName}"`,
     type: "deleted",
   });
+
+  revalidatePath(`/board/${boardId}`);
   return { data: response, error: { message: "" } };
 }
 
@@ -195,23 +203,71 @@ export async function editPriorityAction({
   await createNewActivity({
     boardId: boardId,
     authorId: activeUser.data.id,
-    activity: `Updated priority of card: "${response.title}" from list: "${response.listName}"`,
+    activity: `Updated priority from "${foundCard.priority}" to "${response.priority}" ,of card: "${response.title}" from list: "${response.listName}"`,
     type: "updated",
   });
+  revalidatePath(`/board/${boardId}`);
   return { data: response, error: { message: "" } };
 }
 
 type AssignToCardActionProps = {
   cardId: string;
   listId: string;
-  email: string;
   boardId: string;
+  assignedUserData: Pick<User, "email" | "name" | "avatar">;
 };
 export async function assignToCardAction({
   cardId,
   listId,
-  email,
   boardId,
+  assignedUserData,
+}: AssignToCardActionProps): Promise<{
+  data: Card;
+  error: { message: string };
+}> {
+  const activeUser = await currentActiveUser();
+
+  if (!activeUser.data) {
+    throw new Error("User not authorized");
+  }
+
+  if (activeUser.data.email !== assignedUserData.email) {
+    await createNewUser({ data: assignedUserData });
+  }
+
+  const foundCard = await prisma.card.findFirst({
+    where: {
+      id: cardId,
+      listId,
+    },
+  });
+  if (!foundCard) {
+    throw new Error("Card not found");
+  }
+  const response = await prisma.card.update({
+    where: {
+      id: cardId,
+      listId,
+    },
+    data: {
+      assignedToEmail: assignedUserData.email,
+    },
+  });
+
+  await createNewActivity({
+    boardId: boardId,
+    authorId: activeUser.data.id,
+    activity: `Assigned "${assignedUserData.name}" to card: "${response.title}" from list: "${response.listName}"`,
+    type: "updated",
+  });
+  revalidatePath(`/board/${boardId}`);
+  return { data: response, error: { message: "" } };
+}
+export async function unassigneCardAction({
+  cardId,
+  listId,
+  boardId,
+  assignedUserData,
 }: AssignToCardActionProps): Promise<{
   data: Card;
   error: { message: string };
@@ -237,15 +293,16 @@ export async function assignToCardAction({
       listId,
     },
     data: {
-      assignedToEmail: email,
+      assignedToEmail: null,
     },
   });
 
   await createNewActivity({
     boardId: boardId,
     authorId: activeUser.data.id,
-    activity: `Assigned "${email}" to card: "${response.title}" from list: "${response.listName}"`,
+    activity: `Unassigned "${assignedUserData.name}" from card: "${response.title}" from list: "${response.listName}"`,
     type: "updated",
   });
+  revalidatePath(`/board/${boardId}`);
   return { data: response, error: { message: "" } };
 }

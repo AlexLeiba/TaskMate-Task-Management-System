@@ -3,21 +3,14 @@ import { FILES_MIME_TYPES, IMAGES_MIME_TYPES } from "./consts";
 // REUSABLE TYPES
 export type ActivityActionType = "created" | "deleted" | "updated";
 
-export type PrioritiesType =
-  | "low"
-  | "medium"
-  | "high"
-  | "urgent"
-  | "none"
-  | string;
+export type PrioritiesType = "low" | "medium" | "high" | "urgent" | "none";
 
 export type ListStatusType =
   | "todo"
   | "progress"
   | "review"
   | "done"
-  | "backlog"
-  | string;
+  | "backlog";
 
 export type UserType = {
   id?: string;
@@ -75,7 +68,7 @@ export type CardTicketType = {
 
 export type PriorityType = {
   label: string;
-  value: string;
+  value: PrioritiesType;
   icon?: React.ReactNode;
 };
 

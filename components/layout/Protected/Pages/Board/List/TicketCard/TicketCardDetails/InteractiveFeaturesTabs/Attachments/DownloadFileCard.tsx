@@ -1,9 +1,10 @@
 import { IconButton } from "@/components/ui/iconButton";
-import { UploadedFileType } from "@/lib/types";
+import { UploadedFile } from "@/lib/generated/prisma/client";
+
 import { X } from "lucide-react";
 
 type Props = {
-  data: UploadedFileType;
+  data: UploadedFile;
   handleDownloadFile: (url: string, name?: string) => void;
   handleDeleteFile: (fileId: string) => void;
 };
@@ -18,7 +19,7 @@ export function DownloadFileCard({
         title="Download file"
         aria-label="Download file"
         className="w-full bg-gray-700 px-4 py-2 rounded-md  "
-        onClick={() => handleDownloadFile(data.url, data.name)}
+        onClick={() => handleDownloadFile(data.url, data.name || "")}
         classNameChildren="w-full!"
       >
         <p className="line-clamp-1">{data.name}</p>

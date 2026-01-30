@@ -1,12 +1,14 @@
 import { Spacer } from "@/components/ui/spacer";
-import { PrioritiesType } from "@/lib/types";
 import { Wifi } from "lucide-react";
 import { PriorityDropdown } from "./PriorityDropdown";
+import { PriorityType } from "@/lib/generated/prisma/enums";
 
 type Props = {
-  data: PrioritiesType;
+  priority: PriorityType | undefined;
+  listId: string | undefined;
+  cardId: string | undefined;
 };
-export function Priority({ data }: Props) {
+export function Priority({ priority, listId, cardId }: Props) {
   return (
     <div className="flex flex-col w-full">
       <div className="flex gap-2 items-center">
@@ -15,7 +17,7 @@ export function Priority({ data }: Props) {
       </div>
 
       <Spacer size={4} />
-      <PriorityDropdown data={data} />
+      <PriorityDropdown priority={priority} listId={listId} cardId={cardId} />
     </div>
   );
 }

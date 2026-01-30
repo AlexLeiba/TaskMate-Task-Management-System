@@ -37,6 +37,7 @@ export function Boards({
   }, [data]);
 
   const { mutate, isPending } = useMutation({
+    mutationKey: ["delete-board"],
     mutationFn: deleteBoardAction,
     onSuccess: () => {
       toast.dismiss("delete-board");

@@ -4,10 +4,9 @@ import { IconButton } from "@/components/ui/iconButton";
 import { Spacer } from "@/components/ui/spacer";
 import { Check, List, SquarePen, X } from "lucide-react";
 import dynamic from "next/dynamic";
-
 import "react-quill-new/dist/quill.snow.css";
 import { InitialDescriptionState } from "./InitialDescriptionState";
-import { CardDetailsType } from "@/lib/types";
+
 import DOMPurify from "dompurify";
 import { DescriptionSkeleton } from "./DescriptionSkeleton";
 
@@ -17,15 +16,15 @@ const ReactQuill = dynamic(() => import("react-quill-new"), {
 });
 
 type Props = {
-  data: CardDetailsType;
+  description: string | null;
 };
-export function Description({ data }: Props) {
-  const [value, setValue] = useState(data.description || "");
+export function Description({ description }: Props) {
+  const [value, setValue] = useState(description || "");
   const [isQuillVisible, setIsQuillVisible] = useState(false);
 
   function handleSaveDescription() {
     // TODO api call
-    console.log(data, value);
+    console.log(description, value);
   }
 
   return (
@@ -68,19 +67,16 @@ export function Description({ data }: Props) {
         <div className="h-[223.67px]">
           <ReactQuill theme="snow" value={value} onChange={setValue} />
         </div>
-      ) : data ? (
+      ) : description !== null ? (
         <InitialDescriptionState
           onClick={() => setIsQuillVisible(true)}
-          classNameChildren="flex flex-col justify-start h-full wrap-break-word "
+          classNameChildren="flex flex-col justify-start items-start h-full wrap-break-word  "
         >
-          {data.description ? (
+          {description !== "" ? (
             <div
               className=" text-left max-w-full text-gray-300  wrap-break-word  html-content "
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(data.description).replace(
-                  /&nbsp;/g,
-                  " ",
-                ), //Prevent XSS attacks.
+                __html: DOMPurify.sanitize(description).replace(/&nbsp;/g, " "), //Prevent XSS attacks.
               }}
             />
           ) : (

@@ -1,5 +1,5 @@
 "use client";
-import { MouseEvent, useState } from "react";
+import { useState } from "react";
 import { Copy, Delete, Edit, Ellipsis, X } from "lucide-react";
 import {
   Popover,
@@ -8,43 +8,97 @@ import {
 } from "@/components/ui/popover";
 import { AddNewInput } from "../../AddNewInput";
 import { Separator } from "@/components/ui/separator";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { IconButton } from "@/components/ui/iconButton";
 import { KEYBOARD } from "@/lib/consts";
+import dynamic from "next/dynamic";
+import { useMutation } from "@tanstack/react-query";
+import {
+  copyCardAction,
+  deleteCardAction,
+  editCardTitleAction,
+} from "@/app/actions/card";
+import toast from "react-hot-toast";
+
+const DeleteDialog = dynamic(() =>
+  import("@/components/layout/Protected/DeleteDialog/DeleteDialog").then(
+    (m) => m.DeleteDialog,
+  ),
+);
 
 type Props = {
   title: string;
   cardId: string;
+  listId: string;
+  boardId: string;
 };
-export function TicketCardHeader({ title, cardId }: Props) {
+export function TicketCardHeader({ title, cardId, listId, boardId }: Props) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isOpenedOptions, setIsOpenedOptions] = useState(false);
   const [isOpenedTitleInput, setIsOpenedTitleInput] = useState(false);
 
+  const {
+    mutate: deleteCardMutation,
+    isPending: isPendingDeleteCardDeleteCard,
+  } = useMutation({
+    mutationKey: ["delete-card"],
+    mutationFn: deleteCardAction,
+    onSuccess: () => {
+      toast.dismiss("delete-card");
+      toast.success("Card deleted");
+    },
+    onError: ({ message }) => {
+      toast.dismiss("delete-card");
+      toast.error(message || "Error deleting card, please try again");
+    },
+  });
+  const { mutate: editTitleCardMutation, isPending: isPendingEditTitleCard } =
+    useMutation({
+      mutationKey: ["edit-title-card"],
+      mutationFn: editCardTitleAction,
+      onSuccess: () => {
+        toast.dismiss("edit-title-card");
+        toast.success("Card title was edited");
+      },
+      onError: ({ message }) => {
+        toast.dismiss("edit-title-card");
+        toast.error(message || "Error editing card title, please try again");
+      },
+    });
+  const { mutate: copyCardMutation, isPending: isPendingCopyCard } =
+    useMutation({
+      mutationKey: ["copy-card"],
+      mutationFn: copyCardAction,
+      onSuccess: () => {
+        toast.dismiss("copy-card");
+        toast.success("Card was copied");
+      },
+      onError: ({ message }) => {
+        toast.dismiss("copy-card");
+        toast.error(message || "Error copying card, please try again");
+      },
+    });
+
   function handleChangeCardTitle(title: { [inputName: string]: string }) {
-    // TODO api req to change card title
-    console.log("New card title:", title, "cardId", cardId);
+    editTitleCardMutation({ title: title.title, cardId, listId, boardId });
+    toast.loading("Editing card title...", { id: "edit-title-card" });
+    setIsOpenedTitleInput(false);
+    setIsOpenedOptions(false);
   }
 
   function handleOpenModalDeleteCard() {
     setDeleteDialogOpen(true);
   }
-  // TODO add delete Card api request
+
   function handleDeleteCard(cardId: string) {
-    console.log("🚀 ~ handleDeleteCard ~ cardId:", cardId);
+    deleteCardMutation({ cardId, listId, boardId });
+    toast.loading("Deleting card...", { id: "delete-card" });
+    setDeleteDialogOpen(false);
   }
 
   function handleCopyCard() {
-    console.log("Copy card:", cardId);
+    toast.loading("Copying card...", { id: "copy-card" });
+    copyCardMutation({ cardId, listId, boardId });
+    setIsOpenedOptions(false);
   }
   return (
     <div className="flex justify-between w-full">
@@ -54,6 +108,11 @@ export function TicketCardHeader({ title, cardId }: Props) {
       <Popover open={isOpenedOptions} onOpenChange={setIsOpenedOptions}>
         <PopoverTrigger asChild>
           <IconButton
+            disabled={
+              isPendingDeleteCardDeleteCard ||
+              isPendingEditTitleCard ||
+              isPendingCopyCard
+            }
             title="Card options"
             aria-label="Card options"
             onClick={(e) => {
@@ -75,6 +134,11 @@ export function TicketCardHeader({ title, cardId }: Props) {
           <div className="flex justify-between items-center mb-4">
             <p className="text-xl font-medium">Card Options</p>
             <IconButton
+              disabled={
+                isPendingDeleteCardDeleteCard ||
+                isPendingEditTitleCard ||
+                isPendingCopyCard
+              }
               onClick={(e) => {
                 e.stopPropagation();
                 setIsOpenedOptions(false);
@@ -95,6 +159,11 @@ export function TicketCardHeader({ title, cardId }: Props) {
           <div className="flex flex-col gap-2 items-start pl-2">
             {/* EDIT CARD TITLE*/}
             <AddNewInput
+              disabled={
+                isPendingDeleteCardDeleteCard ||
+                isPendingEditTitleCard ||
+                isPendingCopyCard
+              }
               type="textarea"
               handleSubmitValue={(v) => handleChangeCardTitle(v)}
               inputName="title"
@@ -116,6 +185,11 @@ export function TicketCardHeader({ title, cardId }: Props) {
             </AddNewInput>
 
             <IconButton
+              disabled={
+                isPendingDeleteCardDeleteCard ||
+                isPendingEditTitleCard ||
+                isPendingCopyCard
+              }
               onClick={(e) => {
                 e.stopPropagation();
                 handleCopyCard();
@@ -132,9 +206,15 @@ export function TicketCardHeader({ title, cardId }: Props) {
             >
               <Copy /> Copy
             </IconButton>
+
             <Separator className="my-4 bg-gray-700" />
 
             <IconButton
+              disabled={
+                isPendingDeleteCardDeleteCard ||
+                isPendingEditTitleCard ||
+                isPendingCopyCard
+              }
               aria-label="Delete card"
               title="Delete card"
               onClick={(e) => {
@@ -149,49 +229,12 @@ export function TicketCardHeader({ title, cardId }: Props) {
         </PopoverContent>
       </Popover>
       {/* DELETE CARD DIALOG */}
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="text-2xl">
-              Are you absolutely sure?
-            </DialogTitle>
-            <DialogDescription className="text-xl">
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
-            </DialogDescription>
-          </DialogHeader>
 
-          <DialogFooter className="flex ">
-            <DialogClose asChild>
-              <Button
-                size={"lg"}
-                type="button"
-                variant="default"
-                onClick={(e) => e.stopPropagation()}
-              >
-                Cancel
-              </Button>
-            </DialogClose>
-            <Button
-              size={"lg"}
-              type="button"
-              variant="destructive"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDeleteCard(cardId);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === KEYBOARD.ENTER) {
-                  e.stopPropagation();
-                  handleDeleteCard(cardId);
-                }
-              }}
-            >
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DeleteDialog
+        deleteDialogOpen={deleteDialogOpen}
+        setDeleteDialogOpen={setDeleteDialogOpen}
+        handleDelete={() => handleDeleteCard(cardId)}
+      />
     </div>
   );
 }

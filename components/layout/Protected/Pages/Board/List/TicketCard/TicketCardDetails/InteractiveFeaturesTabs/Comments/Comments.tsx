@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { CommentsType } from "@/lib/types";
+
 import { IconButton } from "@/components/ui/iconButton";
 import { MessageCircle, Plus } from "lucide-react";
 import {
@@ -16,9 +16,11 @@ import { AddNewInput } from "../../../../../AddNewInput";
 import { CommentCard } from "./CommentCard";
 import { Spacer } from "@/components/ui/spacer";
 import { CommentsCardSkeleton } from "./CommentsCardSkeleton";
+import { Comment, User } from "@/lib/generated/prisma/client";
+import { DeleteDialog } from "@/components/layout/Protected/DeleteDialog/DeleteDialog";
 
 type Props = {
-  data: CommentsType[] | undefined;
+  data: (Comment & { author: User })[] | undefined;
 };
 export function Comments({ data }: Props) {
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
@@ -88,39 +90,11 @@ export function Comments({ data }: Props) {
           />
         ))}
 
-        {/* DELETE MODAL */}
-        <Dialog
-          open={isDeleteModalOpened}
-          onOpenChange={setIsDeleteModalOpened}
-        >
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle className="text-2xl">
-                Are you absolutely sure?
-              </DialogTitle>
-              <DialogDescription className="text-xl">
-                This action cannot be undone. This will permanently delete your
-                account and remove your data from our servers.
-              </DialogDescription>
-            </DialogHeader>
-
-            <DialogFooter className="flex ">
-              <DialogClose asChild>
-                <Button size={"lg"} type="button" variant="default">
-                  Cancel
-                </Button>
-              </DialogClose>
-              <Button
-                size={"lg"}
-                type="button"
-                variant="destructive"
-                onClick={handleDeleteComment}
-              >
-                Delete
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <DeleteDialog
+          deleteDialogOpen={isDeleteModalOpened}
+          setDeleteDialogOpen={setIsDeleteModalOpened}
+          handleDelete={handleDeleteComment}
+        />
       </div>
     </section>
   );

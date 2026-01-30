@@ -24,6 +24,7 @@ export function AddTicketCard({ listId }: Props) {
       : isOpenedNewCardInput;
 
   const { mutate, isPending } = useMutation({
+    mutationKey: ["create-list-card"],
     mutationFn: createListCardAction,
     onSuccess: () => {
       toast.dismiss("list-card");

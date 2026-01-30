@@ -1,10 +1,11 @@
 import { UserCard } from "../../../../../../../UserCard/UserCard";
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
-import { ActivityType } from "@/lib/types";
+
+import { Activity, User } from "@/lib/generated/prisma/client";
 
 type Props = {
-  data: ActivityType;
+  data: Activity & { author: User };
 };
 export function ActivityCard({ data: activity }: Props) {
   return (
@@ -13,7 +14,7 @@ export function ActivityCard({ data: activity }: Props) {
       <p>{activity.activity}</p>
       <div className="flex justify-between items-center px-2">
         <p className="text-xs text-gray-400">
-          {format(new Date(activity.createdAt), "MMM d yyyy a HH:mm")}
+          {format(new Date(activity?.createdAt as Date), "MMM d yyyy a HH:mm")}
         </p>
       </div>
       <Separator className="h-px my-2" />

@@ -20,6 +20,7 @@ export function ListCardHeader({ status, title, listId }: Props) {
   const boardId = pathname.split("/").at(-1) || "";
 
   const { mutate, isPending } = useMutation({
+    mutationKey: ["update-list-title"],
     mutationFn: updateListTitleAction,
     onSuccess() {
       toast.dismiss("update-list-title");

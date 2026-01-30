@@ -52,6 +52,55 @@ export async function currentActiveUser(): Promise<{
   }
 }
 
+type Props = {
+  data: Pick<User, "email" | "name" | "avatar"> | null;
+};
+export async function createNewUser({ data }: Props): Promise<{
+  data: User | null;
+  error: { message: string };
+}> {
+  try {
+    if (!data?.email) {
+      throw new Error("User data not found");
+    }
+
+    // CHECK IS USER IS MEMBER OF CURRENT ORGANIZATION
+    const isMember = await verifyOrganizationMember(data.email);
+
+    if (!isMember.data) {
+      throw new Error(
+        "The user is not authorized for the current Organization",
+      );
+    }
+
+    // CHECK IF USER EXISTS IN DB
+    let activeUser = await prisma.user.findFirst({
+      where: { email: data?.email },
+    });
+
+    // IF USER NOT EXISTS IN DB CREATE ONE
+    if (!activeUser) {
+      activeUser = await prisma.user.create({
+        data: {
+          name: data?.name || "",
+          email: data.email,
+          avatar: data?.avatar || "",
+        },
+      });
+    }
+
+    return {
+      data: activeUser,
+      error: { message: "" },
+    };
+  } catch (error) {
+    console.log("🚀 ~ currentActiveUser ~ error:", error);
+
+    throw error;
+    //THE UTILITY FN WILL BE USED INSIDE TRYCATCH BLOCK AND ERRORS WILL BE HANDLED THERE
+  }
+}
+
 export async function getActiveUser(): Promise<User | null> {
   try {
     const user = await currentUser();

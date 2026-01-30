@@ -5,15 +5,33 @@ import { useState } from "react";
 import { TicketCardDetails } from "./TicketCardDetails/TicketCardDetails";
 import { KEYBOARD } from "@/lib/consts";
 import { Card } from "@/lib/generated/prisma/client";
+import { CardDetailsType, getCardDetails } from "@/app/actions/card-details";
+import toast from "react-hot-toast";
 
 type Prop = {
   data: Card;
+  boardId: string;
 };
-export function TicketCard({ data }: Prop) {
+export function TicketCard({ data, boardId }: Prop) {
   const [isCardDetailsOpened, setIsCardDetailsOpened] = useState(false);
+  const [cardDetails, setCardDetails] = useState<CardDetailsType | null>(null);
   // OPEN TICKET CARD DETAILS
-  function handleOpenTicketDetails() {
+  async function handleOpenTicketDetails() {
     setIsCardDetailsOpened(true);
+    await getDetailsData();
+  }
+
+  async function getDetailsData() {
+    if (!data.id) return;
+    const response = await getCardDetails(data.id.toString());
+
+    if (response.error.message) {
+      return toast.error(response.error.message);
+    }
+
+    if (response.data) {
+      setCardDetails(response.data);
+    }
   }
 
   return (
@@ -41,23 +59,23 @@ export function TicketCard({ data }: Prop) {
         className="ticket-card w-full cursor-pointer dark:hover:ring-gray-400 dark:hover:ring p-2 dark:bg-gray-600 rounded-sm flex flex-col justify-start items-start gap-2 "
       >
         {/* TICKET CARD HEADER */}
-        <TicketCardHeader title={data.title} cardId={data.id.toString()} />
+        <TicketCardHeader
+          title={data.title}
+          cardId={data.id.toString()}
+          listId={data.listId}
+          boardId={boardId}
+        />
 
         {/* TICKET CARD BODY */}
-        <TicketCardBody
-          priority={data.priority}
-          assignedTo={data.assignedToId}
-        />
+        <TicketCardBody data={data} boardId={boardId} />
       </div>
 
       {/* TICKET CARD DETAILS MODAL*/}
       <TicketCardDetails
-        cardTitle={data.title}
-        cardId={data.id.toString()}
-        listId={data.listId}
-        listTitle={data.listName}
-        isCardDetailsOpened={isCardDetailsOpened}
-        setIsCardDetailsOpened={setIsCardDetailsOpened}
+        cardData={data}
+        cardDetails={cardDetails}
+        isModalOpened={isCardDetailsOpened}
+        handleCloseModal={() => setIsCardDetailsOpened(false)}
       />
     </>
   );

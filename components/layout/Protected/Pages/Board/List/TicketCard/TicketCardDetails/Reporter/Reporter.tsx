@@ -1,10 +1,10 @@
 import { Spacer } from "@/components/ui/spacer";
-import { ReporterType } from "@/lib/types";
 import { UserCog } from "lucide-react";
 import { UserCard } from "../../../../../../UserCard/UserCard";
+import { User } from "@/lib/generated/prisma/client";
 
 type Props = {
-  data: ReporterType | undefined;
+  data: User | undefined;
 };
 export function Reporter({ data }: Props) {
   return (

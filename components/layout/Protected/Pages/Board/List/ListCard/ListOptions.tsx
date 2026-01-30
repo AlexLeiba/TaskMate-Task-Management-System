@@ -37,6 +37,7 @@ export function ListOptions({ listId }: Props) {
 
   const { mutate: mutateDeleteList, isPending: isPendingDeleteList } =
     useMutation({
+      mutationKey: ["delete-list"],
       mutationFn: deleteListAction,
       onSuccess: () => {
         toast.dismiss("delete-list");

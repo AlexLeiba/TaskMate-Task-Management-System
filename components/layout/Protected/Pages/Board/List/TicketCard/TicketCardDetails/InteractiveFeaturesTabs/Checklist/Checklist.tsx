@@ -45,7 +45,7 @@ export function Checklist({ cardId, listId }: Props) {
       </div>
 
       <Spacer size={4} />
-      <div className="overflow-y-auto h-64">
+      <div className="overflow-y-auto h-60 ">
         {checklistData.length === 0 ? (
           <AddNewInput
             handleSubmitValue={(v) => console.log(v)}

@@ -1,4 +1,3 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -12,9 +11,7 @@ import { Reporter } from "./Reporter/Reporter";
 import { AssignTo } from "./AssignTo/AssignTo";
 import { Priority } from "./Priority/Priority";
 import { InteractiveFeaturesTabs } from "./InteractiveFeaturesTabs/InteractiveFeaturesTabs";
-import { CardDetailsType, getCardDetails } from "@/app/actions/card-details";
-import toast from "react-hot-toast";
-import { Card } from "@/lib/generated/prisma/client";
+import { CardDetailsType } from "@/app/actions/card-details";
 import { ChecklistList } from "./ChecklistList";
 import { DueDate } from "./DueDate/DueDate";
 import { Actions } from "./Actions";
@@ -30,13 +27,9 @@ export function TicketCardDetails({
   handleCloseModal,
   isModalOpened,
 }: Props) {
-  console.log("🚀 ~ TicketCardDetails ~ cardDetails:", cardDetails);
-  // TODO, fetch card details when open it
-  const now = new Date("2023-01-01T00:00:00").getTime();
-
   return (
     <Dialog open={isModalOpened} onOpenChange={handleCloseModal}>
-      <DialogContent className="md:min-w-[80%] md:max-h-200 md:min-h-100 lg:min-h-125  lg:max-h-200 lg:min-w-[80%] sm:min-w-full sm:min-h-full  flex flex-col overflow-y-auto h-full">
+      <DialogContent className="md:min-w-[80%] md:max-h-200 md:min-h-100 lg:min-h-125  lg:max-h-210 lg:min-w-[80%] sm:min-w-full sm:min-h-full  flex flex-col overflow-y-auto h-full">
         <DialogHeader>
           <DialogTitle className="text-2xl">
             {cardDetails?.card.title}
@@ -52,10 +45,13 @@ export function TicketCardDetails({
         <div className=" grid lg:grid-cols-[2fr_1fr] gap-8 ">
           {/* 1COL */}
           <div className="flex flex-col gap-6 ">
-            <Description description={cardDetails?.description || ""} />
+            <Description
+              description={cardDetails?.description || ""}
+              cardId={cardDetails?.card.id}
+            />
             <InteractiveFeaturesTabs
               comments={cardDetails?.comments}
-              cardId={cardDetails?.card.id || ""}
+              cardId={cardDetails?.id || ""}
               listId={cardDetails?.card.listId || ""}
             />
           </div>
@@ -65,11 +61,17 @@ export function TicketCardDetails({
             <div className="flex items-end justify-between w-full ">
               <Reporter data={cardDetails?.card.reporter} />
             </div>
-            <div className="flex items-center gap-2 w-full ">
-              <AssignTo
-                assignedTo={cardDetails?.card.assignedToEmail || ""}
+
+            <AssignTo
+              assignedTo={cardDetails?.card.assignedToEmail || ""}
+              listId={cardDetails?.card.listId}
+              cardId={cardDetails?.card.id || ""}
+            />
+            <div className="flex items-center gap-4 w-full justify-between ">
+              <ChecklistList
+                cardId={cardDetails?.card.id}
                 listId={cardDetails?.card.listId}
-                cardId={cardDetails?.card.id || ""}
+                data={cardDetails?.checklist || []}
               />
               <Priority
                 priority={cardDetails?.card.priority}
@@ -77,11 +79,6 @@ export function TicketCardDetails({
                 cardId={cardDetails?.card.id}
               />
             </div>
-            <ChecklistList
-              cardId={cardDetails?.card.id}
-              listId={cardDetails?.card.listId}
-              data={cardDetails?.checklist || []}
-            />
             <DueDate
               data={cardDetails?.dueDate}
               cardId={cardDetails?.card.id}

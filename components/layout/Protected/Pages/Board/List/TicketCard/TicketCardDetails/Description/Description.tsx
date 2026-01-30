@@ -1,30 +1,60 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IconButton } from "@/components/ui/iconButton";
 import { Spacer } from "@/components/ui/spacer";
 import { Check, List, SquarePen, X } from "lucide-react";
 import dynamic from "next/dynamic";
-import "react-quill-new/dist/quill.snow.css";
 import { InitialDescriptionState } from "./InitialDescriptionState";
 
 import DOMPurify from "dompurify";
 import { DescriptionSkeleton } from "./DescriptionSkeleton";
+import { useMutation } from "@tanstack/react-query";
+import { updateDescriptionAction } from "@/app/actions/card-details";
+import toast from "react-hot-toast";
 
+import "react-quill-new/dist/quill.snow.css";
 const ReactQuill = dynamic(() => import("react-quill-new"), {
   ssr: false,
   loading: () => <InitialDescriptionState />,
 });
 
 type Props = {
-  description: string | null;
+  description: string;
+  cardId: string | undefined;
 };
-export function Description({ description }: Props) {
+export function Description({ description = "", cardId }: Props) {
   const [value, setValue] = useState(description || "");
   const [isQuillVisible, setIsQuillVisible] = useState(false);
 
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["update-description"],
+    mutationFn: updateDescriptionAction,
+    onSuccess: ({ data: description }) => {
+      if (description) {
+        setValue(description);
+
+        setIsQuillVisible(false);
+      }
+      toast.dismiss("update-description");
+      toast.success("Description updated");
+    },
+    onError: ({ message }) => {
+      toast.error(message || "Error updating description, please try again");
+      toast.dismiss("update-description");
+    },
+  });
+
+  useEffect(() => {
+    if (description) {
+      // eslint-disable-next-line
+      setValue(description);
+    }
+  }, [description]);
+
   function handleSaveDescription() {
-    // TODO api call
-    console.log(description, value);
+    if (!cardId) return;
+    mutate({ description: value, cardId });
+    toast.loading("Updating description...", { id: "update-description" });
   }
 
   return (
@@ -36,6 +66,7 @@ export function Description({ description }: Props) {
         </div>
         {!isQuillVisible && (
           <IconButton
+            disabled={isPending}
             title="Edit Description"
             aria-label="Edit Description"
             onClick={() => setIsQuillVisible(true)}
@@ -46,6 +77,7 @@ export function Description({ description }: Props) {
         {isQuillVisible && (
           <div className="flex gap-6">
             <IconButton
+              disabled={isPending}
               title="Close Description"
               aria-label="Close Description"
               onClick={() => setIsQuillVisible(false)}
@@ -53,6 +85,8 @@ export function Description({ description }: Props) {
               <X />
             </IconButton>
             <IconButton
+              disabled={isPending}
+              loading={isPending}
               title="Save Description"
               aria-label="Save Description"
               onClick={handleSaveDescription}
@@ -64,19 +98,19 @@ export function Description({ description }: Props) {
       </div>
       <Spacer size={2} />
       {isQuillVisible ? (
-        <div className="h-[223.67px]">
+        <div className="h-72.5">
           <ReactQuill theme="snow" value={value} onChange={setValue} />
         </div>
-      ) : description !== null ? (
+      ) : cardId ? (
         <InitialDescriptionState
           onClick={() => setIsQuillVisible(true)}
           classNameChildren="flex flex-col justify-start items-start h-full wrap-break-word  "
         >
-          {description !== "" ? (
+          {value !== "" ? (
             <div
-              className=" text-left max-w-full text-gray-300  wrap-break-word  html-content "
+              className=" text-left max-w-full text-gray-300   html-content "
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(description).replace(/&nbsp;/g, " "), //Prevent XSS attacks.
+                __html: DOMPurify.sanitize(value).replace(/&nbsp;/g, " "), //Prevent XSS attacks.
               }}
             />
           ) : (

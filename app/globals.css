@@ -152,13 +152,11 @@
 .quill .ql-toolbar .ql-formats .ql-active {
   color: var(--color-gray-400) !important;
   stroke: 1px solid var(--color-gray-400) !important;
-  /* background: var( --color-gray-400); */
   border: 1px solid var(--color-gray-400);
 }
 .quill .ql-toolbar .ql-formats .ql-bold .ql-active {
   color: var(--color-gray-400) !important;
   stroke: 1px solid var(--color-gray-400) !important;
-  /* background: var( --color-gray-400); */
   border: 1px solid var(--color-gray-400);
 }
 
@@ -174,39 +172,43 @@
   opacity: 0.5;
 }
 
-/* 
- */
-
-/* QUILL EDITOR and HTML text styles */
-
 .quill {
   /* background-color: var(--color-gray-800) !important; */
-  max-height: 180.84px !important;
-  height: 180.84px;
+  max-height: 250px !important;
+  height: 250px !important;
 }
 .quill .ql-container p,
 .html-content p {
-  font-size: 14px;
-  line-height: 22px;
+  font-size: 16px !important;
+  line-height: 22px !important;
 }
 
 .quill .ql-container h1,
 .html-content h1 {
-  font-size: 26px;
-  line-height: 24px;
-  font-weight: 400;
+  font-size: 30px !important;
+  line-height: 24px !important;
+  font-weight: 400 !important;
 }
 .quill .ql-container h2,
 .html-content h2 {
-  font-size: 19.5px;
-  line-height: 22px;
+  font-size: 24px !important;
+  line-height: 22px !important;
   font-weight: 400;
 }
 .quill .ql-container h3,
 .html-content h3 {
-  font-size: 15.21px;
-  line-height: 24px;
-  font-weight: 400;
+  font-size: 20px !important;
+  line-height: 24px !important;
+  font-weight: 400 !important;
+}
+
+.html-content h1,
+.html-content h2,
+.html-content h3 {
+  margin: 1.25rem 0 0.5rem;
+}
+.html-content p {
+  margin: 0.75rem 0;
 }
 
 .quill > .ql-container > .ql-editor.ql-blank::before {
@@ -221,9 +223,9 @@
 }
 
 .ql-editor {
-  min-height: 180px !important;
-  overflow-y: auto;
-  padding-bottom: 1rem; /* Add space for readability */
+  min-height: 200px !important;
+  overflow-y: auto !important;
+  padding-bottom: 1rem !important; /* Add space for readability */
   overflow-y: auto; /* Add vertical scrolling if content is too long */
   /* padding-top: 62px !important; */
   border: solid 1px rgb(209 213 219 / var(--tw-text-opacity, 1));
@@ -237,13 +239,18 @@
 }
 
 .html-content ul {
-  font-size: 13px;
+  font-size: 16px !important;
   list-style-type: disc; /* Ensure bullets appear */
   margin-left: 40px !important; /* Add indentation */
 }
 
 .html-content ol {
-  font-size: 13px;
+  font-size: 16px !important;
+  list-style-type: decimal; /* Ensure numbers appear */
+  margin-left: 40px !important;
+}
+.html-content ul {
+  font-size: 16px !important;
   list-style-type: decimal; /* Ensure numbers appear */
   margin-left: 40px !important;
 }

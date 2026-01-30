@@ -51,7 +51,9 @@ export function InteractiveFeaturesTabs({ cardId, listId, comments }: Props) {
       </div>
       <Spacer size={6} />
       <div className="pl-2">
-        {selectedTab === "comments" && <Comments data={comments} />}
+        {selectedTab === "comments" && (
+          <Comments data={comments} cardId={cardId} />
+        )}
         {selectedTab === "attachments" && (
           <Attachments cardId={cardId} listId={listId} />
         )}

@@ -110,6 +110,7 @@ model UploadedFile {
   name String?
   url String
  type String
+ fileId String
  attachmentId String //to relate of which attachment it belongs
 
  attachment Attachments @relation(fields:[attachmentId],references: [id])
@@ -119,7 +120,6 @@ model UploadedFile {
 model Attachments {
   id String @id @default(uuid())
   cardId String
-  card CardDetails @relation(fields:[cardId],references: [id])//determine on which card was attached file
   files UploadedFile[]//all uploaded files based on attach id
 
   authorId String
@@ -127,6 +127,7 @@ model Attachments {
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
 
+  card CardDetails @relation(fields:[cardId],references: [id])//determine on which card was attached file
   author User @relation(fields:[authorId],references: [id])
 }
 
@@ -185,7 +186,7 @@ model DueDate {
   date String
   time String //will store date in ISO string, is Timezone-safe, works across browsers,servers,DBs, parse format in localtime on using it
   cardId String
-  cardDetails CardDetails @relation(fields:[cardId],references: [id])
+  cardDetails CardDetails @relation(fields:[cardId],references: [id], onDelete: Cascade)
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
 }

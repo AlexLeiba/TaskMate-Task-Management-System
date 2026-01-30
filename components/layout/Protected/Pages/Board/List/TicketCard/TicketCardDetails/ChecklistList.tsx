@@ -29,7 +29,7 @@ export function ChecklistList({ cardId, listId, data = [] }: Props) {
   const completedTasks = data?.filter((item) => item.isCompleted);
 
   return (
-    <div className="">
+    <div className="w-full h-full flex flex-col justify-between">
       <div className="flex gap-2 items-center justify-between">
         <div className="flex gap-2 items-center">
           <CheckSquare />
@@ -60,7 +60,7 @@ export function ChecklistList({ cardId, listId, data = [] }: Props) {
         {data.length === 0 ? (
           <IconButton
             onClick={() => setSelectTab("checklist")}
-            classNameChildren="flex items-center gap-2 text-gray-300"
+            classNameChildren="flex items-center gap-2 text-gray-300 h-[44px]"
             title="Add an item"
             aria-label="Add an item"
           >

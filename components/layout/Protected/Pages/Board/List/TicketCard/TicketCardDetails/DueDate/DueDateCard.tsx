@@ -6,11 +6,12 @@ import React from "react";
 
 type Props = {
   dueDate: string;
-  date: Date;
+
   handleDeleteDialogOpen: () => void;
 };
-export function DueDateCard({ dueDate, date, handleDeleteDialogOpen }: Props) {
+export function DueDateCard({ dueDate, handleDeleteDialogOpen }: Props) {
   const now = new Date();
+  const date = new Date(dueDate);
 
   if (differenceInDays(now, date) <= 1) {
   }

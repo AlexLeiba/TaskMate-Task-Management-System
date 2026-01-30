@@ -1,17 +1,7 @@
 import { getBoardDataAction } from "@/app/actions/board";
 import { getListDataAction } from "@/app/actions/list";
-import { ListCardSkeleton } from "@/components/layout/Protected/Pages/Board/List/ListCard/ListCardSkeleton";
+import { ListCards } from "@/components/layout/Protected/Pages/Board/List/ListCards";
 import { SubHeader } from "@/components/layout/Protected/Pages/Board/SubHeader";
-import dynamic from "next/dynamic";
-const ListCards = dynamic(
-  () =>
-    import("@/components/layout/Protected/Pages/Board/List/ListCards").then(
-      (m) => m.ListCards,
-    ),
-  {
-    loading: () => <ListCardSkeleton />,
-  },
-);
 
 async function BoardPage({ params }: { params: Promise<{ boardId: string }> }) {
   const boardId = (await params).boardId;

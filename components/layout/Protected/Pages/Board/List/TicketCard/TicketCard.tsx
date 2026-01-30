@@ -1,12 +1,20 @@
 "use client";
 import { TicketCardHeader } from "./TicketCardHeader";
 import { TicketCardBody } from "./TicketCardBody/TicketCardBody";
-import { useState } from "react";
-import { TicketCardDetails } from "./TicketCardDetails/TicketCardDetails";
+import { useCallback, useState } from "react";
 import { KEYBOARD } from "@/lib/consts";
 import { Card } from "@/lib/generated/prisma/client";
 import { CardDetailsType, getCardDetails } from "@/app/actions/card-details";
 import toast from "react-hot-toast";
+import dynamic from "next/dynamic";
+
+const TicketCardDetails = dynamic(
+  () =>
+    import("./TicketCardDetails/TicketCardDetails").then(
+      (m) => m.TicketCardDetails,
+    ),
+  {},
+);
 
 type Prop = {
   data: Card;
@@ -15,11 +23,16 @@ type Prop = {
 export function TicketCard({ data, boardId }: Prop) {
   const [isCardDetailsOpened, setIsCardDetailsOpened] = useState(false);
   const [cardDetails, setCardDetails] = useState<CardDetailsType | null>(null);
+
   // OPEN TICKET CARD DETAILS
-  async function handleOpenTicketDetails() {
+  async function handleOpenDetails() {
     setIsCardDetailsOpened(true);
     await getDetailsData();
   }
+
+  const handleCloseDetails = useCallback(() => {
+    setIsCardDetailsOpened(false);
+  }, []);
 
   async function getDetailsData() {
     if (!data.id) return;
@@ -37,25 +50,25 @@ export function TicketCard({ data, boardId }: Prop) {
   return (
     <>
       <div
-        tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === KEYBOARD.ENTER) {
             const target = e.target as HTMLElement; // TypeScript now knows it’s an HTMLElement
             const ticketCard = target.closest(".ticket-card");
 
-            if (ticketCard) handleOpenTicketDetails();
+            if (ticketCard) handleOpenDetails();
           }
         }}
-        title={`open - ${data.title}`}
-        aria-label={`open ${data.title}`}
         onClick={(e) => {
           const target = e.target as HTMLElement; // TypeScript now knows it’s an HTMLElement
           const ticketCard = target.closest(".ticket-card");
 
           if (ticketCard) {
-            handleOpenTicketDetails();
+            handleOpenDetails();
           }
         }}
+        title={`open - ${data.title}`}
+        aria-label={`open ${data.title}`}
+        tabIndex={0}
         className="ticket-card w-full cursor-pointer dark:hover:ring-gray-400 dark:hover:ring p-2 dark:bg-gray-600 rounded-sm flex flex-col justify-start items-start gap-2 "
       >
         {/* TICKET CARD HEADER */}
@@ -72,10 +85,9 @@ export function TicketCard({ data, boardId }: Prop) {
 
       {/* TICKET CARD DETAILS MODAL*/}
       <TicketCardDetails
-        cardData={data}
         cardDetails={cardDetails}
         isModalOpened={isCardDetailsOpened}
-        handleCloseModal={() => setIsCardDetailsOpened(false)}
+        handleCloseModal={handleCloseDetails}
       />
     </>
   );

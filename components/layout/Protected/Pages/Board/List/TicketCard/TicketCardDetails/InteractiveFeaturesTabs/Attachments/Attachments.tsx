@@ -37,8 +37,6 @@ export function Attachments({ cardDetailsId }: Props) {
     })[]
   >([]);
 
-  console.log(attachmentsData);
-
   const uploadFileRef = useRef<HTMLInputElement>(null);
 
   async function getAttachmentsData() {
@@ -279,7 +277,7 @@ export function Attachments({ cardDetailsId }: Props) {
         {attachmentsData?.length > 0 ? (
           attachmentsData.map((attachment) => (
             <AttachmentCard
-              key={attachment.author.id}
+              key={attachment?.author?.id}
               data={attachment}
               handleDeleteImage={handleDeleteImage}
               handleDeleteFile={handleDeleteFile}

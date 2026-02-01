@@ -23,9 +23,9 @@ import { usePathname } from "next/navigation";
 type Props = {
   assignedTo: string | undefined;
   listId: string | undefined;
-  cardId: string;
+  cardDetailsId: string;
 };
-export function AssignToDropdown({ assignedTo, listId, cardId }: Props) {
+export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
   const boardId = usePathname()?.split("/").at(-1);
 
   const [assignedEmail, setAssignedEmail] = useState(assignedTo || "");
@@ -111,7 +111,7 @@ export function AssignToDropdown({ assignedTo, listId, cardId }: Props) {
   }
 
   function handleAssignTo(memberEmail: string) {
-    if (!boardId || !listId || !cardId) return;
+    if (!boardId || !listId || !cardDetailsId) return;
 
     if (memberEmail === "none") {
       handleUnassigneUser();
@@ -125,13 +125,13 @@ export function AssignToDropdown({ assignedTo, listId, cardId }: Props) {
       },
       boardId,
       listId,
-      cardId,
+      cardId: cardDetailsId,
     });
     toast.loading("Assigning to user...", { id: "assign-card" });
   }
 
   function handleUnassigneUser() {
-    if (!boardId || !listId || !cardId) return;
+    if (!boardId || !listId || !cardDetailsId) return;
     unnasignMutation({
       assignedUserData: {
         email: selectedUser.email,
@@ -140,12 +140,13 @@ export function AssignToDropdown({ assignedTo, listId, cardId }: Props) {
       },
       boardId,
       listId,
-      cardId,
+      cardId: cardDetailsId,
     });
     toast.loading("Unassigning user...", { id: "unassign-card" });
   }
 
-  if (!listId || !cardId || !boardId || !isLoaded) return <AssignToSkeleton />;
+  if (!listId || !cardDetailsId || !boardId || !isLoaded)
+    return <AssignToSkeleton />;
 
   return (
     <Select onValueChange={(v) => handleAssignTo(v)} value={assignedEmail}>

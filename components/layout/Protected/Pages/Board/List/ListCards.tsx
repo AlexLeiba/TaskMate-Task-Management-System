@@ -2,7 +2,7 @@
 import { ListCard } from "./ListCard/ListCard";
 import { AddNewListCard } from "./ListCard/AddNewListCard";
 import { ListAndCardsType } from "@/app/actions/list";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { ListCardSkeleton } from "./ListCard/ListCardSkeleton";
 
@@ -14,13 +14,15 @@ type Props = {
   };
 };
 export function ListCards({ boardId, listData }: Props) {
+  const hasToastedRef = useRef(false);
   useEffect(() => {
-    if (listData.error.message) {
+    if (listData?.error?.message && hasToastedRef.current === false) {
       toast.error(listData.error.message);
+      hasToastedRef.current = true; //to avoid duplicate toasts
     }
   }, [listData.data, listData.error.message]);
 
-  if (!boardId) return <ListCardSkeleton />;
+  if (!boardId || !listData) return <ListCardSkeleton />;
   return (
     <ol className="flex gap-4 w-full ">
       {listData?.data?.map((list) => (

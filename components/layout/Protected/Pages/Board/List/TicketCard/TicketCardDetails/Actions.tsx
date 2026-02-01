@@ -14,18 +14,18 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 type Props = {
-  cardId: string | undefined;
+  cardDetailsId: string | undefined;
   cardTitle: string | undefined;
   listId: string | undefined;
 };
-export function Actions({ cardId, listId, cardTitle }: Props) {
+export function Actions({ cardDetailsId, listId, cardTitle }: Props) {
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   function handleCopyCard() {
-    console.log("Copy card:", cardId);
+    console.log("Copy card:", cardDetailsId);
   }
 
   function handleDeleteCard() {
-    console.log("🚀 ~ handleDeleteCard ~ cardId:", cardId);
+    console.log("🚀 ~ handleDeleteCard ~ cardId:", cardDetailsId);
   }
   return (
     <div className="flex flex-col">

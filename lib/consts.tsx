@@ -15,6 +15,10 @@ import {
 } from "lucide-react";
 import { UnsplashImagesType } from "./types";
 
+export const API_REQ_URL = {
+  upload: "api/fileupload",
+} as const;
+
 export const NAV_LINKS = {
   landing: {
     pathname: "/",

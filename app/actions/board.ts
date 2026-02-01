@@ -78,6 +78,7 @@ export async function editBoardTitleAction({
   });
 
   await createNewActivity({
+    cardId: null,
     boardId,
     authorId: activeUser.id,
     activity: `Updated board title from "${prevBoardData?.title}" to "${response.title}"`,

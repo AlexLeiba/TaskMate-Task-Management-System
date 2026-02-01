@@ -10,11 +10,11 @@ import { CompletedStats } from "./InteractiveFeaturesTabs/Checklist/CompletedSta
 //TODO FETCH DATA BASED ON CARD ID AND LIT ID
 
 type Props = {
-  cardId: string | undefined;
+  cardDetailsId: string | undefined;
   listId: string | undefined;
   data: ChecklistType[] | undefined;
 };
-export function ChecklistList({ cardId, listId, data = [] }: Props) {
+export function ChecklistList({ cardDetailsId, listId, data = [] }: Props) {
   const { setSelectTab } = useStore();
 
   function handleSelectChecklist(id: string) {

@@ -13,12 +13,14 @@ import {
   deleteCommentAction,
 } from "@/app/actions/card-details";
 import toast from "react-hot-toast";
+import { usePathname } from "next/navigation";
 
 type Props = {
   data: (Comment & { author: User })[] | undefined;
-  cardId: string;
+  cardDetailsId: string;
 };
-export function Comments({ data, cardId }: Props) {
+export function Comments({ data, cardDetailsId }: Props) {
+  const boardId = usePathname()?.split("/").at(-1);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [isOpenedCommentInput, setIsOpenedCommentInput] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState<string | null>(
@@ -70,7 +72,11 @@ export function Comments({ data, cardId }: Props) {
     }
     toast.loading("Deleting comment...", { id: "delete-comment" });
     setIsDeleteModalOpened(false);
-    mutateDelete({ cardId, commentId: selectedCommentId as string });
+    mutateDelete({
+      cardDetailsId,
+      commentId: selectedCommentId as string,
+      boardId: boardId || "",
+    });
   }
   function handleOpenDeleteDialog(commentId: string) {
     setSelectedCommentId(commentId);
@@ -80,7 +86,11 @@ export function Comments({ data, cardId }: Props) {
 
   function handleSubmitComment(data: { [inputName: string]: string }) {
     toast.loading("Creating comment...", { id: "create-comment" });
-    mutateCreate({ cardId, comment: data.comment });
+    mutateCreate({
+      cardDetailsId,
+      comment: data.comment,
+      boardId: boardId || "",
+    });
     setIsOpenedCommentInput(false);
   }
 
@@ -108,12 +118,12 @@ export function Comments({ data, cardId }: Props) {
       <Spacer size={4} />
 
       {/* SCROLLABLE COMMENTS SECTION */}
-      <div className="flex flex-col  overflow-y-auto h-60  ">
+      <div className="flex flex-col  overflow-y-auto h-58  ">
         <AddNewInput
           disabled={isPendingDelete || isPendingCreate}
           buttonDirection="column"
           className="py-0"
-          classNameContainer="py-0"
+          classNameContainer=""
           type="textarea"
           inputName="comment"
           placeholder="Type your comment here..."
@@ -135,13 +145,17 @@ export function Comments({ data, cardId }: Props) {
         </AddNewInput>
 
         {/* COMMENTS */}
-        {comments?.map((comment) => (
-          <CommentCard
-            key={comment.id}
-            data={comment}
-            handleOpenDeleteModal={() => handleOpenDeleteDialog(comment.id)}
-          />
-        ))}
+        {comments.length > 0 ? (
+          comments?.map((comment) => (
+            <CommentCard
+              key={comment.id}
+              data={comment}
+              handleOpenDeleteModal={() => handleOpenDeleteDialog(comment.id)}
+            />
+          ))
+        ) : (
+          <p>No comments</p>
+        )}
 
         <DeleteDialog
           deleteDialogOpen={isDeleteModalOpened}

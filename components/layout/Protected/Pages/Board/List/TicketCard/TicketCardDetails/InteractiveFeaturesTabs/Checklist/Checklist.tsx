@@ -10,10 +10,9 @@ import { useQuery } from "@tanstack/react-query";
 import { type Checklist } from "@/lib/generated/prisma/client";
 
 type Props = {
-  cardId: string;
-  listId: string | undefined;
+  cardDetailsId: string | undefined;
 };
-export function Checklist({ cardId, listId }: Props) {
+export function Checklist({ cardDetailsId }: Props) {
   const [isOpenedTitleInput, setIsOpenedTitleInput] = useState(false);
 
   const checklistData: Checklist[] = [];
@@ -45,7 +44,7 @@ export function Checklist({ cardId, listId }: Props) {
       </div>
 
       <Spacer size={4} />
-      <div className="overflow-y-auto h-60 ">
+      <div className="overflow-y-auto h-58 ">
         {checklistData.length === 0 ? (
           <AddNewInput
             handleSubmitValue={(v) => console.log(v)}

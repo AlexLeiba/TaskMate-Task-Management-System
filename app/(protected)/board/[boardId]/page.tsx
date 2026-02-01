@@ -16,7 +16,13 @@ async function BoardPage({ params }: { params: Promise<{ boardId: string }> }) {
       {/* BOARD CONTENT */}
       <div className="max-w-400 mx-auto p-4 overflow-x-auto h-full ">
         {/* LIST CARDS */}
+
+        {/* Suspense catches Promises */}
+        {/* <Suspense fallback={<ListCardSkeleton />}> */}
+        {/* //it awaits for its parent to load first/ is nothing async happens, no suspension, suspension is triggered when a SSR Com throws a Promise */}
         <ListCards boardId={boardId} listData={listData} />
+        {/* This Client comp wont exist until Server resolves its Promises */}
+        {/* </Suspense> */}
       </div>
     </div>
   );

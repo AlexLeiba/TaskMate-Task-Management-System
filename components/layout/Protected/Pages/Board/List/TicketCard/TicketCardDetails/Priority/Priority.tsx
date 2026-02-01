@@ -6,9 +6,9 @@ import { PriorityType } from "@/lib/generated/prisma/enums";
 type Props = {
   priority: PriorityType | undefined;
   listId: string | undefined;
-  cardId: string | undefined;
+  cardDetailsId: string | undefined;
 };
-export function Priority({ priority, listId, cardId }: Props) {
+export function Priority({ priority, listId, cardDetailsId }: Props) {
   return (
     <div className="flex flex-col w-[200px]">
       <div className="flex gap-2 items-center">
@@ -17,7 +17,11 @@ export function Priority({ priority, listId, cardId }: Props) {
       </div>
 
       <Spacer size={4} />
-      <PriorityDropdown priority={priority} listId={listId} cardId={cardId} />
+      <PriorityDropdown
+        priority={priority}
+        listId={listId}
+        cardId={cardDetailsId}
+      />
     </div>
   );
 }

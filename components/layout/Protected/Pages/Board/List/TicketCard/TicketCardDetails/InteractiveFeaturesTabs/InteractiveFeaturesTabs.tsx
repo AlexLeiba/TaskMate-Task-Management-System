@@ -12,11 +12,11 @@ import { TAB_ELEMENTS } from "@/lib/consts";
 import { Comment, User } from "@/lib/generated/prisma/client";
 
 type Props = {
-  cardId: string;
-  listId: string;
+  cardDetailsId: string;
+
   comments: (Comment & { author: User })[] | undefined;
 };
-export function InteractiveFeaturesTabs({ cardId, listId, comments }: Props) {
+export function InteractiveFeaturesTabs({ cardDetailsId, comments }: Props) {
   const { selectedTab, setSelectTab } = useStore();
 
   function handleSelectTab(data: (typeof TAB_ELEMENTS)[number]) {
@@ -50,18 +50,20 @@ export function InteractiveFeaturesTabs({ cardId, listId, comments }: Props) {
         ))}
       </div>
       <Spacer size={6} />
+
+      {/* TABS CONTENT */}
       <div className="pl-2">
         {selectedTab === "comments" && (
-          <Comments data={comments} cardId={cardId} />
+          <Comments data={comments} cardDetailsId={cardDetailsId} />
         )}
         {selectedTab === "attachments" && (
-          <Attachments cardId={cardId} listId={listId} />
+          <Attachments cardDetailsId={cardDetailsId} />
         )}
         {selectedTab === "activities" && (
-          <Activities cardId={cardId} listId={listId} />
+          <Activities cardDetailsId={cardDetailsId} />
         )}
         {selectedTab === "checklist" && (
-          <Checklist cardId={cardId} listId={listId} />
+          <Checklist cardDetailsId={cardDetailsId} />
         )}
       </div>
     </div>

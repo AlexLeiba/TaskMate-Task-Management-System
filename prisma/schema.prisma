@@ -113,7 +113,9 @@ model UploadedFile {
  fileId String
  attachmentId String //to relate of which attachment it belongs
 
- attachment Attachments @relation(fields:[attachmentId],references: [id])
+ attachment Attachments @relation(fields:[attachmentId],references: [id],onDelete: Cascade)//determine on which card was attached file
+   createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 // when create an attachment: set cardId / based on that id we will know which card belongs to the attach
@@ -127,7 +129,7 @@ model Attachments {
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
 
-  card CardDetails @relation(fields:[cardId],references: [id])//determine on which card was attached file
+  card CardDetails @relation(fields:[cardId],references: [id],onDelete: Cascade)//determine on which card was attached file
   author User @relation(fields:[authorId],references: [id])
 }
 

@@ -3,30 +3,75 @@ import { ActivityCard } from "./ActivityCard";
 import { ActivityCardSkeleton } from "./ActivityCardSkeleton";
 import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
-import { useQuery } from "@tanstack/react-query";
-import { type Activity as ActivityType } from "@/lib/generated/prisma/browser";
 import { Activity } from "lucide-react";
-import { User } from "@/lib/generated/prisma/client";
+import {
+  type Activity as ActivityType,
+  User,
+} from "@/lib/generated/prisma/client";
+import { getCardDetailsActivities } from "@/app/actions/card-details";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const now = new Date("2023-01-01T00:00:00").getTime();
 
 type Props = {
-  cardId: string;
-  listId: string | undefined;
+  cardDetailsId: string;
 };
-export function Activities({ cardId, listId }: Props) {
+export function Activities({ cardDetailsId }: Props) {
   const { orgId } = useAuth();
+  const [activities, setActivities] = useState<
+    (ActivityType & { author: User })[]
+  >([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const activitiesData: (ActivityType & { author: User })[] = [];
 
-  const { data, isLoading } = useQuery({
-    queryFn: () => {},
-    queryKey: ["activities"],
-    staleTime: 1000 * 60 * 60,
-  });
+  console.log("🚀 ~ Activities ~ activities:", activities);
+
+  async function getActivitiesData() {
+    const response = await getCardDetailsActivities(cardDetailsId);
+
+    if (response?.error?.message) {
+      setIsLoading(false);
+      return toast.error(response.error.message);
+    }
+
+    if (response?.data) {
+      setIsLoading(false);
+      setActivities(response.data);
+    }
+  }
+
+  useEffect(() => {
+    // eslint-disable-next-line
+    setIsLoading(true);
+    getActivitiesData();
+  }, [cardDetailsId]);
 
   // fetch activities based on card and list id
-  if (!activitiesData) return <ActivityCardSkeleton />;
+  if (isLoading)
+    return (
+      <>
+        <div className="flex gap-2 items-center justify-between">
+          <div className="flex gap-2 items-center ">
+            <Activity />
+            <h5 className="text-xl font-medium">Activities</h5>
+          </div>
+          <Link
+            href={`/dashboard/${orgId}/activity`}
+            target="_blank"
+            title="All activities"
+            aria-label="All activities"
+          >
+            <p className="text-base text-gray-300  underline underline-offset-2">
+              All Activities
+            </p>
+          </Link>
+        </div>
+        <Spacer size={4} />
+        <ActivityCardSkeleton />
+      </>
+    );
   return (
     <section>
       <div className="flex gap-2 items-center justify-between">
@@ -47,9 +92,9 @@ export function Activities({ cardId, listId }: Props) {
       </div>
       <Spacer size={4} />
       {/* SCROLLABLE SECTION */}
-      <div className="flex flex-col gap-4 overflow-y-auto h-60  ">
+      <div className="flex flex-col gap-4 overflow-y-auto h-58  ">
         {/* ATTACHMENTS */}
-        {activitiesData?.map((activity) => (
+        {activities?.map((activity) => (
           <ActivityCard key={activity.id} data={activity} />
         ))}
       </div>

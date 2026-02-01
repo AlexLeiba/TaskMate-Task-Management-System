@@ -13,6 +13,7 @@ import { updateDescriptionAction } from "@/app/actions/card-details";
 import toast from "react-hot-toast";
 
 import "react-quill-new/dist/quill.snow.css";
+import { usePathname } from "next/navigation";
 const ReactQuill = dynamic(() => import("react-quill-new"), {
   ssr: false,
   loading: () => <InitialDescriptionState />,
@@ -20,9 +21,10 @@ const ReactQuill = dynamic(() => import("react-quill-new"), {
 
 type Props = {
   description: string;
-  cardId: string | undefined;
+  cardDetailsId: string | undefined;
 };
-export function Description({ description = "", cardId }: Props) {
+export function Description({ description = "", cardDetailsId }: Props) {
+  const boardId = usePathname()?.split("/").at(-1);
   const [value, setValue] = useState(description || "");
   const [isQuillVisible, setIsQuillVisible] = useState(false);
 
@@ -52,8 +54,8 @@ export function Description({ description = "", cardId }: Props) {
   }, [description]);
 
   function handleSaveDescription() {
-    if (!cardId) return;
-    mutate({ description: value, cardId });
+    if (!cardDetailsId) return;
+    mutate({ description: value, cardDetailsId, boardId: boardId || "" });
     toast.loading("Updating description...", { id: "update-description" });
   }
 
@@ -101,7 +103,7 @@ export function Description({ description = "", cardId }: Props) {
         <div className="h-72.5">
           <ReactQuill theme="snow" value={value} onChange={setValue} />
         </div>
-      ) : cardId ? (
+      ) : cardDetailsId ? (
         <InitialDescriptionState
           onClick={() => setIsQuillVisible(true)}
           classNameChildren="flex flex-col justify-start items-start h-full wrap-break-word  "

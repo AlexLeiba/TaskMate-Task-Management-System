@@ -12,7 +12,9 @@ import {
   User,
 } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { createNewActivity } from "@/lib/server/createActivity";
 import { currentActiveUser } from "@/lib/server/currentActiveUser";
+import { getCardDetailsData } from "@/lib/server/getCardData";
 
 export type CardDetailsType = CardDetails & {
   card: Card & {
@@ -52,13 +54,15 @@ export async function getCardDetails(
           include: {
             author: true,
           },
+          orderBy: {
+            createdAt: "desc",
+          },
         },
 
         checklist: true,
         dueDate: true,
       },
     });
-    console.log("🚀 ~ getCardDetails ~ response:", response);
 
     if (!response) {
       throw new Error("Card not found");
@@ -78,7 +82,7 @@ export async function getCardDetails(
 
 // ATTACHMENTS
 export async function getCardDetailsAttachments(cardId: string): Promise<{
-  data: Attachments[] | null;
+  data: (Attachments & { author: User } & { files: UploadedFile[] })[] | null;
   error: { message: string };
 }> {
   try {
@@ -92,91 +96,16 @@ export async function getCardDetailsAttachments(cardId: string): Promise<{
       where: {
         cardId,
       },
-    });
-
-    if (!response) {
-      throw new Error("Card not found");
-    }
-
-    return {
-      data: response,
-      error: { message: "" },
-    };
-  } catch (error: any) {
-    return {
-      data: null,
-      error: { message: error.message || "Something went wrong" },
-    };
-  }
-}
-
-type CreateAttachmentProps = {
-  cardId: string;
-  name: string;
-  url: string;
-  type: string;
-  fileId: string;
-  attachmentId: string;
-};
-export async function createAttachment({
-  cardId,
-  name,
-  url,
-  type,
-  fileId,
-}: CreateAttachmentProps): Promise<{
-  data: Attachments | null;
-  error: { message: string };
-}> {
-  try {
-    const activeUser = await currentActiveUser();
-
-    if (!activeUser.data) {
-      throw new Error("User not authorized");
-    }
-
-    const hasUserAlreadyAttachedFile = await prisma.attachments.findFirst({
-      where: {
-        cardId,
-        authorId: activeUser.data.id,
-      },
-    });
-
-    if (hasUserAlreadyAttachedFile) {
-      const response = await prisma.uploadedFile.create({
-        data: {
-          attachmentId: hasUserAlreadyAttachedFile.id,
-          url,
-          name,
-          type,
-          fileId,
-        },
-      });
-
-      if (!response) {
-        throw new Error("Attachment not found");
-      }
-
-      return {
-        data: hasUserAlreadyAttachedFile,
-        error: { message: "" },
-      };
-    }
-
-    const response = await prisma.attachments.create({
-      data: {
-        cardId,
-        authorId: activeUser.data.id,
+      include: {
+        author: true,
         files: {
-          create: [
-            {
-              url,
-              name,
-              type,
-              fileId,
-            },
-          ],
+          orderBy: {
+            createdAt: "desc",
+          },
         },
+      },
+      orderBy: {
+        createdAt: "desc",
       },
     });
 
@@ -196,51 +125,160 @@ export async function createAttachment({
   }
 }
 
-type DeleteAttachmentProps = {
-  cardId: string;
+type CreateAttachmentProps = {
+  cardDetailsId: string;
+  name: string;
+  url: string;
+  type: string;
   fileId: string;
-  uploadId: string;
+  boardId: string;
 };
-export async function deleteAttachment({
+export async function createAttachment({
+  cardDetailsId,
+  name,
+  url,
+  type,
   fileId,
-  uploadId,
-}: DeleteAttachmentProps): Promise<{
-  data: UploadedFile | null;
+  boardId,
+}: CreateAttachmentProps): Promise<{
+  data: Attachments | null;
   error: { message: string };
 }> {
-  try {
-    const activeUser = await currentActiveUser();
+  const activeUser = await currentActiveUser();
 
-    if (!activeUser.data) {
-      throw new Error("User not authorized");
-    }
+  if (!activeUser.data) {
+    throw new Error("User not authorized");
+  }
 
-    const response = await prisma.uploadedFile.delete({
-      where: {
+  const cardResponse = await getCardDetailsData({ cardDetailsId });
+
+  if (!cardResponse) {
+    throw new Error("Card not found");
+  }
+
+  const hasUserAlreadyAttachedFile = await prisma.attachments.findFirst({
+    where: {
+      cardId: cardDetailsId,
+      authorId: activeUser.data.id,
+    },
+  });
+
+  if (hasUserAlreadyAttachedFile) {
+    // IF USER ALREADY ATTACHED FILE
+    const response = await prisma.uploadedFile.create({
+      data: {
+        attachmentId: hasUserAlreadyAttachedFile.id,
+        url,
+        name,
+        type,
         fileId,
-        id: uploadId,
       },
     });
 
     if (!response) {
-      throw new Error("File not found");
+      throw new Error("Attachment not found");
     }
 
     return {
-      data: response,
+      data: hasUserAlreadyAttachedFile,
       error: { message: "" },
     };
-  } catch (error: any) {
-    return {
-      data: null,
-      error: { message: error.message || "Something went wrong" },
-    };
   }
+
+  // IF USER HAS NOT ATTACHED FILE
+  const response = await prisma.attachments.create({
+    data: {
+      cardId: cardDetailsId,
+      authorId: activeUser.data.id,
+      files: {
+        create: [
+          {
+            url,
+            name,
+            type,
+            fileId,
+          },
+        ],
+      },
+    },
+  });
+
+  if (!response) {
+    throw new Error("Attachment not found");
+  }
+
+  await createNewActivity({
+    cardId: cardDetailsId,
+    boardId: boardId,
+    authorId: activeUser.data.id,
+    activity: `Uploaded a new attachment: "${name}" in card: "${cardResponse?.card?.title}" from list: "${cardResponse?.card?.listName}"`,
+    type: "created",
+  });
+
+  return {
+    data: response,
+    error: { message: "" },
+  };
+}
+
+type DeleteAttachmentProps = {
+  cardDetailsId: string;
+  fileId: string;
+  uploadId: string;
+  boardId: string;
+};
+export async function deleteAttachment({
+  fileId,
+  uploadId,
+  cardDetailsId,
+  boardId,
+}: DeleteAttachmentProps): Promise<{
+  data: UploadedFile | null;
+  error: { message: string };
+}> {
+  const activeUser = await currentActiveUser();
+
+  if (!activeUser.data) {
+    throw new Error("User not authorized");
+  }
+
+  const cardResponse = await getCardDetailsData({ cardDetailsId });
+
+  if (!cardResponse) {
+    throw new Error("Card not found");
+  }
+
+  const response = await prisma.uploadedFile.delete({
+    where: {
+      fileId,
+      id: uploadId,
+    },
+  });
+
+  if (!response) {
+    throw new Error("File not found");
+  }
+
+  await createNewActivity({
+    cardId: cardDetailsId,
+    boardId: boardId,
+    authorId: activeUser.data.id,
+    activity: `Deleted an attachment: "${name}" from card: "${cardResponse?.card?.title}" from list: "${cardResponse?.card?.listName}"`,
+    type: "deleted",
+  });
+  return {
+    data: response,
+    error: { message: "" },
+  };
 }
 
 // ACTIVITIES
 export async function getCardDetailsActivities(cardId: string): Promise<{
-  data: Activity[] | null;
+  data:
+    | (Activity & {
+        author: User;
+      })[]
+    | null;
   error: { message: string };
 }> {
   try {
@@ -254,10 +292,17 @@ export async function getCardDetailsActivities(cardId: string): Promise<{
       where: {
         cardId,
       },
+      include: {
+        author: true,
+      },
+      take: 10,
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     if (!response) {
-      throw new Error("Card not found");
+      throw new Error("Activities not found");
     }
 
     return {
@@ -274,12 +319,14 @@ export async function getCardDetailsActivities(cardId: string): Promise<{
 
 // COMMENTS
 type CreateCommentProps = {
-  cardId: string;
+  cardDetailsId: string;
   comment: string;
+  boardId: string;
 };
 export async function createCommentAction({
-  cardId,
+  cardDetailsId,
   comment,
+  boardId,
 }: CreateCommentProps): Promise<{
   data: (Comment & { author: User })[] | null;
   error: { message: string };
@@ -290,10 +337,16 @@ export async function createCommentAction({
     throw new Error("User not authorized");
   }
 
+  const cardResponse = await getCardDetailsData({ cardDetailsId });
+
+  if (!cardResponse) {
+    throw new Error("Card not found");
+  }
+
   const response = await prisma.comment.create({
     data: {
       comment,
-      cardId,
+      cardId: cardDetailsId,
       authorId: activeUser.data.id,
     },
   });
@@ -304,10 +357,13 @@ export async function createCommentAction({
 
   const commentsData = await prisma.comment.findMany({
     where: {
-      cardId,
+      cardId: cardDetailsId,
     },
     include: {
       author: true,
+    },
+    orderBy: {
+      createdAt: "desc",
     },
   });
 
@@ -315,18 +371,28 @@ export async function createCommentAction({
     throw new Error("Comments not found");
   }
 
+  await createNewActivity({
+    cardId: cardDetailsId,
+    boardId: boardId,
+    authorId: activeUser.data.id,
+    activity: `Created a comment in the card: "${cardResponse?.card?.title}" from the list: "${cardResponse?.card?.listName}"`,
+    type: "created",
+  });
+
   return {
     data: commentsData,
     error: { message: "" },
   };
 }
 type DeleteCommentProps = {
-  cardId: string;
+  cardDetailsId: string;
   commentId: string;
+  boardId: string;
 };
 export async function deleteCommentAction({
-  cardId,
+  cardDetailsId,
   commentId,
+  boardId,
 }: DeleteCommentProps): Promise<{
   data: (Comment & { author: User })[] | null;
   error: { message: string };
@@ -336,10 +402,15 @@ export async function deleteCommentAction({
   if (!activeUser.data) {
     throw new Error("User not authorized");
   }
+  const cardResponse = await getCardDetailsData({ cardDetailsId });
+
+  if (!cardResponse) {
+    throw new Error("Card not found");
+  }
 
   const response = await prisma.comment.delete({
     where: {
-      cardId,
+      cardId: cardDetailsId,
       id: commentId,
     },
   });
@@ -350,16 +421,27 @@ export async function deleteCommentAction({
 
   const commentsData = await prisma.comment.findMany({
     where: {
-      cardId,
+      cardId: cardDetailsId,
     },
     include: {
       author: true,
+    },
+    orderBy: {
+      createdAt: "desc",
     },
   });
 
   if (!commentsData) {
     throw new Error("Comments not found");
   }
+
+  await createNewActivity({
+    cardId: cardDetailsId,
+    boardId: boardId,
+    authorId: activeUser.data.id,
+    activity: `Deleted a comment from the card: "${cardResponse?.card?.title}" in the list: "${cardResponse?.card?.listName}"`,
+    type: "deleted",
+  });
 
   return {
     data: commentsData,
@@ -369,12 +451,14 @@ export async function deleteCommentAction({
 
 // DESCRIPTION
 type UpdateDescriptionProps = {
-  cardId: string;
+  cardDetailsId: string;
   description: string;
+  boardId: string;
 };
 export async function updateDescriptionAction({
-  cardId,
+  cardDetailsId,
   description,
+  boardId,
 }: UpdateDescriptionProps): Promise<{
   data: string | null;
   error: { message: string };
@@ -385,12 +469,18 @@ export async function updateDescriptionAction({
     throw new Error("User not authorized");
   }
 
+  const cardResponse = await getCardDetailsData({ cardDetailsId });
+
+  if (!cardResponse) {
+    throw new Error("Card not found");
+  }
+
   const response = await prisma.cardDetails.update({
     data: {
       description,
     },
     where: {
-      cardId,
+      id: cardDetailsId,
     },
   });
 
@@ -400,6 +490,13 @@ export async function updateDescriptionAction({
 
   const responseDescription = response.description;
 
+  await createNewActivity({
+    cardId: cardDetailsId,
+    boardId: boardId,
+    authorId: activeUser.data.id,
+    activity: `Updated the description from the card: "${cardResponse?.card?.title}" in the list: "${cardResponse?.card?.listName}"`,
+    type: "updated",
+  });
   return {
     data: responseDescription,
     error: { message: "" },
@@ -408,16 +505,18 @@ export async function updateDescriptionAction({
 
 // CHECKLIST
 type UpdateChecklistProps = {
-  cardId: string;
+  cardDetailsId: string;
   title: string;
   isCompleted: boolean;
   checklistId: string;
+  boardId: string;
 };
 export async function updateChecklistAction({
-  cardId,
+  cardDetailsId,
   title,
   isCompleted,
   checklistId,
+  boardId,
 }: UpdateChecklistProps): Promise<{
   data: Checklist | null;
   error: { message: string };
@@ -428,9 +527,15 @@ export async function updateChecklistAction({
     throw new Error("User not authorized");
   }
 
+  const cardResponse = await getCardDetailsData({ cardDetailsId });
+
+  if (!cardResponse) {
+    throw new Error("Card not found");
+  }
+
   const isChecklistExists = await prisma.checklist.findFirst({
     where: {
-      cardId,
+      cardId: cardDetailsId,
       id: checklistId,
     },
   });
@@ -441,7 +546,7 @@ export async function updateChecklistAction({
       data: {
         title,
         isCompleted,
-        cardId,
+        cardId: cardDetailsId,
       },
     });
     if (!response) {
@@ -456,7 +561,7 @@ export async function updateChecklistAction({
 
   const response = await prisma.checklist.update({
     where: {
-      cardId,
+      cardId: cardDetailsId,
       id: checklistId,
     },
     data: {
@@ -469,6 +574,14 @@ export async function updateChecklistAction({
     throw new Error("Checklist was not found");
   }
 
+  await createNewActivity({
+    cardId: cardDetailsId,
+    boardId: boardId,
+    authorId: activeUser.data.id,
+    activity: `Updated the checklist from the card: "${cardResponse?.card?.title}" in the list: "${cardResponse?.card?.listName}"`,
+    type: "updated",
+  });
+
   return {
     data: response,
     error: { message: "" },
@@ -476,12 +589,14 @@ export async function updateChecklistAction({
 }
 
 type DeleteChecklistProps = {
-  cardId: string;
+  cardDetailsId: string;
   checklistId: string;
+  boardId: string;
 };
 export async function deleteChecklistAction({
-  cardId,
+  cardDetailsId,
   checklistId,
+  boardId,
 }: DeleteChecklistProps): Promise<{
   data: Checklist | null;
   error: { message: string };
@@ -492,9 +607,15 @@ export async function deleteChecklistAction({
     throw new Error("User not authorized");
   }
 
+  const cardResponse = await getCardDetailsData({ cardDetailsId });
+
+  if (!cardResponse) {
+    throw new Error("Card not found");
+  }
+
   const response = await prisma.checklist.delete({
     where: {
-      cardId,
+      cardId: cardDetailsId,
       id: checklistId,
     },
   });
@@ -502,6 +623,14 @@ export async function deleteChecklistAction({
   if (!response) {
     throw new Error("Card not found");
   }
+
+  await createNewActivity({
+    cardId: cardDetailsId,
+    boardId: boardId,
+    authorId: activeUser.data.id,
+    activity: `Deleted a checklist item from the card: "${cardResponse?.card?.title}" in the list: "${cardResponse?.card?.listName}"`,
+    type: "deleted",
+  });
 
   return {
     data: response,
@@ -512,14 +641,16 @@ export async function deleteChecklistAction({
 // DUE DATE
 
 type CreateDuedateProps = {
-  cardId: string;
+  cardDetailsId: string;
   date: string;
   time: string;
+  boardId: string;
 };
 export async function createDueDateAction({
-  cardId,
+  cardDetailsId,
   date,
   time,
+  boardId,
 }: CreateDuedateProps): Promise<{
   data: DueDate | null;
   error: { message: string };
@@ -530,9 +661,15 @@ export async function createDueDateAction({
     throw new Error("User not authorized");
   }
 
+  const cardResponse = await getCardDetailsData({ cardDetailsId });
+
+  if (!cardResponse) {
+    throw new Error("Card not found");
+  }
+
   const response = await prisma.dueDate.create({
     data: {
-      cardId,
+      cardId: cardDetailsId,
       date,
       time,
     },
@@ -542,6 +679,14 @@ export async function createDueDateAction({
     throw new Error("Due date not found");
   }
 
+  await createNewActivity({
+    cardId: cardDetailsId,
+    boardId: boardId,
+    authorId: activeUser.data.id,
+    activity: `Created due date in the card: "${cardResponse?.card?.title}" from the list: "${cardResponse?.card?.listName}"`,
+    type: "created",
+  });
+
   return {
     data: response,
     error: { message: "" },
@@ -549,12 +694,14 @@ export async function createDueDateAction({
 }
 
 type DeleteDuedateProps = {
-  cardId: string;
+  cardDetailsId: string;
   dueDateId: string;
+  boardId: string;
 };
 export async function deleteDueDateAction({
-  cardId,
+  cardDetailsId,
   dueDateId,
+  boardId,
 }: DeleteDuedateProps): Promise<{
   data: DueDate | null;
   error: { message: string };
@@ -565,9 +712,15 @@ export async function deleteDueDateAction({
     throw new Error("User not authorized");
   }
 
+  const cardResponse = await getCardDetailsData({ cardDetailsId });
+
+  if (!cardResponse) {
+    throw new Error("Card not found");
+  }
+
   const response = await prisma.dueDate.delete({
     where: {
-      cardId,
+      cardId: cardDetailsId,
       id: dueDateId,
     },
   });
@@ -575,6 +728,14 @@ export async function deleteDueDateAction({
   if (!response) {
     throw new Error("Due date not found");
   }
+
+  await createNewActivity({
+    cardId: cardDetailsId,
+    boardId: boardId,
+    authorId: activeUser.data.id,
+    activity: `Deleted due date from the card: "${cardResponse?.card?.title}" in the list: "${cardResponse?.card?.listName}"`,
+    type: "deleted",
+  });
 
   return {
     data: response,

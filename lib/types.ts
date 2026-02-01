@@ -169,3 +169,20 @@ export function isImageMimeType(type: string): type is ImageMimeType {
 export function isFileMimeType(type: string): type is ImageMimeType {
   return FILES_MIME_TYPES.includes(type as FileMimeType);
 }
+
+// API ROUTES TYPE
+
+export type UploadFileBodyType = {
+  file: string;
+  cardDetailsId: string;
+  boardId: string;
+  fileType: "image" | "file";
+  fileName: string;
+};
+export type DeleteFileBodyType = {
+  fileId: string;
+  cardDetailsId: string;
+  boardId: string;
+  type: "single" | "card" | "board";
+  fileName: string;
+};

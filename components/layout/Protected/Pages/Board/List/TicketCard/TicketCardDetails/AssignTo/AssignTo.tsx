@@ -6,9 +6,9 @@ import { AssignToDropdown } from "./AssignToDropdown";
 type Props = {
   assignedTo: string | undefined;
   listId: string | undefined;
-  cardId: string;
+  cardDetailsId: string;
 };
-export function AssignTo({ assignedTo, listId, cardId }: Props) {
+export function AssignTo({ assignedTo, listId, cardDetailsId }: Props) {
   return (
     <div className="flex flex-col w-full">
       <div className="flex gap-2 items-center">
@@ -19,7 +19,7 @@ export function AssignTo({ assignedTo, listId, cardId }: Props) {
       <AssignToDropdown
         assignedTo={assignedTo}
         listId={listId}
-        cardId={cardId}
+        cardDetailsId={cardDetailsId}
       />
     </div>
   );

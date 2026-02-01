@@ -1,5 +1,4 @@
 import { Fragment } from "react";
-import { isImageMimeType } from "@/lib/types";
 import { UserCard } from "../../../../../../../UserCard/UserCard";
 import { PreviewImageCard } from "./PreviewImageCard";
 import { DownloadFileCard } from "./DownloadFileCard";
@@ -12,8 +11,8 @@ type Props = {
     files: UploadedFile[];
     author: User;
   };
-  handleDeleteImage: (id: string) => void;
-  handleDeleteFile: (id: string) => void;
+  handleDeleteImage: (id: string, name: string) => void;
+  handleDeleteFile: (id: string, name: string) => void;
   handlePreviewImage: (url: string, name?: string) => void;
   handleDownloadFile: (url: string, name?: string) => void;
 };
@@ -28,12 +27,12 @@ export function AttachmentCard({
     <div key={attachment.author.id} className="flex flex-col gap-2">
       <UserCard data={attachment.author} size={"sm"} />
 
-      <div className="flex gap-6 mt-4 flex-wrap">
+      <div className="flex gap-6 mt-4 flex-wrap items-end">
         {attachment.files.map((file) => {
           return (
             <Fragment key={file.id}>
               {/*PREVIEW IMAGE */}
-              {isImageMimeType(file.type) ? (
+              {file.type === "image" ? (
                 <PreviewImageCard
                   key={file.id}
                   data={file}

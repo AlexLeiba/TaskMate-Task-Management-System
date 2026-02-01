@@ -8,10 +8,10 @@ import { type DueDate } from "@/lib/generated/prisma/client";
 type Props = {
   data: DueDate[] | undefined;
 
-  cardId: string | undefined;
+  cardDetailsId: string | undefined;
   listId: string | undefined;
 };
-export function DueDate({ data, cardId, listId }: Props) {
+export function DueDate({ data, cardDetailsId, listId }: Props) {
   return (
     <div className="flex flex-col">
       <div className="flex justify-between items-center">
@@ -21,7 +21,7 @@ export function DueDate({ data, cardId, listId }: Props) {
         </div>
       </div>
       <Spacer size={4} />
-      <DueDateInputs data={data} cardId={cardId} listId={listId} />
+      <DueDateInputs data={data} cardId={cardDetailsId} listId={listId} />
 
       {/* DELETE CARD DIALOG */}
     </div>

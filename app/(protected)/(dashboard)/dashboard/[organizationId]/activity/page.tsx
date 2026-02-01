@@ -1,18 +1,9 @@
+import { ActivityServerRender } from "@/components/layout/Protected/Pages/Activities/ActivityServerRender";
 import { ActivitySkeletonCard } from "@/components/layout/Protected/Pages/Activities/ActivitySkeletonCard";
 import { Separator } from "@/components/ui/separator";
 import { Activity } from "lucide-react";
-import dynamic from "next/dynamic";
 
-const ActivityServerRender = dynamic(
-  () => {
-    return import("@/components/layout/Protected/Pages/Activities/ActivityServerRender").then(
-      (m) => m.ActivityServerRender,
-    );
-  },
-  {
-    loading: () => <ActivitySkeletonCard />,
-  },
-);
+import { Suspense } from "react";
 
 async function ActivitiesPage({
   searchParams,
@@ -29,7 +20,9 @@ async function ActivitiesPage({
       </div>
       <Separator className="bg-gray-600 w-full my-4" />
 
-      <ActivityServerRender page={page} />
+      <Suspense fallback={<ActivitySkeletonCard />}>
+        <ActivityServerRender page={page} />
+      </Suspense>
     </div>
   );
 }

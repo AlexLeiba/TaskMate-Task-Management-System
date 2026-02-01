@@ -8,12 +8,10 @@ import { CardDetailsType, getCardDetails } from "@/app/actions/card-details";
 import toast from "react-hot-toast";
 import dynamic from "next/dynamic";
 
-const TicketCardDetails = dynamic(
-  () =>
-    import("./TicketCardDetails/TicketCardDetails").then(
-      (m) => m.TicketCardDetails,
-    ),
-  {},
+const TicketCardDetails = dynamic(() =>
+  import("./TicketCardDetails/TicketCardDetails").then(
+    (m) => m.TicketCardDetails,
+  ),
 );
 
 type Prop = {
@@ -23,6 +21,9 @@ type Prop = {
 export function TicketCard({ data, boardId }: Prop) {
   const [isCardDetailsOpened, setIsCardDetailsOpened] = useState(false);
   const [cardDetails, setCardDetails] = useState<CardDetailsType | null>(null);
+  const handleCloseDetails = useCallback(() => {
+    setIsCardDetailsOpened(false);
+  }, []);
 
   // OPEN TICKET CARD DETAILS
   async function handleOpenDetails() {
@@ -30,19 +31,15 @@ export function TicketCard({ data, boardId }: Prop) {
     await getDetailsData();
   }
 
-  const handleCloseDetails = useCallback(() => {
-    setIsCardDetailsOpened(false);
-  }, []);
-
   async function getDetailsData() {
     if (!data.id) return;
     const response = await getCardDetails(data.id.toString());
 
-    if (response.error.message) {
+    if (response?.error?.message) {
       return toast.error(response.error.message);
     }
 
-    if (response.data) {
+    if (response?.data) {
       setCardDetails(response.data);
     }
   }
@@ -85,6 +82,8 @@ export function TicketCard({ data, boardId }: Prop) {
 
       {/* TICKET CARD DETAILS MODAL*/}
       <TicketCardDetails
+        cardTitle={data.title}
+        listTitle={data.listName}
         cardDetails={cardDetails}
         isModalOpened={isCardDetailsOpened}
         handleCloseModal={handleCloseDetails}

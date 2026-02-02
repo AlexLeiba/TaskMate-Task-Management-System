@@ -46,8 +46,9 @@ export async function POST(req: NextRequest) {
       folder: "taskmate",
       use_filename: true,
       unique_filename: false,
-      resource_type: fileType !== "image" ? "raw" : "image",
+      resource_type: fileType,
     });
+    console.log("🚀 ~ POST ~ result \n\n\n:", result);
 
     const userAlreadyAttachedfile = await prisma.attachments.findFirst({
       where: {
@@ -100,6 +101,11 @@ export async function POST(req: NextRequest) {
     const allAttachments = await prisma.attachments.findMany({
       where: {
         cardId: cardDetailsId,
+        files: {
+          some: {
+            //return oinly if there is at least a file
+          },
+        },
       },
       include: {
         files: true,
@@ -151,12 +157,15 @@ export async function DELETE(req: NextRequest) {
     }
 
     const {
+      id,
       fileId,
       cardDetailsId,
       boardId,
       type,
       fileName,
+      fileType,
     }: DeleteFileBodyType = body;
+    console.log("🚀 ~ DELETE ~ fileId:", fileId);
 
     const cardResponse = await getCardDetailsData({ cardDetailsId });
 
@@ -166,8 +175,21 @@ export async function DELETE(req: NextRequest) {
 
     // upload image to cloudinary and get the result
     if (type === "single") {
-      const result = await cloudinary.uploader.destroy(fileId);
+      const result = await cloudinary.uploader.destroy(fileId, {
+        resource_type: fileType,
+      });
       console.log("🚀 ~ DELETE ~ result:", result);
+
+      if (!result || result?.result === "not found") {
+        throw new Error("File not found");
+      }
+
+      await prisma.uploadedFile.delete({
+        where: {
+          fileId,
+          id,
+        },
+      });
 
       await createNewActivity({
         cardId: cardDetailsId,
@@ -183,6 +205,11 @@ export async function DELETE(req: NextRequest) {
       const allResourcesOfCurrentCard = await prisma.attachments.findMany({
         where: {
           cardId: cardDetailsId,
+          files: {
+            some: {
+              //return oinly if there is at least a file
+            },
+          },
         },
         include: {
           files: {
@@ -201,7 +228,17 @@ export async function DELETE(req: NextRequest) {
           return file?.fileId;
         });
       })[0];
-      await cloudinary.api.delete_resources(allFilesIds);
+      const response = await cloudinary.api.delete_resources(allFilesIds);
+      console.log("🚀 ~ DELETE ~ response:\n\n\n\n", response);
+
+      if (response.result === "not found") {
+        throw new Error("File not found");
+      }
+      await prisma.attachments.deleteMany({
+        where: {
+          cardId: cardDetailsId,
+        },
+      });
     }
 
     if (type === "board") {
@@ -229,13 +266,34 @@ export async function DELETE(req: NextRequest) {
       const allFilesIds = allResourcesOfCurrentBoard?.map((file) => {
         return file?.fileId;
       });
-      await cloudinary.api.delete_resources(allFilesIds);
+      const response = await cloudinary.api.delete_resources(allFilesIds);
+      if (response.result === "not found") {
+        throw new Error("File not found");
+      }
+      await prisma.uploadedFile.deleteMany({
+        where: {
+          attachment: {
+            card: {
+              card: {
+                list: {
+                  boardId,
+                },
+              },
+            },
+          },
+        },
+      });
     }
 
     // GET UPDATED ATTACHMENTS AND RETURN TO CLIENT
     const allAttachments = await prisma.attachments.findMany({
       where: {
         cardId: cardDetailsId,
+        files: {
+          some: {
+            //return oinly if there is at least a file
+          },
+        },
       },
       include: {
         files: true,
@@ -259,7 +317,9 @@ export async function DELETE(req: NextRequest) {
     console.log("🚀 ~ DELETE ~ error:", error);
     return NextResponse.json({
       data: [],
-      error: error?.message || "Something went wrong",
+      error: error?.message || "Something went wrong deleting file",
+      statusCode: 500,
+      status: 500,
     });
   }
 }

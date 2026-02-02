@@ -11,8 +11,8 @@ type Props = {
     files: UploadedFile[];
     author: User;
   };
-  handleDeleteImage: (id: string, name: string) => void;
-  handleDeleteFile: (id: string, name: string) => void;
+  handleDeleteImage: (fieldId: string, name: string | "", id: string) => void;
+  handleDeleteFile: (fieldId: string, name: string | "", id: string) => void;
   handlePreviewImage: (url: string, name?: string) => void;
   handleDownloadFile: (url: string, name?: string) => void;
 };

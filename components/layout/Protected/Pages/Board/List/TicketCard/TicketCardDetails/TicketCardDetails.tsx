@@ -61,6 +61,8 @@ export function TicketCardDetails({
               description={cardDetails?.description || ""}
               cardDetailsId={cardDetails?.id}
             />
+
+            {/* TABS */}
             <InteractiveFeaturesTabs
               comments={cardDetails?.comments}
               cardDetailsId={cardDetails?.id || ""}

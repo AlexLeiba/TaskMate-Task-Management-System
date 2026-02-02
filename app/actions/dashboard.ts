@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
 import { currentActiveUser } from "@/lib/server/currentActiveUser";
 import { BoardType } from "@/lib/types";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
 export async function getBoardsAction(orgId: string): Promise<{
@@ -13,10 +13,10 @@ export async function getBoardsAction(orgId: string): Promise<{
   error: { message: string };
 }> {
   try {
-    const user = await currentUser();
+    const { data: activeUser } = await currentActiveUser();
 
-    if (!user) {
-      return { data: [], error: { message: "User not authenticated" } };
+    if (!activeUser) {
+      throw new Error("User not authorized");
     }
 
     const boards = await prisma.board.findMany({

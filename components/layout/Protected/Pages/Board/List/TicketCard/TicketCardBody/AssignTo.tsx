@@ -80,7 +80,9 @@ export function AssignTo({ assignedTo, boardId, listId, cardId }: Props) {
       const selectedUser = {
         id: foundSelectedUser.id,
         email: foundSelectedUser.publicUserData?.identifier || "",
-        name: foundSelectedUser.publicUserData?.firstName || "",
+        name:
+          `${foundSelectedUser.publicUserData?.firstName} +
+            ${foundSelectedUser.publicUserData?.lastName}` || "",
         avatar: foundSelectedUser.publicUserData?.imageUrl || "",
       };
       // eslint-disable-next-line

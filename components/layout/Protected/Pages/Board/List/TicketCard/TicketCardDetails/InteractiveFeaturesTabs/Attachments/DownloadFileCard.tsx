@@ -6,7 +6,7 @@ import { X } from "lucide-react";
 type Props = {
   data: UploadedFile;
   handleDownloadFile: (url: string, name?: string) => void;
-  handleDeleteFile: (fileId: string, name: string) => void;
+  handleDeleteFile: (fileId: string, name: string | "", id: string) => void;
 };
 export function DownloadFileCard({
   data,
@@ -14,7 +14,7 @@ export function DownloadFileCard({
   handleDeleteFile,
 }: Props) {
   return (
-    <div className="px-3 relative">
+    <div className="px-3 relative group">
       <IconButton
         title="Download file"
         aria-label="Download file"
@@ -27,9 +27,9 @@ export function DownloadFileCard({
       <IconButton
         onClick={(e) => {
           e.stopPropagation();
-          handleDeleteFile(data.id, data.name || "");
+          handleDeleteFile(data.fileId, data.name || "", data.id);
         }}
-        className="absolute -top-6 right-0 text-gray-300 p-2 hover:bg-gray-600 rounded-full hover:text-white"
+        className="absolute -top-6 right-0 text-gray-300 p-2 hover:bg-gray-600 rounded-full hover:text-white hidden group-hover:block"
         title="Detele file"
         aria-label="Delete file"
       >

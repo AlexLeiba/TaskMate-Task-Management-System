@@ -28,7 +28,8 @@ type Props = {
 };
 export function Attachments({ cardDetailsId }: Props) {
   const boardId = usePathname().split("/").at(-1);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadingZip, setIsDownloadingZip] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [attachmentsData, setAttachmentsData] = useState<
     (Attachments & {
@@ -67,7 +68,7 @@ export function Attachments({ cardDetailsId }: Props) {
     fileName,
   }: {
     file: string;
-    fileType: "image" | "file";
+    fileType: "image" | "raw";
     fileName: string;
   }) {
     if (!boardId) {
@@ -96,47 +97,73 @@ export function Attachments({ cardDetailsId }: Props) {
   async function deleteFile({
     fileId,
     fileName,
+    fileType,
+    id,
   }: {
     fileId: string;
     fileName: string;
+    fileType: "raw" | "image";
+    id: string;
   }) {
-    if (!boardId) {
-      return toast.error("Board not found");
+    try {
+      if (!boardId) {
+        return toast.error("Board not found");
+      }
+      const body: DeleteFileBodyType = {
+        fileId,
+        cardDetailsId,
+        boardId,
+        type: "single",
+        fileName,
+        fileType,
+        id,
+      };
+
+      const response = await axiosInstance.delete(API_REQ_URL.upload, {
+        data: body,
+      });
+
+      console.log(response);
+
+      if (response?.data?.statusCode !== 200) {
+        return toast.error(response?.data?.error);
+      }
+      toast.success("Deleted successfully");
+
+      const attachmentData: (Attachments & {
+        files: UploadedFile[];
+        author: User;
+      })[] = response?.data?.data;
+
+      if (attachmentData) {
+        setAttachmentsData(attachmentData);
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Error deleting a file");
     }
-    const body: DeleteFileBodyType = {
-      fileId,
-      cardDetailsId,
-      boardId,
-      type: "single",
-      fileName,
-    };
-
-    const response = await axiosInstance.delete(API_REQ_URL.upload, {
-      data: body,
-    });
-
-    console.log(response);
-    return response;
   }
 
+  // UPLOAD
   const { mutate: mutateUpload, isPending: isPendingUpload } = useMutation({
     mutationFn: uploadFile,
     onSuccess: (data) => {
-      console.log("first", data);
+      console.log("onSuccess", data);
       setAttachmentsData(data);
       toast.dismiss("upload-file");
-      toast.success("File was uploaded");
+      toast.success("Uploaded");
     },
     onError: ({ message }) => {
       toast.error(message || "Error uploading file, please try again");
       toast.dismiss("upload-file");
     },
   });
+
+  // DELETE
   const { mutate: mutateDelete, isPending: isPendingDelete } = useMutation({
     mutationFn: deleteFile,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("onSuccess", data);
       toast.dismiss("delete-file");
-      toast.success("Deleted successfully");
     },
     onError: ({ message }) => {
       toast.error(message || "Error deleting file, please try again");
@@ -144,12 +171,14 @@ export function Attachments({ cardDetailsId }: Props) {
     },
   });
 
-  function handleDeleteFile(fileId: string, fileName: string) {
-    mutateDelete({ fileId, fileName });
+  function handleDeleteFile(fileId: string, fileName: string, id: string) {
+    console.log("fileId", fileId);
+    mutateDelete({ fileId, fileName, fileType: "raw", id });
     toast.loading("Deleting file...", { id: "delete-file" });
   }
-  function handleDeleteImage(fileId: string, fileName: string) {
-    mutateDelete({ fileId, fileName });
+  function handleDeleteImage(fileId: string, fileName: string, id: string) {
+    console.log("imageId", fileId);
+    mutateDelete({ fileId, fileName, fileType: "image", id });
     toast.loading("Deleting image...", { id: "delete-file" });
   }
 
@@ -160,8 +189,6 @@ export function Attachments({ cardDetailsId }: Props) {
   async function handleChangeUploadedFile(
     event: React.ChangeEvent<HTMLInputElement>,
   ) {
-    console.log("🚀 ~ handleChangeUploadedFile ~ event:", event);
-
     if (!event.target.files) {
       return toast.error("File was not provided");
     }
@@ -194,7 +221,7 @@ export function Attachments({ cardDetailsId }: Props) {
 
         mutateUpload({
           file: previewFileUrl,
-          fileType: "file",
+          fileType: "raw",
           fileName: fileName || "file",
         });
         toast.loading("Uploading file...", { id: "upload-file" });
@@ -205,26 +232,50 @@ export function Attachments({ cardDetailsId }: Props) {
   }
 
   async function handleDownloadZipFile() {
-    const allFilesData: DownloadZipTypeProps["files"] = [];
-    attachmentsData?.forEach((attachments) => {
-      attachments?.files.forEach((file) => {
-        allFilesData.push({
-          name: file.name || "file",
-          url: file.url,
+    try {
+      setIsDownloadingZip(true);
+      const allFilesData: DownloadZipTypeProps["files"] = [];
+      attachmentsData?.forEach((attachments) => {
+        attachments?.files.forEach((file) => {
+          allFilesData.push({
+            name: file.name || "file",
+            url: file.url,
+          });
         });
       });
-    });
 
-    await downloadAsZip({ files: allFilesData, zipName: "all-files.zip" });
+      await downloadAsZip({ files: allFilesData, zipName: "all-files.zip" });
+    } catch (error: any) {
+      toast.error(
+        error.message || "Error downloading zip file, please try again",
+      );
+    } finally {
+      setIsDownloadingZip(false);
+    }
   }
 
-  function handleDownloadFile(url: string, name?: string) {
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = name || "file";
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.click();
+  async function handleDownloadFile(url: string, name?: string) {
+    try {
+      setIsDownloadingZip(true);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = name || "file";
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.click();
+
+      await downloadAsZip({
+        files: [{ name: name || "file", url }],
+        zipName: `${name || "file"}.zip`,
+      });
+    } catch (error: any) {
+      toast.error(
+        error.message || "Error downloading zip file, please try again",
+      );
+    } finally {
+      setIsDownloadingZip(false);
+    }
   }
   function handlePreviewImage(url: string) {
     const link = document.createElement("a");
@@ -245,7 +296,13 @@ export function Attachments({ cardDetailsId }: Props) {
         <div className="flex gap-4 items-center">
           {/* DOWNLOAD ZIP */}
           <IconButton
-            disabled={isPendingUpload || isPendingDelete || isLoading}
+            loading={isDownloadingZip}
+            disabled={
+              isPendingUpload ||
+              isPendingDelete ||
+              isLoading ||
+              isDownloadingZip
+            }
             title="Download all zip file"
             aria-label="Download all zip file"
             onClick={handleDownloadZipFile}
@@ -255,7 +312,12 @@ export function Attachments({ cardDetailsId }: Props) {
 
           {/* UPLOAD FILE */}
           <IconButton
-            disabled={isPendingUpload || isPendingDelete || isLoading}
+            disabled={
+              isPendingUpload ||
+              isPendingDelete ||
+              isLoading ||
+              isDownloadingZip
+            }
             loading={isPendingUpload}
             title="Upload file"
             aria-label="Upload file"

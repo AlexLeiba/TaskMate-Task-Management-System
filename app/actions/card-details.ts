@@ -95,6 +95,9 @@ export async function getCardDetailsAttachments(cardId: string): Promise<{
     const response = await prisma.attachments.findMany({
       where: {
         cardId,
+        files: {
+          some: {},
+        },
       },
       include: {
         author: true,

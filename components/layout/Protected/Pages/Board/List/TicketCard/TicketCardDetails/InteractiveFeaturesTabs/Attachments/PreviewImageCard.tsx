@@ -7,7 +7,7 @@ import Image from "next/image";
 
 type Props = {
   data: UploadedFile;
-  handleDeleteImage: (imageId: string, name: string) => void;
+  handleDeleteImage: (imageId: string, name: string, id: string) => void;
   handleViewImage: (url: string, name?: string) => void;
 };
 export function PreviewImageCard({
@@ -27,7 +27,7 @@ export function PreviewImageCard({
         }
       }}
       onClick={() => handleViewImage(data.url, data?.name || "")}
-      className="relative w-25 border border-px rounded-md cursor-zoom-in"
+      className="relative w-25 border border-px rounded-md cursor-zoom-in group"
     >
       <div className="w-full h-17.5 overflow-hidden p">
         <Image
@@ -41,9 +41,9 @@ export function PreviewImageCard({
       <IconButton
         onClick={(e) => {
           e.stopPropagation();
-          handleDeleteImage(data.id, data?.name || "");
+          handleDeleteImage(data.fileId, data?.name || "", data.id);
         }}
-        className="absolute -top-6 -right-4 text-gray-300 p-2 hover:bg-gray-600 rounded-full hover:text-white"
+        className="absolute -top-6 -right-4 text-gray-300 p-2 hover:bg-gray-600 rounded-full hover:text-white hidden group-hover:block"
         title="Detele image"
         aria-label="Delete image"
       >

@@ -176,13 +176,15 @@ export type UploadFileBodyType = {
   file: string;
   cardDetailsId: string;
   boardId: string;
-  fileType: "image" | "file";
+  fileType: "image" | "raw";
   fileName: string;
 };
 export type DeleteFileBodyType = {
+  id: string;
   fileId: string;
   cardDetailsId: string;
   boardId: string;
   type: "single" | "card" | "board";
   fileName: string;
+  fileType: "image" | "raw";
 };

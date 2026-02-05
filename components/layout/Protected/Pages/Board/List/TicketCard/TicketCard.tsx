@@ -74,6 +74,7 @@ export function TicketCard({ data, boardId }: Prop) {
           cardId={data.id.toString()}
           listId={data.listId}
           boardId={boardId}
+          cardDetailsId={cardDetails?.id.toString() || ""}
         />
 
         {/* TICKET CARD BODY */}

@@ -79,6 +79,41 @@ export async function getCardDetails(
     };
   }
 }
+export async function getCardDetailsComments(cardId: string): Promise<{
+  data: (Comment & { author: User })[] | null;
+  error: { message: string };
+}> {
+  try {
+    const activeUser = await currentActiveUser();
+
+    if (!activeUser.data) {
+      throw new Error("User not authorized");
+    }
+
+    const response = await prisma.comment.findMany({
+      where: {
+        cardId,
+      },
+      include: {
+        author: true,
+      },
+    });
+
+    if (!response) {
+      throw new Error("Comment not found");
+    }
+
+    return {
+      data: response,
+      error: { message: "" },
+    };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: { message: error.message || "Something went wrong" },
+    };
+  }
+}
 
 // ATTACHMENTS
 export async function getCardDetailsAttachments(cardId: string): Promise<{

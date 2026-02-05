@@ -8,6 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { editBoardTitleAction } from "@/app/actions/board";
 import toast from "react-hot-toast";
 import { Board } from "@/lib/generated/prisma/client";
+import { IconButton } from "@/components/ui/iconButton";
 
 type Props = {
   data: {
@@ -49,7 +50,7 @@ export function SubHeader({ data: { data: board, error }, boardId }: Props) {
     // setShowTitleInput(false);
   }
   return (
-    <div className=" bg-gray-800/70 w-full  text-white ">
+    <div className=" bg-foreground/80 w-full   ">
       <div className="px-4 flex justify-between items-center max-w-400 mx-auto">
         <AddNewInput
           loading={isPending}
@@ -75,9 +76,13 @@ export function SubHeader({ data: { data: board, error }, boardId }: Props) {
 
         {/* TODO add org id from params */}
         <Link href={`/dashboard/${board.id}`}>
-          <Button variant={"ghost"} title="Close board">
-            <X />
-          </Button>
+          <IconButton
+            className="p-1"
+            title="Close board"
+            aria-label="Close board"
+          >
+            <X size={30} />
+          </IconButton>
         </Link>
       </div>
     </div>

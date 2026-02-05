@@ -172,7 +172,7 @@ export function AssignTo({ assignedTo, boardId, listId, cardId }: Props) {
       </PopoverTrigger>
 
       {/* POPOVER DROP CONTENT */}
-      <PopoverContent align="start" className=" bg-gray-900 text-white">
+      <PopoverContent align="start">
         <div className="flex justify-between items-center mb-4">
           <p className="text-xl font-medium">Assign to</p>
           <IconButton

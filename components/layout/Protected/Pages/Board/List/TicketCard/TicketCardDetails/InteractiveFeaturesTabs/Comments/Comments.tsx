@@ -3,14 +3,14 @@ import { IconButton } from "@/components/ui/iconButton";
 import { MessageCircle, Plus } from "lucide-react";
 import { AddNewInput } from "../../../../../AddNewInput";
 import { CommentCard } from "./CommentCard";
-import { Spacer } from "@/components/ui/spacer";
 import { CommentsCardSkeleton } from "./CommentsCardSkeleton";
 import { Comment, User } from "@/lib/generated/prisma/client";
 import { DeleteDialog } from "@/components/layout/Protected/DeleteDialog/DeleteDialog";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createCommentAction,
   deleteCommentAction,
+  getCardDetailsComments,
 } from "@/app/actions/card-details";
 import toast from "react-hot-toast";
 import { usePathname } from "next/navigation";
@@ -27,37 +27,57 @@ export function Comments({ data, cardDetailsId }: Props) {
     null,
   );
 
-  const [comments, setComments] = useState<(Comment & { author: User })[]>([]);
+  const queryClient = useQueryClient();
+
+  async function getCommentsData() {
+    try {
+      const response = await getCardDetailsComments(cardDetailsId);
+
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Error getting comments, please try again");
+    }
+  }
 
   useEffect(() => {
     // eslint-disable-next-line
-    setComments(data || []);
-  }, [data]);
+    getCommentsData();
+  }, [cardDetailsId]);
 
+  const { data: commentsData, isLoading } = useQuery({
+    queryKey: ["fetch-comments", cardDetailsId],
+    queryFn: getCommentsData,
+  });
+
+  // CREATE
   const { mutate: mutateCreate, isPending: isPendingCreate } = useMutation({
     mutationKey: ["update-description"],
     mutationFn: createCommentAction,
-    onSuccess: ({ data }) => {
+    onSuccess: () => {
       toast.dismiss("create-comment");
       toast.success("Comment created");
-      if (data) {
-        setComments(data);
-      }
+      queryClient.invalidateQueries({
+        queryKey: ["fetch-comments", cardDetailsId],
+      });
     },
     onError: ({ message }) => {
       toast.error(message || "Error creating comment, please try again");
       toast.dismiss("create-comment");
     },
   });
+
+  // DELETE
   const { mutate: mutateDelete, isPending: isPendingDelete } = useMutation({
     mutationKey: ["update-description"],
     mutationFn: deleteCommentAction,
-    onSuccess: ({ data }) => {
+    onSuccess: () => {
       toast.dismiss("delete-comment");
       toast.success("Comment deleted");
-      if (data) {
-        setComments(data);
-      }
+      queryClient.invalidateQueries({
+        queryKey: ["fetch-comments", cardDetailsId],
+      });
     },
     onError: ({ message }) => {
       toast.error(message || "Error deleting comment, please try again");
@@ -91,6 +111,7 @@ export function Comments({ data, cardDetailsId }: Props) {
       comment: data.comment,
       boardId: boardId || "",
     });
+
     setIsOpenedCommentInput(false);
   }
 
@@ -99,7 +120,7 @@ export function Comments({ data, cardDetailsId }: Props) {
   function handleOpenNewCommentInput() {
     if (addNewCommentRef.current) addNewCommentRef.current.click();
   }
-  if (!data) return <CommentsCardSkeleton />;
+  if (isLoading) return <CommentsCardSkeleton />;
   return (
     <section>
       <div className="flex gap-2 items-center justify-between">
@@ -108,6 +129,7 @@ export function Comments({ data, cardDetailsId }: Props) {
           <h5 className="text-xl font-medium">Comments</h5>
         </div>
         <IconButton
+          className="px-2"
           title="Add new comment"
           aria-label="Add new comment"
           onClick={handleOpenNewCommentInput}
@@ -115,7 +137,7 @@ export function Comments({ data, cardDetailsId }: Props) {
           <Plus className="text-green-600" />
         </IconButton>
       </div>
-      <Spacer size={4} />
+      {/* <Spacer size={4} /> */}
 
       {/* SCROLLABLE COMMENTS SECTION */}
       <div className="flex flex-col  overflow-y-auto h-58  ">
@@ -145,8 +167,8 @@ export function Comments({ data, cardDetailsId }: Props) {
         </AddNewInput>
 
         {/* COMMENTS */}
-        {comments.length > 0 ? (
-          comments?.map((comment) => (
+        {commentsData && commentsData.length > 0 ? (
+          commentsData?.map((comment) => (
             <CommentCard
               key={comment.id}
               data={comment}

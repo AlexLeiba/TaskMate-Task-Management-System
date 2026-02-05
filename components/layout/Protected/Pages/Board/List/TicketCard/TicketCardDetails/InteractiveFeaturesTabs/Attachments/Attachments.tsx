@@ -116,14 +116,12 @@ export function Attachments({ cardDetailsId }: Props) {
         type: "single",
         fileName,
         fileType,
-        id,
+        uploadFileId: id,
       };
 
       const response = await axiosInstance.delete(API_REQ_URL.upload, {
         data: body,
       });
-
-      console.log(response);
 
       if (response?.data?.statusCode !== 200) {
         return toast.error(response?.data?.error);
@@ -293,9 +291,10 @@ export function Attachments({ cardDetailsId }: Props) {
           <Image />
           <h5 className="text-xl font-medium">Attachments</h5>
         </div>
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-2 items-center">
           {/* DOWNLOAD ZIP */}
           <IconButton
+            className="px-2"
             loading={isDownloadingZip}
             disabled={
               isPendingUpload ||
@@ -322,6 +321,7 @@ export function Attachments({ cardDetailsId }: Props) {
             title="Upload file"
             aria-label="Upload file"
             onClick={handleOpenFileInput}
+            className="px-2"
           >
             <Plus className="text-green-600" />
           </IconButton>

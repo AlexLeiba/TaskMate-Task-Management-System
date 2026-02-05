@@ -88,7 +88,7 @@ export function Sidebar() {
               variant={"secondary"}
               aria-label="Add New organization"
               title="Add New organization"
-              className="rounded-full size-8"
+              // className="rounded-full size-8"
               onClick={handleAddNewOrganization}
             >
               <Plus />
@@ -110,9 +110,9 @@ export function Sidebar() {
                           aria-label={item.name}
                           className={cn(
                             selectedOrgId === item.id
-                              ? "bg-gray-800"
+                              ? "bg-foreground"
                               : "bg-none",
-                            "p-4 hover:bg-gray-900 cursor-pointer flex justify-between items-center",
+                            "p-4 hover:bg-foreground/20 cursor-pointer flex justify-between items-center",
                             "transition-all duration-200 ease-in-out",
                           )}
                         >
@@ -146,7 +146,7 @@ export function Sidebar() {
                                 className={cn(
                                   selectedSidebarPage === currentPathname &&
                                     selectedOrgId === item.id
-                                    ? "bg-gray-800"
+                                    ? "bg-foreground"
                                     : "",
                                   "w-full justify-start",
                                 )}
@@ -154,7 +154,7 @@ export function Sidebar() {
                                 variant={"ghost"}
                                 key={data?.title}
                               >
-                                <div className="flex gap-2 items-center">
+                                <div className="flex gap-2 items-center text-text-primary">
                                   {data?.icon}
                                   {data?.title}
                                 </div>

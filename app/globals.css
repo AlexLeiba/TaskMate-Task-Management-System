@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
+/* @custom-variant dark (&:is(.dark *)); */
 
 /* This comes instead of older version: darkMode: "class" */
 /* Makes dark white theme Class based Theme mode not System based */
@@ -12,7 +12,12 @@
 /*This helps to write tailwind variables as utilities; Tailwind classes reference CSS variables */
 @theme inline {
   --color-background: var(--background);
+  --color-background-element: var(--background-element);
   --color-foreground: var(--foreground);
+  /* --color-background-2: var(--background-2); */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -54,17 +59,24 @@
 }
 
 /* if browser supports dark mode and detects "dark" then overwrite the theme variables */
-
 /* body pics up the theme variable in Cascade hierarchy */
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  /* backgrounds  */
+  --background: oklch(90.975% 0.0001 271.152);
+  --background-element: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
+  /*  */
+  /* text */
+  --text-primary: oklch(91.817% 0.00323 15.438);
+  --text-secondary: oklch(86.686% 0.0001 271.152);
+  /* 
+   */
+  --radius: 10px;
+  --card: oklch(1 0 0);
+  --popover: oklch(1 0 0);
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
@@ -93,16 +105,29 @@
   --quill-active-button-color: rgb(2, 171, 2);
 }
 
+/* this selector overwrites the root variables when detects .dark classname in body */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  /* backgrounds  */
+  --background: oklch(25.197% 0.00003 271.152);
+  --background-element: oklch(
+    20.019% 0.00002 271.152
+  ); /**for static elements **/
+  --foreground: oklch(
+    30.919% 0.00004 271.152
+  ); /** for interactive elements/ buttons/skeletons **/
+  --popover-foreground: oklch(28.502% 0.00003 271.152);
+  /*  */
+  /* text */
+  --text-primary: oklch(91.817% 0.00323 15.438);
+  --text-secondary: oklch(86.686% 0.0001 271.152);
+  /*  */
+
   --card-foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
   --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.922 0 0);
   --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
+  --secondary: oklch(22.213% 0.00003 271.152);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
@@ -129,11 +154,12 @@
 }
 
 @layer base {
+  /**global defaults **/
   * {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-text-primary;
   }
 }
 
@@ -258,7 +284,3 @@
 .html-content li {
   margin-bottom: 5px; /* Optional: Add spacing */
 }
-
-/* .ql-tooltip {
-  left: 5px !important;
-} */

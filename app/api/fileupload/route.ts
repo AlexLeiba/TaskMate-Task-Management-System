@@ -156,27 +156,24 @@ export async function DELETE(req: NextRequest) {
       throw new Error("Invalid request body");
     }
 
-    const {
-      id,
-      fileId,
-      cardDetailsId,
-      boardId,
-      type,
-      fileName,
-      fileType,
-    }: DeleteFileBodyType = body;
-    console.log("🚀 ~ DELETE ~ fileId:", fileId);
-
-    const cardResponse = await getCardDetailsData({ cardDetailsId });
-
-    if (!cardResponse) {
-      throw new Error("Card not found");
-    }
+    const bodyData: DeleteFileBodyType = body;
 
     // upload image to cloudinary and get the result
-    if (type === "single") {
-      const result = await cloudinary.uploader.destroy(fileId, {
-        resource_type: fileType,
+    if (bodyData.type === "single") {
+      if (!bodyData.cardDetailsId) {
+        throw new Error("Card not found");
+      }
+
+      const cardResponse = await getCardDetailsData({
+        cardDetailsId: bodyData.cardDetailsId,
+      });
+
+      if (!cardResponse) {
+        throw new Error("Card not found");
+      }
+      // DELETE FROM CLOUD FILES
+      const result = await cloudinary.uploader.destroy(bodyData.fileId, {
+        resource_type: bodyData.fileType,
       });
       console.log("🚀 ~ DELETE ~ result:", result);
 
@@ -184,27 +181,26 @@ export async function DELETE(req: NextRequest) {
         throw new Error("File not found");
       }
 
+      // DELETE FROM DB FILES
       await prisma.uploadedFile.delete({
         where: {
-          fileId,
-          id,
+          fileId: bodyData.fileId,
+          id: bodyData.uploadFileId,
         },
       });
 
       await createNewActivity({
-        cardId: cardDetailsId,
-        boardId: boardId,
+        cardId: bodyData.cardDetailsId,
+        boardId: bodyData.boardId,
         authorId: activeUser.data.id,
-        activity: `Deleted the attachment: ${fileName} from card: "${cardResponse?.card?.title}" in list: "${cardResponse?.card?.listName}"`,
+        activity: `Deleted the attachment: ${bodyData.fileName} from card: "${cardResponse?.card?.title}" in list: "${cardResponse?.card?.listName}"`,
         type: "deleted",
       });
-    }
-    if (type === "card") {
-      // IF DELETE A CARD WITH ATTACHMENTS
 
-      const allResourcesOfCurrentCard = await prisma.attachments.findMany({
+      // GET UPDATED ATTACHMENTS AND RETURN TO CLIENT
+      const allAttachments = await prisma.attachments.findMany({
         where: {
-          cardId: cardDetailsId,
+          cardId: bodyData.cardDetailsId,
           files: {
             some: {
               //return oinly if there is at least a file
@@ -212,44 +208,91 @@ export async function DELETE(req: NextRequest) {
           },
         },
         include: {
+          files: true,
+          author: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      if (!allAttachments) {
+        throw new Error("Attachment not found");
+      }
+
+      return NextResponse.json({
+        data: allAttachments,
+        statusCode: 200,
+        message: "Attachments deleted successfully",
+      });
+    }
+    if (bodyData.type === "card") {
+      // IF DELETE A CARD WITH ATTACHMENTS
+
+      const allAttachmentsOfCurrentCard = await prisma.attachments.findMany({
+        where: {
+          cardId: bodyData.cardDetailsId,
+          files: {
+            some: {
+              //return only if there is at least a file
+            },
+          },
+        },
+        include: {
           files: {
             select: {
               fileId: true,
+              type: true,
             },
           },
         },
       });
-      if (!allResourcesOfCurrentCard) {
-        throw new Error("Attachments not found");
-      }
 
-      const allFilesIds = allResourcesOfCurrentCard.map((attachment) => {
-        return attachment?.files.map((file) => {
-          return file?.fileId;
+      const imagesIds: string[] = [];
+      const filesIds: string[] = [];
+      allAttachmentsOfCurrentCard.forEach((attachment) => {
+        attachment?.files.forEach((file) => {
+          if (file.type === "image") {
+            imagesIds.push(file.fileId);
+          } else {
+            filesIds.push(file.fileId);
+          }
         });
-      })[0];
-      const response = await cloudinary.api.delete_resources(allFilesIds);
-      console.log("🚀 ~ DELETE ~ response:\n\n\n\n", response);
-
-      if (response.result === "not found") {
-        throw new Error("File not found");
-      }
-      await prisma.attachments.deleteMany({
-        where: {
-          cardId: cardDetailsId,
-        },
       });
+
+      // DELETE FILES FROM CLOUD, THE DB DATA DELETING I HANDLED BY SERVER ACTIONS
+      if (imagesIds.length > 0) {
+        const responseImages = await cloudinary.api.delete_resources(
+          imagesIds,
+          {
+            resource_type: "image",
+          },
+        );
+
+        if (responseImages.result === "not found") {
+          throw new Error("Image not found");
+        }
+      }
+      if (filesIds.length > 0) {
+        const responseFiles = await cloudinary.api.delete_resources(filesIds, {
+          resource_type: "raw",
+        });
+
+        if (responseFiles.result === "not found") {
+          throw new Error("File not found");
+        }
+      }
     }
 
-    if (type === "board") {
+    if (bodyData.type === "board") {
       // IF DELETE A BOARD WITH ATTACHMENTS
-      const allResourcesOfCurrentBoard = await prisma.uploadedFile.findMany({
+      const allAttachmentsOfCurrentCard = await prisma.uploadedFile.findMany({
         where: {
           attachment: {
             card: {
               card: {
                 list: {
-                  boardId,
+                  boardId: bodyData.boardId,
                 },
               },
             },
@@ -257,59 +300,44 @@ export async function DELETE(req: NextRequest) {
         },
         select: {
           fileId: true,
+          type: true,
         },
       });
-      if (!allResourcesOfCurrentBoard) {
-        throw new Error("Attachments not found");
-      }
 
-      const allFilesIds = allResourcesOfCurrentBoard?.map((file) => {
-        return file?.fileId;
+      const imagesIds: string[] = [];
+      const filesIds: string[] = [];
+      allAttachmentsOfCurrentCard.forEach((file) => {
+        if (file.type === "image") {
+          imagesIds.push(file.fileId);
+        } else {
+          filesIds.push(file.fileId);
+        }
       });
-      const response = await cloudinary.api.delete_resources(allFilesIds);
-      if (response.result === "not found") {
-        throw new Error("File not found");
-      }
-      await prisma.uploadedFile.deleteMany({
-        where: {
-          attachment: {
-            card: {
-              card: {
-                list: {
-                  boardId,
-                },
-              },
-            },
+
+      // DELETE FILES FROM CLOUD, THE DB DATA DELETING I HANDLED BY SERVER ACTIONS
+      if (imagesIds.length > 0) {
+        const responseImages = await cloudinary.api.delete_resources(
+          imagesIds,
+          {
+            resource_type: "image",
           },
-        },
-      });
-    }
-
-    // GET UPDATED ATTACHMENTS AND RETURN TO CLIENT
-    const allAttachments = await prisma.attachments.findMany({
-      where: {
-        cardId: cardDetailsId,
-        files: {
-          some: {
-            //return oinly if there is at least a file
-          },
-        },
-      },
-      include: {
-        files: true,
-        author: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
-    if (!allAttachments) {
-      throw new Error("Attachment not found");
+        );
+        if (responseImages.result === "not found") {
+          throw new Error("Image not found");
+        }
+      }
+      if (filesIds.length > 0) {
+        const responseFiles = await cloudinary.api.delete_resources(filesIds, {
+          resource_type: "raw",
+        });
+        if (responseFiles.result === "not found") {
+          throw new Error("File not found");
+        }
+      }
     }
 
     return NextResponse.json({
-      data: allAttachments,
+      data: [],
       statusCode: 200,
       message: "Attachments deleted successfully",
     });

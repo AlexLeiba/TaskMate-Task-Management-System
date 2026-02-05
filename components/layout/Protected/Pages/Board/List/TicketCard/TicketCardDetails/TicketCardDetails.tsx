@@ -14,7 +14,7 @@ import { InteractiveFeaturesTabs } from "./InteractiveFeaturesTabs/InteractiveFe
 import { CardDetailsType } from "@/app/actions/card-details";
 import { ChecklistList } from "./ChecklistList";
 import { DueDate } from "./DueDate/DueDate";
-import { Actions } from "./Actions";
+import { Actions } from "./Actions/Actions";
 import { DateTime } from "./DateTime";
 import { cn } from "@/lib/utils";
 
@@ -99,9 +99,9 @@ export function TicketCardDetails({
             />
             <div className="flex flex-col justify-between h-full ">
               <Actions
-                cardDetailsId={cardDetails?.card.id}
-                listId={cardDetails?.card.listId}
-                cardTitle={cardDetails?.card.title}
+                cardDetailsId={cardDetails?.card.id || ""}
+                listId={cardDetails?.card.listId || ""}
+                cardId={cardDetails?.card.id || ""}
               />
               <div className="flex justify-end my-4">
                 <DateTime

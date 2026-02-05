@@ -72,17 +72,19 @@ export function Description({ description = "", cardDetailsId }: Props) {
             title="Edit Description"
             aria-label="Edit Description"
             onClick={() => setIsQuillVisible(true)}
+            className="px-2"
           >
             <SquarePen className="text-green-500" />
           </IconButton>
         )}
         {isQuillVisible && (
-          <div className="flex gap-6">
+          <div className="flex gap-2">
             <IconButton
               disabled={isPending}
               title="Close Description"
               aria-label="Close Description"
               onClick={() => setIsQuillVisible(false)}
+              className="px-2"
             >
               <X />
             </IconButton>
@@ -92,6 +94,7 @@ export function Description({ description = "", cardDetailsId }: Props) {
               title="Save Description"
               aria-label="Save Description"
               onClick={handleSaveDescription}
+              className="px-2"
             >
               <Check className="text-green-500" />
             </IconButton>
@@ -110,7 +113,7 @@ export function Description({ description = "", cardDetailsId }: Props) {
         >
           {value !== "" ? (
             <div
-              className=" text-left max-w-full text-gray-300   html-content "
+              className=" text-left max-w-full text-text-primary   html-content "
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(value).replace(/&nbsp;/g, " "), //Prevent XSS attacks.
               }}

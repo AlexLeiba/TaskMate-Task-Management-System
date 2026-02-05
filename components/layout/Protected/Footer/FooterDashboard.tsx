@@ -3,7 +3,7 @@ import Links from "../Links";
 
 export function FooterDashboard() {
   return (
-    <footer className="p-4 dark:bg-gray-900 text-white w-full">
+    <footer className="p-4 bg-background-element text-white w-full">
       <div className="max-w-350 pl-4 mx-auto">
         <div className="flex justify-between">
           <Logo /> <Links />

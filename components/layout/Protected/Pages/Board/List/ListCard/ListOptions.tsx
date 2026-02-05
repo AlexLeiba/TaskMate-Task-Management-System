@@ -103,7 +103,7 @@ export function ListOptions({ listId }: Props) {
           <Ellipsis size={25} />
         </IconButton>
       </PopoverTrigger>
-      <PopoverContent align="start" className="max-w-50 bg-gray-900 text-white">
+      <PopoverContent align="start" className="max-w-50">
         <div className="flex justify-between items-center mb-4">
           <p className="text-xl font-medium">List Options</p>
           <IconButton

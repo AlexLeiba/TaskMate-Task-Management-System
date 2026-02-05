@@ -179,12 +179,27 @@ export type UploadFileBodyType = {
   fileType: "image" | "raw";
   fileName: string;
 };
-export type DeleteFileBodyType = {
-  id: string;
+
+type DeleteSingleFile = {
+  type: "single";
   fileId: string;
+  fileType: "image" | "raw";
+  uploadFileId: string;
+  fileName: string;
   cardDetailsId: string;
   boardId: string;
-  type: "single" | "card" | "board";
-  fileName: string;
+};
+type DeleteCardFiles = {
+  type: "card";
+  cardDetailsId: string;
   fileType: "image" | "raw";
 };
+type DeleteBoardFiles = {
+  type: "board";
+  boardId: string;
+  fileType: "image" | "raw";
+};
+export type DeleteFileBodyType =
+  | DeleteSingleFile
+  | DeleteCardFiles
+  | DeleteBoardFiles;

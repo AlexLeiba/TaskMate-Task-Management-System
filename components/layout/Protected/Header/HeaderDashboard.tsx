@@ -23,11 +23,11 @@ type Props = {
 };
 export function HeaderDashboard({ type = "dashboard" }: Props) {
   return (
-    <header className="fixed top-0 left-0 right-0 dark:bg-gray-900 z-50  ">
+    <header className="fixed top-0 left-0 right-0 bg-background-element z-50  ">
       <div
         className={cn(
           type === "dashboard" ? "max-w-7xl" : "max-w-400",
-          " py-2 mx-auto px-4",
+          " py-3 mx-auto px-4",
         )}
       >
         <div className="flex justify-between">
@@ -38,7 +38,9 @@ export function HeaderDashboard({ type = "dashboard" }: Props) {
 
           {/* <Links /> */}
           <div className="flex gap-2">
-            <Button title="Create new board">Create</Button>
+            <Button size={"sm"} title="Create new board" variant={"secondary"}>
+              Create
+            </Button>
 
             <OrganizationSwitcher
               afterLeaveOrganizationUrl="/select-organization"
@@ -46,15 +48,15 @@ export function HeaderDashboard({ type = "dashboard" }: Props) {
               afterSelectOrganizationUrl={"/dashboard/:id"}
               appearance={{
                 variables: {
-                  colorBackground: "#0f172a", // dark background
-                  colorText: "#ffffff",
-                  colorInputBackground: "#020617",
-                  colorInputText: "#ffffff",
+                  colorBackground: "oklch(30.919% 0.00004 271.152)", // dark background
+                  colorText: "oklch(91.817% 0.00323 15.438)",
+                  colorInputBackground: "oklch(30.919% 0.00004 271.152)",
+                  colorInputText: "oklch(91.817% 0.00323 15.438)",
                 },
 
                 elements: {
-                  organizationSwitcherTrigger: "!bg-slate-900 !text-white",
-                  organizationSwitcherPopoverCard: "!bg-slate-900 ",
+                  organizationSwitcherTrigger: " !text-white",
+                  organizationSwitcherPopoverCard: " ",
                   organizationSwitcherPopoverActionButton:
                     "!text-white hover:opacity-70",
                   organizationPreviewTextContainer: "text-white",
@@ -66,15 +68,15 @@ export function HeaderDashboard({ type = "dashboard" }: Props) {
             <UserButton
               appearance={{
                 variables: {
-                  colorBackground: "#0f172a", // dark background
-                  colorText: "#ffffff",
-                  colorInputBackground: "#020617",
-                  colorInputText: "#ffffff",
+                  colorBackground: "oklch(30.919% 0.00004 271.152)", // dark background
+                  colorText: "oklch(91.817% 0.00323 15.438)",
+                  colorInputBackground: " oklch(30.919% 0.00004 271.152)",
+                  colorInputText: "oklch(91.817% 0.00323 15.438)",
                 },
 
                 elements: {
                   userButtonPopoverActionButton:
-                    "!bg-slate-900 !text-white hover:opacity-70",
+                    " !text-white hover:opacity-70",
                 },
               }}
             />

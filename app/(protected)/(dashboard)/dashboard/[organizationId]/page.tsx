@@ -14,7 +14,7 @@ async function DashboardPage({
   return (
     <div className="w-full">
       <OrgDetails />
-      <Separator className="bg-gray-600 w-full my-4" />
+      <Separator className="bg-gray-600 w-full my-4 " />
       <Suspense fallback={<BoardCardSkeleton />}>
         <BoardsServerRender orgId={orgId} />
       </Suspense>

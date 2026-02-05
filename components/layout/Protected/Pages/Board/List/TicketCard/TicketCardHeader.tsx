@@ -9,7 +9,7 @@ import {
 import { AddNewInput } from "../../AddNewInput";
 import { Separator } from "@/components/ui/separator";
 import { IconButton } from "@/components/ui/iconButton";
-import { KEYBOARD } from "@/lib/consts";
+import { API_REQ_URL, KEYBOARD } from "@/lib/consts";
 import dynamic from "next/dynamic";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -18,6 +18,8 @@ import {
   editCardTitleAction,
 } from "@/app/actions/card";
 import toast from "react-hot-toast";
+import { DeleteFileBodyType } from "@/lib/types";
+import { axiosInstance } from "@/lib/config";
 
 const DeleteDialog = dynamic(() =>
   import("@/components/layout/Protected/DeleteDialog/DeleteDialog").then(
@@ -30,12 +32,20 @@ type Props = {
   cardId: string;
   listId: string;
   boardId: string;
+  cardDetailsId: string;
 };
-export function TicketCardHeader({ title, cardId, listId, boardId }: Props) {
+export function TicketCardHeader({
+  title,
+  cardId,
+  listId,
+  boardId,
+  cardDetailsId,
+}: Props) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isOpenedOptions, setIsOpenedOptions] = useState(false);
   const [isOpenedTitleInput, setIsOpenedTitleInput] = useState(false);
 
+  // DELETE CARD
   const {
     mutate: deleteCardMutation,
     isPending: isPendingDeleteCardDeleteCard,
@@ -51,6 +61,8 @@ export function TicketCardHeader({ title, cardId, listId, boardId }: Props) {
       toast.error(message || "Error deleting card, please try again");
     },
   });
+
+  // EDIT TITLE
   const { mutate: editTitleCardMutation, isPending: isPendingEditTitleCard } =
     useMutation({
       mutationKey: ["edit-title-card"],
@@ -64,6 +76,7 @@ export function TicketCardHeader({ title, cardId, listId, boardId }: Props) {
         toast.error(message || "Error editing card title, please try again");
       },
     });
+  // COPY CARD
   const { mutate: copyCardMutation, isPending: isPendingCopyCard } =
     useMutation({
       mutationKey: ["copy-card"],
@@ -78,6 +91,7 @@ export function TicketCardHeader({ title, cardId, listId, boardId }: Props) {
       },
     });
 
+  // CHANGE TITLE
   function handleChangeCardTitle(title: { [inputName: string]: string }) {
     editTitleCardMutation({ title: title.title, cardId, listId, boardId });
     toast.loading("Editing card title...", { id: "edit-title-card" });
@@ -89,9 +103,40 @@ export function TicketCardHeader({ title, cardId, listId, boardId }: Props) {
     setDeleteDialogOpen(true);
   }
 
-  function handleDeleteCard(cardId: string) {
-    deleteCardMutation({ cardId, listId, boardId });
+  async function deleteFile() {
+    try {
+      if (!boardId) {
+        return toast.error("Board not found");
+      }
+      const body: DeleteFileBodyType = {
+        type: "card",
+        cardDetailsId,
+        fileType: "raw",
+      };
+
+      const response = await axiosInstance.delete(API_REQ_URL.upload, {
+        data: body,
+      });
+
+      console.log(response);
+
+      if (response?.data?.statusCode !== 200) {
+        return toast.error(response?.data?.error);
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Error deleting a file");
+    }
+  }
+
+  async function handleDeleteCard(cardId: string) {
     toast.loading("Deleting card...", { id: "delete-card" });
+
+    // DELETE FILES FROM CLOUD
+    await deleteFile(); //js will await until this fn is resolved before moving to next line
+
+    // DELETE FILES FROM DB
+    deleteCardMutation({ cardId, listId, boardId });
+
     setDeleteDialogOpen(false);
   }
 
@@ -127,10 +172,7 @@ export function TicketCardHeader({ title, cardId, listId, boardId }: Props) {
             <Ellipsis />
           </IconButton>
         </PopoverTrigger>
-        <PopoverContent
-          align="start"
-          className="max-w-70 bg-gray-900 text-white"
-        >
+        <PopoverContent align="start" className="max-w-70 ">
           <div className="flex justify-between items-center mb-4">
             <p className="text-xl font-medium">Card Options</p>
             <IconButton

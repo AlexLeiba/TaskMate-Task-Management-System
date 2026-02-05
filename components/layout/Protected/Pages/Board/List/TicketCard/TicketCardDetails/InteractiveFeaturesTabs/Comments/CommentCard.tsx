@@ -16,12 +16,13 @@ export function CommentCard({ data: comment, handleOpenDeleteModal }: Props) {
     <div className="flex flex-col gap-1">
       <UserCard data={comment.author} size="sm" />
       <p>{comment.comment}</p>
-      <div className="flex justify-between items-center px-2">
+      <div className="flex justify-between items-center pl-2">
         <p className="text-xs text-gray-400">
           {format(new Date(comment?.createdAt as Date), "MMM d yyyy a HH:mm")}
         </p>
 
         <IconButton
+          className="px-2"
           title="Detele comment"
           aria-label="Delete comment"
           onClick={handleOpenDeleteModal}

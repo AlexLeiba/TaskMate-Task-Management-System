@@ -45,46 +45,50 @@ export async function editBoardTitleAction({
   boardId: string;
   title: string;
 }): Promise<{ data: Board | null; error: { message: string } }> {
-  const { data: activeUser } = await currentActiveUser();
+  try {
+    const { data: activeUser } = await currentActiveUser();
 
-  const { orgId } = await auth();
-  if (!orgId) {
-    throw new Error("User not authenticated");
+    const { orgId } = await auth();
+    if (!orgId) {
+      throw new Error("User not authenticated");
+    }
+
+    if (!activeUser) {
+      throw new Error("User not authorized");
+    }
+
+    const prevBoardData = await prisma.board.findFirst({
+      where: {
+        orgId,
+        id: boardId,
+      },
+    });
+
+    if (!prevBoardData) {
+      throw new Error("Board not found");
+    }
+
+    const response = await prisma.board.update({
+      where: {
+        id: boardId,
+        orgId,
+      },
+      data: {
+        title,
+      },
+    });
+
+    await createNewActivity({
+      cardId: null,
+      boardId,
+      authorId: activeUser.id,
+      activity: `Updated board title from "${prevBoardData?.title}" to "${response.title}"`,
+      type: "updated",
+    });
+
+    revalidatePath("/board");
+    return { data: response, error: { message: "" } };
+  } catch (error: any) {
+    throw error?.message || "Something went wrong";
   }
-
-  if (!activeUser) {
-    throw new Error("User not authorized");
-  }
-
-  const prevBoardData = await prisma.board.findFirst({
-    where: {
-      orgId,
-      id: boardId,
-    },
-  });
-
-  if (!prevBoardData) {
-    throw new Error("Board not found");
-  }
-
-  const response = await prisma.board.update({
-    where: {
-      id: boardId,
-      orgId,
-    },
-    data: {
-      title,
-    },
-  });
-
-  await createNewActivity({
-    cardId: null,
-    boardId,
-    authorId: activeUser.id,
-    activity: `Updated board title from "${prevBoardData?.title}" to "${response.title}"`,
-    type: "updated",
-  });
-
-  revalidatePath("/board");
-  return { data: response, error: { message: "" } };
 }

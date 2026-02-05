@@ -25,41 +25,45 @@ export async function editCardTitleAction({
   data: Card;
   error: { message: string };
 }> {
-  const activeUser = await currentActiveUser();
+  try {
+    const activeUser = await currentActiveUser();
 
-  if (!activeUser.data) {
-    throw new Error("User not authorized");
+    if (!activeUser.data) {
+      throw new Error("User not authorized");
+    }
+
+    const foundCard = await prisma.card.findFirst({
+      where: {
+        id: cardId,
+        listId,
+      },
+    });
+
+    if (!foundCard) {
+      throw new Error("Card not found");
+    }
+
+    const response = await prisma.card.update({
+      where: {
+        id: cardId,
+        listId,
+      },
+      data: {
+        title,
+      },
+    });
+
+    await createNewActivity({
+      boardId: boardId,
+      authorId: activeUser.data.id,
+      activity: `Updated card title from "${foundCard.title}" to "${response.title}" from list: "${foundCard.listName}"`,
+      type: "updated",
+    });
+    revalidatePath(`/board/${boardId}`);
+    return { data: response, error: { message: "" } };
+  } catch (error: any) {
+    throw error?.message || "Something went wrong";
   }
-
-  const foundCard = await prisma.card.findFirst({
-    where: {
-      id: cardId,
-      listId,
-    },
-  });
-
-  if (!foundCard) {
-    throw new Error("Card not found");
-  }
-
-  const response = await prisma.card.update({
-    where: {
-      id: cardId,
-      listId,
-    },
-    data: {
-      title,
-    },
-  });
-
-  await createNewActivity({
-    boardId: boardId,
-    authorId: activeUser.data.id,
-    activity: `Updated card title from "${foundCard.title}" to "${response.title}" from list: "${foundCard.listName}"`,
-    type: "updated",
-  });
-  revalidatePath(`/board/${boardId}`);
-  return { data: response, error: { message: "" } };
 }
 
 type CopyCardProps = {
@@ -75,42 +79,46 @@ export async function copyCardAction({
   data: Card;
   error: { message: string };
 }> {
-  const activeUser = await currentActiveUser();
+  try {
+    const activeUser = await currentActiveUser();
 
-  if (!activeUser || !activeUser?.data?.id) {
-    throw new Error("User not authorized");
+    if (!activeUser || !activeUser?.data?.id) {
+      throw new Error("User not authorized");
+    }
+
+    const foundCard = await prisma.card.findFirst({
+      where: {
+        id: cardId,
+        listId,
+      },
+    });
+
+    if (!foundCard) {
+      throw new Error("Card not found");
+    }
+
+    const response = await prisma.card.create({
+      data: {
+        listId,
+        listName: foundCard.listName,
+        title: foundCard.title + " - copy",
+        priority: foundCard.priority,
+        assignedToEmail: foundCard.assignedToEmail || null,
+        reporterId: activeUser.data.id,
+      },
+    });
+
+    await createNewActivity({
+      boardId: boardId,
+      authorId: activeUser.data.id,
+      activity: `Created a copy of card: "${foundCard.title}" in new card: "${response.title}" from list: "${foundCard.listName}"`,
+      type: "created",
+    });
+    revalidatePath(`/board/${boardId}`);
+    return { data: response, error: { message: "" } };
+  } catch (error: any) {
+    throw error?.message || "Something went wrong";
   }
-
-  const foundCard = await prisma.card.findFirst({
-    where: {
-      id: cardId,
-      listId,
-    },
-  });
-
-  if (!foundCard) {
-    throw new Error("Card not found");
-  }
-
-  const response = await prisma.card.create({
-    data: {
-      listId,
-      listName: foundCard.listName,
-      title: foundCard.title + " - copy",
-      priority: foundCard.priority,
-      assignedToEmail: foundCard.assignedToEmail || null,
-      reporterId: activeUser.data.id,
-    },
-  });
-
-  await createNewActivity({
-    boardId: boardId,
-    authorId: activeUser.data.id,
-    activity: `Created a copy of card: "${foundCard.title}" in new card: "${response.title}" from list: "${foundCard.listName}"`,
-    type: "created",
-  });
-  revalidatePath(`/board/${boardId}`);
-  return { data: response, error: { message: "" } };
 }
 
 type DeleteCardProps = {
@@ -127,37 +135,41 @@ export async function deleteCardAction({
   data: Card;
   error: { message: string };
 }> {
-  const activeUser = await currentActiveUser();
+  try {
+    const activeUser = await currentActiveUser();
 
-  if (!activeUser.data) {
-    throw new Error("User not authorized");
+    if (!activeUser.data) {
+      throw new Error("User not authorized");
+    }
+
+    const foundCard = await prisma.card.findFirst({
+      where: {
+        id: cardId,
+        listId,
+      },
+    });
+    if (!foundCard) {
+      throw new Error("Card not found");
+    }
+    const response = await prisma.card.delete({
+      where: {
+        id: cardId,
+        listId,
+      },
+    });
+
+    await createNewActivity({
+      boardId: boardId,
+      authorId: activeUser.data.id,
+      activity: `Deleted card: "${response.title}" from list: "${response.listName}"`,
+      type: "deleted",
+    });
+
+    revalidatePath(`/board/${boardId}`);
+    return { data: response, error: { message: "" } };
+  } catch (error: any) {
+    throw error?.message || "Something went wrong";
   }
-
-  const foundCard = await prisma.card.findFirst({
-    where: {
-      id: cardId,
-      listId,
-    },
-  });
-  if (!foundCard) {
-    throw new Error("Card not found");
-  }
-  const response = await prisma.card.delete({
-    where: {
-      id: cardId,
-      listId,
-    },
-  });
-
-  await createNewActivity({
-    boardId: boardId,
-    authorId: activeUser.data.id,
-    activity: `Deleted card: "${response.title}" from list: "${response.listName}"`,
-    type: "deleted",
-  });
-
-  revalidatePath(`/board/${boardId}`);
-  return { data: response, error: { message: "" } };
 }
 
 type EditPriorityActionProps = {
@@ -175,39 +187,43 @@ export async function editPriorityAction({
   data: Card;
   error: { message: string };
 }> {
-  const activeUser = await currentActiveUser();
+  try {
+    const activeUser = await currentActiveUser();
 
-  if (!activeUser.data) {
-    throw new Error("User not authorized");
+    if (!activeUser.data) {
+      throw new Error("User not authorized");
+    }
+
+    const foundCard = await prisma.card.findFirst({
+      where: {
+        id: cardId,
+        listId,
+      },
+    });
+    if (!foundCard) {
+      throw new Error("Card not found");
+    }
+    const response = await prisma.card.update({
+      where: {
+        id: cardId,
+        listId,
+      },
+      data: {
+        priority,
+      },
+    });
+
+    await createNewActivity({
+      boardId: boardId,
+      authorId: activeUser.data.id,
+      activity: `Updated priority from "${foundCard.priority}" to "${response.priority}" ,of card: "${response.title}" from list: "${response.listName}"`,
+      type: "updated",
+    });
+    revalidatePath(`/board/${boardId}`);
+    return { data: response, error: { message: "" } };
+  } catch (error: any) {
+    throw error?.message || "Something went wrong";
   }
-
-  const foundCard = await prisma.card.findFirst({
-    where: {
-      id: cardId,
-      listId,
-    },
-  });
-  if (!foundCard) {
-    throw new Error("Card not found");
-  }
-  const response = await prisma.card.update({
-    where: {
-      id: cardId,
-      listId,
-    },
-    data: {
-      priority,
-    },
-  });
-
-  await createNewActivity({
-    boardId: boardId,
-    authorId: activeUser.data.id,
-    activity: `Updated priority from "${foundCard.priority}" to "${response.priority}" ,of card: "${response.title}" from list: "${response.listName}"`,
-    type: "updated",
-  });
-  revalidatePath(`/board/${boardId}`);
-  return { data: response, error: { message: "" } };
 }
 
 type AssignToCardActionProps = {
@@ -225,43 +241,47 @@ export async function assignToCardAction({
   data: Card;
   error: { message: string };
 }> {
-  const activeUser = await currentActiveUser();
+  try {
+    const activeUser = await currentActiveUser();
 
-  if (!activeUser.data) {
-    throw new Error("User not authorized");
+    if (!activeUser.data) {
+      throw new Error("User not authorized");
+    }
+
+    if (activeUser.data.email !== assignedUserData.email) {
+      await createNewUser({ data: assignedUserData });
+    }
+
+    const foundCard = await prisma.card.findFirst({
+      where: {
+        id: cardId,
+        listId,
+      },
+    });
+    if (!foundCard) {
+      throw new Error("Card not found");
+    }
+    const response = await prisma.card.update({
+      where: {
+        id: cardId,
+        listId,
+      },
+      data: {
+        assignedToEmail: assignedUserData.email,
+      },
+    });
+
+    await createNewActivity({
+      boardId: boardId,
+      authorId: activeUser.data.id,
+      activity: `Assigned "${assignedUserData.name}" to card: "${response.title}" from list: "${response.listName}"`,
+      type: "updated",
+    });
+    revalidatePath(`/board/${boardId}`);
+    return { data: response, error: { message: "" } };
+  } catch (error: any) {
+    throw error?.message || "Something went wrong";
   }
-
-  if (activeUser.data.email !== assignedUserData.email) {
-    await createNewUser({ data: assignedUserData });
-  }
-
-  const foundCard = await prisma.card.findFirst({
-    where: {
-      id: cardId,
-      listId,
-    },
-  });
-  if (!foundCard) {
-    throw new Error("Card not found");
-  }
-  const response = await prisma.card.update({
-    where: {
-      id: cardId,
-      listId,
-    },
-    data: {
-      assignedToEmail: assignedUserData.email,
-    },
-  });
-
-  await createNewActivity({
-    boardId: boardId,
-    authorId: activeUser.data.id,
-    activity: `Assigned "${assignedUserData.name}" to card: "${response.title}" from list: "${response.listName}"`,
-    type: "updated",
-  });
-  revalidatePath(`/board/${boardId}`);
-  return { data: response, error: { message: "" } };
 }
 export async function unassigneCardAction({
   cardId,
@@ -272,37 +292,41 @@ export async function unassigneCardAction({
   data: Card;
   error: { message: string };
 }> {
-  const activeUser = await currentActiveUser();
+  try {
+    const activeUser = await currentActiveUser();
 
-  if (!activeUser.data) {
-    throw new Error("User not authorized");
+    if (!activeUser.data) {
+      throw new Error("User not authorized");
+    }
+
+    const foundCard = await prisma.card.findFirst({
+      where: {
+        id: cardId,
+        listId,
+      },
+    });
+    if (!foundCard) {
+      throw new Error("Card not found");
+    }
+    const response = await prisma.card.update({
+      where: {
+        id: cardId,
+        listId,
+      },
+      data: {
+        assignedToEmail: null,
+      },
+    });
+
+    await createNewActivity({
+      boardId: boardId,
+      authorId: activeUser.data.id,
+      activity: `Unassigned "${assignedUserData.name}" from card: "${response.title}" from list: "${response.listName}"`,
+      type: "updated",
+    });
+    revalidatePath(`/board/${boardId}`);
+    return { data: response, error: { message: "" } };
+  } catch (error: any) {
+    throw error?.message || "Something went wrong";
   }
-
-  const foundCard = await prisma.card.findFirst({
-    where: {
-      id: cardId,
-      listId,
-    },
-  });
-  if (!foundCard) {
-    throw new Error("Card not found");
-  }
-  const response = await prisma.card.update({
-    where: {
-      id: cardId,
-      listId,
-    },
-    data: {
-      assignedToEmail: null,
-    },
-  });
-
-  await createNewActivity({
-    boardId: boardId,
-    authorId: activeUser.data.id,
-    activity: `Unassigned "${assignedUserData.name}" from card: "${response.title}" from list: "${response.listName}"`,
-    type: "updated",
-  });
-  revalidatePath(`/board/${boardId}`);
-  return { data: response, error: { message: "" } };
 }

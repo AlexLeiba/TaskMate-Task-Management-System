@@ -48,41 +48,45 @@ export async function createListAction({
   boardId: string;
   title: string;
 }): Promise<{ data: List | null; error: { message: string } }> {
-  const { data: activeUser } = await currentActiveUser();
+  try {
+    const { data: activeUser } = await currentActiveUser();
 
-  if (!activeUser) {
-    throw new Error("User not authorized");
+    if (!activeUser) {
+      throw new Error("User not authorized");
+    }
+
+    const boardData = await prisma.board.findFirst({
+      where: {
+        id: boardId,
+      },
+    });
+
+    if (!boardData) {
+      throw new Error("Board not found");
+    }
+
+    const response = await prisma.list.create({
+      data: {
+        boardId,
+        title,
+      },
+    });
+
+    await createNewActivity({
+      boardId: response.boardId as string,
+      authorId: activeUser.id,
+      activity: `Created new list "${response.title}" in Board "${boardData.title}"`,
+      type: "created",
+    });
+
+    revalidatePath(`/board/${boardId}`);
+    return {
+      data: response,
+      error: { message: "" },
+    };
+  } catch (error: any) {
+    throw error.message || "Something went wrong";
   }
-
-  const boardData = await prisma.board.findFirst({
-    where: {
-      id: boardId,
-    },
-  });
-
-  if (!boardData) {
-    throw new Error("Board not found");
-  }
-
-  const response = await prisma.list.create({
-    data: {
-      boardId,
-      title,
-    },
-  });
-
-  await createNewActivity({
-    boardId: response.boardId as string,
-    authorId: activeUser.id,
-    activity: `Created new list "${response.title}" in Board "${boardData.title}"`,
-    type: "created",
-  });
-
-  revalidatePath(`/board/${boardId}`);
-  return {
-    data: response,
-    error: { message: "" },
-  };
 }
 export async function updateListTitleAction({
   boardId,
@@ -93,55 +97,59 @@ export async function updateListTitleAction({
   title: string;
   listId: string;
 }): Promise<{ data: List | null; error: { message: string } }> {
-  const { data: activeUser } = await currentActiveUser();
+  try {
+    const { data: activeUser } = await currentActiveUser();
 
-  if (!activeUser) {
-    throw new Error("User not authorized");
+    if (!activeUser) {
+      throw new Error("User not authorized");
+    }
+
+    const boardData = await prisma.board.findFirst({
+      where: {
+        id: boardId,
+      },
+    });
+
+    if (!boardData) {
+      throw new Error("Board not found");
+    }
+
+    const prevListData = await prisma.list.findFirst({
+      where: {
+        boardId,
+        id: listId,
+      },
+    });
+
+    if (!prevListData) {
+      throw new Error("List not found");
+    }
+
+    const response = await prisma.list.update({
+      where: {
+        boardId,
+        id: listId,
+      },
+      data: {
+        title,
+      },
+    });
+
+    await createNewActivity({
+      boardId: response.boardId as string,
+      authorId: activeUser.id,
+      activity: `Updated list title from "${prevListData.title}" to "${response.title}" in Board "${boardData.title}"`,
+      type: "updated",
+    });
+
+    revalidatePath(`/board/${boardId}`);
+    return {
+      data: response,
+      error: { message: "" },
+    };
+  } catch (error: any) {
+    throw error?.message || "Something went wrong";
   }
-
-  const boardData = await prisma.board.findFirst({
-    where: {
-      id: boardId,
-    },
-  });
-
-  if (!boardData) {
-    throw new Error("Board not found");
-  }
-
-  const prevListData = await prisma.list.findFirst({
-    where: {
-      boardId,
-      id: listId,
-    },
-  });
-
-  if (!prevListData) {
-    throw new Error("List not found");
-  }
-
-  const response = await prisma.list.update({
-    where: {
-      boardId,
-      id: listId,
-    },
-    data: {
-      title,
-    },
-  });
-
-  await createNewActivity({
-    boardId: response.boardId as string,
-    authorId: activeUser.id,
-    activity: `Updated list title from "${prevListData.title}" to "${response.title}" in Board "${boardData.title}"`,
-    type: "updated",
-  });
-
-  revalidatePath(`/board/${boardId}`);
-  return {
-    data: response,
-    error: { message: "" },
-  };
 }
 
 export async function updateListStatusAction({
@@ -153,53 +161,57 @@ export async function updateListStatusAction({
   status: StatusType;
   listId: string;
 }): Promise<{ data: List | null; error: { message: string } }> {
-  const { data: activeUser } = await currentActiveUser();
-  if (!activeUser) {
-    throw new Error("User not authorized");
+  try {
+    const { data: activeUser } = await currentActiveUser();
+    if (!activeUser) {
+      throw new Error("User not authorized");
+    }
+
+    const boardData = await prisma.board.findFirst({
+      where: {
+        id: boardId,
+      },
+    });
+
+    if (!boardData) {
+      throw new Error("Board not found");
+    }
+
+    const prevListData = await prisma.list.findFirst({
+      where: {
+        boardId,
+        id: listId,
+      },
+    });
+
+    if (!prevListData) {
+      throw new Error("List not found");
+    }
+
+    const response = await prisma.list.update({
+      where: {
+        boardId,
+        id: listId,
+      },
+      data: {
+        status,
+      },
+    });
+
+    await createNewActivity({
+      boardId: response.boardId as string,
+      authorId: activeUser.id,
+      activity: `Updated list status from "${prevListData.status}" to "${response.status}" in Board "${boardData.title}"`,
+      type: "updated",
+    });
+
+    return {
+      data: response,
+      error: { message: "" },
+    };
+  } catch (error: any) {
+    throw error?.message || "Something went wrong";
   }
-
-  const boardData = await prisma.board.findFirst({
-    where: {
-      id: boardId,
-    },
-  });
-
-  if (!boardData) {
-    throw new Error("Board not found");
-  }
-
-  const prevListData = await prisma.list.findFirst({
-    where: {
-      boardId,
-      id: listId,
-    },
-  });
-
-  if (!prevListData) {
-    throw new Error("List not found");
-  }
-
-  const response = await prisma.list.update({
-    where: {
-      boardId,
-      id: listId,
-    },
-    data: {
-      status,
-    },
-  });
-
-  await createNewActivity({
-    boardId: response.boardId as string,
-    authorId: activeUser.id,
-    activity: `Updated list status from "${prevListData.status}" to "${response.status}" in Board "${boardData.title}"`,
-    type: "updated",
-  });
-
-  return {
-    data: response,
-    error: { message: "" },
-  };
 }
 
 export async function copyListAction({
@@ -209,53 +221,57 @@ export async function copyListAction({
   boardId: string;
   listId: string;
 }): Promise<{ data: List | null; error: { message: string } }> {
-  const { data: activeUser } = await currentActiveUser();
+  try {
+    const { data: activeUser } = await currentActiveUser();
 
-  if (!activeUser) {
-    throw new Error("User not authorized");
+    if (!activeUser) {
+      throw new Error("User not authorized");
+    }
+
+    const listData = await prisma.list.findFirst({
+      where: {
+        boardId,
+        id: listId,
+      },
+    });
+
+    const boardData = await prisma.board.findFirst({
+      where: {
+        id: boardId,
+      },
+    });
+
+    if (!boardData) {
+      throw new Error("Board not found");
+    }
+    if (!listData) {
+      throw new Error("List not found");
+    }
+
+    const response = await prisma.list.create({
+      data: {
+        title: `${listData.title} - Copy`,
+        boardId,
+        status: listData.status,
+      },
+    });
+
+    await createNewActivity({
+      boardId: response.boardId as string,
+      authorId: activeUser.id,
+      activity: `Created new list "${listData.title} - Copy" in Board "${boardData.title}"`,
+      type: "created",
+    });
+
+    revalidatePath(`/board/${boardId}`);
+
+    return {
+      data: response,
+      error: { message: "" },
+    };
+  } catch (error: any) {
+    throw error?.message || "Something went wrong";
   }
-
-  const listData = await prisma.list.findFirst({
-    where: {
-      boardId,
-      id: listId,
-    },
-  });
-
-  const boardData = await prisma.board.findFirst({
-    where: {
-      id: boardId,
-    },
-  });
-
-  if (!boardData) {
-    throw new Error("Board not found");
-  }
-  if (!listData) {
-    throw new Error("List not found");
-  }
-
-  const response = await prisma.list.create({
-    data: {
-      title: `${listData.title} - Copy`,
-      boardId,
-      status: listData.status,
-    },
-  });
-
-  await createNewActivity({
-    boardId: response.boardId as string,
-    authorId: activeUser.id,
-    activity: `Created new list "${listData.title} - Copy" in Board "${boardData.title}"`,
-    type: "created",
-  });
-
-  revalidatePath(`/board/${boardId}`);
-
-  return {
-    data: response,
-    error: { message: "" },
-  };
 }
 
 export async function deleteListAction({
@@ -265,51 +281,55 @@ export async function deleteListAction({
   boardId: string;
   listId: string;
 }): Promise<{ data: List | null; error: { message: string } }> {
-  const { data: activeUser } = await currentActiveUser();
+  try {
+    const { data: activeUser } = await currentActiveUser();
 
-  if (!activeUser) {
-    throw new Error("User not authorized");
+    if (!activeUser) {
+      throw new Error("User not authorized");
+    }
+
+    const listData = await prisma.list.findFirst({
+      where: {
+        boardId,
+        id: listId,
+      },
+    });
+
+    const boardData = await prisma.board.findFirst({
+      where: {
+        id: boardId,
+      },
+    });
+
+    if (!boardData) {
+      throw new Error("Board not found");
+    }
+    if (!listData) {
+      throw new Error("List not found");
+    }
+
+    const response = await prisma.list.delete({
+      where: {
+        id: listId,
+        boardId,
+      },
+    });
+
+    await createNewActivity({
+      boardId: response.boardId as string,
+      authorId: activeUser.id,
+      activity: `Deleted the list "${listData.title}" from Board "${boardData.title}"`,
+      type: "deleted",
+    });
+
+    revalidatePath(`/board/${boardId}`);
+    return {
+      data: response,
+      error: { message: "" },
+    };
+  } catch (error: any) {
+    throw error?.message || "Something went wrong";
   }
-
-  const listData = await prisma.list.findFirst({
-    where: {
-      boardId,
-      id: listId,
-    },
-  });
-
-  const boardData = await prisma.board.findFirst({
-    where: {
-      id: boardId,
-    },
-  });
-
-  if (!boardData) {
-    throw new Error("Board not found");
-  }
-  if (!listData) {
-    throw new Error("List not found");
-  }
-
-  const response = await prisma.list.delete({
-    where: {
-      id: listId,
-      boardId,
-    },
-  });
-
-  await createNewActivity({
-    boardId: response.boardId as string,
-    authorId: activeUser.id,
-    activity: `Deleted the list "${listData.title}" from Board "${boardData.title}"`,
-    type: "deleted",
-  });
-
-  revalidatePath(`/board/${boardId}`);
-  return {
-    data: response,
-    error: { message: "" },
-  };
 }
 
 export async function createListCardAction({
@@ -321,83 +341,87 @@ export async function createListCardAction({
   listId: string;
   title: string;
 }): Promise<{ data: Card | null; error: { message: string } }> {
-  const { data: activeUser } = await currentActiveUser();
-  if (!activeUser) {
-    throw new Error("User not authorized");
-  }
-  const listData = await prisma.list.findFirst({
-    where: {
-      boardId,
-      id: listId,
-    },
-  });
+  try {
+    const { data: activeUser } = await currentActiveUser();
+    if (!activeUser) {
+      throw new Error("User not authorized");
+    }
+    const listData = await prisma.list.findFirst({
+      where: {
+        boardId,
+        id: listId,
+      },
+    });
 
-  const boardData = await prisma.board.findFirst({
-    where: {
-      id: boardId,
-    },
-  });
+    const boardData = await prisma.board.findFirst({
+      where: {
+        id: boardId,
+      },
+    });
 
-  if (!boardData) {
-    throw new Error("Board not found");
-  }
-  if (!listData) {
-    throw new Error("List not found");
-  }
+    if (!boardData) {
+      throw new Error("Board not found");
+    }
+    if (!listData) {
+      throw new Error("List not found");
+    }
 
-  const response = await prisma.card.create({
-    data: {
-      title,
-      listId,
-      reporterId: activeUser.id,
-      listName: listData.title,
+    const response = await prisma.card.create({
+      data: {
+        title,
+        listId,
+        reporterId: activeUser.id,
+        listName: listData.title,
 
-      details: {
-        create: {
-          description: "",
+        details: {
+          create: {
+            description: "",
 
-          // dueDate: {
-          //   create: {
-          //     date: "",
-          //     time: "",
-          //   },
-          // },
-          // checklist: {
-          //   create: {
-          //     title: "",
-          //     isCompleted: false,
-          //   },
-          // },
-          // comments: {
-          //   create: {
-          //     comment: "",
-          //     authorId: activeUser.id,
-          //   },
-          // },
-          // attachments: {
-          //   create: {
-          //     authorId: activeUser.id,
-          //     files: {
-          //       create: [],
-          //     },
-          //   },
-          // },
+            // dueDate: {
+            //   create: {
+            //     date: "",
+            //     time: "",
+            //   },
+            // },
+            // checklist: {
+            //   create: {
+            //     title: "",
+            //     isCompleted: false,
+            //   },
+            // },
+            // comments: {
+            //   create: {
+            //     comment: "",
+            //     authorId: activeUser.id,
+            //   },
+            // },
+            // attachments: {
+            //   create: {
+            //     authorId: activeUser.id,
+            //     files: {
+            //       create: [],
+            //     },
+            //   },
+            // },
+          },
         },
       },
-    },
-  });
+    });
 
-  await createNewActivity({
-    boardId: boardData.id as string,
-    authorId: activeUser.id,
-    activity: `Created new card "${response.title} in List "${listData.title}" in Board "${boardData.title}"`,
-    type: "created",
-  });
+    await createNewActivity({
+      boardId: boardData.id as string,
+      authorId: activeUser.id,
+      activity: `Created new card "${response.title} in List "${listData.title}" in Board "${boardData.title}"`,
+      type: "created",
+    });
 
-  revalidatePath(`/board/${boardId}`);
+    revalidatePath(`/board/${boardId}`);
 
-  return {
-    data: response,
-    error: { message: "" },
-  };
+    return {
+      data: response,
+      error: { message: "" },
+    };
+  } catch (error: any) {
+    throw error?.message || "Something went wrong";
+  }
 }

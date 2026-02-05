@@ -1,6 +1,7 @@
 import React, { ComponentProps } from "react";
 import { Loader } from "./loader";
 import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 
 type Props = ComponentProps<"button"> & {
   loading?: boolean;
@@ -23,20 +24,24 @@ export function IconButton({
         disabled
           ? "opacity-50 pointer-events-none"
           : "cursor-pointer hover:opacity-70",
-        className
+        className,
       )}
       {...props}
     >
       <div
         className={cn(
           "w-full",
-          loading ? "opacity-0" : "opacity-100",
-          classNameChildren
+          loading ? "hidden" : "opacity-100",
+          classNameChildren,
         )}
       >
         {children}
       </div>
-      {loading && <Loader className={loading ? "opacity-100" : "opacity-0"} />}
+      {loading && (
+        <Loader2
+          className={cn(loading ? "opacity-100" : "opacity-0", "animate-spin")}
+        />
+      )}
     </button>
   );
 }

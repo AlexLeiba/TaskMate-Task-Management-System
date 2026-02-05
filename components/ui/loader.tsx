@@ -8,7 +8,7 @@ export function Loader({ className, ...props }: Props) {
     <div
       className={cn(
         "flex justify-center items-center absolute top-50% left-50% ",
-        className
+        className,
       )}
       {...props}
     >

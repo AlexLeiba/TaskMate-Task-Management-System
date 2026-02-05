@@ -15,6 +15,7 @@ import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
 import { currentActiveUser } from "@/lib/server/currentActiveUser";
 import { getCardDetailsData } from "@/lib/server/getCardData";
+import { revalidatePath } from "next/cache";
 
 export type CardDetailsType = CardDetails & {
   card: Card & {

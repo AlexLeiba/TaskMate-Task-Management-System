@@ -1,6 +1,7 @@
 import { getBoardDataAction } from "@/app/actions/board";
 import { HeaderDashboard } from "@/components/layout/Protected/Header/HeaderDashboard";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import Image from "next/image";
 
 import React from "react";
 
@@ -20,9 +21,19 @@ async function ProtectedLayout({
         <div className="min-h-screen flex flex-col w-full">
           <HeaderDashboard type="board" />
           <main
-            style={{ backgroundImage: `url(${boardData?.bgImageUrl})` }}
-            className={` flex flex-1  py-13  mx-auto w-full h-screen  bg-cover bg-center`}
+            // style={{ backgroundImage: `url(${boardData?.bgImageUrl})` }}
+            className={` flex flex-1  py-13    `}
           >
+            {boardData?.bgImageUrl && (
+              <Image
+                className="w-screen h-screen absolute inset-0 -z-1 object-cover "
+                src={boardData?.bgImageUrl || ""}
+                alt=""
+                width={1400}
+                height={900}
+                preload
+              />
+            )}
             {children}
           </main>
         </div>

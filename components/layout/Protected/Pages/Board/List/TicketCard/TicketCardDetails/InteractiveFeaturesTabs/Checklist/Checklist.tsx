@@ -6,36 +6,113 @@ import { CheckSquare } from "lucide-react";
 import { ChecklistCard } from "./ChecklistCard";
 import { Button } from "@/components/ui/button";
 import { ChecklistSkeleton } from "./ChecklistSkeleton";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { type Checklist } from "@/lib/generated/prisma/client";
+import toast from "react-hot-toast";
+import { useBoardId } from "@/hooks/useBoardId";
+import {
+  createChecklistAction,
+  deleteChecklistAction,
+  getChecklistDataAction,
+  updateChecklistAction,
+} from "@/app/actions/card-details";
 
 type Props = {
   cardDetailsId: string | undefined;
 };
 export function Checklist({ cardDetailsId }: Props) {
+  const boardId = useBoardId();
+  const queryClient = useQueryClient();
+
   const [isOpenedTitleInput, setIsOpenedTitleInput] = useState(false);
 
-  const checklistData: Checklist[] = [];
+  async function getChecklistData() {
+    try {
+      if (!cardDetailsId) {
+        throw new Error("Card Id not found");
+      }
+      const response = getChecklistDataAction({ cardDetailsId });
 
-  const { data, isLoading } = useQuery({
-    queryFn: () => {},
-    queryKey: ["checklist"],
-    staleTime: 1000 * 60 * 60,
+      return response;
+    } catch (error: any) {
+      toast.error(error?.message || "Something went wrong");
+    }
+  }
+
+  const { data: checklistData, isLoading } = useQuery({
+    queryFn: getChecklistData,
+    queryKey: ["checklist", cardDetailsId],
   });
 
+  const { mutate: createMutation, isPending: isPendingCreate } = useMutation({
+    mutationFn: createChecklistAction,
+    mutationKey: ["create-checklist"],
+    onSuccess: () => {
+      toast.success("Checklist created");
+
+      queryClient.invalidateQueries({
+        queryKey: ["card-details", "checklist", cardDetailsId],
+      });
+    },
+    onError: ({ message }) => {
+      toast.error(message || "Something went wrong");
+    },
+  });
+  const { mutate: updateMutation, isPending: isPendingUpdate } = useMutation({
+    mutationFn: updateChecklistAction,
+    mutationKey: ["update-checklist"],
+    onSuccess: () => {
+      toast.success("Checklist updated");
+      queryClient.invalidateQueries({
+        queryKey: ["card-details", "checklist", cardDetailsId],
+      });
+    },
+    onError: ({ message }) => {
+      toast.error(message || "Something went wrong");
+    },
+  });
+  const { isPending: isPendingDelete } = useMutation({
+    mutationFn: deleteChecklistAction,
+    mutationKey: ["delete-checklist"],
+    onSuccess: () => {
+      toast.success("Checklist deleted");
+
+      queryClient.invalidateQueries({
+        queryKey: ["card-details", "checklist", cardDetailsId],
+      });
+    },
+    onError: ({ message }) => {
+      toast.error(message || "Something went wrong");
+    },
+  });
+
+  if (!checklistData || !cardDetailsId) return <ChecklistSkeleton />;
+
   function handleSelectChecklist(id: string) {
-    console.log("🚀 ~ handleSelectChecklist ~ id:", id);
+    if (!cardDetailsId) {
+      return toast.error("Card Id not found");
+    }
+    updateMutation({ cardDetailsId, checklistId: id, boardId });
   }
 
   function handleDeleteChecklist(id: string) {
-    console.log("🚀 ~ handleDeleteChecklist ~ id:", id);
+    if (!cardDetailsId) {
+      return toast.error("Card Id not found");
+    }
+    deleteChecklistAction({ cardDetailsId, checklistId: id, boardId });
   }
 
   function handleAddChecklist(value: { [inputName: string]: string }) {
-    console.log("🚀 ~ handleAddChecklist ~ value:", value);
+    if (!cardDetailsId) {
+      return toast.error("Card Id not found");
+    }
+    createMutation({
+      cardDetailsId,
+      title: value.title,
+      boardId,
+    });
   }
 
-  if (!checklistData) return <ChecklistSkeleton />;
   return (
     <div>
       <div className="flex gap-2 items-center">
@@ -47,7 +124,9 @@ export function Checklist({ cardDetailsId }: Props) {
       <div className="overflow-y-auto h-58 ">
         {checklistData.length === 0 ? (
           <AddNewInput
-            handleSubmitValue={(v) => console.log(v)}
+            loading={isPendingCreate}
+            disabled={isLoading}
+            handleSubmitValue={handleAddChecklist}
             inputName="title"
             isOpenedTitleInput={isOpenedTitleInput}
             setIsOpenedTitleInput={setIsOpenedTitleInput}
@@ -75,7 +154,9 @@ export function Checklist({ cardDetailsId }: Props) {
                 />
               ))}
               <AddNewInput
-                handleSubmitValue={(v) => handleAddChecklist(v)}
+                disabled={isLoading}
+                loading={isPendingCreate}
+                handleSubmitValue={handleAddChecklist}
                 inputName="title"
                 isOpenedTitleInput={isOpenedTitleInput}
                 setIsOpenedTitleInput={setIsOpenedTitleInput}

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { IconButton } from "@/components/ui/iconButton";
 import { MessageCircle, Plus } from "lucide-react";
 import { AddNewInput } from "../../../../../AddNewInput";
@@ -19,7 +19,7 @@ type Props = {
   data: (Comment & { author: User })[] | undefined;
   cardDetailsId: string;
 };
-export function Comments({ data, cardDetailsId }: Props) {
+export function Comments({ cardDetailsId }: Props) {
   const boardId = usePathname()?.split("/").at(-1);
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [isOpenedCommentInput, setIsOpenedCommentInput] = useState(false);
@@ -40,11 +40,6 @@ export function Comments({ data, cardDetailsId }: Props) {
       toast.error(error.message || "Error getting comments, please try again");
     }
   }
-
-  useEffect(() => {
-    // eslint-disable-next-line
-    getCommentsData();
-  }, [cardDetailsId]);
 
   const { data: commentsData, isLoading } = useQuery({
     queryKey: ["fetch-comments", cardDetailsId],

@@ -31,7 +31,6 @@ export type CardDetailsType = CardDetails & {
 export async function getCardDetails(
   cardId: string,
 ): Promise<{ data: CardDetailsType | null; error: { message: string } }> {
-  console.log("🚀 ~ getCardDetails ~ cardId:", cardId);
   try {
     const activeUser = await currentActiveUser();
 
@@ -562,17 +561,100 @@ export async function updateDescriptionAction({
 }
 
 // CHECKLIST
-type UpdateChecklistProps = {
+type GetChecklistProps = {
+  cardDetailsId: string;
+};
+export async function getChecklistDataAction({
+  cardDetailsId,
+}: GetChecklistProps) {
+  try {
+    const activeUser = await currentActiveUser();
+
+    if (!activeUser.data) {
+      throw new Error("User not authorized");
+    }
+
+    const response = await prisma.checklist.findMany({
+      where: {
+        cardId: cardDetailsId,
+      },
+    });
+
+    if (!response) {
+      throw new Error("Checklist not found");
+    }
+
+    return response;
+  } catch (error: any) {
+    throw error?.message || "Something went wrong";
+  }
+}
+
+type CreateChecklistProps = {
   cardDetailsId: string;
   title: string;
-  isCompleted: boolean;
+  boardId: string;
+};
+export async function createChecklistAction({
+  cardDetailsId,
+  title,
+  boardId,
+}: CreateChecklistProps): Promise<{
+  data: Checklist | null;
+  error: { message: string };
+}> {
+  try {
+    const activeUser = await currentActiveUser();
+
+    if (!activeUser.data) {
+      throw new Error("User not authorized");
+    }
+
+    const cardResponse = await getCardDetailsData({ cardDetailsId });
+
+    if (!cardResponse) {
+      throw new Error("Card not found");
+    }
+
+    // IF ALREDY EXISTS
+    const response = await prisma.checklist.create({
+      data: {
+        title,
+        isCompleted: false,
+        cardId: cardDetailsId,
+      },
+    });
+
+    if (!response) {
+      throw new Error("Checklist was not created");
+    }
+
+    await createNewActivity({
+      cardId: cardDetailsId,
+      boardId: boardId,
+      authorId: activeUser.data.id,
+      activity: `Created the checklist in the card: "${cardResponse?.card?.title}" in the list: "${cardResponse?.card?.listName}"`,
+      type: "created",
+    });
+
+    return {
+      data: response,
+      error: { message: "" },
+    };
+  } catch (error: any) {
+    throw error?.message || "Something went wrong";
+  }
+}
+
+type UpdateChecklistProps = {
+  cardDetailsId: string;
+
   checklistId: string;
   boardId: string;
 };
 export async function updateChecklistAction({
   cardDetailsId,
-  title,
-  isCompleted,
+
   checklistId,
   boardId,
 }: UpdateChecklistProps): Promise<{
@@ -600,22 +682,7 @@ export async function updateChecklistAction({
     });
 
     if (!isChecklistExists) {
-      // IF ALREDY EXISTS
-      const response = await prisma.checklist.create({
-        data: {
-          title,
-          isCompleted,
-          cardId: cardDetailsId,
-        },
-      });
-      if (!response) {
-        throw new Error("Checklist was not found");
-      }
-
-      return {
-        data: response,
-        error: { message: "" },
-      };
+      throw new Error("Checklist was not found");
     }
 
     const response = await prisma.checklist.update({
@@ -624,8 +691,7 @@ export async function updateChecklistAction({
         id: checklistId,
       },
       data: {
-        title,
-        isCompleted,
+        isCompleted: !isChecklistExists.isCompleted,
       },
     });
 

@@ -4,8 +4,7 @@ import { TicketCardBody } from "./TicketCardBody/TicketCardBody";
 import { useCallback, useState } from "react";
 import { KEYBOARD } from "@/lib/consts";
 import { Card } from "@/lib/generated/prisma/client";
-import { CardDetailsType, getCardDetails } from "@/app/actions/card-details";
-import toast from "react-hot-toast";
+
 import dynamic from "next/dynamic";
 
 const TicketCardDetails = dynamic(() =>
@@ -20,7 +19,7 @@ type Prop = {
 };
 export function TicketCard({ data, boardId }: Prop) {
   const [isCardDetailsOpened, setIsCardDetailsOpened] = useState(false);
-  const [cardDetails, setCardDetails] = useState<CardDetailsType | null>(null);
+
   const handleCloseDetails = useCallback(() => {
     setIsCardDetailsOpened(false);
   }, []);
@@ -28,20 +27,6 @@ export function TicketCard({ data, boardId }: Prop) {
   // OPEN TICKET CARD DETAILS
   async function handleOpenDetails() {
     setIsCardDetailsOpened(true);
-    await getDetailsData();
-  }
-
-  async function getDetailsData() {
-    if (!data.id) return;
-    const response = await getCardDetails(data.id.toString());
-
-    if (response?.error?.message) {
-      return toast.error(response.error.message);
-    }
-
-    if (response?.data) {
-      setCardDetails(response.data);
-    }
   }
 
   return (
@@ -74,7 +59,7 @@ export function TicketCard({ data, boardId }: Prop) {
           cardId={data.id.toString()}
           listId={data.listId}
           boardId={boardId}
-          cardDetailsId={cardDetails?.id.toString() || ""}
+          cardDetailsId={data.id.toString() || ""}
         />
 
         {/* TICKET CARD BODY */}
@@ -82,13 +67,15 @@ export function TicketCard({ data, boardId }: Prop) {
       </div>
 
       {/* TICKET CARD DETAILS MODAL*/}
-      <TicketCardDetails
-        cardTitle={data.title}
-        listTitle={data.listName}
-        cardDetails={cardDetails}
-        isModalOpened={isCardDetailsOpened}
-        handleCloseModal={handleCloseDetails}
-      />
+      {isCardDetailsOpened && (
+        <TicketCardDetails
+          cardTitle={data.title}
+          listTitle={data.listName}
+          cardDetailsId={data?.id || ""}
+          isModalOpened={isCardDetailsOpened}
+          handleCloseModal={handleCloseDetails}
+        />
+      )}
     </>
   );
 }

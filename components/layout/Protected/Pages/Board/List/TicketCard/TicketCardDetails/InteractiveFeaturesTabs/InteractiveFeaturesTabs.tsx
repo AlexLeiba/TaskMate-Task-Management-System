@@ -3,13 +3,21 @@ import { IconButton } from "@/components/ui/iconButton";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { Comments } from "./Comments/Comments";
-import { Activities } from "./Activities/Activities";
-import { Attachments } from "./Attachments/Attachments";
 import { Spacer } from "@/components/ui/spacer";
-import { Checklist } from "./Checklist/Checklist";
 import { useStore } from "@/store/useStore";
 import { TAB_ELEMENTS } from "@/lib/consts";
 import { Comment, User } from "@/lib/generated/prisma/client";
+import dynamic from "next/dynamic";
+
+const Activities = dynamic(() =>
+  import("./Activities/Activities").then((m) => m.Activities),
+);
+const Attachments = dynamic(() =>
+  import("./Attachments/Attachments").then((m) => m.Attachments),
+);
+const Checklist = dynamic(() =>
+  import("./Checklist/Checklist").then((m) => m.Checklist),
+);
 
 type Props = {
   cardDetailsId: string;

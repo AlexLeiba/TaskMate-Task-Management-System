@@ -10,15 +10,12 @@ import toast from "react-hot-toast";
 import { BoardType } from "@/lib/types";
 import dynamic from "next/dynamic";
 import { useMutation } from "@tanstack/react-query";
+import { deleteFile } from "@/lib/deleteFile";
 
-const DeleteDialog = dynamic(
-  () =>
-    import("@/components/layout/Protected/DeleteDialog/DeleteDialog").then(
-      (m) => m.DeleteDialog,
-    ),
-  {
-    ssr: false,
-  },
+const DeleteDialog = dynamic(() =>
+  import("@/components/layout/Protected/DeleteDialog/DeleteDialog").then(
+    (m) => m.DeleteDialog,
+  ),
 );
 
 export function Boards({
@@ -59,7 +56,8 @@ export function Boards({
   }
 
   async function handleDeleteBoard(boardId: string) {
-    console.log("🚀 ~ handleDeleteBoard ~ boardId:", boardId);
+    await deleteFile({ type: "board", fileType: "raw", boardId }, boardId); //js will await until this fn is resolved before moving to next line and deleting the card
+
     mutate(boardId);
     setDeleteDialogOpen(false);
     toast.loading("Deleting board...", { id: "delete-board" });

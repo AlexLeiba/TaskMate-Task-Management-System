@@ -376,33 +376,6 @@ export async function createListCardAction({
         details: {
           create: {
             description: "",
-
-            // dueDate: {
-            //   create: {
-            //     date: "",
-            //     time: "",
-            //   },
-            // },
-            // checklist: {
-            //   create: {
-            //     title: "",
-            //     isCompleted: false,
-            //   },
-            // },
-            // comments: {
-            //   create: {
-            //     comment: "",
-            //     authorId: activeUser.id,
-            //   },
-            // },
-            // attachments: {
-            //   create: {
-            //     authorId: activeUser.id,
-            //     files: {
-            //       create: [],
-            //     },
-            //   },
-            // },
           },
         },
       },

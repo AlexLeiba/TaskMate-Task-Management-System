@@ -284,6 +284,59 @@ export async function DELETE(req: NextRequest) {
       }
     }
 
+    if (bodyData.type === "list") {
+      // IF DELETE A LIST WITH ATTACHMENTS OF ALL CARDS
+      const allAttachmentsOfCurrentCard = await prisma.uploadedFile.findMany({
+        where: {
+          attachment: {
+            card: {
+              card: {
+                list: {
+                  boardId: bodyData.boardId,
+                  id: bodyData.listId, //GET ALL ATTACH BASED ON DELETED LIST
+                },
+              },
+            },
+          },
+        },
+        select: {
+          fileId: true,
+          type: true,
+        },
+      });
+
+      const imagesIds: string[] = [];
+      const filesIds: string[] = [];
+      allAttachmentsOfCurrentCard.forEach((file) => {
+        if (file.type === "image") {
+          imagesIds.push(file.fileId);
+        } else {
+          filesIds.push(file.fileId);
+        }
+      });
+
+      // DELETE FILES FROM CLOUD, THE DB DATA DELETING I HANDLED BY SERVER ACTIONS
+      if (imagesIds.length > 0) {
+        const responseImages = await cloudinary.api.delete_resources(
+          imagesIds,
+          {
+            resource_type: "image",
+          },
+        );
+        if (responseImages.result === "not found") {
+          throw new Error("Image not found");
+        }
+      }
+      if (filesIds.length > 0) {
+        const responseFiles = await cloudinary.api.delete_resources(filesIds, {
+          resource_type: "raw",
+        });
+        if (responseFiles.result === "not found") {
+          throw new Error("File not found");
+        }
+      }
+    }
+
     if (bodyData.type === "board") {
       // IF DELETE A BOARD WITH ATTACHMENTS
       const allAttachmentsOfCurrentCard = await prisma.uploadedFile.findMany({
@@ -314,7 +367,7 @@ export async function DELETE(req: NextRequest) {
         }
       });
 
-      // DELETE FILES FROM CLOUD, THE DB DATA DELETING I HANDLED BY SERVER ACTIONS
+      // DELETE FILES FROM CLOUD, THE FILES FROM DB ARE DELETED BY SERVER ACTIONS.
       if (imagesIds.length > 0) {
         const responseImages = await cloudinary.api.delete_resources(
           imagesIds,

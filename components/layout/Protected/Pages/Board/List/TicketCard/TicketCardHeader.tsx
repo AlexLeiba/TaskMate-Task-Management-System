@@ -9,7 +9,7 @@ import {
 import { AddNewInput } from "../../AddNewInput";
 import { Separator } from "@/components/ui/separator";
 import { IconButton } from "@/components/ui/iconButton";
-import { API_REQ_URL, KEYBOARD } from "@/lib/consts";
+import { KEYBOARD } from "@/lib/consts";
 import dynamic from "next/dynamic";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -18,8 +18,7 @@ import {
   editCardTitleAction,
 } from "@/app/actions/card";
 import toast from "react-hot-toast";
-import { DeleteFileBodyType } from "@/lib/types";
-import { axiosInstance } from "@/lib/config";
+import { deleteFile } from "@/lib/deleteFile";
 
 const DeleteDialog = dynamic(() =>
   import("@/components/layout/Protected/DeleteDialog/DeleteDialog").then(
@@ -103,36 +102,11 @@ export function TicketCardHeader({
     setDeleteDialogOpen(true);
   }
 
-  async function deleteFile() {
-    try {
-      if (!boardId) {
-        return toast.error("Board not found");
-      }
-      const body: DeleteFileBodyType = {
-        type: "card",
-        cardDetailsId,
-        fileType: "raw",
-      };
-
-      const response = await axiosInstance.delete(API_REQ_URL.upload, {
-        data: body,
-      });
-
-      console.log(response);
-
-      if (response?.data?.statusCode !== 200) {
-        return toast.error(response?.data?.error);
-      }
-    } catch (error: any) {
-      toast.error(error.message || "Error deleting a file");
-    }
-  }
-
   async function handleDeleteCard(cardId: string) {
     toast.loading("Deleting card...", { id: "delete-card" });
 
     // DELETE FILES FROM CLOUD
-    await deleteFile(); //js will await until this fn is resolved before moving to next line
+    await deleteFile({ type: "card", cardDetailsId, fileType: "raw" }, boardId); //js will await until this fn is resolved before moving to next line and deleting the card
 
     // DELETE FILES FROM DB
     deleteCardMutation({ cardId, listId, boardId });

@@ -28,6 +28,7 @@ export function ChecklistList({ cardDetailsId, listId, data = [] }: Props) {
   );
   const completedTasks = data?.filter((item) => item.isCompleted);
 
+  if (data?.length === 0) return;
   return (
     <div className="w-full h-full flex flex-col justify-between">
       <div className="flex gap-2 items-center justify-between">

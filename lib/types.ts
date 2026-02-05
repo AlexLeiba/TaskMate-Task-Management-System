@@ -199,7 +199,14 @@ type DeleteBoardFiles = {
   boardId: string;
   fileType: "image" | "raw";
 };
+type DeleteListFiles = {
+  type: "list";
+  boardId: string;
+  listId: string;
+  fileType: "image" | "raw";
+};
 export type DeleteFileBodyType =
   | DeleteSingleFile
   | DeleteCardFiles
-  | DeleteBoardFiles;
+  | DeleteBoardFiles
+  | DeleteListFiles;

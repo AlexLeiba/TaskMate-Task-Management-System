@@ -32,7 +32,9 @@ export function DialogBoardCard({ data, selected, ...props }: Props) {
           "absolute bottom-0 left-0 right-0 bg-black/50 ",
         )}
       >
-        <p className="px-2 py-1 line-clamp-2 text-xs">{data.title}</p>
+        <p className="px-2 py-1 line-clamp-2 text-xs text-text-secondary">
+          {data.title}
+        </p>
       </div>
     </IconButton>
   );

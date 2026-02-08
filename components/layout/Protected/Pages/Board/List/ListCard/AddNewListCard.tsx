@@ -30,7 +30,7 @@ export function AddNewListCard({ boardId }: Props) {
     toast.loading("Creating list...", { id: "create-list" });
   }
   return (
-    <li className="shrink-0 h-full flex flex-col justify-between  dark:bg-gray-700 dark:text-white w-70 rounded-sm ">
+    <li className="shrink-0 h-full flex flex-col justify-between  bg-card-foreground text-text-primary w-70 rounded-sm active:bg-card">
       <AddNewInput
         disabled={isPending}
         loading={isPending}

@@ -54,9 +54,9 @@ export function TicketCard({ data, boardId }: Prop) {
         tabIndex={0}
         className={cn(
           "ticket-card",
-          "dark:hover:ring-gray-400 dark:bg-gray-600  dark:hover:ring",
+          "hover:ring-gray-400 bg-card-foreground  hover:ring",
           "p-2 w-full cursor-pointer  rounded-sm",
-          "flex flex-col justify-start items-start gap-2 active:bg-gray-700 group",
+          "flex flex-col justify-start items-start gap-2 active:bg-card",
         )}
       >
         {/* TICKET CARD HEADER */}

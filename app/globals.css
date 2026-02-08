@@ -1,15 +1,8 @@
 @import "tailwindcss";
 
-/* @custom-variant dark (&:is(.dark *)); */
-
-/* This comes instead of older version: darkMode: "class" */
-/* Makes dark white theme Class based Theme mode not System based */
-/* Enables manual theme toggling */
-
-/* by default theme variables */
-
 /* @theme brings tailwind utilities */
-/*This helps to write tailwind variables as utilities; Tailwind classes reference CSS variables */
+/*This helps to write tailwind variables as utilities;
+ Tailwind classes reference CSS variables */
 @theme inline {
   --color-background: var(--background);
   --color-background-element: var(--background-element);
@@ -65,13 +58,13 @@
   /* backgrounds  */
   --background: oklch(90.975% 0.0001 271.152);
   --background-element: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --foreground: oklch(39.042% 0.00004 271.152);
+  --card-foreground: oklch(78.577% 0.00009 271.152);
   --popover-foreground: oklch(0.145 0 0);
   /*  */
   /* text */
-  --text-primary: oklch(91.817% 0.00323 15.438);
-  --text-secondary: oklch(86.686% 0.0001 271.152);
+  --text-primary: oklch(25.197% 0.00003 271.152);
+  --text-secondary: oklch(91.817% 0.00323 15.438);
   /* 
    */
   --radius: 10px;
@@ -86,8 +79,8 @@
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
+  --border: oklch(25.197% 0.00003 271.152);
+  --input: oklch(25.197% 0.00003 271.152);
   --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
@@ -106,60 +99,71 @@
 }
 
 /* this selector overwrites the root variables when detects .dark classname in body */
-.dark {
-  /* backgrounds  */
-  --background: oklch(25.197% 0.00003 271.152);
-  --background-element: oklch(
-    20.019% 0.00002 271.152
-  ); /**for static elements **/
-  --foreground: oklch(
-    30.919% 0.00004 271.152
-  ); /** for interactive elements/ buttons/skeletons **/
-  --popover-foreground: oklch(28.502% 0.00003 271.152);
-  /*  */
-  /* text */
-  --text-primary: oklch(91.817% 0.00323 15.438);
-  --text-secondary: oklch(86.686% 0.0001 271.152);
-  /*  */
 
-  --card-foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --popover: oklch(0.205 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(22.213% 0.00003 271.152);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-  --quill-active-button-color: rgb(2, 171, 2);
-}
+/* Tailwind has 3 style layers:
+1: base -> resets & defaults
+2: components -> reusable ui pieces
+3: utilities ->atomic utility classes
 
+@apply: lets to reuse TW utilities, But apply them globally.
+These rules affect every page, These rules will exist before component styling.
+Mental model: These are default visual rules of my app.
+*/
 @layer base {
-  /**global defaults **/
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-text-primary;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* backgrounds  */
+    --background: oklch(25.197% 0.00003 271.152);
+    --background-element: oklch(
+      20.019% 0.00002 271.152
+    ); /**for static elements **/
+    --foreground: oklch(
+      25.197% 0.00003 271.152
+    ); /** for interactive elements/ buttons/skeletons **/
+    --popover-foreground: oklch(28.502% 0.00003 271.152);
+    /*  */
+    /* text */
+    --text-primary: oklch(91.817% 0.00323 15.438);
+    --text-secondary: oklch(86.686% 0.0001 271.152);
+    /*  */
+
+    --card-foreground: oklch(28.502% 0.00003 271.152);
+    --card: oklch(0% 0 0);
+    --popover: oklch(0.205 0 0);
+    --primary: oklch(0.922 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(22.213% 0.00003 271.152);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.556 0 0);
+    --chart-1: oklch(0.488 0.243 264.376);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(1 0 0 / 10%);
+    --sidebar-ring: oklch(0.556 0 0);
+    --quill-active-button-color: rgb(2, 171, 2);
   }
 }
 

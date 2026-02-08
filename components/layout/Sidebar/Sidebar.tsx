@@ -110,9 +110,9 @@ export function Sidebar() {
                           aria-label={item.name}
                           className={cn(
                             selectedOrgId === item.id
-                              ? "bg-foreground"
+                              ? "bg-foreground/90"
                               : "bg-none",
-                            "p-4 hover:bg-foreground/20 cursor-pointer flex justify-between items-center",
+                            "p-4 hover:bg-foreground/50 cursor-pointer flex justify-between items-center",
                             "transition-all duration-200 ease-in-out",
                           )}
                         >
@@ -146,7 +146,7 @@ export function Sidebar() {
                                 className={cn(
                                   selectedSidebarPage === currentPathname &&
                                     selectedOrgId === item.id
-                                    ? "bg-foreground"
+                                    ? "bg-foreground/80"
                                     : "",
                                   "w-full justify-start",
                                 )}

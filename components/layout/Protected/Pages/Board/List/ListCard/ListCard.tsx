@@ -8,7 +8,7 @@ type Props = {
 };
 export function ListCard({ listData }: Props) {
   return (
-    <li className=" shrink-0 h-full py-2 px-2 bg-black/80 text-white w-70 rounded-md  ">
+    <li className=" shrink-0 h-full py-2 px-2 bg-card/80 text-text-primary w-70 rounded-md  ">
       {/* HEADER */}
       <ListCardHeader
         status={listData.status}

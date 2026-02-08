@@ -34,7 +34,7 @@ export function CreateNewBoardCard({ disabled = false }: Props) {
         aria-label="Create new board"
         className="relative group   rounded-md p-2  overflow-hidden text-black  hover:bg-gray-500  bg-gray-200 hover:text-white "
       >
-        <p className="text-xl">Create new board</p>
+        <p className="text-xl ">Create new board</p>
 
         <Plus className="size-10  p-1 z-20  text-gray-700 group-hover:text-white" />
 

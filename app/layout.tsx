@@ -9,6 +9,7 @@ import { TanstackQueryProvider } from "@/lib/tanstackQueryProvider";
 // for non layouts shifts font loading
 // fonts load once, applied to the entire app
 // available before first paint
+// create a variable and pass it torectly to className or can be passed to tailwinf utilities
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -33,7 +34,10 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          // variables will become available to wntire app
+          // css variables cascade
+          // everything inside body can access them
         >
           <Toaster
             position="top-center"

@@ -50,7 +50,7 @@ export function SubHeader({ data: { data: board, error }, boardId }: Props) {
     // setShowTitleInput(false);
   }
   return (
-    <div className=" bg-foreground/80 w-full   ">
+    <div className="bg-foreground/70 w-full">
       <div className="px-4 flex justify-between items-center max-w-400 mx-auto">
         <AddNewInput
           loading={isPending}
@@ -62,14 +62,20 @@ export function SubHeader({ data: { data: board, error }, boardId }: Props) {
           isOpenedTitleInput={showTitleInput}
         >
           <div className="flex gap-1 items-center">
-            <p className="text-lg font-bold line-clamp-1">{title}</p>
+            <p className="text-lg font-bold line-clamp-1 text-text-secondary">
+              {title}
+            </p>
             <Button
               disabled={isPending}
               variant={"ghost"}
               onClick={handleEditBoardTitle}
               title="Edit board title"
+              className="group"
             >
-              <Edit size={15} />
+              <Edit
+                size={15}
+                className="text-text-secondary group-hover:text-text-primary"
+              />
             </Button>
           </div>
         </AddNewInput>
@@ -81,7 +87,7 @@ export function SubHeader({ data: { data: board, error }, boardId }: Props) {
             title="Close board"
             aria-label="Close board"
           >
-            <X size={30} />
+            <X size={30} className="text-text-secondary" />
           </IconButton>
         </Link>
       </div>

@@ -26,6 +26,7 @@ type Props = {
 };
 export function InteractiveFeaturesTabs({ cardDetailsId, comments }: Props) {
   const { selectedTab, setSelectTab } = useStore();
+  // todo, CHANGE IT TO USEsTATE, to have the same tab at each new open card
 
   function handleSelectTab(data: (typeof TAB_ELEMENTS)[number]) {
     setSelectTab(data.value);
@@ -57,6 +58,7 @@ export function InteractiveFeaturesTabs({ cardDetailsId, comments }: Props) {
           </div>
         ))}
       </div>
+
       <Spacer size={6} />
 
       {/* TABS CONTENT */}

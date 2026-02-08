@@ -1,7 +1,5 @@
 import { Spacer } from "@/components/ui/spacer";
-
 import { Calendar1Icon, Info } from "lucide-react";
-
 import { DueDateInputs } from "./DueDateInputs";
 import { type DueDate } from "@/lib/generated/prisma/client";
 import {
@@ -45,8 +43,6 @@ export function DueDate({ data, cardDetailsId }: Props) {
       </div>
       <Spacer size={4} />
       <DueDateInputs data={data} cardDetailsId={cardDetailsId} />
-
-      {/* DELETE CARD DIALOG */}
     </div>
   );
 }

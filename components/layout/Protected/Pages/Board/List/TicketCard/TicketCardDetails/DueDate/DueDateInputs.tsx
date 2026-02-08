@@ -13,7 +13,6 @@ import { Input } from "@/components/ui/input";
 import { DueDateCard } from "./DueDateCard";
 import { DueDateSkeleton } from "./DueDateSkeleton";
 import { DueDate } from "@/lib/generated/prisma/client";
-
 import dynamic from "next/dynamic";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -39,22 +38,26 @@ type Props = {
 export function DueDateInputs({ data, cardDetailsId }: Props) {
   const boardId = useBoardId();
   const queryClient = useQueryClient();
+  const now = new Date();
+  const [date, setDate] = useState<{ date: Date; time: string }>({
+    date: now,
+    time: "00:00:00",
+  });
 
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [date, setDate] = useState<Date>(new Date());
-  const [time, setTime] = useState<string>("00:00:00");
   const [dueDate, setDueDate] = useState<string>("");
   const [addDateInput, setAddDateInput] = useState(false);
-  const [open, setOpen] = useState(false);
+
+  const [openPicker, setOpenPicker] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   useEffect(() => {
     if (data?.[0]?.id) {
       const { time, date } = data[0];
+      // TODO check if type of data is date and time
       const parsedDateWithTime = parseDateTimeToLocal(date, time);
 
       const formatedDate = format(parsedDateWithTime, "yyyy-MM-dd, HH:mm");
 
-      // eslint-disable-next-line react-hooks/exhaustive-deps
       setDueDate(formatedDate);
       setAddDateInput(true);
     }
@@ -93,9 +96,9 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
   if (!cardDetailsId) return <DueDateSkeleton />;
 
   function handleAddDueDate() {
-    const timeString = `2026-01-01T${time}`;
+    const timeString = `2026-01-01T${date.time}`;
     const timeInUTC = new Date(timeString).toISOString();
-    const dateUTC = date.toISOString();
+    const dateUTC = date.date.toISOString();
 
     mutateCreateDueDate({
       cardDetailsId: cardDetailsId || "",
@@ -156,15 +159,17 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
       {addDateInput && (
         <>
           {dueDate ? (
+            // CREATED DUE DATE CARD
             <DueDateCard
               disabled={isPendingCreate || isPendingDelete}
               dueDate={dueDate}
               handleDeleteDialogOpen={() => setDeleteDialogOpen(true)}
             />
           ) : (
+            // DATE PICKER
             <div className="flex justify-between gap-2 flex-col">
               <div className="flex justify-end gap-2">
-                <Popover open={open} onOpenChange={setOpen}>
+                <Popover open={openPicker} onOpenChange={setOpenPicker}>
                   <PopoverTrigger asChild>
                     <Button
                       disabled={isPendingCreate || isPendingDelete}
@@ -174,7 +179,9 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
                     >
                       <div className="flex justify-between items-center font-normal ">
                         <p>
-                          {date ? date.toLocaleDateString() : "Select date"}
+                          {date.date
+                            ? date.date.toLocaleDateString()
+                            : "Select date"}
                         </p>
                         <ChevronDownIcon />
                       </div>
@@ -187,12 +194,12 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
                     <Calendar
                       disabled={isPendingCreate || isPendingDelete}
                       mode="single"
-                      selected={date}
+                      selected={date.date}
                       captionLayout="dropdown"
                       onSelect={(date) => {
                         if (!date) return;
-                        setDate(date);
-                        setOpen(false);
+                        setDate((prev) => ({ ...prev, date }));
+                        setOpenPicker(false);
                       }}
                     />
                   </PopoverContent>
@@ -200,7 +207,7 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
                 <Input
                   disabled={isPendingCreate || isPendingDelete}
                   onChange={(v) => {
-                    setTime(v.target.value);
+                    setDate((prev) => ({ ...prev, time: v.target.value }));
                   }}
                   type="time"
                   id="time-picker"

@@ -33,6 +33,10 @@ export function AssignTo({ assignedTo, boardId, listId, cardId }: Props) {
     queryKey: ["members"],
   });
 
+  const foundSelectedUser = members?.find(
+    (member) => member.publicUserData?.identifier === assignedTo,
+  );
+
   const { mutate, isPending } = useMutation({
     mutationFn: assignToCardAction,
     mutationKey: ["assign-to"],
@@ -72,10 +76,6 @@ export function AssignTo({ assignedTo, boardId, listId, cardId }: Props) {
     });
 
   useEffect(() => {
-    const foundSelectedUser = members?.find(
-      (member) => member.publicUserData?.identifier === assignedTo,
-    );
-
     if (foundSelectedUser) {
       const selectedUser = {
         id: foundSelectedUser.id,
@@ -86,13 +86,11 @@ export function AssignTo({ assignedTo, boardId, listId, cardId }: Props) {
         avatar: foundSelectedUser.publicUserData?.imageUrl || "",
       };
       // eslint-disable-next-line
-      setSelectedUser(selectedUser);
+      return setSelectedUser(selectedUser);
     }
-  }, [members, assignedTo]);
 
-  const foundSelectedUser = members?.find(
-    (member) => member.publicUserData?.identifier === assignedTo,
-  );
+    setSelectedUser(FAKE_USERS[0]);
+  }, [members, assignedTo, foundSelectedUser]);
 
   async function fetchMembers() {
     if (!isLoaded || !organization || !organization.getMemberships()) return;
@@ -159,14 +157,12 @@ export function AssignTo({ assignedTo, boardId, listId, cardId }: Props) {
                 src={foundSelectedUser.publicUserData?.imageUrl || ""}
                 alt={foundSelectedUser.publicUserData?.firstName || ""}
                 className="rounded-sm"
-                width={20}
-                height={20}
+                width={28}
+                height={28}
               />
             </div>
           ) : (
-            <span className="text-sm">
-              <UserPlus size={20} />
-            </span>
+            <UserPlus size={20} />
           )}
         </IconButton>
       </PopoverTrigger>
@@ -201,17 +197,14 @@ export function AssignTo({ assignedTo, boardId, listId, cardId }: Props) {
             disabled={isPending || isPendingUnassigne}
             onClick={(e) => {
               e.stopPropagation();
+              if (selectedUser.email === "none") return;
               handleUnassigneUser();
             }}
             onKeyDown={(e) => {
               if (e.key === KEYBOARD.ENTER) {
                 e.stopPropagation();
-                setSelectedUser({
-                  id: "",
-                  name: "",
-                  avatar: "",
-                  email: "",
-                });
+                if (selectedUser.email === "none") return;
+                handleUnassigneUser();
               }
             }}
             className=" p-1.5 w-full"
@@ -223,7 +216,9 @@ export function AssignTo({ assignedTo, boardId, listId, cardId }: Props) {
               </div>
               <p>None</p>
             </div>
-            {selectedUser.id === "" && <Check className="text-green-600" />}
+            {selectedUser.email === "none" && (
+              <Check className="text-green-600" />
+            )}
           </IconButton>
           {members?.map((user) => (
             <IconButton
@@ -243,11 +238,15 @@ export function AssignTo({ assignedTo, boardId, listId, cardId }: Props) {
               classNameChildren="flex items-center justify-between gap-1"
               onClick={(e) => {
                 e.stopPropagation();
+                if (user.publicUserData?.identifier === selectedUser.email)
+                  return;
                 handleAssignTo(user.publicUserData?.identifier || "");
               }}
               onKeyDown={(e) => {
                 if (e.key === KEYBOARD.ENTER) {
                   e.stopPropagation();
+                  if (user.publicUserData?.identifier === selectedUser.email)
+                    return;
                   handleAssignTo(user.publicUserData?.identifier || "");
                 }
               }}

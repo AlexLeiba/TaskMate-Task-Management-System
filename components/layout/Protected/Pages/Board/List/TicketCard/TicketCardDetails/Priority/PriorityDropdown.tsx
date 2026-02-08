@@ -14,7 +14,7 @@ import { PriorityType } from "@/lib/generated/prisma/enums";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { editPriorityAction } from "@/app/actions/card";
-import { usePathname } from "next/navigation";
+import { useBoardId } from "@/hooks/useBoardId";
 
 type Props = {
   priority: PriorityType | undefined;
@@ -22,7 +22,7 @@ type Props = {
   cardId: string | undefined;
 };
 export function PriorityDropdown({ priority = "none", listId, cardId }: Props) {
-  const boardId = usePathname()?.split("/").at(-1);
+  const boardId = useBoardId();
 
   const { mutate, isPending, data } = useMutation({
     mutationFn: editPriorityAction,
@@ -49,7 +49,10 @@ export function PriorityDropdown({ priority = "none", listId, cardId }: Props) {
   if (!cardId || !listId) return <PrioritySkeleton />;
   return (
     <Select
-      onValueChange={(v) => handleSelectPriority(v as PrioritiesType)}
+      onValueChange={(v) => {
+        if (v === priority) return;
+        handleSelectPriority(v as PrioritiesType);
+      }}
       value={updatedPriorityData || priority}
     >
       <SelectTrigger

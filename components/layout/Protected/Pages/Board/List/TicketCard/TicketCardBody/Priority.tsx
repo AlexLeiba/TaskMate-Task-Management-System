@@ -20,10 +20,9 @@ type Props = {
 };
 export function Priority({ priority, boardId, listId, cardId }: Props) {
   const [isOpenedOptions, setIsOpenedOptions] = useState(false);
-  const [selectedPriority, setSelectedPriority] = useState<PriorityType>({
-    label: "None",
-    value: "none",
-  });
+  const [selectedPriority, setSelectedPriority] = useState<PriorityType>(
+    CARD_PRIORITIES[0],
+  );
 
   useEffect(() => {
     // eslint-disable-next-line
@@ -113,11 +112,13 @@ export function Priority({ priority, boardId, listId, cardId }: Props) {
               classNameChildren=" flex items-center justify-between gap-1  rounded-sm "
               onClick={(e) => {
                 e.stopPropagation();
+                if (selectedPriority.value === priority.value) return;
                 handleSelectPriority(priority);
               }}
               onKeyDown={(e) => {
                 if (e.key === KEYBOARD.ENTER) {
                   e.stopPropagation();
+                  if (selectedPriority.value === priority.value) return;
                   handleSelectPriority(priority);
                 }
               }}

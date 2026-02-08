@@ -1,4 +1,5 @@
 import { FILES_MIME_TYPES, IMAGES_MIME_TYPES } from "./consts";
+import { Card, Checklist, DueDate, List } from "./generated/prisma/client";
 
 // REUSABLE TYPES
 export type ActivityActionType = "created" | "deleted" | "updated";
@@ -210,3 +211,22 @@ export type DeleteFileBodyType =
   | DeleteCardFiles
   | DeleteBoardFiles
   | DeleteListFiles;
+
+export type ListAndCardsType = List & { cards: Card[] };
+
+export type CardWithDetailsAndDueDateAndChecklistType = Card & {
+  details: {
+    dueDate: DueDate[];
+    checklist: Checklist[];
+  };
+};
+export type ListAndCardsAndDueDateAndChecklistType = List & {
+  cards: CardWithDetailsAndDueDateAndChecklistType[];
+};
+
+export type CardAndDueDateAndChecklistType = Card & {
+  details: {
+    dueDate: DueDate[];
+    checklist: Checklist[];
+  };
+};

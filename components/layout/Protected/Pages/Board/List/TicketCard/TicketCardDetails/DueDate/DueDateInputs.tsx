@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { ChevronDownIcon, Plus, X } from "lucide-react";
@@ -15,42 +15,101 @@ import { DueDateSkeleton } from "./DueDateSkeleton";
 import { DueDate } from "@/lib/generated/prisma/client";
 
 import dynamic from "next/dynamic";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  createDueDateAction,
+  deleteDueDateAction,
+} from "@/app/actions/card-details";
+import toast from "react-hot-toast";
+import { useBoardId } from "@/hooks/useBoardId";
+
+import { parseDateTimeToLocal } from "@/lib/parseDateTimeToLocal";
 
 const DeleteDialog = dynamic(() =>
   import("@/components/layout/Protected/DeleteDialog/DeleteDialog").then(
     (m) => m.DeleteDialog,
   ),
 );
+
 type Props = {
   data: DueDate[] | undefined;
-  cardId: string | undefined;
-  listId: string | undefined;
+  cardDetailsId: string | undefined;
 };
 
-function parseDate(date: string, time: string): string {
-  const dateData = new Date(date);
-  const timeData = new Date(time);
-  return `${dateData.getFullYear()}-${dateData.getMonth() + 1 > 10 ? dateData.getMonth() + 1 : `0${dateData.getMonth() + 1}`}-${dateData.getDate()} ${timeData.getHours() > 10 ? timeData.getHours() : `0${timeData.getHours()}`}:${timeData.getMinutes() > 10 ? timeData.getMinutes() : `0${timeData.getMinutes()}`}`;
-}
-export function DueDateInputs({ data }: Props) {
-  const dateData = "2026-01-31T12:00:00.000Z";
-  const timeData = "2026-02-13T10:00:00.000Z";
-
-  const dbDueDate = parseDate(dateData, timeData);
+export function DueDateInputs({ data, cardDetailsId }: Props) {
+  const boardId = useBoardId();
+  const queryClient = useQueryClient();
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [date, setDate] = useState<Date>(new Date());
-  const [time, setTime] = useState<string>("");
+  const [time, setTime] = useState<string>("00:00:00");
   const [dueDate, setDueDate] = useState<string>("");
   const [addDateInput, setAddDateInput] = useState(false);
-
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    if (data?.[0]?.id) {
+      const { time, date } = data[0];
+      const parsedDateWithTime = parseDateTimeToLocal(date, time);
+
+      const formatedDate = format(parsedDateWithTime, "yyyy-MM-dd, HH:mm");
+
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      setDueDate(formatedDate);
+      setAddDateInput(true);
+    }
+  }, [data]);
+
+  const { isPending: isPendingCreate, mutate: mutateCreateDueDate } =
+    useMutation({
+      mutationFn: createDueDateAction,
+      mutationKey: ["create-due-date"],
+      onSuccess: () => {
+        toast.dismiss("create-due-date");
+        toast.success("Due date created", { id: "create-due-date" });
+        queryClient.invalidateQueries({ queryKey: ["card-details"] });
+      },
+      onError: ({ message }) => {
+        setDueDate("");
+        toast.dismiss("create-due-date");
+        toast.error(message || "Error creating due date, please try again");
+      },
+    });
+  const { isPending: isPendingDelete, mutate: mutateDeleteDueDate } =
+    useMutation({
+      mutationFn: deleteDueDateAction,
+      mutationKey: ["delete-due-date"],
+      onSuccess: () => {
+        toast.dismiss("delete-due-date");
+        toast.success("Due date Deleted", { id: "delete-due-date" });
+        queryClient.invalidateQueries({ queryKey: ["card-details"] });
+      },
+      onError: ({ message }) => {
+        toast.dismiss("delete-due-date");
+        toast.error(message || "Error deleting due date, please try again");
+      },
+    });
+
+  if (!cardDetailsId) return <DueDateSkeleton />;
+
   function handleAddDueDate() {
-    const dateData = format(date, "yyyy-MM-dd");
-    setDueDate(`${dateData} ${time}`);
-    // TODO. api req with selected date and time
-    // and show it the result below
+    const timeString = `2026-01-01T${time}`;
+    const timeInUTC = new Date(timeString).toISOString();
+    const dateUTC = date.toISOString();
+
+    mutateCreateDueDate({
+      cardDetailsId: cardDetailsId || "",
+      date: dateUTC,
+      time: timeInUTC,
+      boardId,
+    });
+
+    toast.loading("Creating due date...", { id: "create-due-date" });
+
+    const parsedDateWithTime = parseDateTimeToLocal(dateUTC, timeInUTC);
+
+    const formatedDate = format(parsedDateWithTime, "yyyy-MM-dd, HH:mm");
+    setDueDate(formatedDate);
   }
 
   function handleOpenDateInput() {
@@ -62,10 +121,19 @@ export function DueDateInputs({ data }: Props) {
 
   function handleDeleteDuedate() {
     setDueDate("");
+    setAddDateInput(false);
     setDeleteDialogOpen(false);
+    if (data?.[0].id) {
+      mutateDeleteDueDate({
+        cardDetailsId: cardDetailsId || "",
+        boardId,
+        dueDateId: data[0].id,
+      });
+    } else {
+      toast.error("Due date id not found, please try again");
+    }
   }
 
-  if (!data) return <DueDateSkeleton />;
   return (
     <div className="h-20">
       {!addDateInput && (
@@ -87,9 +155,10 @@ export function DueDateInputs({ data }: Props) {
 
       {addDateInput && (
         <>
-          {dbDueDate || dueDate ? (
+          {dueDate ? (
             <DueDateCard
-              dueDate={dueDate || dbDueDate}
+              disabled={isPendingCreate || isPendingDelete}
+              dueDate={dueDate}
               handleDeleteDialogOpen={() => setDeleteDialogOpen(true)}
             />
           ) : (
@@ -98,6 +167,7 @@ export function DueDateInputs({ data }: Props) {
                 <Popover open={open} onOpenChange={setOpen}>
                   <PopoverTrigger asChild>
                     <Button
+                      disabled={isPendingCreate || isPendingDelete}
                       variant="outline"
                       id="date-picker"
                       className=" flex justify-between items-center font-normal w-33"
@@ -115,6 +185,7 @@ export function DueDateInputs({ data }: Props) {
                     align="start"
                   >
                     <Calendar
+                      disabled={isPendingCreate || isPendingDelete}
                       mode="single"
                       selected={date}
                       captionLayout="dropdown"
@@ -127,19 +198,21 @@ export function DueDateInputs({ data }: Props) {
                   </PopoverContent>
                 </Popover>
                 <Input
+                  disabled={isPendingCreate || isPendingDelete}
                   onChange={(v) => {
                     setTime(v.target.value);
                   }}
                   type="time"
                   id="time-picker"
                   step="1"
-                  defaultValue="10:30:00"
+                  defaultValue="00:00:00"
                   className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none w-full"
                 />
               </div>
 
               <div className="flex justify-end gap-2">
                 <Button
+                  disabled={isPendingCreate || isPendingDelete}
                   variant={"secondary"}
                   onClick={handleAddDueDate}
                   title="Add due date"
@@ -148,6 +221,7 @@ export function DueDateInputs({ data }: Props) {
                   <Plus />
                 </Button>
                 <Button
+                  disabled={isPendingCreate || isPendingDelete}
                   variant={"destructive"}
                   onClick={handleCloseDateInput}
                   title="Cancel due date"

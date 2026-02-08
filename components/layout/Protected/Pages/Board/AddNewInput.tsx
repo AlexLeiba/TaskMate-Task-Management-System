@@ -65,7 +65,10 @@ export function AddNewInput({
     [inputName]: zod
       .string()
       .min(1, `${inputName} is required`)
-      .max(50, `${inputName} must be less than 50 characters`),
+      .max(
+        type === "textarea" ? 500 : 50,
+        `${inputName} must be less than 50 characters`,
+      ),
   });
 
   const {

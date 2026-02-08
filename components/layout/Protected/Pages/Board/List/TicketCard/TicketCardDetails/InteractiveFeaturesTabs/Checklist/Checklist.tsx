@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useOptimistic, useState, useTransition } from "react";
 import { ProgressBar } from "./ProgressBar";
 import { AddNewInput } from "../../../../../AddNewInput";
 import { CheckSquare, Plus } from "lucide-react";
@@ -46,6 +46,13 @@ export function Checklist({ cardDetailsId }: Props) {
     queryFn: getChecklistData,
     queryKey: ["checklist"],
   });
+
+  const [loadingOptimisticTransition, startOptimisticTransition] =
+    useTransition();
+
+  const [optimisticChecklistData, setOptimisticChecklistData] = useOptimistic<
+    Checklist[]
+  >(checklistData || []);
 
   useEffect(() => {
     if (error) {
@@ -115,6 +122,18 @@ export function Checklist({ cardDetailsId }: Props) {
     if (!cardDetailsId) {
       return toast.error("Card Id not found");
     }
+
+    startOptimisticTransition(() => {
+      setOptimisticChecklistData((prev) => {
+        return prev.map((item) => {
+          if (item.id === id) {
+            return { ...item, isCompleted: !item.isCompleted };
+          }
+
+          return item;
+        });
+      });
+    });
     toast.loading("Updating checklist...", { id: "update-checklist" });
     updateMutation({ cardDetailsId, checklistId: id, boardId });
   }
@@ -123,6 +142,12 @@ export function Checklist({ cardDetailsId }: Props) {
     if (!cardDetailsId) {
       return toast.error("Card Id not found");
     }
+
+    startOptimisticTransition(() => {
+      setOptimisticChecklistData((prev) => {
+        return prev.filter((item) => item.id !== id);
+      });
+    });
     toast.loading("Deleting checklist...", { id: "delete-checklist" });
     mutateDelete({ cardDetailsId, checklistId: id, boardId });
   }
@@ -152,18 +177,19 @@ export function Checklist({ cardDetailsId }: Props) {
           </div>
           <IconButton
             className="px-2"
-            title="Add new comment"
-            aria-label="Add new comment"
+            title="Add new item"
+            aria-label="Add new item"
             onClick={() => setIsOpenedTitleInput(true)}
           >
             <Plus className="text-green-600" />
           </IconButton>
         </div>
-        {checklistData.length > 0 ? (
+        {optimisticChecklistData.length > 0 ? (
           <ProgressBar
             percentage={Math.round(
-              (checklistData?.filter((item) => item.isCompleted).length /
-                checklistData.length) *
+              (optimisticChecklistData?.filter((item) => item.isCompleted)
+                .length /
+                optimisticChecklistData.length) *
                 100,
             )}
           />
@@ -175,6 +201,7 @@ export function Checklist({ cardDetailsId }: Props) {
       <div className="overflow-y-auto h-56 ">
         {checklistData.length > 0 && (
           <AddNewInput
+            type="textarea"
             label="Add new item"
             disabled={isPendingCreate || isRefetching}
             loading={isPendingCreate}
@@ -183,6 +210,7 @@ export function Checklist({ cardDetailsId }: Props) {
             isOpenedTitleInput={isOpenedTitleInput}
             setIsOpenedTitleInput={setIsOpenedTitleInput}
             classNameContainer="p-2"
+            placeholder="type checklist item here..."
           >
             <Button variant={"secondary"} className="hidden">
               + Add an item
@@ -192,6 +220,7 @@ export function Checklist({ cardDetailsId }: Props) {
 
         {checklistData.length === 0 ? (
           <AddNewInput
+            type="textarea"
             disabled={isPendingCreate || isRefetching}
             loading={isPendingCreate}
             handleSubmitValue={handleAddChecklist}
@@ -205,13 +234,14 @@ export function Checklist({ cardDetailsId }: Props) {
         ) : (
           <>
             <div className="flex flex-col gap-1">
-              {checklistData.map((item) => (
+              {optimisticChecklistData?.map((item) => (
                 <ChecklistCard
                   disabled={
                     isPendingDelete ||
                     isPendingUpdate ||
                     isPendingCreate ||
-                    isRefetching
+                    isRefetching ||
+                    loadingOptimisticTransition
                   }
                   loading={isPendingDelete}
                   data={item}

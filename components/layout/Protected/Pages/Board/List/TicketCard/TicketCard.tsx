@@ -3,9 +3,10 @@ import { TicketCardHeader } from "./TicketCardHeader";
 import { TicketCardBody } from "./TicketCardBody/TicketCardBody";
 import { useCallback, useState } from "react";
 import { KEYBOARD } from "@/lib/consts";
-import { Card } from "@/lib/generated/prisma/client";
 
 import dynamic from "next/dynamic";
+import { cn } from "@/lib/utils";
+import { CardAndDueDateAndChecklistType } from "@/lib/types";
 
 const TicketCardDetails = dynamic(() =>
   import("./TicketCardDetails/TicketCardDetails").then(
@@ -14,7 +15,7 @@ const TicketCardDetails = dynamic(() =>
 );
 
 type Prop = {
-  data: Card;
+  data: CardAndDueDateAndChecklistType;
   boardId: string;
 };
 export function TicketCard({ data, boardId }: Prop) {
@@ -51,7 +52,12 @@ export function TicketCard({ data, boardId }: Prop) {
         title={`open - ${data.title}`}
         aria-label={`open ${data.title}`}
         tabIndex={0}
-        className="ticket-card w-full cursor-pointer dark:hover:ring-gray-400 dark:hover:ring p-2 dark:bg-gray-600 rounded-sm flex flex-col justify-start items-start gap-2 "
+        className={cn(
+          "ticket-card",
+          "dark:hover:ring-gray-400 dark:bg-gray-600  dark:hover:ring",
+          "p-2 w-full cursor-pointer  rounded-sm",
+          "flex flex-col justify-start items-start gap-2 active:bg-gray-700 group",
+        )}
       >
         {/* TICKET CARD HEADER */}
         <TicketCardHeader
@@ -67,15 +73,14 @@ export function TicketCard({ data, boardId }: Prop) {
       </div>
 
       {/* TICKET CARD DETAILS MODAL*/}
-      {isCardDetailsOpened && (
-        <TicketCardDetails
-          cardTitle={data.title}
-          listTitle={data.listName}
-          cardDetailsId={data?.id || ""}
-          isModalOpened={isCardDetailsOpened}
-          handleCloseModal={handleCloseDetails}
-        />
-      )}
+
+      <TicketCardDetails
+        cardTitle={data.title}
+        listTitle={data.listName}
+        cardDetailsId={data?.id || ""}
+        isModalOpened={isCardDetailsOpened}
+        handleCloseModal={handleCloseDetails}
+      />
     </>
   );
 }

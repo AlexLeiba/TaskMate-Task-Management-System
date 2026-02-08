@@ -1,10 +1,10 @@
 import { AddTicketCard } from "./AddTicketCard";
 import { TicketCard } from "../TicketCard/TicketCard";
 import { ListCardHeader } from "./ListCardHeader";
-import { ListAndCardsType } from "@/app/actions/list";
+import { ListAndCardsAndDueDateAndChecklistType } from "@/lib/types";
 
 type Props = {
-  listData: ListAndCardsType;
+  listData: ListAndCardsAndDueDateAndChecklistType;
 };
 export function ListCard({ listData }: Props) {
   return (
@@ -18,9 +18,11 @@ export function ListCard({ listData }: Props) {
 
       {/* TICKET CARDS */}
       <div className="flex flex-col gap-2">
-        {listData?.cards?.map((card) => (
-          <TicketCard key={card.id} data={card} boardId={listData.boardId} />
-        ))}
+        {listData?.cards?.map((card) => {
+          return (
+            <TicketCard key={card.id} data={card} boardId={listData.boardId} />
+          );
+        })}
       </div>
 
       {/*ADD NEW TICKET CARD */}

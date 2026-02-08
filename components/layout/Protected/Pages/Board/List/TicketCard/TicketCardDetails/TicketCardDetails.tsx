@@ -120,8 +120,7 @@ export function TicketCardDetails({
             </div>
             <DueDate
               data={cardDetailsData?.dueDate}
-              cardDetailsId={cardDetailsData?.card.id}
-              listId={cardDetailsData?.card.listId}
+              cardDetailsId={cardDetailsData?.id}
             />
             <div className="flex flex-col">
               <Actions

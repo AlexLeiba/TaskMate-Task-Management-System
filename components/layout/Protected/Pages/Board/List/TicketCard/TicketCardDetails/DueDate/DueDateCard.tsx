@@ -1,25 +1,36 @@
 import { IconButton } from "@/components/ui/iconButton";
+import { duedateStatusColors } from "@/lib/dueDateStatusColors";
 import { cn } from "@/lib/utils";
-import { differenceInDays } from "date-fns";
+import { differenceInDays, differenceInHours } from "date-fns";
 import { Clock, X } from "lucide-react";
-import React from "react";
 
 type Props = {
   dueDate: string;
-
+  disabled?: boolean;
   handleDeleteDialogOpen: () => void;
 };
-export function DueDateCard({ dueDate, handleDeleteDialogOpen }: Props) {
+export function DueDateCard({
+  dueDate,
+  disabled,
+  handleDeleteDialogOpen,
+}: Props) {
   const now = new Date();
   const date = new Date(dueDate);
 
-  if (differenceInDays(now, date) <= 1) {
-  }
+  const dInDaysData = differenceInDays(new Date(date), now);
+  const dInHoursData = differenceInHours(new Date(date), now);
 
   return (
     <div
       className={cn(
-        differenceInDays(date, now) === 0 ? "bg-red-800" : "bg-gray-600",
+        duedateStatusColors({
+          status:
+            dInDaysData < 0 && dInHoursData < 0
+              ? "expired"
+              : dInDaysData === 0 //24hrs
+                ? "today"
+                : "future",
+        }),
         "p-1.5 px-2 rounded-md  flex items-center justify-between",
       )}
     >
@@ -28,6 +39,7 @@ export function DueDateCard({ dueDate, handleDeleteDialogOpen }: Props) {
         {dueDate}
       </div>
       <IconButton
+        disabled={disabled}
         title="Delete due date"
         aria-label="Delete due date"
         onClick={handleDeleteDialogOpen}

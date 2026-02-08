@@ -1,5 +1,4 @@
 import { Spacer } from "@/components/ui/spacer";
-import { AssignedToType } from "@/lib/types";
 import { UserPlus } from "lucide-react";
 import { AssignToDropdown } from "./AssignToDropdown";
 

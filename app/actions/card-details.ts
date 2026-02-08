@@ -638,6 +638,8 @@ export async function createChecklistAction({
       type: "created",
     });
 
+    // REVALIDATE BOARD DATA TO SHOW UPDATED CHECKLIST DATA
+    revalidatePath(`/board/${boardId}`);
     return {
       data: response,
       error: { message: "" },
@@ -707,7 +709,8 @@ export async function updateChecklistAction({
       activity: `Updated the checklist from the card: "${cardResponse?.card?.title}" in the list: "${cardResponse?.card?.listName}"`,
       type: "updated",
     });
-
+    // REVALIDATE BOARD DATA TO SHOW UPDATED CHECKLIST DATA
+    revalidatePath(`/board/${boardId}`);
     return {
       data: response,
       error: { message: "" },
@@ -761,6 +764,9 @@ export async function deleteChecklistAction({
       activity: `Deleted a checklist item from the card: "${cardResponse?.card?.title}" in the list: "${cardResponse?.card?.listName}"`,
       type: "deleted",
     });
+
+    // REVALIDATE BOARD DATA TO SHOW UPDATED CHECKLIST DATA
+    revalidatePath(`/board/${boardId}`);
 
     return {
       data: response,
@@ -821,6 +827,8 @@ export async function createDueDateAction({
       type: "created",
     });
 
+    // REVALIDATE BOARD DATA TO SHOW UPDATED DUE DATE DATA
+    revalidatePath(`/board/${boardId}`);
     return {
       data: response,
       error: { message: "" },
@@ -874,6 +882,9 @@ export async function deleteDueDateAction({
       activity: `Deleted due date from the card: "${cardResponse?.card?.title}" in the list: "${cardResponse?.card?.listName}"`,
       type: "deleted",
     });
+
+    // REVALIDATE BOARD DATA TO SHOW UPDATED DUE DATE DATA
+    revalidatePath(`/board/${boardId}`);
 
     return {
       data: response,

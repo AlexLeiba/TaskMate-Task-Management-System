@@ -1,26 +1,23 @@
 "use client";
 
-const AssignTo = dynamic(
-  () => {
-    return import("./AssignTo").then((m) => m.AssignTo);
-  },
-  {
-    ssr: false,
-    loading: () => <AssignToUserSkeleton />,
-  },
-);
+const AssignTo = dynamic(() => import("./AssignTo").then((m) => m.AssignTo), {
+  loading: () => <AssignToUserSkeleton />,
+});
 
-import { Priority } from "./Priority";
+const Priority = dynamic(() => import("./Priority").then((m) => m.Priority));
+
 import { AssignToUserSkeleton } from "./AssignToUserSkeleton";
 import dynamic from "next/dynamic";
-import { Card } from "@/lib/generated/prisma/client";
+import { DueDateIndicator } from "./DueDateIndicator";
+import { ChecklistIndicator } from "./ChecklistIndicator";
+import { CardAndDueDateAndChecklistType } from "@/lib/types";
 
 type Props = {
-  data: Card;
+  data: CardAndDueDateAndChecklistType;
   boardId: string;
 };
 export function TicketCardBody({
-  data: { priority, assignedToEmail, listId, id },
+  data: { priority, assignedToEmail, listId, id, details },
   boardId,
 }: Props) {
   return (
@@ -32,6 +29,9 @@ export function TicketCardBody({
         listId={listId}
         cardId={id}
       />
+
+      <DueDateIndicator data={details?.dueDate?.[0]} />
+      <ChecklistIndicator data={details?.checklist} />
 
       {/* ASSIGN  */}
 

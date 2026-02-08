@@ -127,22 +127,10 @@ export const CARD_PRIORITIES = [
 ] as const;
 export const FAKE_USERS = [
   {
-    id: "1",
-    name: "Alice Johnson",
-    avatar: "https://picsum.photos/id/1005/200/200",
-    email: "bH5d8@example.com",
-  },
-  {
-    id: "2",
-    name: "Jora Johnson",
-    avatar: "https://picsum.photos/id/1005/200/200",
-    email: "bH5d8@example.com",
-  },
-  {
-    id: "3",
-    name: "Fedea Johnson",
-    avatar: "https://picsum.photos/id/1005/200/200",
-    email: "bH5d8@example.com",
+    id: "none",
+    name: "None",
+    avatar: "",
+    email: "none",
   },
 ];
 
@@ -204,7 +192,7 @@ export const UNSPLASH_DEFAULT_IMAGES: UnsplashImagesType[] = [
         "https://images.unsplash.com/photo-1519268237282-0d15e6791ccc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NjEzMzB8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NjkxMTY4MzR8&ixlib=rb-4.1.0&q=80&w=1080",
       full: "https://images.unsplash.com/photo-1519268237282-0d15e6791ccc?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjEzMzB8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NjkxMTY4MzR8&ixlib=rb-4.1.0&q=85",
     },
-    title: "Unknown",
+    title: "California",
   },
   {
     id: "hwhhfsFgu8M",
@@ -215,7 +203,7 @@ export const UNSPLASH_DEFAULT_IMAGES: UnsplashImagesType[] = [
         "https://images.unsplash.com/photo-1524880789177-baf31d6afd94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NjEzMzB8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NjkxMTY4MzR8&ixlib=rb-4.1.0&q=80&w=1080",
       full: "https://images.unsplash.com/photo-1524880789177-baf31d6afd94?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjEzMzB8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NjkxMTY4MzR8&ixlib=rb-4.1.0&q=85",
     },
-    title: "Baltimore, MD",
+    title: "Baltimore",
   },
   {
     id: "fg_FSTo7ejw",
@@ -303,6 +291,6 @@ export const UNSPLASH_DEFAULT_IMAGES: UnsplashImagesType[] = [
         "https://images.unsplash.com/photo-1547914495-276897ecb8d2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NjEzMzB8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NjkxMTY4MzR8&ixlib=rb-4.1.0&q=80&w=1080",
       full: "https://images.unsplash.com/photo-1547914495-276897ecb8d2?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjEzMzB8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NjkxMTY4MzR8&ixlib=rb-4.1.0&q=85",
     },
-    title: "Unknown",
+    title: "Santorini, Greece",
   },
 ];

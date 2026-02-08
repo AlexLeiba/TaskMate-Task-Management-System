@@ -3,12 +3,13 @@ import { Card, List, StatusType } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
 import { currentActiveUser } from "@/lib/server/currentActiveUser";
+import { ListAndCardsAndDueDateAndChecklistType } from "@/lib/types";
 import { revalidatePath } from "next/cache";
 
-export type ListAndCardsType = List & { cards: Card[] };
-export async function getListDataAction(
-  boardId: string,
-): Promise<{ data: ListAndCardsType[] | null; error: { message: string } }> {
+export async function getListDataAction(boardId: string): Promise<{
+  data: ListAndCardsAndDueDateAndChecklistType[] | null;
+  error: { message: string };
+}> {
   try {
     const { data: activeUser } = await currentActiveUser();
 
@@ -21,7 +22,16 @@ export async function getListDataAction(
         boardId,
       },
       include: {
-        cards: true,
+        cards: {
+          include: {
+            details: {
+              select: {
+                dueDate: true,
+                checklist: true,
+              },
+            },
+          },
+        },
       },
     });
 

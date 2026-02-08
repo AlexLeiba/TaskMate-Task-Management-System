@@ -1,15 +1,16 @@
 "use client";
 import { ListCard } from "./ListCard/ListCard";
 import { AddNewListCard } from "./ListCard/AddNewListCard";
-import { ListAndCardsType } from "@/app/actions/list";
+
 import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { ListCardSkeleton } from "./ListCard/ListCardSkeleton";
+import { ListAndCardsAndDueDateAndChecklistType } from "@/lib/types";
 
 type Props = {
   boardId: string;
   listData: {
-    data: ListAndCardsType[] | null;
+    data: ListAndCardsAndDueDateAndChecklistType[] | null;
     error: { message: string };
   };
 };

@@ -1,4 +1,4 @@
-import { AssignedToType, UserType } from "@/lib/types";
+import { UserType } from "@/lib/types";
 
 import {
   Select,
@@ -9,16 +9,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 import { AssignToSkeleton } from "./AssignToSkeleton";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useOrganization } from "@clerk/nextjs";
-import { FAKE_USERS } from "@/lib/consts";
 import { UserCard } from "@/components/layout/Protected/UserCard/UserCard";
 
 import { assignToCardAction, unassigneCardAction } from "@/app/actions/card";
 import toast from "react-hot-toast";
-import { usePathname } from "next/navigation";
+import { useBoardId } from "@/hooks/useBoardId";
+import { FAKE_USERS } from "@/lib/consts";
 
 type Props = {
   assignedTo: string | undefined;
@@ -26,37 +27,44 @@ type Props = {
   cardDetailsId: string;
 };
 export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
-  const boardId = usePathname()?.split("/").at(-1);
-
-  const [assignedEmail, setAssignedEmail] = useState(assignedTo || "");
+  const boardId = useBoardId();
 
   const [selectedUser, setSelectedUser] = useState<UserType>(FAKE_USERS[0]);
 
   const { organization, isLoaded } = useOrganization();
+
+  // FETCH MEMBERS OF ORGANIZATION
+  async function fetchMembers() {
+    if (!isLoaded || !organization || !organization.getMemberships()) return;
+    const res = await organization?.getMemberships();
+    if (!res) return;
+
+    return res?.data || [];
+  }
 
   const { data: members } = useQuery({
     queryFn: fetchMembers,
     queryKey: ["members"],
   });
 
-  const { mutate, isPending } = useMutation({
+  const { mutate: mutateAssigneTo, isPending } = useMutation({
     mutationFn: assignToCardAction,
     mutationKey: ["assign-to"],
     onSuccess: ({ data }) => {
       toast.dismiss("assign-card");
       toast.success("Card assigned");
-      setAssignedEmail(data.assignedToEmail || "");
+      const foundSelectedUser = members?.find(
+        (member) =>
+          member?.publicUserData?.identifier === data?.assignedToEmail,
+      );
+      const selectedUser = {
+        id: foundSelectedUser?.id,
+        email: foundSelectedUser?.publicUserData?.identifier || "none",
+        name: foundSelectedUser?.publicUserData?.firstName || "none",
+        avatar: foundSelectedUser?.publicUserData?.imageUrl || "",
+      };
 
-      if (foundSelectedUser) {
-        const selectedUser = {
-          id: foundSelectedUser.id,
-          email: foundSelectedUser.publicUserData?.identifier || "",
-          name: foundSelectedUser.publicUserData?.firstName || "",
-          avatar: foundSelectedUser.publicUserData?.imageUrl || "",
-        };
-
-        setSelectedUser(selectedUser);
-      }
+      setSelectedUser(selectedUser);
     },
     onError: ({ message }) => {
       toast.dismiss("assign-card");
@@ -71,7 +79,7 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
       onSuccess: () => {
         toast.dismiss("unassign-card");
         toast.success("Card unassigned");
-        setAssignedEmail("");
+        setSelectedUser(FAKE_USERS[0]);
       },
       onError: ({ message }) => {
         toast.dismiss("unassign-card");
@@ -81,7 +89,7 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
 
   useEffect(() => {
     const foundSelectedUser = members?.find(
-      (member) => member.publicUserData?.identifier === assignedTo,
+      (member) => member?.publicUserData?.identifier === assignedTo,
     );
 
     if (foundSelectedUser) {
@@ -92,23 +100,13 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
         avatar: foundSelectedUser.publicUserData?.imageUrl || "",
       };
       // eslint-disable-next-line
-      setSelectedUser(selectedUser);
+      return setSelectedUser(selectedUser);
     }
 
-    setAssignedEmail(assignedTo || "");
-  }, [members, assignedTo]);
+    setSelectedUser(FAKE_USERS[0]);
 
-  const foundSelectedUser = members?.find(
-    (member) => member.publicUserData?.identifier === assignedTo,
-  );
-
-  async function fetchMembers() {
-    if (!isLoaded || !organization || !organization.getMemberships()) return;
-    const res = await organization?.getMemberships();
-    if (!res) return;
-
-    return res.data || [];
-  }
+    // eslint-disable-next-line
+  }, [assignedTo, setSelectedUser]);
 
   function handleAssignTo(memberEmail: string) {
     if (!boardId || !listId || !cardDetailsId) return;
@@ -117,7 +115,8 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
       handleUnassigneUser();
       return;
     }
-    mutate({
+
+    mutateAssigneTo({
       assignedUserData: {
         email: memberEmail,
         name: selectedUser.name,
@@ -127,11 +126,13 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
       listId,
       cardId: cardDetailsId,
     });
+
     toast.loading("Assigning to user...", { id: "assign-card" });
   }
 
   function handleUnassigneUser() {
     if (!boardId || !listId || !cardDetailsId) return;
+
     unnasignMutation({
       assignedUserData: {
         email: selectedUser.email,
@@ -142,14 +143,22 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
       listId,
       cardId: cardDetailsId,
     });
+
     toast.loading("Unassigning user...", { id: "unassign-card" });
   }
 
-  if (!listId || !cardDetailsId || !boardId || !isLoaded)
+  if (!listId || !cardDetailsId || !boardId || !isLoaded) {
     return <AssignToSkeleton />;
+  }
 
   return (
-    <Select onValueChange={(v) => handleAssignTo(v)} value={assignedEmail}>
+    <Select
+      onValueChange={(v) => {
+        if (v === selectedUser.email) return;
+        handleAssignTo(v);
+      }}
+      value={selectedUser.email || "none"}
+    >
       <SelectTrigger
         disabled={!isLoaded || isPending || isPendingUnassigne}
         className="w-full flex justify-between text-left h-11!"
@@ -166,7 +175,7 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
           {members?.map((user) => (
             <SelectItem
               disabled={!isLoaded || isPending || isPendingUnassigne}
-              defaultChecked={user.publicUserData?.identifier === assignedTo}
+              defaultChecked={user.publicUserData?.identifier === assignedTo} //checked by member email
               aria-label={
                 user.publicUserData?.firstName +
                 " " +

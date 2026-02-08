@@ -19,6 +19,7 @@ import {
 } from "@/app/actions/card";
 import toast from "react-hot-toast";
 import { deleteFile } from "@/lib/deleteFile";
+import { cn } from "@/lib/utils";
 
 const DeleteDialog = dynamic(() =>
   import("@/components/layout/Protected/DeleteDialog/DeleteDialog").then(
@@ -121,12 +122,15 @@ export function TicketCardHeader({
   }
   return (
     <div className="flex justify-between w-full">
-      <p className="text-lg font-medium">{title}</p>
+      <p className="text-lg font-medium pr-6 line-clamp-2">{title}</p>
 
       {/* OPTIONS  */}
       <Popover open={isOpenedOptions} onOpenChange={setIsOpenedOptions}>
         <PopoverTrigger asChild>
           <IconButton
+            className={cn(
+              isOpenedOptions ? "block" : "hidden group-hover:block",
+            )}
             disabled={
               isPendingDeleteCardDeleteCard ||
               isPendingEditTitleCard ||

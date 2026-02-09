@@ -1,34 +1,43 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 
-export async function verifyOrganizationMember(memberEmail: string): Promise<{
+export async function verifyOrganizationMember(
+  currentOrgId: string | undefined | null,
+): Promise<{
   data: boolean;
   error: { message: string };
 }> {
   try {
-    const { orgId } = await auth();
-    if (!orgId)
-      return { data: false, error: { message: "User not authenticated" } };
+    const { orgId, userId } = await auth();
+
+    if (!userId || !orgId) {
+      throw new Error("User not authenticated");
+    }
 
     const { data: currentOrgMembers } = await (
       await clerkClient()
-    ).users.getUserList();
+    )?.users?.getOrganizationMembershipList({
+      userId,
+    });
 
-    const foundMemberInCurrentOrg = currentOrgMembers.find(
-      (user) => user.emailAddresses[0].emailAddress === memberEmail,
+    const foundMemberInCurrentOrg = currentOrgMembers?.some(
+      (org) => org?.organization?.id === (currentOrgId || orgId),
     );
+
     if (!foundMemberInCurrentOrg) {
-      return {
-        data: false,
-        error: { message: "User not authorized for the current Organization" },
-      };
+      throw new Error("Not authorized for the current Organization");
     }
 
     return {
       data: true,
       error: { message: "" },
     };
-  } catch (error) {
-    console.log("🚀 ~ getOrgMembers ~ error:", error);
-    return { data: false, error: { message: "Something went wrong" } };
+  } catch (error: any) {
+    console.log("🚀 ~ verifyOrganizationMember ~ error:", error);
+    return {
+      data: false,
+      error: {
+        message: error.message || "Not authorized for the current Organization",
+      },
+    };
   }
 }

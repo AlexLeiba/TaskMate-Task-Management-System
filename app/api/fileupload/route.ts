@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
-import { currentActiveUser } from "@/lib/server/currentActiveUser";
+import { checkCurrentActiveUser } from "@/lib/server/checkCurrentActiveUser";
 import { getCardDetailsData } from "@/lib/server/getCardData";
 import { DeleteFileBodyType, UploadFileBodyType } from "@/lib/types";
 import { v2 as cloudinary } from "cloudinary";
@@ -15,7 +15,7 @@ cloudinary.config({
 
 export async function POST(req: NextRequest) {
   try {
-    const activeUser = await currentActiveUser();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -144,7 +144,7 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
-    const activeUser = await currentActiveUser();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");

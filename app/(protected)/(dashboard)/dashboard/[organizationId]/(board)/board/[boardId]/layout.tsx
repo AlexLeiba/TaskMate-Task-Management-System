@@ -10,20 +10,19 @@ async function ProtectedLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ boardId: string }>;
+  params: Promise<{ boardId: string; organizationId: string }>;
 }) {
   const boardId = (await params).boardId;
-  const { data: boardData } = await getBoardDataAction(boardId);
+  const orgId = (await params).organizationId;
+
+  const { data: boardData } = await getBoardDataAction(boardId, orgId);
 
   return (
     <>
       <SidebarProvider>
         <div className="min-h-screen flex flex-col w-full">
           <HeaderDashboard type="board" />
-          <main
-            // style={{ backgroundImage: `url(${boardData?.bgImageUrl})` }}
-            className={` flex flex-1  py-14    `}
-          >
+          <main className={` flex flex-1  py-14    `}>
             {boardData?.bgImageUrl && (
               <Image
                 className="w-screen h-screen absolute inset-0 -z-1 object-cover "

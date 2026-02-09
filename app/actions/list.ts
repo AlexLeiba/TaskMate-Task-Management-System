@@ -2,16 +2,20 @@
 import { Card, List, StatusType } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
-import { currentActiveUser } from "@/lib/server/currentActiveUser";
+import { checkCurrentActiveUser } from "@/lib/server/checkCurrentActiveUser";
 import { ListAndCardsAndDueDateAndChecklistType } from "@/lib/types";
+import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
-export async function getListDataAction(boardId: string): Promise<{
+export async function getListDataAction(
+  boardId: string,
+  currentOrgId: string | undefined | null,
+): Promise<{
   data: ListAndCardsAndDueDateAndChecklistType[] | null;
   error: { message: string };
 }> {
   try {
-    const { data: activeUser } = await currentActiveUser();
+    const { data: activeUser } = await checkCurrentActiveUser(currentOrgId);
 
     if (!activeUser) {
       throw new Error("User not authorized");
@@ -31,7 +35,13 @@ export async function getListDataAction(boardId: string): Promise<{
               },
             },
           },
+          orderBy: {
+            order: "asc",
+          },
         },
+      },
+      orderBy: {
+        order: "asc",
       },
     });
 
@@ -59,7 +69,8 @@ export async function createListAction({
   title: string;
 }): Promise<{ data: List | null; error: { message: string } }> {
   try {
-    const { data: activeUser } = await currentActiveUser();
+    const { orgId } = await auth();
+    const { data: activeUser } = await checkCurrentActiveUser();
 
     if (!activeUser) {
       throw new Error("User not authorized");
@@ -75,10 +86,19 @@ export async function createListAction({
       throw new Error("Board not found");
     }
 
+    const countLists = await prisma.list.count({
+      where: {
+        boardId,
+      },
+    });
+
+    const newListOrder = countLists + 1;
+
     const response = await prisma.list.create({
       data: {
         boardId,
         title,
+        order: newListOrder,
       },
     });
 
@@ -89,7 +109,7 @@ export async function createListAction({
       type: "created",
     });
 
-    revalidatePath(`/board/${boardId}`);
+    revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
     return {
       data: response,
       error: { message: "" },
@@ -108,7 +128,8 @@ export async function updateListTitleAction({
   listId: string;
 }): Promise<{ data: List | null; error: { message: string } }> {
   try {
-    const { data: activeUser } = await currentActiveUser();
+    const { orgId } = await auth();
+    const { data: activeUser } = await checkCurrentActiveUser();
 
     if (!activeUser) {
       throw new Error("User not authorized");
@@ -152,7 +173,7 @@ export async function updateListTitleAction({
       type: "updated",
     });
 
-    revalidatePath(`/board/${boardId}`);
+    revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
     return {
       data: response,
       error: { message: "" },
@@ -172,7 +193,8 @@ export async function updateListStatusAction({
   listId: string;
 }): Promise<{ data: List | null; error: { message: string } }> {
   try {
-    const { data: activeUser } = await currentActiveUser();
+    const { orgId } = await auth();
+    const { data: activeUser } = await checkCurrentActiveUser();
     if (!activeUser) {
       throw new Error("User not authorized");
     }
@@ -214,7 +236,7 @@ export async function updateListStatusAction({
       activity: `Updated list status from "${prevListData.status}" to "${response.status}" in Board "${boardData.title}"`,
       type: "updated",
     });
-
+    revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
     return {
       data: response,
       error: { message: "" },
@@ -232,7 +254,8 @@ export async function copyListAction({
   listId: string;
 }): Promise<{ data: List | null; error: { message: string } }> {
   try {
-    const { data: activeUser } = await currentActiveUser();
+    const { orgId } = await auth();
+    const { data: activeUser } = await checkCurrentActiveUser();
 
     if (!activeUser) {
       throw new Error("User not authorized");
@@ -273,7 +296,7 @@ export async function copyListAction({
       type: "created",
     });
 
-    revalidatePath(`/board/${boardId}`);
+    revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
 
     return {
       data: response,
@@ -292,7 +315,8 @@ export async function deleteListAction({
   listId: string;
 }): Promise<{ data: List | null; error: { message: string } }> {
   try {
-    const { data: activeUser } = await currentActiveUser();
+    const { orgId } = await auth();
+    const { data: activeUser } = await checkCurrentActiveUser();
 
     if (!activeUser) {
       throw new Error("User not authorized");
@@ -332,7 +356,7 @@ export async function deleteListAction({
       type: "deleted",
     });
 
-    revalidatePath(`/board/${boardId}`);
+    revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
     return {
       data: response,
       error: { message: "" },
@@ -351,10 +375,11 @@ export async function createListCardAction({
   listId: string;
   title: string;
 }): Promise<{ data: Card | null; error: { message: string } }> {
+  const { data: activeUser, error } = await checkCurrentActiveUser();
   try {
-    const { data: activeUser } = await currentActiveUser();
-    if (!activeUser) {
-      throw new Error("User not authorized");
+    const { orgId } = await auth();
+    if (error?.message || !activeUser) {
+      throw new Error(error?.message || "User not authorized");
     }
     const listData = await prisma.list.findFirst({
       where: {
@@ -376,12 +401,21 @@ export async function createListCardAction({
       throw new Error("List not found");
     }
 
+    const cardCount = await prisma.card.count({
+      where: {
+        listId,
+      },
+    });
+
+    const newCardOrder = cardCount + 1;
+
     const response = await prisma.card.create({
       data: {
         title,
         listId,
         reporterId: activeUser.id,
         listName: listData.title,
+        order: newCardOrder,
 
         details: {
           create: {
@@ -398,7 +432,7 @@ export async function createListCardAction({
       type: "created",
     });
 
-    revalidatePath(`/board/${boardId}`);
+    revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
 
     return {
       data: response,

@@ -3,20 +3,27 @@
 import { Board } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
-import { currentActiveUser } from "@/lib/server/currentActiveUser";
+import { checkCurrentActiveUser } from "@/lib/server/checkCurrentActiveUser";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
-export async function getBoardDataAction(boardId: string): Promise<{
+export async function getBoardDataAction(
+  boardId: string,
+  currentOrgId: string | undefined | null,
+): Promise<{
   data: Board | null;
   error: { message: string };
 }> {
-  try {
-    const { data: activeUser } = await currentActiveUser();
+  const { data: activeUser, error } =
+    await checkCurrentActiveUser(currentOrgId);
 
+  try {
+    if (error?.message || !activeUser) {
+      throw new Error(error?.message || "User not authorized");
+    }
     const { orgId } = await auth();
 
-    if (!orgId || !activeUser) {
+    if (!orgId) {
       throw new Error("User not authenticated");
     }
 
@@ -46,7 +53,7 @@ export async function editBoardTitleAction({
   title: string;
 }): Promise<{ data: Board | null; error: { message: string } }> {
   try {
-    const { data: activeUser } = await currentActiveUser();
+    const { data: activeUser } = await checkCurrentActiveUser();
 
     const { orgId } = await auth();
     if (!orgId) {

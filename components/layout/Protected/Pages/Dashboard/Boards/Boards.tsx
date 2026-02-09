@@ -11,6 +11,7 @@ import { BoardType } from "@/lib/types";
 import dynamic from "next/dynamic";
 import { useMutation } from "@tanstack/react-query";
 import { deleteFile } from "@/lib/deleteFile";
+import { useAuth } from "@clerk/nextjs";
 
 const DeleteDialog = dynamic(() =>
   import("@/components/layout/Protected/DeleteDialog/DeleteDialog").then(
@@ -23,6 +24,8 @@ export function Boards({
 }: {
   data: { error: { message: string }; data: BoardType[] };
 }) {
+  const { orgId } = useAuth();
+
   const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedBoardToDelete, setSelectedBoardToDelete] = useState("");
@@ -48,7 +51,7 @@ export function Boards({
   });
 
   function handleSelectBoard(boardId: string) {
-    router.push(`/board/${boardId}`);
+    router.push(`/dashboard/${orgId}/board/${boardId}`);
   }
   function handleOpenModalDeleteBoard(boardId: string) {
     setDeleteDialogOpen(true);

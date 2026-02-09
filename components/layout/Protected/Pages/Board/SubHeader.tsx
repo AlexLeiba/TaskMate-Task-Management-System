@@ -9,7 +9,6 @@ import { editBoardTitleAction } from "@/app/actions/board";
 import toast from "react-hot-toast";
 import { Board } from "@/lib/generated/prisma/client";
 import { IconButton } from "@/components/ui/iconButton";
-import { useAuth } from "@clerk/nextjs";
 
 type Props = {
   data: {
@@ -17,10 +16,15 @@ type Props = {
     error: { message: string };
   };
   boardId: string;
+  orgId: string | undefined | null;
 };
-export function SubHeader({ data: { data: board, error }, boardId }: Props) {
+export function SubHeader({
+  data: { data: board, error },
+  boardId,
+  orgId,
+}: Props) {
   const [showTitleInput, setShowTitleInput] = useState(false);
-  const { orgId } = useAuth();
+
   useEffect(() => {
     if (error.message) {
       toast.error(error.message);
@@ -38,10 +42,6 @@ export function SubHeader({ data: { data: board, error }, boardId }: Props) {
       toast.error(message || "Error updating board title, please try again"),
   });
 
-  if (!board) return;
-
-  const title =
-    board.title.length > 45 ? `${board.title.slice(0, 45)}...` : board.title;
   function handleEditBoardTitle() {
     setShowTitleInput(true);
   }
@@ -64,8 +64,8 @@ export function SubHeader({ data: { data: board, error }, boardId }: Props) {
           isOpenedTitleInput={showTitleInput}
         >
           <div className="flex gap-1 items-center">
-            <p className="text-lg font-bold line-clamp-1 text-text-secondary">
-              {title}
+            <p className="text-lg font-bold line-clamp-1 text-text-secondary ">
+              {board?.title}
             </p>
             <Button
               disabled={isPending}
@@ -83,7 +83,7 @@ export function SubHeader({ data: { data: board, error }, boardId }: Props) {
         </AddNewInput>
 
         {/* TODO add org id from params */}
-        <Link href={`/dashboard/${orgId}`}>
+        <Link href={`/dashboard/${orgId || ""}`}>
           <IconButton
             className="p-1"
             title="Close board"

@@ -2,7 +2,7 @@
 
 import { Activity, User } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { currentActiveUser } from "@/lib/server/currentActiveUser";
+import { checkCurrentActiveUser } from "@/lib/server/checkCurrentActiveUser";
 import { auth } from "@clerk/nextjs/server";
 
 export type ActivityWithAuthor = Activity & { author: User };
@@ -18,7 +18,7 @@ export async function getActivitiesAction({
   error: { message: string };
 }> {
   try {
-    const { data: activeUser } = await currentActiveUser();
+    const { data: activeUser } = await checkCurrentActiveUser();
     const { orgId } = await auth();
     if (!orgId || !activeUser) {
       throw new Error("User not authenticated");

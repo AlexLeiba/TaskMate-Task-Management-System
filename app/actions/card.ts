@@ -5,8 +5,9 @@ import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
 import {
   createNewUser,
-  currentActiveUser,
-} from "@/lib/server/currentActiveUser";
+  checkCurrentActiveUser,
+} from "@/lib/server/checkCurrentActiveUser";
+import { auth } from "@clerk/nextjs/server";
 
 import { revalidatePath } from "next/cache";
 
@@ -26,7 +27,8 @@ export async function editCardTitleAction({
   error: { message: string };
 }> {
   try {
-    const activeUser = await currentActiveUser();
+    const { orgId } = await auth();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -59,7 +61,7 @@ export async function editCardTitleAction({
       activity: `Updated card title from "${foundCard.title}" to "${response.title}" from list: "${foundCard.listName}"`,
       type: "updated",
     });
-    revalidatePath(`/board/${boardId}`);
+    revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
     return { data: response, error: { message: "" } };
   } catch (error: any) {
     throw error?.message || "Something went wrong";
@@ -80,7 +82,8 @@ export async function copyCardAction({
   error: { message: string };
 }> {
   try {
-    const activeUser = await currentActiveUser();
+    const { orgId } = await auth();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser || !activeUser?.data?.id) {
       throw new Error("User not authorized");
@@ -136,7 +139,7 @@ export async function copyCardAction({
       activity: `Created a copy of card: "${foundCard.title}" in new card: "${response.title}" from list: "${foundCard.listName}"`,
       type: "created",
     });
-    revalidatePath(`/board/${boardId}`);
+    revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
     return { data: response, error: { message: "" } };
   } catch (error: any) {
     console.log("🚀 ~ copyCardAction ~ error:", error);
@@ -159,7 +162,8 @@ export async function deleteCardAction({
   error: { message: string };
 }> {
   try {
-    const activeUser = await currentActiveUser();
+    const { orgId } = await auth();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -188,7 +192,7 @@ export async function deleteCardAction({
       type: "deleted",
     });
 
-    revalidatePath(`/board/${boardId}`);
+    revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
     return { data: response, error: { message: "" } };
   } catch (error: any) {
     throw error?.message || "Something went wrong";
@@ -211,7 +215,8 @@ export async function editPriorityAction({
   error: { message: string };
 }> {
   try {
-    const activeUser = await currentActiveUser();
+    const { orgId } = await auth();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -242,7 +247,7 @@ export async function editPriorityAction({
       activity: `Updated priority from "${foundCard.priority}" to "${response.priority}" ,of card: "${response.title}" from list: "${response.listName}"`,
       type: "updated",
     });
-    revalidatePath(`/board/${boardId}`);
+    revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
     return { data: response, error: { message: "" } };
   } catch (error: any) {
     throw error?.message || "Something went wrong";
@@ -264,14 +269,16 @@ export async function assignToCardAction({
   data: Card;
   error: { message: string };
 }> {
+  const { data: activeUser, error } = await checkCurrentActiveUser();
   try {
-    const activeUser = await currentActiveUser();
+    const { orgId } = await auth();
 
-    if (!activeUser.data) {
-      throw new Error("User not authorized");
+    if (!activeUser || error?.message) {
+      throw new Error(error?.message || "User not authorized");
     }
 
-    if (activeUser.data.email !== assignedUserData.email) {
+    // CHECK IF USER EXISTS IN DB, OR JUST IN CLERK
+    if (activeUser?.email !== assignedUserData?.email) {
       await createNewUser({ data: assignedUserData });
     }
 
@@ -296,11 +303,11 @@ export async function assignToCardAction({
 
     await createNewActivity({
       boardId: boardId,
-      authorId: activeUser.data.id,
+      authorId: activeUser.id,
       activity: `Assigned "${assignedUserData.name}" to card: "${response.title}" from list: "${response.listName}"`,
       type: "updated",
     });
-    revalidatePath(`/board/${boardId}`);
+    revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
     return { data: response, error: { message: "" } };
   } catch (error: any) {
     throw error?.message || "Something went wrong";
@@ -316,7 +323,8 @@ export async function unassigneCardAction({
   error: { message: string };
 }> {
   try {
-    const activeUser = await currentActiveUser();
+    const { orgId } = await auth();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -347,7 +355,7 @@ export async function unassigneCardAction({
       activity: `Unassigned "${assignedUserData.name}" from card: "${response.title}" from list: "${response.listName}"`,
       type: "updated",
     });
-    revalidatePath(`/board/${boardId}`);
+    revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
     return { data: response, error: { message: "" } };
   } catch (error: any) {
     throw error?.message || "Something went wrong";

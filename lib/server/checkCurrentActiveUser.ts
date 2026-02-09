@@ -2,40 +2,50 @@ import { currentUser } from "@clerk/nextjs/server";
 import { prisma } from "../prisma";
 import { User } from "../generated/prisma/client";
 import { verifyOrganizationMember } from "./verifyOrganizationMember";
+import { redirect } from "next/navigation";
+import { getCurrentActiveUserData } from "./getCurrentActiveUserData";
 
-export async function currentActiveUser(): Promise<{
+export async function checkCurrentActiveUser(
+  currentOrgId?: string | undefined | null,
+): Promise<{
   data: User | null;
   error: { message: string };
 }> {
+  // GET CURRENT ACTIVE USER
+  const { data, error } = await getCurrentActiveUserData();
+  if (!data?.email || !data?.user) {
+    redirect("/");
+  }
+  // CHECK USER MEMBER OF CURRENT ORGANIZATION
+  const { data: isMember, error: memberError } =
+    await verifyOrganizationMember(currentOrgId);
+
+  if (!isMember || memberError?.message) {
+    redirect("/dashboard");
+  }
+
   try {
-    const user = await currentUser();
-    const userEmail = user?.emailAddresses[0].emailAddress;
-
-    if (!userEmail || !user) {
-      throw new Error("User not authenticated");
+    if (error?.message) {
+      throw new Error(error?.message || "User not authenticated");
     }
-
-    // CHECK IS USER IS MEMBER OF CURRENT ORGANIZATION
-    const isMember = await verifyOrganizationMember(userEmail);
-
-    if (!isMember.data) {
+    if (memberError?.message) {
       throw new Error(
-        "The user is not authorized for the current Organization",
+        memberError?.message || "Not authorized for the current Organization",
       );
     }
 
     // CHECK IF USER EXISTS IN DB
     let activeUser = await prisma.user.findFirst({
-      where: { email: userEmail },
+      where: { email: data?.email },
     });
 
-    // IF USER NOT EXISTS IN DB CREATE ONE
+    // IF USER NOT EXISTS IN DB CREATE ONE WITH DATA FROM CLERK
     if (!activeUser) {
       activeUser = await prisma.user.create({
         data: {
-          name: `${user?.firstName} ${user?.lastName}`,
-          email: userEmail,
-          avatar: user?.imageUrl || "",
+          name: `${data.user?.firstName} ${data.user?.lastName}`,
+          email: data?.email,
+          avatar: data?.user?.imageUrl || "",
         },
       });
     }
@@ -44,11 +54,14 @@ export async function currentActiveUser(): Promise<{
       data: activeUser,
       error: { message: "" },
     };
-  } catch (error) {
+  } catch (error: any) {
     console.log("🚀 ~ currentActiveUser ~ error:", error);
 
-    throw error;
-    //THE UTILITY FN WILL BE USED INSIDE TRYCATCH BLOCK AND ERRORS WILL BE HANDLED THERE
+    return {
+      data: null,
+      error: { message: error?.message || "Something went wrong" },
+    };
+    //ERRORS WILL BE CAUGHT BY USEQUERY AND USEMUTATION HOOKS
   }
 }
 
@@ -62,15 +75,6 @@ export async function createNewUser({ data }: Props): Promise<{
   try {
     if (!data?.email) {
       throw new Error("User data not found");
-    }
-
-    // CHECK IS USER IS MEMBER OF CURRENT ORGANIZATION
-    const isMember = await verifyOrganizationMember(data.email);
-
-    if (!isMember.data) {
-      throw new Error(
-        "The user is not authorized for the current Organization",
-      );
     }
 
     // CHECK IF USER EXISTS IN DB
@@ -97,7 +101,7 @@ export async function createNewUser({ data }: Props): Promise<{
     console.log("🚀 ~ currentActiveUser ~ error:", error);
 
     throw error;
-    //THE UTILITY FN WILL BE USED INSIDE TRYCATCH BLOCK AND ERRORS WILL BE HANDLED THERE
+    //ERRORS WILL BE CAUGHT BY USEQUERY AND USEMUTATION HOOKS
   }
 }
 

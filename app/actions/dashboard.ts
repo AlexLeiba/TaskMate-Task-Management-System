@@ -3,7 +3,7 @@
 import { Board } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
-import { currentActiveUser } from "@/lib/server/currentActiveUser";
+import { checkCurrentActiveUser } from "@/lib/server/checkCurrentActiveUser";
 import { BoardType } from "@/lib/types";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
@@ -12,11 +12,10 @@ export async function getBoardsAction(orgId: string): Promise<{
   data: BoardType[];
   error: { message: string };
 }> {
+  const { data: activeUser, error } = await checkCurrentActiveUser(orgId);
   try {
-    const { data: activeUser } = await currentActiveUser();
-
-    if (!activeUser) {
-      throw new Error("User not authorized");
+    if (!activeUser || error?.message) {
+      throw new Error(error?.message || "User not authorized");
     }
 
     const boards = await prisma.board.findMany({
@@ -24,7 +23,7 @@ export async function getBoardsAction(orgId: string): Promise<{
         orgId,
       },
       orderBy: {
-        createdAt: "desc",
+        order: "asc",
       },
     });
 
@@ -42,7 +41,7 @@ export async function createNewBoardAction(
   boardData: Omit<Board, "id" | "createdAt" | "updatedAt">,
 ): Promise<{ data: boolean; error: { message: string } }> {
   try {
-    const { data: activeUser } = await currentActiveUser();
+    const { data: activeUser } = await checkCurrentActiveUser();
     const { orgId } = await auth();
 
     if (!orgId) {
@@ -51,8 +50,17 @@ export async function createNewBoardAction(
     if (!activeUser) {
       throw new Error("User not authorized");
     }
+    const countBoards = await prisma.board.count({
+      where: {
+        orgId,
+      },
+    });
 
-    const createdBoard = await prisma.board.create({ data: boardData });
+    const newBoardOrder = countBoards + 1;
+
+    const createdBoard = await prisma.board.create({
+      data: { ...boardData, order: newBoardOrder },
+    });
 
     await createNewActivity({
       boardId: createdBoard.id,
@@ -72,7 +80,7 @@ export async function deleteBoardAction(
   boardId: string,
 ): Promise<{ data: boolean; error: { message: string } }> {
   try {
-    const { data: activeUser } = await currentActiveUser();
+    const { data: activeUser } = await checkCurrentActiveUser();
 
     const { orgId } = await auth();
 

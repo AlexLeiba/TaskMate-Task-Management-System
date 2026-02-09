@@ -218,7 +218,7 @@ export type CardWithDetailsAndDueDateAndChecklistType = Card & {
   details: {
     dueDate: DueDate[];
     checklist: Checklist[];
-  };
+  } | null;
 };
 export type ListAndCardsAndDueDateAndChecklistType = List & {
   cards: CardWithDetailsAndDueDateAndChecklistType[];
@@ -228,5 +228,5 @@ export type CardAndDueDateAndChecklistType = Card & {
   details: {
     dueDate: DueDate[];
     checklist: Checklist[];
-  };
+  } | null;
 };

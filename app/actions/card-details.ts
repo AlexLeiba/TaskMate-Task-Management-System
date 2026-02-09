@@ -13,9 +13,11 @@ import {
 } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
-import { currentActiveUser } from "@/lib/server/currentActiveUser";
+import { checkCurrentActiveUser } from "@/lib/server/checkCurrentActiveUser";
 import { getCardDetailsData } from "@/lib/server/getCardData";
+import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export type CardDetailsType = CardDetails & {
   card: Card & {
@@ -33,7 +35,7 @@ export async function getCardDetails(
   cardId: string,
 ): Promise<{ data: CardDetailsType | null; error: { message: string } }> {
   try {
-    const activeUser = await currentActiveUser();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -84,7 +86,7 @@ export async function getCardDetailsComments(cardId: string): Promise<{
   error: { message: string };
 }> {
   try {
-    const activeUser = await currentActiveUser();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -121,7 +123,7 @@ export async function getCardDetailsAttachments(cardId: string): Promise<{
   error: { message: string };
 }> {
   try {
-    const activeUser = await currentActiveUser();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -183,7 +185,7 @@ export async function createAttachment({
   error: { message: string };
 }> {
   try {
-    const activeUser = await currentActiveUser();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -279,7 +281,7 @@ export async function deleteAttachment({
   error: { message: string };
 }> {
   try {
-    const activeUser = await currentActiveUser();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -328,7 +330,7 @@ export async function getCardDetailsActivities(cardId: string): Promise<{
   error: { message: string };
 }> {
   try {
-    const activeUser = await currentActiveUser();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -378,7 +380,7 @@ export async function createCommentAction({
   error: { message: string };
 }> {
   try {
-    const activeUser = await currentActiveUser();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -448,7 +450,7 @@ export async function deleteCommentAction({
   error: { message: string };
 }> {
   try {
-    const activeUser = await currentActiveUser();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -518,7 +520,7 @@ export async function updateDescriptionAction({
   error: { message: string };
 }> {
   try {
-    const activeUser = await currentActiveUser();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -569,7 +571,7 @@ export async function getChecklistDataAction({
   cardDetailsId,
 }: GetChecklistProps) {
   try {
-    const activeUser = await currentActiveUser();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -605,7 +607,8 @@ export async function createChecklistAction({
   error: { message: string };
 }> {
   try {
-    const activeUser = await currentActiveUser();
+    const { orgId } = await auth();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -639,7 +642,7 @@ export async function createChecklistAction({
     });
 
     // REVALIDATE BOARD DATA TO SHOW UPDATED CHECKLIST DATA
-    revalidatePath(`/board/${boardId}`);
+    revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
     return {
       data: response,
       error: { message: "" },
@@ -665,7 +668,8 @@ export async function updateChecklistAction({
   error: { message: string };
 }> {
   try {
-    const activeUser = await currentActiveUser();
+    const { orgId } = await auth();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -710,7 +714,7 @@ export async function updateChecklistAction({
       type: "updated",
     });
     // REVALIDATE BOARD DATA TO SHOW UPDATED CHECKLIST DATA
-    revalidatePath(`/board/${boardId}`);
+    revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
     return {
       data: response,
       error: { message: "" },
@@ -734,7 +738,8 @@ export async function deleteChecklistAction({
   error: { message: string };
 }> {
   try {
-    const activeUser = await currentActiveUser();
+    const { orgId } = await auth();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -766,7 +771,7 @@ export async function deleteChecklistAction({
     });
 
     // REVALIDATE BOARD DATA TO SHOW UPDATED CHECKLIST DATA
-    revalidatePath(`/board/${boardId}`);
+    revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
 
     return {
       data: response,
@@ -795,7 +800,8 @@ export async function createDueDateAction({
   error: { message: string };
 }> {
   try {
-    const activeUser = await currentActiveUser();
+    const { orgId } = await auth();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -828,7 +834,7 @@ export async function createDueDateAction({
     });
 
     // REVALIDATE BOARD DATA TO SHOW UPDATED DUE DATE DATA
-    revalidatePath(`/board/${boardId}`);
+    revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
     return {
       data: response,
       error: { message: "" },
@@ -852,7 +858,8 @@ export async function deleteDueDateAction({
   error: { message: string };
 }> {
   try {
-    const activeUser = await currentActiveUser();
+    const { orgId } = await auth();
+    const activeUser = await checkCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -884,13 +891,71 @@ export async function deleteDueDateAction({
     });
 
     // REVALIDATE BOARD DATA TO SHOW UPDATED DUE DATE DATA
-    revalidatePath(`/board/${boardId}`);
+    revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
 
     return {
       data: response,
       error: { message: "" },
     };
   } catch (error: any) {
+    throw error?.message || "Something went wrong";
+  }
+}
+
+type CopyCardWithDetailsProps = {
+  cardDetailsId: string;
+  boardId: string;
+  cardId: string;
+};
+export async function copyCardWithDetails({
+  cardDetailsId,
+  boardId,
+  cardId,
+}: CopyCardWithDetailsProps) {
+  try {
+    const { orgId } = await auth();
+    const activeUser = await checkCurrentActiveUser();
+
+    if (!activeUser.data) {
+      redirect("/dashboard");
+    }
+
+    const cardResponse = await getCardDetailsData({ cardDetailsId });
+
+    if (!cardResponse) {
+      throw new Error("Card not found");
+    }
+
+    const response = await prisma.card.create({
+      data: {
+        listId: cardResponse?.card?.listId,
+        listName: cardResponse?.card?.listName,
+        title: cardResponse?.card?.title,
+        priority: cardResponse?.card?.priority,
+        reporterId: activeUser.data.id,
+        details: {
+          create: {
+            description: cardResponse?.description || "",
+          },
+        },
+      },
+    });
+
+    await createNewActivity({
+      cardId,
+      boardId: boardId,
+      authorId: activeUser.data.id,
+      activity: `Copied the card: "${cardResponse?.card?.title}" from the list: "${cardResponse?.card?.listName}"`,
+      type: "created",
+    });
+
+    revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
+    return {
+      data: response,
+      error: { message: "" },
+    };
+  } catch (error: any) {
+    console.log("🚀 ~ copyCardWithDetails ~ error:", error.message);
     throw error?.message || "Something went wrong";
   }
 }

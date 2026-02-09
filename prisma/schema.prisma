@@ -13,35 +13,6 @@ datasource db {
   provider = "postgresql"
 }
 
-model Board {
-id String @id @default(uuid())
-title String
-cardImageUrl String
-bgImageUrl String
-orgId String
-lists List[]//will end up if using includes query
-activity Activity[]
-createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
-}
-enum StatusType {
-  todo
-  progress
-  review
-  done
-  backlog
-}
-model List { //fetch list based on board id
-id String @id @default(uuid())
-boardId String //take boardid from url when creating a list
-title String
-status StatusType @default(todo)
-cards Card[] //when create a card will end up here
-board Board @relation(fields: [boardId], references:[id],onDelete: Cascade)
-createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
-}
-
 enum PriorityType {
   low
   medium
@@ -67,22 +38,61 @@ model User {
   assignedCards Card[] @relation("Assigned")//inverse relation/ wont be included in req , unless using property include
 }
 
+model Board {
+id String @id @default(uuid())
+title String
+cardImageUrl String
+bgImageUrl String
+orgId String
+order Int @default(1)
+
+lists List[]//will end up if using includes query
+activity Activity[]
+createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+enum StatusType {
+  todo
+  progress
+  review
+  done
+  backlog
+}
+
+model List { //fetch list based on board id
+id String @id @default(uuid())
+boardId String //take boardid from url when creating a list
+title String
+order Int @default(1)
+
+status StatusType @default(todo)
+cards Card[] //when create a card will end up here
+board Board @relation(fields: [boardId], references:[id],onDelete: Cascade)
+createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+
+
 model Card {
 id String @id @default(uuid())
 title String
-priority PriorityType @default(none)
 assignedToEmail String?  //
 listId String  //to reference in which list is located
 listName String
 reporterId String//who has created the card/is mandatory
-details CardDetails?
+order Int @default(1)
 
-createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
+priority PriorityType @default(none)
+details CardDetails?
 
 list List @relation(fields:[listId],references:[id] ,onDelete: Cascade)
 reporter User @relation("Reported",fields:[reporterId],references: [id])
 assignedTo User? @relation("Assigned", fields:[assignedToEmail],references: [email])
+
+updatedAt DateTime? @updatedAt
+createdAt DateTime? @default(now())
 }
 
 model CardDetails {

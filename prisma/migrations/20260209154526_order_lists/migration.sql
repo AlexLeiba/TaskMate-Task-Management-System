@@ -1,0 +1,8 @@
+-- AlterTable
+ALTER TABLE "Board" ADD COLUMN     "order" INTEGER NOT NULL DEFAULT 1;
+
+-- AlterTable
+ALTER TABLE "Card" ADD COLUMN     "order" INTEGER NOT NULL DEFAULT 1;
+
+-- AlterTable
+ALTER TABLE "List" ADD COLUMN     "order" INTEGER NOT NULL DEFAULT 1;

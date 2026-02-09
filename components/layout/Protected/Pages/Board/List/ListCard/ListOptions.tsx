@@ -6,17 +6,7 @@ import {
 } from "@/components/ui/popover";
 import { Ellipsis, X } from "lucide-react";
 import { LIST_OPTIONS } from "@/lib/consts";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@radix-ui/react-separator";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { useStore } from "@/store/useStore";
 import { IconButton } from "@/components/ui/iconButton";
 import React from "react";
@@ -25,6 +15,13 @@ import { copyListAction, deleteListAction } from "@/app/actions/list";
 import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import { deleteFile } from "@/lib/deleteFile";
+import dynamic from "next/dynamic";
+
+const DeleteDialog = dynamic(() =>
+  import("@/components/layout/Protected/DeleteDialog/DeleteDialog").then(
+    (m) => m.DeleteDialog,
+  ),
+);
 
 type Props = {
   listId: string;
@@ -105,7 +102,11 @@ export function ListOptions({ listId }: Props) {
   return (
     <Popover open={isOpenedStatus} onOpenChange={setIsOpenedStatus}>
       <PopoverTrigger asChild>
-        <IconButton aria-label="List options" title="List options">
+        <IconButton
+          aria-label="List options"
+          title="List options"
+          className="absolute top-2 right-0"
+        >
           <Ellipsis size={25} />
         </IconButton>
       </PopoverTrigger>
@@ -160,42 +161,11 @@ export function ListOptions({ listId }: Props) {
         </div>
 
         {/* MODAL DELETE BOARD */}
-        <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle className="text-2xl">
-                Are you absolutely sure?
-              </DialogTitle>
-              <DialogDescription className="text-xl">
-                This action cannot be undone. This will permanently delete your
-                account and remove your data from our servers.
-              </DialogDescription>
-            </DialogHeader>
-
-            <DialogFooter className="flex ">
-              <DialogClose asChild>
-                <Button
-                  size={"lg"}
-                  type="button"
-                  variant="default"
-                  disabled={isPendingDeleteList || isPendingCopyList}
-                >
-                  Cancel
-                </Button>
-              </DialogClose>
-              <Button
-                loading={isPendingDeleteList || isPendingCopyList}
-                disabled={isPendingDeleteList || isPendingCopyList}
-                size={"lg"}
-                type="button"
-                variant="destructive"
-                onClick={() => handleDeleteList(listId)}
-              >
-                Delete
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <DeleteDialog
+          deleteDialogOpen={deleteDialogOpen}
+          setDeleteDialogOpen={setDeleteDialogOpen}
+          handleDelete={() => handleDeleteList(listId)}
+        />
       </PopoverContent>
     </Popover>
   );

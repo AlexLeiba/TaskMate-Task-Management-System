@@ -35,6 +35,7 @@ export function TicketCardDetails({
   listTitle,
 }: Props) {
   async function getDetailsData() {
+    if (!cardDetailsId) return;
     try {
       const response = await getCardDetails(cardDetailsId);
 
@@ -49,6 +50,7 @@ export function TicketCardDetails({
       toast.error(
         error.message || "Error getting card details, please try again",
       );
+      throw error.message || "Error getting card details, please try again";
     }
   }
 
@@ -124,7 +126,7 @@ export function TicketCardDetails({
             />
             <div className="flex flex-col">
               <Actions
-                cardDetailsId={cardDetailsData?.card.id || ""}
+                cardDetailsId={cardDetailsData?.id || ""}
                 listId={cardDetailsData?.card.listId || ""}
                 cardId={cardDetailsData?.card.id || ""}
               />

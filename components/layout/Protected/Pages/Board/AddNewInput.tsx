@@ -35,7 +35,7 @@ type Props = {
   loading?: boolean;
   classNameContainer?: string;
   buttonDirection?: "row" | "column";
-
+  defaultValue?: string;
   setIsOpenedTitleInput: Dispatch<SetStateAction<boolean>>;
   handleSubmitValue: (value: { [inputName: string]: string }) => void;
 } & (PropsTextarea | PropsInputText);
@@ -48,6 +48,7 @@ export function AddNewInput({
   classNameContainer,
   type = "text",
   buttonDirection = "row",
+  defaultValue = "",
   setIsOpenedTitleInput,
   handleSubmitValue,
 
@@ -117,9 +118,16 @@ export function AddNewInput({
   useEffect(() => {
     if (isOpenedTitleInput) {
       setError(inputName as keyof typeof register, { message: "" });
-      setValue(inputName, "");
+      setValue(inputName, defaultValue);
     }
-  }, [isOpenedTitleInput, setError, inputName, register, setValue]);
+  }, [
+    isOpenedTitleInput,
+    setError,
+    inputName,
+    register,
+    setValue,
+    defaultValue,
+  ]);
 
   return (
     <div

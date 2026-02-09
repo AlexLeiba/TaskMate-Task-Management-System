@@ -8,7 +8,7 @@ export function InitialDescriptionState({ children, ...props }: Props) {
   return (
     <IconButton
       {...props}
-      className="p-2 h-72.5 w-full hover:bg-foreground overflow-y-auto rounded-bl-md rounded-br-md"
+      className="p-2 h-72.5 w-full hover:bg-popover bg-popover/50 overflow-y-auto rounded-bl-md rounded-br-md"
     >
       {children}
     </IconButton>

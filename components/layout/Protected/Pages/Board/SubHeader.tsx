@@ -9,6 +9,7 @@ import { editBoardTitleAction } from "@/app/actions/board";
 import toast from "react-hot-toast";
 import { Board } from "@/lib/generated/prisma/client";
 import { IconButton } from "@/components/ui/iconButton";
+import { useAuth } from "@clerk/nextjs";
 
 type Props = {
   data: {
@@ -18,6 +19,8 @@ type Props = {
   boardId: string;
 };
 export function SubHeader({ data: { data: board, error }, boardId }: Props) {
+  const [showTitleInput, setShowTitleInput] = useState(false);
+  const { orgId } = useAuth();
   useEffect(() => {
     if (error.message) {
       toast.error(error.message);
@@ -34,7 +37,6 @@ export function SubHeader({ data: { data: board, error }, boardId }: Props) {
     onError: ({ message }) =>
       toast.error(message || "Error updating board title, please try again"),
   });
-  const [showTitleInput, setShowTitleInput] = useState(false);
 
   if (!board) return;
 
@@ -81,7 +83,7 @@ export function SubHeader({ data: { data: board, error }, boardId }: Props) {
         </AddNewInput>
 
         {/* TODO add org id from params */}
-        <Link href={`/dashboard/${board.id}`}>
+        <Link href={`/dashboard/${orgId}`}>
           <IconButton
             className="p-1"
             title="Close board"

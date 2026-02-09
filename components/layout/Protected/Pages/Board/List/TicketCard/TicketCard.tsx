@@ -56,7 +56,7 @@ export function TicketCard({ data, boardId }: Prop) {
           "ticket-card",
           "hover:ring-gray-400 bg-card-foreground  hover:ring",
           "p-2 w-full cursor-pointer  rounded-sm",
-          "flex flex-col justify-start items-start gap-2 active:bg-card",
+          "flex flex-col justify-start items-start gap-2 active:bg-card group",
         )}
       >
         {/* TICKET CARD HEADER */}
@@ -73,7 +73,6 @@ export function TicketCard({ data, boardId }: Prop) {
       </div>
 
       {/* TICKET CARD DETAILS MODAL*/}
-
       <TicketCardDetails
         cardTitle={data.title}
         listTitle={data.listName}

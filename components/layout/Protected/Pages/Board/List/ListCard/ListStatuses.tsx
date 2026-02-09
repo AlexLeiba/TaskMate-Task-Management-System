@@ -50,7 +50,11 @@ export function ListStatuses({ selectedStatus, listId }: Props) {
   return (
     <Popover open={isOpenedStatus} onOpenChange={setIsOpenedStatus}>
       <PopoverTrigger asChild>
-        <IconButton title="List Statuses" aria-label="List Statuses">
+        <IconButton
+          title="List Statuses"
+          aria-label="List Statuses"
+          className="absolute left-0 top-3"
+        >
           <p>{statusData?.icon}</p>
         </IconButton>
       </PopoverTrigger>

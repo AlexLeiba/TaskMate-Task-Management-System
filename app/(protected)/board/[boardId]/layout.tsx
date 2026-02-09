@@ -22,7 +22,7 @@ async function ProtectedLayout({
           <HeaderDashboard type="board" />
           <main
             // style={{ backgroundImage: `url(${boardData?.bgImageUrl})` }}
-            className={` flex flex-1  py-13    `}
+            className={` flex flex-1  py-14    `}
           >
             {boardData?.bgImageUrl && (
               <Image

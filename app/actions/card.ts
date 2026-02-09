@@ -91,6 +91,14 @@ export async function copyCardAction({
         id: cardId,
         listId,
       },
+      include: {
+        details: {
+          select: {
+            description: true,
+            checklist: true,
+          },
+        },
+      },
     });
 
     if (!foundCard) {
@@ -102,9 +110,23 @@ export async function copyCardAction({
         listId,
         listName: foundCard.listName,
         title: foundCard.title + " - copy",
-        priority: foundCard.priority,
-        assignedToEmail: foundCard.assignedToEmail || null,
         reporterId: activeUser.data.id,
+        details: {
+          create: {
+            description: foundCard.details?.description || "",
+            checklist: {
+              createMany: {
+                data:
+                  foundCard.details?.checklist?.map((item) => {
+                    return {
+                      title: item.title,
+                      isCompleted: item.isCompleted,
+                    };
+                  }) || [],
+              },
+            },
+          },
+        },
       },
     });
 
@@ -117,6 +139,7 @@ export async function copyCardAction({
     revalidatePath(`/board/${boardId}`);
     return { data: response, error: { message: "" } };
   } catch (error: any) {
+    console.log("🚀 ~ copyCardAction ~ error:", error);
     throw error?.message || "Something went wrong";
   }
 }

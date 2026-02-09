@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Copy, Delete, Edit, Ellipsis, X } from "lucide-react";
+import { Copy, Delete, Edit, Ellipsis, Info, X } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -20,6 +20,11 @@ import {
 import toast from "react-hot-toast";
 import { deleteFile } from "@/lib/deleteFile";
 import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const DeleteDialog = dynamic(() =>
   import("@/components/layout/Protected/DeleteDialog/DeleteDialog").then(
@@ -76,6 +81,7 @@ export function TicketCardHeader({
         toast.error(message || "Error editing card title, please try again");
       },
     });
+
   // COPY CARD
   const { mutate: copyCardMutation, isPending: isPendingCopyCard } =
     useMutation({
@@ -91,7 +97,7 @@ export function TicketCardHeader({
       },
     });
 
-  // CHANGE TITLE
+  //HANDLE CHANGE TITLE
   function handleChangeCardTitle(title: { [inputName: string]: string }) {
     editTitleCardMutation({ title: title.title, cardId, listId, boardId });
     toast.loading("Editing card title...", { id: "edit-title-card" });
@@ -121,14 +127,15 @@ export function TicketCardHeader({
     setIsOpenedOptions(false);
   }
   return (
-    <div className="flex justify-between w-full">
-      <p className="text-lg font-medium pr-6 line-clamp-2">{title}</p>
+    <div className="flex justify-between w-full relative">
+      <h4 className="text-lg font-medium pr-6 line-clamp-2">{title}</h4>
 
       {/* OPTIONS  */}
       <Popover open={isOpenedOptions} onOpenChange={setIsOpenedOptions}>
         <PopoverTrigger asChild>
           <IconButton
             className={cn(
+              "absolute top-0 right-0",
               isOpenedOptions ? "block" : "hidden group-hover:block",
             )}
             disabled={
@@ -193,6 +200,7 @@ export function TicketCardHeader({
               isOpenedTitleInput={isOpenedTitleInput}
               classNameContainer="p-0 mt-4 mb-2 w-full"
               buttonDirection="column"
+              defaultValue={title}
             >
               <IconButton
                 aria-label="Edit"
@@ -222,9 +230,23 @@ export function TicketCardHeader({
               }}
               aria-label="Copy"
               title="Copy"
-              classNameChildren="flex  gap-2 items-center"
+              classNameChildren="flex  justify-between items-center"
+              className="w-full py-2"
             >
-              <Copy /> Copy
+              <div className="flex gap-2 items-center">
+                <Copy size={20} /> Copy
+              </div>
+              <Tooltip>
+                <TooltipTrigger asChild className=" text-gray-400">
+                  <Info />
+                </TooltipTrigger>
+                <TooltipContent className="min-w-20 max-w-90 flex flex-col gap-1">
+                  <p className="text-sm">
+                    New card will include cloned values:
+                    <strong> Title , Description , Checklist </strong>
+                  </p>
+                </TooltipContent>
+              </Tooltip>
             </IconButton>
 
             <Separator className="my-4 bg-gray-700" />
@@ -242,6 +264,7 @@ export function TicketCardHeader({
                 handleOpenModalDeleteCard();
               }}
               classNameChildren="flex  gap-2 items-center "
+              className="w-full"
             >
               <Delete /> Delete
             </IconButton>

@@ -33,6 +33,7 @@ export function Checklist({ cardDetailsId }: Props) {
 
       return response;
     } catch (error: any) {
+      toast.error(error?.message || "Something went wrong");
       throw error?.message || "Something went wrong";
     }
   }
@@ -66,7 +67,6 @@ export function Checklist({ cardDetailsId }: Props) {
     onSuccess: () => {
       toast.dismiss("create-checklist");
       toast.success("Checklist created");
-      setIsOpenedTitleInput(false);
 
       queryClient.invalidateQueries({
         queryKey: ["card-details"],
@@ -157,6 +157,22 @@ export function Checklist({ cardDetailsId }: Props) {
       return toast.error("Card Id not found");
     }
 
+    startOptimisticTransition(() => {
+      setOptimisticChecklistData((prev) => [
+        {
+          id: Date.now().toString(),
+          isCompleted: false,
+          title: value?.title,
+          cardId: cardDetailsId,
+          boardId: boardId || "",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          order: prev.length + 1,
+        },
+        ...prev,
+      ]);
+    });
+    setIsOpenedTitleInput(false);
     toast.loading("Creating checklist...", { id: "create-checklist" });
     createMutation({
       cardDetailsId,
@@ -176,6 +192,7 @@ export function Checklist({ cardDetailsId }: Props) {
             <h5 className="text-xl font-medium">Checklist</h5>
           </div>
           <IconButton
+            disabled={isPendingCreate || isRefetching || isPendingDelete}
             className="px-2"
             title="Add new item"
             aria-label="Add new item"
@@ -203,7 +220,7 @@ export function Checklist({ cardDetailsId }: Props) {
           <AddNewInput
             type="textarea"
             label="Add new item"
-            disabled={isPendingCreate || isRefetching}
+            disabled={isPendingCreate || isRefetching || isPendingDelete}
             loading={isPendingCreate}
             handleSubmitValue={handleAddChecklist}
             inputName="title"
@@ -221,7 +238,7 @@ export function Checklist({ cardDetailsId }: Props) {
         {checklistData.length === 0 ? (
           <AddNewInput
             type="textarea"
-            disabled={isPendingCreate || isRefetching}
+            disabled={isPendingCreate || isRefetching || isPendingDelete}
             loading={isPendingCreate}
             handleSubmitValue={handleAddChecklist}
             inputName="title"

@@ -581,6 +581,9 @@ export async function getChecklistDataAction({
       where: {
         cardId: cardDetailsId,
       },
+      orderBy: {
+        order: "desc",
+      },
     });
 
     if (!response) {
@@ -620,12 +623,21 @@ export async function createChecklistAction({
       throw new Error("Card not found");
     }
 
+    const countChecklist = await prisma.checklist.count({
+      where: {
+        cardId: cardDetailsId,
+      },
+    });
+
+    const checklistItemOrder = countChecklist + 1;
+
     // IF ALREDY EXISTS
     const response = await prisma.checklist.create({
       data: {
         title,
         isCompleted: false,
         cardId: cardDetailsId,
+        order: checklistItemOrder,
       },
     });
 

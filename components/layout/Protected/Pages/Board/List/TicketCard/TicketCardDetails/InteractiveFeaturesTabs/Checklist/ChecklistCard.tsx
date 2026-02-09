@@ -45,6 +45,8 @@ export function ChecklistCard({
         <p>{data.title}</p>
       </div>
       <IconButton
+        title="Delete item"
+        aria-label="Delete item"
         disabled={disabled}
         loading={loading}
         className="hidden group-hover:block group-focus-within:block"

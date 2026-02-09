@@ -4,10 +4,10 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { Comments } from "./Comments/Comments";
 import { Spacer } from "@/components/ui/spacer";
-import { useStore } from "@/store/useStore";
 import { TAB_ELEMENTS } from "@/lib/consts";
 import { Comment, User } from "@/lib/generated/prisma/client";
 import dynamic from "next/dynamic";
+import { useState } from "react";
 
 const Activities = dynamic(() =>
   import("./Activities/Activities").then((m) => m.Activities),
@@ -24,12 +24,13 @@ type Props = {
 
   comments: (Comment & { author: User })[] | undefined;
 };
+
 export function InteractiveFeaturesTabs({ cardDetailsId, comments }: Props) {
-  const { selectedTab, setSelectTab } = useStore();
+  const [selectedTab, setSelectTab] = useState("comments");
   // todo, CHANGE IT TO USEsTATE, to have the same tab at each new open card
 
-  function handleSelectTab(data: (typeof TAB_ELEMENTS)[number]) {
-    setSelectTab(data.value);
+  function handleSelectTab(data: (typeof TAB_ELEMENTS)[number]["value"]) {
+    setSelectTab(data);
   }
   return (
     <div>
@@ -39,7 +40,7 @@ export function InteractiveFeaturesTabs({ cardDetailsId, comments }: Props) {
           <div key={data.value}>
             <IconButton
               className={cn()}
-              onClick={() => handleSelectTab(data)}
+              onClick={() => handleSelectTab(data.value)}
               title={data.label}
               aria-label={data.label}
             >

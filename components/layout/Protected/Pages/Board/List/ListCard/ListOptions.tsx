@@ -4,7 +4,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Ellipsis, X } from "lucide-react";
+import { Ellipsis, Info, X } from "lucide-react";
 import { LIST_OPTIONS } from "@/lib/consts";
 import { Separator } from "@radix-ui/react-separator";
 import { useStore } from "@/store/useStore";
@@ -16,6 +16,11 @@ import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import { deleteFile } from "@/lib/deleteFile";
 import dynamic from "next/dynamic";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const DeleteDialog = dynamic(() =>
   import("@/components/layout/Protected/DeleteDialog/DeleteDialog").then(
@@ -57,7 +62,7 @@ export function ListOptions({ listId }: Props) {
     },
     onError: () => {
       toast.dismiss("copy-list");
-      toast.error("Error deleting list, please try again");
+      toast.error("Error copying list, please try again");
     },
   });
 
@@ -66,7 +71,9 @@ export function ListOptions({ listId }: Props) {
     toast.loading("Copying list...", { id: "copy-list" });
   }
 
-  function handleSelectOption(option: string) {
+  function handleSelectOption(
+    option: "edit-list-title" | "delete-list" | "add-card" | "copy-list",
+  ) {
     switch (option) {
       case "edit-list-title":
         setOpenTitleInput({ id: listId, isOpen: true });
@@ -102,11 +109,7 @@ export function ListOptions({ listId }: Props) {
   return (
     <Popover open={isOpenedStatus} onOpenChange={setIsOpenedStatus}>
       <PopoverTrigger asChild>
-        <IconButton
-          aria-label="List options"
-          title="List options"
-          className="absolute top-2 right-0"
-        >
+        <IconButton aria-label="List options" title="List options">
           <Ellipsis size={25} />
         </IconButton>
       </PopoverTrigger>
@@ -134,11 +137,49 @@ export function ListOptions({ listId }: Props) {
                     aria-label={option.label}
                     title={option.label}
                     onClick={() => handleSelectOption(option.value)}
-                    className="p-2 "
+                    className="p-2 w-full"
                     classNameChildren="flex gap-2 items-center"
                   >
                     {option.icon}
                     <p key={option.label}>{option.label}</p>
+                  </IconButton>
+                </React.Fragment>
+              );
+            }
+            if (option.value === "copy-list") {
+              // COPY BUTTON
+              return (
+                <React.Fragment key={option.value}>
+                  <IconButton
+                    disabled={isPendingDeleteList || isPendingCopyList}
+                    aria-label={option.label}
+                    title={option.label}
+                    onClick={() => handleSelectOption(option.value)}
+                    key={option.value}
+                    className="p-2 w-full"
+                    classNameChildren="flex gap-2 items-center justify-between w-full"
+                  >
+                    <div className="flex items-center gap-2">
+                      {option.icon}
+                      <p key={option.label}>{option.label}</p>
+                    </div>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild className=" text-gray-400">
+                        <Info />
+                      </TooltipTrigger>
+                      <TooltipContent className="min-w-20 max-w-80 flex flex-col gap-1">
+                        <p className="text-base">
+                          New List will include cloned values:
+                        </p>
+
+                        <p className="text-base">From List:</p>
+                        <strong>Title , Status , Cards.</strong>
+
+                        <p className="text-base"> From Cards: </p>
+                        <strong>Title, Description, Checklist.</strong>
+                      </TooltipContent>
+                    </Tooltip>
                   </IconButton>
                 </React.Fragment>
               );
@@ -150,7 +191,7 @@ export function ListOptions({ listId }: Props) {
                 title={option.label}
                 onClick={() => handleSelectOption(option.value)}
                 key={option.value}
-                className="p-2"
+                className="p-2 w-full"
                 classNameChildren="flex gap-2 items-center"
               >
                 {option.icon}

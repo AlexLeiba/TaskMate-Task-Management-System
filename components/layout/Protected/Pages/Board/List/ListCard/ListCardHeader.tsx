@@ -48,31 +48,27 @@ export function ListCardHeader({ status, title, listId }: Props) {
     toast.loading("Updating list title...", { id: "update-list-title" });
   }
   return (
-    <div className="flex justify-between items-center mb-2 relative">
-      <div className="flex gap-1 items-center">
-        {/* STATUSES */}
-        {!isInputOpened && (
-          <ListStatuses selectedStatus={status} listId={listId} />
-        )}
+    <div className="flex justify-between items-start mb-2 relative">
+      {/* STATUSES */}
+      {!isInputOpened && (
+        <ListStatuses selectedStatus={status} listId={listId} />
+      )}
 
-        {/* ADD NEW LIST / LIST TITLE*/}
-        <AddNewInput
-          loading={isPending}
-          disabled={isPending}
-          handleSubmitValue={(v) => handleSubmitListTitle(v)}
-          inputName="title"
-          placeholder="Edit list title here..."
-          label="Edit list title"
-          setIsOpenedTitleInput={setIsOpenedTitleInput}
-          isOpenedTitleInput={isInputOpened}
-          classNameContainer="py-0 py-2"
-          defaultValue={title}
-        >
-          <h3 className="text-lg font-medium line-clamp-3 pl-8 pr-7 ">
-            {title}
-          </h3>
-        </AddNewInput>
-      </div>
+      {/* ADD NEW LIST / LIST TITLE*/}
+      <AddNewInput
+        loading={isPending}
+        disabled={isPending}
+        handleSubmitValue={(v) => handleSubmitListTitle(v)}
+        inputName="title"
+        placeholder="Edit list title here..."
+        label="Edit list title"
+        setIsOpenedTitleInput={setIsOpenedTitleInput}
+        isOpenedTitleInput={isInputOpened}
+        classNameContainer="py-0 py-0 w-full"
+        defaultValue={title}
+      >
+        <h3 className="text-lg font-medium line-clamp-3">{title}</h3>
+      </AddNewInput>
 
       {/* OPTIONS */}
       {!isInputOpened && <ListOptions listId={listId} />}

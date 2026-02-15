@@ -27,16 +27,13 @@ export function DueDate({ data, cardDetailsId }: Props) {
           </TooltipTrigger>
           <TooltipContent className="min-w-20 max-w-90 flex flex-col gap-1">
             <p className="text-sm">
-              When Date input is <strong>Gray color:</strong> more than 24 hours
-              remained.
+              <strong>Gray color -</strong> more than 24 hours remained.
             </p>
             <p className="text-sm">
-              When Date input is <strong>Yellow color:</strong> less than 24
-              hours remained.
+              <strong>Yellow color -</strong> less than 24 hours remained.
             </p>
             <p className="text-sm">
-              When Date input is <strong>Red color:</strong> The date has
-              passed.
+              <strong>Red color -</strong> The date has passed.
             </p>
           </TooltipContent>
         </Tooltip>

@@ -185,6 +185,32 @@ export async function deleteCardAction({
       },
     });
 
+    // RESET ORDER OF THE CARDS IN THE LIST, AFTER DELETION
+    const startOrderFrom = 1;
+
+    const cards = await prisma.card.findMany({
+      where: {
+        listId,
+      },
+    });
+
+    if (!cards) {
+      throw new Error("Cards not found");
+    }
+
+    await prisma.$transaction(
+      cards.map((card, index) => {
+        return prisma.card.update({
+          where: {
+            id: card.id,
+          },
+          data: {
+            order: startOrderFrom + index,
+          },
+        });
+      }),
+    );
+
     await createNewActivity({
       boardId: boardId,
       authorId: activeUser.data.id,

@@ -266,11 +266,31 @@ export async function copyListAction({
         boardId,
         id: listId,
       },
+      include: {
+        cards: {
+          select: {
+            title: true,
+            order: true,
+            details: {
+              select: {
+                description: true,
+                checklist: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     const boardData = await prisma.board.findFirst({
       where: {
         id: boardId,
+      },
+    });
+
+    const countLists = await prisma.list.count({
+      where: {
+        boardId,
       },
     });
 
@@ -286,6 +306,31 @@ export async function copyListAction({
         title: `${listData.title} - Copy`,
         boardId,
         status: listData.status,
+        order: countLists + 1,
+        cards: {
+          create: listData.cards.map((card) => ({
+            title: card.title,
+            reporterId: activeUser.id,
+            listName: `${listData.title} - Copy`,
+            order: card.order,
+            details: {
+              create: {
+                description: card.details?.description || "",
+                checklist: {
+                  createMany: {
+                    data:
+                      card.details?.checklist?.map((item) => {
+                        return {
+                          title: item.title,
+                          isCompleted: item.isCompleted,
+                        };
+                      }) || [],
+                  },
+                },
+              },
+            },
+          })),
+        },
       },
     });
 
@@ -303,6 +348,7 @@ export async function copyListAction({
       error: { message: "" },
     };
   } catch (error: any) {
+    console.log("🚀 ~ copyListAction ~ error:", error);
     throw error?.message || "Something went wrong";
   }
 }
@@ -348,6 +394,26 @@ export async function deleteListAction({
         boardId,
       },
     });
+    // RESET ORDER OF THE LISTS
+    const startOrderFrom = 1;
+
+    const lists = await prisma.list.findMany({
+      where: { boardId },
+      orderBy: { order: "asc" },
+    });
+
+    if (!lists) {
+      throw new Error("Lists not found");
+    }
+
+    await prisma.$transaction(
+      lists.map((list, index) =>
+        prisma.list.update({
+          where: { id: list.id },
+          data: { order: startOrderFrom + index },
+        }),
+      ),
+    );
 
     await createNewActivity({
       boardId: response.boardId as string,

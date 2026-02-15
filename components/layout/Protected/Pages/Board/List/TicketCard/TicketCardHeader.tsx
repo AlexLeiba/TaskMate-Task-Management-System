@@ -241,10 +241,11 @@ export function TicketCardHeader({
                   <Info />
                 </TooltipTrigger>
                 <TooltipContent className="min-w-20 max-w-90 flex flex-col gap-1">
-                  <p className="text-sm">
+                  <p className="text-base">
                     New card will include cloned values:
-                    <strong> Title , Description , Checklist </strong>
                   </p>
+
+                  <strong> Title , Description , Checklist </strong>
                 </TooltipContent>
               </Tooltip>
             </IconButton>

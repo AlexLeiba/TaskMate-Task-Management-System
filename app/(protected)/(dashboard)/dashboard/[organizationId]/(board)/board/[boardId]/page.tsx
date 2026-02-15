@@ -15,14 +15,11 @@ async function BoardPage({
   const listData = await getListDataAction(boardId, orgId);
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full">
       {/* BOARD CONTENT */}
       <SubHeader data={boardData} boardId={boardId} orgId={orgId} />
-
-      <div className="max-w-400 mx-auto p-4 overflow-x-auto h-full ">
-        {/* LIST CARDS */}
-        <ListCards boardId={boardId} listData={listData} />
-      </div>
+      {/* LIST CARDS */}
+      <ListCards boardId={boardId} listData={listData} />
     </div>
   );
 }

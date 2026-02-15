@@ -128,10 +128,8 @@ export function Actions({ cardDetailsId, listId, cardId }: Props) {
               <Info />
             </TooltipTrigger>
             <TooltipContent className="min-w-20 max-w-90 flex flex-col gap-1">
-              <p className="text-sm">
-                New card will include cloned values:
-                <strong> Title , Description , Checklist </strong>
-              </p>
+              <p className="text-base">New card will include cloned values:</p>
+              <strong> Title , Description , Checklist </strong>
             </TooltipContent>
           </Tooltip>
         </IconButton>

@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { DialogBoardCard } from "./DialogBoardCard";
 import { Input } from "@/components/ui/input";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -16,13 +16,16 @@ import toast from "react-hot-toast";
 import { usePathname } from "next/navigation";
 import { createNewBoardAction } from "@/app/actions/dashboard";
 import { useStore } from "@/store/useStore";
-import { Board } from "@/lib/generated/prisma/client";
+import { type Board } from "@/lib/generated/prisma/client";
 
-function DialogBoardDetails() {
+export function DialogBoardDetails() {
+  const [selectedImage, setSelectedImage] = useState<UnsplashImagesType>();
   const { setNewBoardDialogOpen } = useStore();
   const queryClient = useQueryClient();
+  const pathname = usePathname();
+  const organizationId = pathname.split("/").at(-1);
 
-  const { data, isLoading } = useQuery({
+  const { data, isFetching } = useQuery({
     queryFn: getUnsplashImagesAction,
     queryKey: ["unsplash-images"],
     staleTime: 1000 * 60 * 60,
@@ -39,12 +42,6 @@ function DialogBoardDetails() {
     },
     onError: ({ message }) => toast.error(message || "Error creating board"),
   });
-
-  const pathname = usePathname();
-  const organizationId = pathname.split("/").at(-1);
-
-  const [selectedImage, setSelectedImage] =
-    React.useState<UnsplashImagesType>();
 
   const {
     register,
@@ -70,7 +67,10 @@ function DialogBoardDetails() {
       return toast.error("Please select an organization");
     }
 
-    const newBoardData: Omit<Board, "id" | "createdAt" | "updatedAt"> = {
+    const newBoardData: Omit<
+      Board,
+      "id" | "createdAt" | "updatedAt" | "order"
+    > = {
       title: data.title,
       cardImageUrl:
         selectedImage?.urls.small || selectedImage?.urls.regular || "",
@@ -83,7 +83,7 @@ function DialogBoardDetails() {
   return (
     <div className="flex flex-col gap-12">
       <div className="grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-2">
-        {isLoading ? (
+        {isFetching ? (
           <DialogBoardCardSkeleton />
         ) : (
           (data?.data || UNSPLASH_DEFAULT_IMAGES).map((image) => {
@@ -102,8 +102,8 @@ function DialogBoardDetails() {
       <div className="flex flex-col gap-4">
         <div className="flex justify-end">
           <Button
-            disabled={isLoading}
-            loading={isLoading}
+            disabled={isFetching || isPending}
+            loading={isFetching}
             onClick={handleGetNewImages}
             variant={"tertiary"}
             title="Get new images"
@@ -120,15 +120,15 @@ function DialogBoardDetails() {
           <Spacer size={1} />
           <Input
             error={errors.title?.message}
-            disabled={isLoading}
+            disabled={isFetching}
             id="title"
             placeholder="Type board title here..."
             {...register("title")}
           />
         </div>
         <Button
-          disabled={isLoading || isPending}
-          loading={isLoading || isPending}
+          disabled={isFetching || isPending}
+          loading={isPending}
           onClick={handleSubmit(onSubmitNewBoard)}
           size={"lg"}
           type="button"
@@ -141,5 +141,3 @@ function DialogBoardDetails() {
     </div>
   );
 }
-
-export default DialogBoardDetails;

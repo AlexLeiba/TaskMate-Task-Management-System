@@ -6,16 +6,15 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Info, Plus } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-
 import { IconButton } from "@/components/ui/iconButton";
-import DialogBoardDetails from "./DialogBoardDetails";
 import { useStore } from "@/store/useStore";
+import dynamic from "next/dynamic";
+
+import { DialogBoardDetails } from "./DialogBoardDetails";
+
+const CreateNewBoardDialog = dynamic(() =>
+  import("./CreateNewBoardDialog").then((m) => m.CreateNewBoardDialog),
+);
 
 type Props = {
   disabled?: boolean;
@@ -57,15 +56,13 @@ export function CreateNewBoardCard({ disabled = false }: Props) {
       </IconButton>
 
       {/* DIALOG CREATE NEW BOARD */}
-      <Dialog open={newBoardDialogOpen} onOpenChange={setNewBoardDialogOpen}>
-        <DialogContent className="lg:min-w-200!">
-          <DialogHeader>
-            <DialogTitle className="text-2xl">Create new board</DialogTitle>
-          </DialogHeader>
-          {/* CREATE CARD FORM */}
-          <DialogBoardDetails />
-        </DialogContent>
-      </Dialog>
+      <CreateNewBoardDialog
+        newBoardDialogOpen={newBoardDialogOpen}
+        setNewBoardDialogOpen={setNewBoardDialogOpen}
+      >
+        <DialogBoardDetails />
+      </CreateNewBoardDialog>
+      {/* CREATE CARD FORM */}
     </>
   );
 }

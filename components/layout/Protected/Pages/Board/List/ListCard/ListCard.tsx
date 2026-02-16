@@ -34,6 +34,7 @@ export function ListCard({ listData, index }: Props) {
             <Droppable
               droppableId={listData.id.toString()}
               direction="vertical"
+              type="card"
             >
               {(provided) => (
                 <div

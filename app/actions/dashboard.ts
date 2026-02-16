@@ -38,7 +38,7 @@ export async function getBoardsAction(orgId: string): Promise<{
 }
 
 export async function createNewBoardAction(
-  boardData: Omit<Board, "id" | "createdAt" | "updatedAt">,
+  boardData: Omit<Board, "id" | "createdAt" | "updatedAt" | "order">,
 ): Promise<{ data: boolean; error: { message: string } }> {
   try {
     const { data: activeUser } = await checkCurrentActiveUser();

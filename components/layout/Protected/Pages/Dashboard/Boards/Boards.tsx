@@ -34,9 +34,9 @@ export function Boards({
     if (data.error.message) {
       toast.error(data.error.message);
     }
-  }, [data]);
+  }, [data.error]);
 
-  const { mutate, isPending } = useMutation({
+  const { mutate: mutateDeleteBoard, isPending } = useMutation({
     mutationKey: ["delete-board"],
     mutationFn: deleteBoardAction,
     onSuccess: () => {
@@ -44,7 +44,6 @@ export function Boards({
       toast.success("Board deleted successfully");
     },
     onError: ({ message }) => {
-      console.log("🚀 ~ Boards ~ message:", message);
       toast.dismiss("delete-board");
       toast.error(message || "Error deleting board");
     },
@@ -59,9 +58,13 @@ export function Boards({
   }
 
   async function handleDeleteBoard(boardId: string) {
-    await deleteFile({ type: "board", fileType: "raw", boardId }, boardId); //js will await until this fn is resolved before moving to next line and deleting the card
+    if (!selectedBoardToDelete) {
+      toast.error("Please select a board to delete");
+      return;
+    }
+    await deleteFile({ type: "board", fileType: "raw", boardId }, boardId); //await deletion of all files in the board before deleting the board itself
 
-    mutate(boardId);
+    mutateDeleteBoard(boardId);
     setDeleteDialogOpen(false);
     toast.loading("Deleting board...", { id: "delete-board" });
   }
@@ -73,34 +76,27 @@ export function Boards({
         <p className="text-xl font-medium">Boards</p>
       </div>
       <Spacer size={4} />
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,220px))] gap-2">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-2">
         {/* CREATE NEW BOARD */}
         <CreateNewBoardCard disabled={isPending} />
 
         {/* BOARDS */}
         {data.data?.map((board) => (
-          <div key={board.id}>
-            <BoardCard
-              disabled={isPending}
-              data={board}
-              handleModalDeleteBoard={() =>
-                handleOpenModalDeleteBoard(board.id)
-              }
-              handleSelectBoard={() => handleSelectBoard(board.id)}
-            />
-          </div>
+          <BoardCard
+            key={board.id}
+            disabled={isPending}
+            data={board}
+            handleModalDeleteBoard={() => handleOpenModalDeleteBoard(board.id)}
+            handleSelectBoard={() => handleSelectBoard(board.id)}
+          />
         ))}
       </div>
+
       {/* MODAL DELETE BOARD */}
       <DeleteDialog
         deleteDialogOpen={deleteDialogOpen}
         setDeleteDialogOpen={setDeleteDialogOpen}
-        handleDelete={() => {
-          if (!selectedBoardToDelete) {
-            toast.error("Please select a board to delete");
-          }
-          handleDeleteBoard(selectedBoardToDelete);
-        }}
+        handleDelete={() => handleDeleteBoard(selectedBoardToDelete)}
       />
     </div>
   );

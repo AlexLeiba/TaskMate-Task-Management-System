@@ -22,12 +22,12 @@ async function ProtectedLayout({
       <SidebarProvider>
         <div className="min-h-screen flex flex-col w-full">
           <HeaderDashboard type="board" />
-          <main className={` flex flex-1  py-14    `}>
+          <main className={` flex flex-1 py-14`}>
             {boardData?.bgImageUrl && (
               <Image
                 className="w-screen h-screen absolute inset-0 -z-1 object-cover "
                 src={boardData?.bgImageUrl || ""}
-                alt=""
+                alt="Board background image"
                 width={1400}
                 height={900}
                 preload

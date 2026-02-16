@@ -1,4 +1,3 @@
-import React from "react";
 import { Boards } from "./Boards/Boards";
 import { getBoardsAction } from "@/app/actions/dashboard";
 

@@ -21,13 +21,13 @@ export function BoardCard({
   return (
     <>
       <div
-        className="relative overflow-hidden bg-cover bg-center rounded-md "
+        className="relative overflow-hidden bg-cover bg-center rounded-md w-full"
         style={{ backgroundImage: `url(${cardImageUrl})` }}
       >
         <IconButton
           disabled={disabled}
-          aria-label={title}
-          title={title}
+          aria-label={`Open board - ${title}`}
+          title={`Open board - ${title}`}
           className="w-full  rounded-md p-2 h-28  overflow-hidden cursor-pointer hover:opacity-70 flex items-start justify-start"
           onClick={handleSelectBoard}
         >
@@ -39,8 +39,8 @@ export function BoardCard({
           </p>
         </IconButton>
         <IconButton
-          title={`Delete - ${title}`}
-          aria-label={`Delete - ${title}`}
+          title={`Delete board - ${title}`}
+          aria-label={`Delete board - ${title}`}
           onClick={handleModalDeleteBoard}
           className="absolute top-2 right-2 rounded-full p-1 z-20 bg-gray-800/30 cursor-pointer hover:bg-gray-800 text-gray-500 hover:text-white"
         >

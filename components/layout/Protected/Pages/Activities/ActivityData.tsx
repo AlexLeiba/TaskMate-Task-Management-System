@@ -22,7 +22,7 @@ export function ActivityData({ activityData }: Props) {
           key={activity.id}
           data={activity.author}
           description={activity.activity}
-          createdAt={activity.createdAt.toString()}
+          createdAt={activity.createdAt as unknown as string}
           type="activity"
         />
       ))}

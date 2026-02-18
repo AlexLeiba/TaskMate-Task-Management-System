@@ -37,7 +37,7 @@ export function TicketCard({ data, boardId, index }: Prop) {
       <Draggable draggableId={data.id.toString()} index={index}>
         {(provided) => (
           <>
-            <div
+            <li
               {...provided.draggableProps}
               {...provided.dragHandleProps}
               ref={provided.innerRef}
@@ -57,6 +57,7 @@ export function TicketCard({ data, boardId, index }: Prop) {
                   handleOpenDetails();
                 }
               }}
+              role="button"
               title={`open - ${data.title}`}
               aria-label={`open ${data.title}`}
               tabIndex={0}
@@ -78,7 +79,7 @@ export function TicketCard({ data, boardId, index }: Prop) {
 
               {/* TICKET CARD BODY */}
               <TicketCardBody data={data} boardId={boardId} />
-            </div>
+            </li>
           </>
         )}
       </Draggable>

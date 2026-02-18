@@ -4,13 +4,14 @@ import { ListCard } from "./ListCard/ListCard";
 import { AddNewListCard } from "./ListCard/AddNewListCard";
 import toast from "react-hot-toast";
 import { ListCardSkeleton } from "./ListCard/ListCardSkeleton";
-import {
-  CardWithDetailsAndDueDateAndChecklistType,
-  ListAndCardsAndDueDateAndChecklistType,
-} from "@/lib/types";
+import { ListAndCardsAndDueDateAndChecklistType } from "@/lib/types";
 import dynamic from "next/dynamic";
 import { Droppable, DropResult } from "@hello-pangea/dnd";
-import { list } from "unsplash-js/dist/methods/photos";
+import { useMutation } from "@tanstack/react-query";
+import {
+  changeCardPositionAction,
+  changeListPositionAction,
+} from "@/app/actions/drag-and-drop";
 
 const DragDropContext = dynamic(() =>
   import("@hello-pangea/dnd").then((m) => m.DragDropContext),
@@ -27,9 +28,22 @@ export function ListCards({ boardId, listData }: Props) {
   const [listDataState, setListDataState] = useState<
     ListAndCardsAndDueDateAndChecklistType[] | null | undefined
   >(null);
-  console.log("🚀 ~ ListCards ~ listDataState:", listDataState);
+  // console.log("🚀 ~ ListCards ~ listDataState:", listDataState);
 
   const hasToastedRef = useRef(false);
+
+  const { mutate: mutateReorderList } = useMutation({
+    mutationFn: changeListPositionAction,
+    onError: (error: any) => {
+      toast.error(error?.message || "Something went wrong");
+    },
+  });
+  const { mutate: mutateReorderCard } = useMutation({
+    mutationFn: changeCardPositionAction,
+    onError: (error: any) => {
+      toast.error(error?.message || "Something went wrong");
+    },
+  });
 
   useEffect(() => {
     if (listData?.error?.message && hasToastedRef.current === false) {
@@ -45,41 +59,40 @@ export function ListCards({ boardId, listData }: Props) {
 
   // RESPONSER, Top level app events used to perform state updates.
   function handleDragEnd(dragEventData: DropResult<string>) {
+    // console.log("🚀 ~ handleDragEnd ~ dragEventData:", dragEventData);
     const destination = dragEventData?.destination;
     const source = dragEventData?.source;
-    const draggableId = dragEventData?.draggableId;
-
-    console.log("🚀 ~ handleDragEnd ~ destination:", destination);
-    console.log("🚀 ~ handleDragEnd ~ source:", source);
-    console.log("TYPE", dragEventData?.type);
 
     const type: "list" | "card" = dragEventData?.type as any;
-    if (!destination || !source) return;
+
+    if (!destination?.droppableId || !source?.droppableId) return;
     switch (type) {
       case "list": {
-        // Handle list reordering logic here
-        // change order of list on DB
+        if (destination.index === source.index) return;
 
         setListDataState((prev) => {
-          const draggedElement = prev?.splice(source.index - 1, 1)[0];
-          if (!draggedElement) return prev;
-          prev?.splice(destination.index - 1, 0, draggedElement);
+          const prevCopy = [...(prev || [])];
+          const draggedElement = prevCopy?.splice(source.index - 1, 1)[0];
+          if (!draggedElement) return prevCopy;
+          prevCopy?.splice(destination.index - 1, 0, draggedElement);
 
-          return prev;
+          mutateReorderList({
+            boardId,
+            newOrderIndex: destination.index,
+            reorderedListId: draggedElement?.id.toString() || "",
+          });
+          return prevCopy;
         });
 
         break;
       }
       case "card": {
-        // Handle card movement logic here
-        // change list id (if new id is different than older listid)
-        //also change order of card
-        // CARD ID, change destination within the same list
-
         if (!destination.droppableId || !source.droppableId) return;
 
         // SAME LIST
         if (destination.droppableId === source.droppableId) {
+          if (destination.index === source.index) return;
+
           setListDataState((prev) => {
             return prev?.map((list) => {
               if (source.droppableId === list.id.toString()) {
@@ -87,6 +100,20 @@ export function ListCards({ boardId, listData }: Props) {
                 const deletedCard = cardsToDrag.splice(source.index - 1, 1)[0];
                 if (deletedCard) {
                   cardsToDrag.splice(destination.index - 1, 0, deletedCard);
+
+                  // CHANGE IN DB CARD ORDER
+                  mutateReorderCard({
+                    boardId,
+                    sourceListId: source.droppableId,
+                    destinationListId: destination.droppableId,
+                    cardToMoveId: deletedCard.id,
+                    listTitle:
+                      listData.data?.find(
+                        (list) => list.id.toString() === source.droppableId,
+                      )?.title || "List",
+                    newOrderIndex: destination.index,
+                    type: "same-list",
+                  });
                 }
                 return { ...list, cards: cardsToDrag };
               }
@@ -100,40 +127,59 @@ export function ListCards({ boardId, listData }: Props) {
 
         // DIFFERENT LISTS
         setListDataState((prev) => {
-          if (!prev) return prev;
+          if (!prev || !destination.droppableId || !source.droppableId)
+            return prev;
 
+          // CLONED LIST ARRAY LAYER TO AVOID MUTATION
           const newState = [...prev];
 
-          const sourceListIndex = prev?.findIndex(
+          const sourceListIndex = newState?.findIndex(
             (list) => list?.id.toString() === source.droppableId,
           );
-          const destinationListIndex = prev?.findIndex(
+          const destinationListIndex = newState?.findIndex(
             (list) => list?.id.toString() === destination.droppableId,
           );
 
           if (sourceListIndex === -1 || destinationListIndex === -1) {
-            return prev;
+            return newState;
           }
 
+          // CLONED SOURCE NESTED CARDS AND  LISTS TO AVOID MUTATION
           const sourceList = {
-            ...newState[sourceListIndex],
-            cards: [...newState[sourceListIndex].cards],
+            ...newState[sourceListIndex], //GOT LIST DATA FROM SOURCE INDEX
+            cards: [...newState[sourceListIndex].cards], //[1,2]
           };
 
           const [deletedCard] = sourceList.cards.splice(source.index - 1, 1); //modifies newState and returns deleted card
 
-          if (!deletedCard) return prev;
+          if (!deletedCard) return newState;
 
+          // CLONED DESTINATION NESTED CARDS AND LISTS TO AVOID MUTATION
           const destinationList = {
             ...newState[destinationListIndex],
-            cards: [...newState[destinationListIndex].cards],
+            cards: [...newState[destinationListIndex].cards], //[3,4]
           };
 
           //add card to new destination
           destinationList.cards.splice(destination.index - 1, 0, deletedCard);
 
+          // ADD NEW CARDS STATE TO NEW STATE AND RETURN IT
           newState[sourceListIndex] = sourceList;
           newState[destinationListIndex] = destinationList;
+
+          // CHANGE IN DB CARD ORDER
+          mutateReorderCard({
+            boardId,
+            sourceListId: source.droppableId,
+            destinationListId: destination.droppableId,
+            cardToMoveId: deletedCard.id,
+            listTitle:
+              listData.data?.find(
+                (list) => list.id.toString() === source.droppableId,
+              )?.title || "List",
+            newOrderIndex: destination.index,
+            type: "different-list",
+          });
 
           return newState;
         });

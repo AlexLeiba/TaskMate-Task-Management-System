@@ -37,7 +37,7 @@ export function ListCard({ listData, index }: Props) {
               type="card"
             >
               {(provided) => (
-                <div
+                <ol
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                   className="flex flex-col gap-2"
@@ -55,7 +55,7 @@ export function ListCard({ listData, index }: Props) {
 
                   {/* DROP AREA PLACEHOLDER */}
                   {provided.placeholder}
-                </div>
+                </ol>
               )}
             </Droppable>
 

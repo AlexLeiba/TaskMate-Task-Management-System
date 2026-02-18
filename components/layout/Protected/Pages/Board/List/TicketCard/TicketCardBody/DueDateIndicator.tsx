@@ -6,7 +6,7 @@ import { differenceInDays, differenceInHours, format } from "date-fns";
 import { Clock10 } from "lucide-react";
 
 type Props = {
-  data: DueDate;
+  data: DueDate | undefined;
 };
 export function DueDateIndicator({ data }: Props) {
   if (!data || !data.date || !data.time) return null;

@@ -22,7 +22,6 @@ export const downloadAsZip = async ({
   const zip = new JSZip();
 
   for (const item of files) {
-    console.log("🚀 ~ downloadAsZip ~ item:", item);
     if (!item.url) return;
     // Fetch file from URL
     const response = await fetch(item.url);

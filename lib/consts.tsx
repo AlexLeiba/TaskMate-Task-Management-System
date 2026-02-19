@@ -1,5 +1,7 @@
 import {
   Archive,
+  Calendar,
+  Check,
   Circle,
   CircleAlert,
   CircleCheck,
@@ -7,13 +9,22 @@ import {
   Copy,
   Delete,
   Edit,
+  Files,
+  Image,
+  Pencil,
   Plus,
   Search,
+  Upload,
   Wifi,
   WifiHigh,
   WifiLow,
 } from "lucide-react";
-import { UnsplashImagesType } from "./types";
+import {
+  HeaderAdditionalInfoTabsType,
+  HeaderTabsContentType,
+  TabType,
+  UnsplashImagesType,
+} from "./types";
 
 export const API_REQ_URL = {
   upload: "api/fileupload",
@@ -292,5 +303,275 @@ export const UNSPLASH_DEFAULT_IMAGES: UnsplashImagesType[] = [
       full: "https://images.unsplash.com/photo-1547914495-276897ecb8d2?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjEzMzB8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NjkxMTY4MzR8&ixlib=rb-4.1.0&q=85",
     },
     title: "Santorini, Greece",
+  },
+];
+
+/////////////////////////////// LANDING PAGE MOCK DATA
+
+// HEADER
+export const HEADER_CARD_TABS_TITLES = [
+  { section: "features", label: "Features" },
+  { section: "solutions", label: "Solutions" },
+  { section: "about", label: "About" },
+] as const;
+
+export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
+  features: [
+    {
+      id: "1",
+      icon: <Calendar />,
+      title: "Features",
+      description:
+        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
+      color: "green",
+      link: "https://www.google.com",
+    },
+    {
+      id: "2",
+      icon: <Upload />,
+      title: "Edit 1",
+      description:
+        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
+      color: "green",
+      link: "https://www.google.com",
+    },
+    {
+      id: "3",
+      icon: <Calendar />,
+      title: "Edit 2",
+      description:
+        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
+      color: "green",
+      link: "https://www.google.com",
+    },
+    {
+      id: "4",
+      icon: <Pencil />,
+      title: "Edit 3",
+      description:
+        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
+      color: "green",
+      link: "https://www.google.com",
+    },
+    {
+      id: "5",
+      icon: <Pencil />,
+      title: "Edit 4",
+      description:
+        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
+      color: "green",
+      link: "https://www.google.com",
+    },
+    {
+      id: "6",
+      icon: <Pencil />,
+      title: "Edit 5",
+      description:
+        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
+      color: "green",
+      link: "https://www.google.com",
+    },
+  ],
+  solutions: [
+    {
+      id: "1",
+      icon: <Calendar />,
+      title: "Solutions",
+      description:
+        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
+      color: "green",
+      link: "https://www.google.com",
+    },
+    {
+      id: "2",
+      icon: <Check />,
+      title: "Edit 1",
+      description:
+        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
+      color: "green",
+      link: "https://www.google.com",
+    },
+    {
+      id: "3",
+      icon: <Upload />,
+      title: "Edit 2",
+      description:
+        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
+      color: "green",
+      link: "https://www.google.com",
+    },
+    {
+      id: "4",
+      icon: <Pencil />,
+      title: "Edit 3",
+      description:
+        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
+      color: "green",
+      link: "https://www.google.com",
+    },
+    {
+      id: "5",
+      icon: <Pencil />,
+      title: "Edit 4",
+      description:
+        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
+      color: "green",
+      link: "https://www.google.com",
+    },
+    {
+      id: "6",
+      icon: <Pencil />,
+      title: "Edit 5",
+      description:
+        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
+      color: "green",
+      link: "https://www.google.com",
+    },
+  ],
+  about: [
+    {
+      id: "1",
+      icon: <Image />,
+      title: "About",
+      description:
+        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
+      color: "green",
+      link: "https://www.google.com",
+    },
+    {
+      id: "2",
+      icon: <Files />,
+      title: "Edit",
+      description:
+        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
+      color: "green",
+      link: "https://www.google.com",
+    },
+    {
+      id: "3",
+      icon: <Calendar />,
+      title: "Edit",
+      description:
+        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
+      color: "green",
+      link: "https://www.google.com",
+    },
+    {
+      id: "4",
+      icon: <Pencil />,
+      title: "Edit",
+      description:
+        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
+      color: "green",
+      link: "https://www.google.com",
+    },
+    {
+      id: "5",
+      icon: <Pencil />,
+      title: "Edit",
+      description:
+        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
+      color: "green",
+      link: "https://www.google.com",
+    },
+    {
+      id: "6",
+      icon: <Pencil />,
+      title: "Edit",
+      description:
+        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
+      color: "green",
+      link: "https://www.google.com",
+    },
+  ],
+};
+
+export const HEADER_SIDEBAR_INFO_TABS: HeaderAdditionalInfoTabsType = {
+  features: [
+    {
+      title: "Features ",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi",
+    },
+    {
+      title: "Lorem ipsum dolor ",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi",
+    },
+    {
+      title: "Lorem ipsum dolor ",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi",
+    },
+  ],
+  solutions: [
+    {
+      title: "Solutions ",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi",
+    },
+    {
+      title: "Lorem ipsum dolor ",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi",
+    },
+    {
+      title: "Lorem ipsum dolor ",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi",
+    },
+  ],
+  about: [
+    {
+      title: "About ",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi",
+    },
+    {
+      title: "Lorem ipsum dolor ",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi",
+    },
+    {
+      title: "Lorem ipsum dolor ",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi",
+    },
+  ],
+};
+
+export const HEADER_SIDEBAR_INFO_TABS_TITLE = {
+  features: "Features",
+  solutions: "Solutions",
+  about: "About",
+};
+export const HEADER_TABS_TITLE = {
+  features: "Features",
+  solutions: "Solutions",
+  about: "About",
+};
+
+export const HEADER_TABS_LINKS: TabType[] = [
+  { label: "Features", value: "features" },
+  { label: "Solutions", value: "solutions" },
+  { label: "About", value: "about" },
+];
+
+// FOOTER
+export const FOOTER_TABS_LINKS = [
+  {
+    label: "About Taskmate",
+    description: "About Taskmate About Taskmate About Taskmate",
+    path: "/about",
+  },
+  {
+    label: "Features",
+    description: "Check out The Features of Taskmate",
+    path: "/features",
+  },
+  {
+    label: "Contact us",
+    description: "Contact us via Gmail Linkedin or Github",
+    path: "/contact",
   },
 ];

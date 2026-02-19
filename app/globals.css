@@ -4,6 +4,8 @@
 /*This helps to write tailwind variables as utilities;
  Tailwind classes reference CSS variables */
 @theme inline {
+  --color-tertiary: var(--tertiary);
+  --color-tertiaty-foreground: var(--tertiary-foreground);
   --color-background: var(--background);
   --color-background-element: var(--background-element);
   --color-foreground: var(--foreground);
@@ -67,6 +69,7 @@
   --text-secondary: oklch(91.817% 0.00323 15.438);
   /* 
    */
+  --tertiary: oklch(70.7% 0.165 254.624);
   --radius: 10px;
   --card: oklch(1 0 0);
   --popover: oklch(1 0 0);
@@ -134,7 +137,7 @@ Mental model: These are default visual rules of my app.
     --text-primary: oklch(91.817% 0.00323 15.438);
     --text-secondary: oklch(86.686% 0.0001 271.152);
     /*  */
-
+    --tertiary: oklch(70.7% 0.165 254.624);
     --card-foreground: oklch(28.502% 0.00003 271.152);
     --card: oklch(0% 0 0);
     --popover: oklch(0.205 0 0);

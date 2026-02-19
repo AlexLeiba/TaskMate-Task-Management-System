@@ -1,3 +1,4 @@
+import { JSX } from "react";
 import { FILES_MIME_TYPES, IMAGES_MIME_TYPES } from "./consts";
 import { Card, Checklist, DueDate, List } from "./generated/prisma/client";
 
@@ -229,4 +230,79 @@ export type CardAndDueDateAndChecklistType = Card & {
     dueDate: DueDate[];
     checklist: Checklist[];
   } | null;
+};
+
+// LANDING TYPES
+
+export type TabType = {
+  label: string;
+  value: "features" | "solutions" | "about" | null;
+};
+
+export type HeaderTabsContentType = {
+  features: {
+    id: string;
+    icon: JSX.Element;
+    title: string;
+    description: string;
+    color: string;
+    link: string;
+  }[];
+  solutions: {
+    id: string;
+    icon: JSX.Element;
+    title: string;
+    description: string;
+    color: string;
+    link: string;
+  }[];
+  about: {
+    id: string;
+    icon: JSX.Element;
+    title: string;
+    description: string;
+    color: string;
+    link: string;
+  }[];
+};
+export type HeaderTabsContentMobileType = {
+  features: {
+    id: string;
+    icon: JSX.Element;
+    title: string;
+    description: string;
+    color: string;
+    link: string;
+  }[];
+  solutions: {
+    id: string;
+    icon: JSX.Element;
+    title: string;
+    description: string;
+    color: string;
+    link: string;
+  }[];
+  about: {
+    id: string;
+    icon: JSX.Element;
+    title: string;
+    description: string;
+    color: string;
+    link: string;
+  }[];
+};
+
+export type HeaderAdditionalInfoTabsType = {
+  features: {
+    title: string;
+    description: string;
+  }[];
+  solutions: {
+    title: string;
+    description: string;
+  }[];
+  about: {
+    title: string;
+    description: string;
+  }[];
 };

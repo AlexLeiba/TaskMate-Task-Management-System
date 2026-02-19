@@ -1,5 +1,5 @@
-import React, { ComponentProps } from "react";
-import { Loader } from "./loader";
+import { ComponentProps } from "react";
+
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 

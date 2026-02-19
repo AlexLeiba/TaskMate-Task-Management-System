@@ -145,7 +145,6 @@ export function Attachments({ cardDetailsId }: Props) {
   const { mutate: mutateUpload, isPending: isPendingUpload } = useMutation({
     mutationFn: uploadFile,
     onSuccess: (data) => {
-      console.log("onSuccess", data);
       setAttachmentsData(data);
       toast.dismiss("upload-file");
       toast.success("Uploaded");
@@ -159,8 +158,7 @@ export function Attachments({ cardDetailsId }: Props) {
   // DELETE
   const { mutate: mutateDelete, isPending: isPendingDelete } = useMutation({
     mutationFn: deleteFile,
-    onSuccess: (data) => {
-      console.log("onSuccess", data);
+    onSuccess: () => {
       toast.dismiss("delete-file");
     },
     onError: ({ message }) => {

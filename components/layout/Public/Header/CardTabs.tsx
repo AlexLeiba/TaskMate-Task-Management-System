@@ -17,6 +17,8 @@ export function CardTabs({ type }: Props) {
       {HEADER_CARD_TABS_FEATURES[type].map((card, index) => {
         return (
           <Link
+            title={card.title}
+            aria-label={card.title}
             target="_blank"
             href={card.link}
             key={card.id}
@@ -35,11 +37,18 @@ export function CardTabs({ type }: Props) {
           </Link>
         );
       })}
-      <IconButton classNameChildren="flex items-center gap-2 pt-2 group">
-        <p>See all teams </p>
+      <Link
+        href={"/"}
+        title="All Teams"
+        aria-label="All Teams"
+        className="flex"
+      >
+        <IconButton classNameChildren="flex items-center gap-2 pt-2 group">
+          <p>See all teams </p>
 
-        <ChevronRight className="text-tertiary group-hover:translate-x-2 transition-all" />
-      </IconButton>
+          <ChevronRight className="text-tertiary group-hover:translate-x-2 transition-all" />
+        </IconButton>
+      </Link>
     </div>
   );
 }

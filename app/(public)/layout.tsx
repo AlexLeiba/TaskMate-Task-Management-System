@@ -6,9 +6,7 @@ function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col">
       <HeaderLanding />
-      <main className="flex flex-1  py-18  max-w-7xl px-4 mx-auto w-full">
-        {children}
-      </main>
+      <main className="flex flex-1  py-15.25  w-full">{children}</main>
       <FooterLanding />
     </div>
   );

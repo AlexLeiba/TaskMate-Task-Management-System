@@ -1,10 +1,19 @@
-import { Spacer } from "@/components/ui/spacer";
+import { Features } from "@/components/layout/Public/Home/Features/Features";
+import { Hero } from "@/components/layout/Public/Home/Hero/Hero";
+import { LayoutContainer } from "@/components/layout/Public/LayoutContainer/LayoutContainer";
+import { SliderProvider } from "@/components/ui/slider";
 
 export default async function Home() {
   return (
-    <div className="flex  font-sans  w-full">
-      <Spacer size={10} />
-      <h1>Home</h1>
+    <div className=" w-full">
+      <LayoutContainer fluid className="bg-tertiary/20">
+        <Hero />
+      </LayoutContainer>
+      <LayoutContainer>
+        <SliderProvider>
+          <Features />
+        </SliderProvider>
+      </LayoutContainer>
     </div>
   );
 }

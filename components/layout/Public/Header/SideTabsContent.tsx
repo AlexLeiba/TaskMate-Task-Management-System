@@ -5,6 +5,7 @@ import {
   HEADER_SIDEBAR_INFO_TABS_TITLE,
 } from "@/lib/consts";
 import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 type Props = {
   type: "features" | "solutions" | "about";
@@ -24,11 +25,18 @@ export function SideTabsContent({ type }: Props) {
         ))}
       </div>
 
-      <IconButton classNameChildren="flex items-center gap-2 pt-2 group">
-        <p>See all use cases </p>
+      <Link
+        href={"/"}
+        title="All use cases"
+        aria-label="All use cases"
+        className="flex"
+      >
+        <IconButton classNameChildren="flex items-center gap-2 pt-2 group">
+          <p>See all use cases </p>
 
-        <ChevronRight className="text-tertiary group-hover:translate-x-2 transition-all" />
-      </IconButton>
+          <ChevronRight className="text-tertiary group-hover:translate-x-2 transition-all" />
+        </IconButton>
+      </Link>
     </div>
   );
 }

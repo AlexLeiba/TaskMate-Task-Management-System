@@ -7,13 +7,23 @@ export default async function Home() {
   return (
     <div className=" w-full">
       <LayoutContainer fluid className="bg-tertiary/20">
-        <Hero />
+        <LayoutContainer>
+          <Hero />
+        </LayoutContainer>
       </LayoutContainer>
+
       <LayoutContainer>
         <SliderProvider>
           <Features />
         </SliderProvider>
       </LayoutContainer>
+
+      {/* <LayoutContainer fluid className="bg-tertiary/60"> */}
+      {/* <LayoutContainer>
+        </LayoutContainer> */}
+
+      {/* <FromMessageToAction /> */}
+      {/* </LayoutContainer> */}
     </div>
   );
 }

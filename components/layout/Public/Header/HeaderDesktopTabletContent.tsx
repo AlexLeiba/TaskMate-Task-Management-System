@@ -32,8 +32,8 @@ export function HeaderDesktopTabletContent() {
 
   return (
     <div ref={tabContainerRef} className="hidden md:block">
-      <div className="bg-background-element fixed top-0 left-0 right-0  px-4 py-2 z-20 ">
-        <div className="flex justify-between items-center max-w-7xl mx-auto">
+      <div className="bg-background-element fixed top-0 left-0 right-0   py-2 z-20 ">
+        <div className="flex justify-between items-center max-w-6xl mx-auto px-4">
           <div className="flex items-center gap-12">
             <Logo />
             <div className="flex items-center gap-8 px-4 py-2  ">

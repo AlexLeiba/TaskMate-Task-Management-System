@@ -13,11 +13,14 @@ import {
 import {
   HEADER_CARD_TABS_FEATURES,
   HEADER_CARD_TABS_TITLES,
+  NAV_LINKS,
 } from "@/lib/consts";
 import { cn } from "@/lib/utils";
-import Links from "../Links";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export function HeaderMobileContent() {
+  const navigate = useRouter();
   const tabContainerRef = useRef<HTMLDivElement>(null);
   const [openedTabs, setOpenedTabs] = useState<TabType["value"]>(null);
   const [isOpened, setIsOpened] = useState(false);
@@ -37,9 +40,23 @@ export function HeaderMobileContent() {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (isOpened) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [isOpened]);
+
+  function handleNavigate(pathname: string) {
+    setIsOpened(false);
+    setOpenedTabs(null);
+    navigate.push(pathname);
+  }
   return (
     <>
-      <div className="bg-background-element fixed top-0 left-0 right-0  px-4 py-2 z-10 md:hidden ">
+      <div className="bg-background-element fixed top-0 left-0 right-0  px-4 py-2 z-50 md:hidden ">
         <div className="flex justify-between items-center ">
           <Logo />
 
@@ -57,7 +74,7 @@ export function HeaderMobileContent() {
           transform: isOpened ? `translateY(52px)` : `translateY(-100%)`,
         }}
         className={
-          "absolute left-0 right-0  bg-background-element transition-all md:hidden h-[calc(100vh-60px)] flex flex-col justify-between overflow-y-auto"
+          "fixed inset-0 z-50  bg-background-element transition-all md:hidden h-full flex flex-col justify-between overflow-y-auto"
         }
       >
         <Accordion type="single" collapsible defaultValue={""}>
@@ -83,7 +100,7 @@ export function HeaderMobileContent() {
                     <p className="text-lg">{section.label}</p>
                   </div>
                 </AccordionTrigger>
-                <AccordionContent className=" pt-2 px-2 flex flex-col gap-4 ">
+                <AccordionContent className=" pt-2 px-4 flex flex-col gap-4 ">
                   {HEADER_CARD_TABS_FEATURES[section.section].map((item) => {
                     return (
                       <div key={item.id} className="flex flex-col gap-2">
@@ -101,8 +118,23 @@ export function HeaderMobileContent() {
             );
           })}
         </Accordion>
-        <div className="mx-4 mb-4 ">
-          <Links />
+        <div className="mx-4 pb-20 pt-4">
+          <div className="flex gap-2 flex-col">
+            <Button
+              variant={"outline"}
+              title="Login"
+              onClick={() => handleNavigate(NAV_LINKS.signin.pathname)}
+            >
+              <p className="text-base">{NAV_LINKS.signin.label}</p>
+            </Button>
+            <Button
+              variant={"tertiary"}
+              title="Join for Free"
+              onClick={() => handleNavigate(NAV_LINKS.signup.pathname)}
+            >
+              <p className="text-base">{NAV_LINKS.signup.label}</p>
+            </Button>
+          </div>
         </div>
       </div>
     </>

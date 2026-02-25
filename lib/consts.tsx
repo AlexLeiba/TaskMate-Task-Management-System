@@ -1,7 +1,10 @@
 import {
   Archive,
+  Building2,
   Calendar,
+  CalendarCog,
   Check,
+  CheckSquare,
   Circle,
   CircleAlert,
   CircleCheck,
@@ -13,6 +16,7 @@ import {
   Image,
   Pencil,
   Plus,
+  Puzzle,
   Search,
   Upload,
   Wifi,
@@ -562,16 +566,123 @@ export const FOOTER_TABS_LINKS = [
   {
     label: "About Taskmate",
     description: "About Taskmate About Taskmate About Taskmate",
-    path: "/about",
+    path: "/",
   },
   {
     label: "Features",
     description: "Check out The Features of Taskmate",
-    path: "/features",
+    path: "/",
   },
   {
     label: "Contact us",
     description: "Contact us via Gmail Linkedin or Github",
-    path: "/contact",
+    path: "/",
+  },
+];
+
+export type MoreFeaturesCardData = {
+  id: number;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+};
+export const MORE_FEATURES_CARD_DATA: MoreFeaturesCardData[] = [
+  {
+    id: 1,
+    title: "Organizations",
+    description:
+      "Connect TaskMate with your favorite tools, including Slack, Jira, and Trello.",
+    icon: <Building2 size={50} className="text-chart-1" />,
+  },
+  {
+    id: 2,
+    title: "Checklists",
+    description:
+      "Automate tasks and workflows with TaskMate's advanced automation capabilities.",
+    icon: <CheckSquare size={50} className="text-chart-2" />,
+  },
+  {
+    id: 3,
+    title: "DueDate",
+    description:
+      "Mirror your to-dos and tasks across multiple locations with TaskMate's mirroring feature.",
+    icon: <CalendarCog size={50} className="text-chart-3" />,
+  },
+];
+
+export const TESTIMONIALS_DATA = [
+  {
+    id: 1,
+    name: "Elon Must",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi",
+    job: "Engineer",
+    logo: "/globe.svg",
+    link: "https://www.google.com",
+    result: "75 % of organizations increased sales in the first month",
+  },
+  {
+    id: 2,
+    name: "Steve jobs",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi Lorem ipsum dolor sit amet consectetur adipisicing elit. ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi Nesciunt excepturi ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi",
+    job: "CEO Apple",
+    logo: "/globe.svg",
+    link: "https://www.google.com",
+    result: "75 % of organizations increased sales in the first month",
+  },
+  {
+    id: 3,
+    name: "Bill Gates",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi",
+    job: "Software Engineer",
+    logo: "/globe.svg",
+    link: "https://www.google.com",
+    result: "75 % of organizations increased sales in the first month",
+  },
+  {
+    id: 4,
+    name: "Bill Gates",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi",
+    job: "Software Engineer",
+    logo: "/globe.svg",
+    link: "https://www.google.com",
+    result: "75 % of organizations increased sales in the first month",
+  },
+  {
+    id: 5,
+    name: "Bill Gates",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi",
+    job: "Software Engineer",
+    logo: "/globe.svg",
+    link: "https://www.google.com",
+    result: "75 % of organizations increased sales in the first month",
+  },
+];
+
+export const PRODUCTIVITY_DATA = [
+  {
+    id: 1,
+    title: "Boards",
+    description:
+      "Stay organized and efficient with Inbox, Boards, and Planner. Every to-do, idea, or responsibility—no matter how small—finds ",
+    image: "/features-1.png",
+  },
+  {
+    id: 2,
+    title: "Lists",
+    description:
+      "Stay organized and efficient with Inbox, Boards, and Planner. Every to-do, idea, or responsibility—no matter how small—finds .",
+    image: "/features-2.png",
+  },
+  {
+    id: 3,
+    title: "Cards",
+    description:
+      "Stay organized and efficient with Inbox, Boards, and Planner. Every to-do, idea, or responsibility—no matter how small—finds its place, ",
+    image: "/features-3.png",
   },
 ];

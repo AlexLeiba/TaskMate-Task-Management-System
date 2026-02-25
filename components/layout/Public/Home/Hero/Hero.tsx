@@ -18,7 +18,7 @@ export function Hero() {
           </p>
         </div>
 
-        <Button variant={"tertiary"} className="md:max-w-60">
+        <Button variant={"tertiary"} className="md:max-w-60 z-0">
           <Link href={NAV_LINKS.signup.pathname}>
             <p className="text-base">Join for free</p>
           </Link>

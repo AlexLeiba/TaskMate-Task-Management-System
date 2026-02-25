@@ -5,13 +5,22 @@ type Props = ComponentProps<"div"> & {
   fluid?: boolean;
   children: React.ReactNode;
 };
-export function LayoutContainer({ fluid, children, ...props }: Props) {
+export function LayoutContainer({
+  fluid,
+  children,
+
+  ...props
+}: Props) {
+  //  py - 12;
   return (
     <section
-      className={cn(fluid ? "w-full py-10" : "w-full max-w-6xl mx-auto  py-10")}
+      className={cn(
+        fluid ? "w-full" : "w-full max-w-6xl mx-auto ",
+        "md:py-16 py-12",
+      )}
       {...props}
     >
-      <div className="px-4">{children}</div>
+      <div className={cn(fluid ? "" : "px-4")}>{children}</div>
     </section>
   );
 }

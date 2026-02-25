@@ -9,30 +9,8 @@ import {
 import Image from "next/image";
 
 import { FeatureCard } from "./FeatureCard";
+import { PRODUCTIVITY_DATA } from "@/lib/consts";
 
-const PRODUCTIVITY_DATA = [
-  {
-    id: 1,
-    title: "Boards",
-    description:
-      "Stay organized and efficient with Inbox, Boards, and Planner. Every to-do, idea, or responsibility—no matter how small—finds ",
-    image: "/features-1.png",
-  },
-  {
-    id: 2,
-    title: "Lists",
-    description:
-      "Stay organized and efficient with Inbox, Boards, and Planner. Every to-do, idea, or responsibility—no matter how small—finds .",
-    image: "/features-2.png",
-  },
-  {
-    id: 3,
-    title: "Cards",
-    description:
-      "Stay organized and efficient with Inbox, Boards, and Planner. Every to-do, idea, or responsibility—no matter how small—finds its place, ",
-    image: "/features-3.png",
-  },
-];
 export function Features() {
   const { setSliderIndex, sliderIndex } = useSlider();
   return (
@@ -48,7 +26,7 @@ export function Features() {
         </div>
       </div>
       {/* grid-cols-1 */}
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(450px,1fr))]   gap-4">
+      <div className="grid md:grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-4">
         <div className="hidden lg:flex flex-col gap-4">
           {PRODUCTIVITY_DATA.map((item, index) => (
             <FeatureCard
@@ -56,25 +34,24 @@ export function Features() {
               data={item}
               handleClick={() => setSliderIndex(index + 1)}
               selected={index + 1 === sliderIndex}
+              index={(index + 1) as unknown as 1 | 2 | 3 | 4 | 5}
             />
           ))}
         </div>
-        {/* find out dynamic the size of marginf out content area */}
+
         <Slider>
-          <SliderContent>
+          <SliderContent withNavigationButtons={false}>
             {PRODUCTIVITY_DATA.map((item) => (
               <SliderItem key={item.id}>
-                {/* <div className={cn(`   bg-black rounded-4xl z-50`)}> */}
-                <div className="w-screen  h-100 ">
+                <div className="w-screen  h-75 ">
                   <Image
                     src={item.image}
                     width={1000}
                     height={800}
                     alt="Hero-image"
-                    className="lg:w-[calc(50vw-((100vw-1152px+48px)/2))] w-[calc(100vw-52px)]   h-full object-cover rounded-md "
+                    className="lg:w-[calc(50vw-((100vw-1152px+48px)/2))] w-[calc(100vw-48px)]   h-full object-cover rounded-md "
                   />
                 </div>
-                {/* </div> */}
               </SliderItem>
             ))}
           </SliderContent>
@@ -82,6 +59,7 @@ export function Features() {
         <div className="lg:hidden flex flex-col gap-4">
           {PRODUCTIVITY_DATA.map((item, index) => (
             <FeatureCard
+              index={(index + 1) as unknown as 1 | 2 | 3 | 4 | 5}
               key={item.id}
               data={item}
               handleClick={() => setSliderIndex(index + 1)}

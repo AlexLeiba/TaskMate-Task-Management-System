@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { variantsPublicCardColors } from "@/lib/variantsPublicCardColors";
 import React from "react";
 
 type Props = {
@@ -7,10 +8,11 @@ type Props = {
     title: string;
     description: string;
   };
+  index: 1 | 2 | 3 | 4 | 5;
   selected: boolean;
   handleClick: () => void;
 };
-export function FeatureCard({ data, selected, handleClick }: Props) {
+export function FeatureCard({ data, selected, index, handleClick }: Props) {
   return (
     <div
       className={cn(
@@ -22,7 +24,8 @@ export function FeatureCard({ data, selected, handleClick }: Props) {
       <div
         className={cn(
           selected ? "h-full" : " h-0",
-          "absolute  w-2 bg-tertiary left-0 top-0 transition-all duration-500 ease-in-out",
+          "absolute  w-2 left-0 top-0 transition-all duration-500 ease-in-out",
+          variantsPublicCardColors({ index }),
         )}
       />
       <p className="text-xl">{data.title}</p>

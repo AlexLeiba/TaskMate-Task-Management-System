@@ -1,4 +1,5 @@
 import {
+  Activity,
   Archive,
   Building2,
   Calendar,
@@ -9,16 +10,19 @@ import {
   CircleAlert,
   CircleCheck,
   Clock,
+  Columns3,
   Copy,
   Delete,
   Edit,
   Files,
   Image,
+  LayoutDashboard,
   Pencil,
   Plus,
-  Puzzle,
   Search,
+  TicketCheck,
   Upload,
+  User,
   Wifi,
   WifiHigh,
   WifiLow,
@@ -310,7 +314,7 @@ export const UNSPLASH_DEFAULT_IMAGES: UnsplashImagesType[] = [
   },
 ];
 
-/////////////////////////////// LANDING PAGE MOCK DATA
+//////////////////////////////////////////////////// LANDING PAGE MOCK DATA//////////////////////////////////////////////
 
 // HEADER
 export const HEADER_CARD_TABS_TITLES = [
@@ -322,57 +326,57 @@ export const HEADER_CARD_TABS_TITLES = [
 export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
   features: [
     {
-      id: "1",
-      icon: <Calendar />,
-      title: "Features",
+      id: "6",
+      icon: <User />,
+      title: "Workspace Management",
       description:
-        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
-      color: "green",
+        "Admin can manage the organization: create or delete it, update its name, logo, and avatar, invite or remove users, and change member roles.",
+      color: "",
+      link: "https://www.google.com",
+    },
+    {
+      id: "1",
+      icon: <Building2 />,
+      title: "Organizations",
+      description:
+        "An organization is a shared workspace where invited members access boards and manage tasks, typically overseen by an admin.",
+      color: "",
       link: "https://www.google.com",
     },
     {
       id: "2",
-      icon: <Upload />,
-      title: "Edit 1",
+      icon: <Activity />,
+      title: "Activity",
       description:
-        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
-      color: "green",
+        "Any action done by a member within an Organization is registered under activity page",
+      color: "",
       link: "https://www.google.com",
     },
     {
       id: "3",
-      icon: <Calendar />,
-      title: "Edit 2",
+      icon: <LayoutDashboard />,
+      title: "Boards",
       description:
-        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
-      color: "green",
+        "Boards can be created from the dashboard and customized with a variety of beautiful background images.",
+      color: "",
       link: "https://www.google.com",
     },
     {
       id: "4",
-      icon: <Pencil />,
-      title: "Edit 3",
+      icon: <Columns3 />,
+      title: "List",
       description:
-        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
-      color: "green",
+        "Lists are board columns that hold ticket cards. They support drag-and-drop, title and status editing, and can be duplicated along with all their cards.",
+      color: "",
       link: "https://www.google.com",
     },
     {
       id: "5",
-      icon: <Pencil />,
-      title: "Edit 4",
+      icon: <TicketCheck />,
+      title: "Card",
       description:
-        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
-      color: "green",
-      link: "https://www.google.com",
-    },
-    {
-      id: "6",
-      icon: <Pencil />,
-      title: "Edit 5",
-      description:
-        "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
-      color: "green",
+        "Cards are tickets created within lists. They support drag-and-drop between lists, title editing, copying, descriptions, due dates, checklists, comments, attachments, and member assignment.",
+      color: "",
       link: "https://www.google.com",
     },
   ],
@@ -383,7 +387,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       title: "Solutions",
       description:
         "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
-      color: "green",
+      color: "",
       link: "https://www.google.com",
     },
     {
@@ -392,7 +396,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       title: "Edit 1",
       description:
         "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
-      color: "green",
+      color: "",
       link: "https://www.google.com",
     },
     {
@@ -401,7 +405,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       title: "Edit 2",
       description:
         "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
-      color: "green",
+      color: "",
       link: "https://www.google.com",
     },
     {
@@ -410,7 +414,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       title: "Edit 3",
       description:
         "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
-      color: "green",
+      color: "",
       link: "https://www.google.com",
     },
     {
@@ -419,7 +423,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       title: "Edit 4",
       description:
         "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
-      color: "green",
+      color: "",
       link: "https://www.google.com",
     },
     {
@@ -428,7 +432,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       title: "Edit 5",
       description:
         "Edit this card Edit this card Edit this card Edit this card Edit this card Edit this card",
-      color: "green",
+      color: "",
       link: "https://www.google.com",
     },
   ],
@@ -493,19 +497,19 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
 export const HEADER_SIDEBAR_INFO_TABS: HeaderAdditionalInfoTabsType = {
   features: [
     {
-      title: "Features ",
+      title: "Workspace Management",
       description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi",
+        "Admin can manage the organization: create or delete it, update its name, logo, and avatar, invite or remove users, and change member roles.",
     },
     {
-      title: "Lorem ipsum dolor ",
+      title: "Organizations",
       description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi",
+        "An organization is a shared workspace where invited members access boards and manage tasks, typically overseen by an admin.",
     },
     {
-      title: "Lorem ipsum dolor ",
+      title: "Activity",
       description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi",
+        "Any action done by a member within an Organization is registered under activity page",
     },
   ],
   solutions: [

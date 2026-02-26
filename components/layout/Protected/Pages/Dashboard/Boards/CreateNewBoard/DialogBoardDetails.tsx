@@ -13,17 +13,25 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { InputTitleSchema, InputTitleSchemaType } from "@/lib/schemas";
 import { UnsplashImagesType } from "@/lib/types";
 import toast from "react-hot-toast";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createNewBoardAction } from "@/app/actions/dashboard";
 import { useStore } from "@/store/useStore";
 import { type Board } from "@/lib/generated/prisma/client";
 
-export function DialogBoardDetails() {
+type Props = {
+  type?: "dashboard" | "board";
+};
+export function DialogBoardDetails({ type = "dashboard" }: Props) {
+  const navigate = useRouter();
   const [selectedImage, setSelectedImage] = useState<UnsplashImagesType>();
   const { setNewBoardDialogOpen } = useStore();
   const queryClient = useQueryClient();
   const pathname = usePathname();
-  const organizationId = pathname.split("/").at(-1);
+
+  const organizationId =
+    type === "dashboard"
+      ? pathname.split("/").at(-1)
+      : pathname.split("/").at(-3);
 
   const { data, isFetching } = useQuery({
     queryFn: getUnsplashImagesAction,
@@ -34,11 +42,15 @@ export function DialogBoardDetails() {
   const { mutate, isPending } = useMutation({
     mutationKey: ["create-new-board"],
     mutationFn: createNewBoardAction,
-    onSuccess: () => {
+    onSuccess: ({ data }) => {
       setValue("title", "");
       setSelectedImage(undefined);
       setNewBoardDialogOpen(false);
       toast.success("Board created successfully");
+
+      if (type === "board") {
+        navigate.push(`/dashboard/${organizationId}/board/${data?.id}`);
+      }
     },
     onError: ({ message }) => toast.error(message || "Error creating board"),
   });

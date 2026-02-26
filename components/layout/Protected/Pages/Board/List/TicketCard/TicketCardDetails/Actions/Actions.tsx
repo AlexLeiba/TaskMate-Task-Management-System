@@ -147,6 +147,7 @@ export function Actions({ cardDetailsId, listId, cardId }: Props) {
 
         {isDeleteModalOpened && (
           <DeleteDialog
+            loading={isPendingDeleteCardDeleteCard}
             deleteDialogOpen={isDeleteModalOpened}
             setDeleteDialogOpen={setIsDeleteModalOpened}
             handleDelete={handleDeleteCard}

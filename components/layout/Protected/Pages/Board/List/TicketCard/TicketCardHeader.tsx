@@ -275,6 +275,7 @@ export function TicketCardHeader({
       {/* DELETE CARD DIALOG */}
 
       <DeleteDialog
+        loading={isPendingDeleteCardDeleteCard}
         deleteDialogOpen={deleteDialogOpen}
         setDeleteDialogOpen={setDeleteDialogOpen}
         handleDelete={() => handleDeleteCard(cardId)}

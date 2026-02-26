@@ -21,7 +21,7 @@ export function BoardCard({
   return (
     <>
       <div
-        className="relative overflow-hidden bg-cover bg-center rounded-md w-full"
+        className="relative overflow-hidden bg-cover bg-center rounded-md "
         style={{ backgroundImage: `url(${cardImageUrl})` }}
       >
         <IconButton

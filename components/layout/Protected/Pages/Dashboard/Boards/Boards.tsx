@@ -40,10 +40,12 @@ export function Boards({
     mutationKey: ["delete-board"],
     mutationFn: deleteBoardAction,
     onSuccess: () => {
+      setDeleteDialogOpen(false);
       toast.dismiss("delete-board");
       toast.success("Board deleted successfully");
     },
     onError: ({ message }) => {
+      setDeleteDialogOpen(false);
       toast.dismiss("delete-board");
       toast.error(message || "Error deleting board");
     },
@@ -65,7 +67,7 @@ export function Boards({
     await deleteFile({ type: "board", fileType: "raw", boardId }, boardId); //await deletion of all files in the board before deleting the board itself
 
     mutateDeleteBoard(boardId);
-    setDeleteDialogOpen(false);
+
     toast.loading("Deleting board...", { id: "delete-board" });
   }
 
@@ -76,7 +78,7 @@ export function Boards({
         <p className="text-xl font-medium">Boards</p>
       </div>
       <Spacer size={4} />
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-2">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(200px,229px))] gap-2">
         {/* CREATE NEW BOARD */}
         <CreateNewBoardCard disabled={isPending} />
 
@@ -94,6 +96,7 @@ export function Boards({
 
       {/* MODAL DELETE BOARD */}
       <DeleteDialog
+        loading={isPending}
         deleteDialogOpen={deleteDialogOpen}
         setDeleteDialogOpen={setDeleteDialogOpen}
         handleDelete={() => handleDeleteBoard(selectedBoardToDelete)}

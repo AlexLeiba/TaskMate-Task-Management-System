@@ -10,7 +10,9 @@ import { IconButton } from "@/components/ui/iconButton";
 import { useStore } from "@/store/useStore";
 import dynamic from "next/dynamic";
 
-import { DialogBoardDetails } from "./DialogBoardDetails";
+const DialogBoardDetails = dynamic(() =>
+  import("./DialogBoardDetails").then((m) => m.DialogBoardDetails),
+);
 
 const CreateNewBoardDialog = dynamic(() =>
   import("./CreateNewBoardDialog").then((m) => m.CreateNewBoardDialog),
@@ -31,7 +33,7 @@ export function CreateNewBoardCard({ disabled = false }: Props) {
         onClick={() => setNewBoardDialogOpen(true)}
         title="Create new board"
         aria-label="Create new board"
-        className="relative group   rounded-md p-2  overflow-hidden text-black  hover:bg-gray-500  bg-gray-200 hover:text-white "
+        className="relative group   rounded-md p-2  overflow-hidden text-black  hover:bg-gray-500  bg-gray-200 hover:text-white md:max-w-72.5 w-full"
       >
         <p className="text-xl ">Create new board</p>
 

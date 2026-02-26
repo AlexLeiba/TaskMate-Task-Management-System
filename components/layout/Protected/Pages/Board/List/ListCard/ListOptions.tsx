@@ -203,6 +203,7 @@ export function ListOptions({ listId }: Props) {
 
         {/* MODAL DELETE BOARD */}
         <DeleteDialog
+          loading={isPendingDeleteList}
           deleteDialogOpen={deleteDialogOpen}
           setDeleteDialogOpen={setDeleteDialogOpen}
           handleDelete={() => handleDeleteList(listId)}

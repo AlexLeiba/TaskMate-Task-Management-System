@@ -39,7 +39,7 @@ export async function getBoardsAction(orgId: string): Promise<{
 
 export async function createNewBoardAction(
   boardData: Omit<Board, "id" | "createdAt" | "updatedAt" | "order">,
-): Promise<{ data: boolean; error: { message: string } }> {
+): Promise<{ data: Board; error: { message: string } }> {
   try {
     const { data: activeUser } = await checkCurrentActiveUser();
     const { orgId } = await auth();
@@ -70,7 +70,7 @@ export async function createNewBoardAction(
     });
 
     revalidatePath("/dashboard");
-    return { data: true, error: { message: "" } };
+    return { data: createdBoard, error: { message: "" } };
   } catch (error: any) {
     throw error?.message || "Something went wrong";
   }

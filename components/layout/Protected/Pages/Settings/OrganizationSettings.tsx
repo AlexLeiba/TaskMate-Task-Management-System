@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 
 const OrganizationProfile = dynamic(
   () => import("@clerk/nextjs").then((m) => m.OrganizationProfile),
-  { ssr: false }
+  { ssr: false },
 );
 
 export function OrganizationSettings() {
@@ -13,12 +13,12 @@ export function OrganizationSettings() {
       <OrganizationProfile
         appearance={{
           elements: {
-            rootBox: {
+            cardBox: {
               boxShadow: "none",
               width: "100%",
             },
-            card: {
-              boxShadow: "none",
+
+            rootBox: {
               width: "100%",
             },
           },

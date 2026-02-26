@@ -21,7 +21,13 @@ export function ExpandedTab({ type }: Props) {
       )}
     >
       <div className="max-w-7xl m-auto p-4">
-        {type && <h5 className="text-lg">{HEADER_TABS_TITLE[type]}</h5>}
+        {type && (
+          <h5 className="text-xl">
+            {HEADER_TABS_TITLE[type] === "About"
+              ? "About us"
+              : HEADER_TABS_TITLE[type]}
+          </h5>
+        )}
 
         <Separator className="my-4" />
 

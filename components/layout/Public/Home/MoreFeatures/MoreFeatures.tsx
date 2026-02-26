@@ -8,8 +8,8 @@ export function MoreFeatures() {
       <div className="flex flex-col gap-4 max-w-125 w-full">
         <h2 className="text-4xl">Do more with TaskMate</h2>
         <p className="text-lg">
-          Customize the way you organize with easy integrations, automation, and
-          mirroring of your to-dos across multiple locations.
+          Customize the way you organize, prioritize, and handle your to-dos in
+          a user friendly envronment that fits your style.
         </p>
       </div>
 

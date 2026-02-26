@@ -20,9 +20,9 @@ export function EmailExampleCard() {
         </div>
 
         <p className="text-lg">
-          Easily turn your emails into to-dos! Just forward them to your Trello
-          Inbox, and they’ll be transformed by AI into organized to-dos with all
-          the links you need.
+          Easily turn your invitation email into task management system, just
+          accept it and it will forward you to your TaskMate organization
+          boards.
         </p>
       </div>
     </div>

@@ -10,11 +10,11 @@ export function Hero() {
       <div className="h-full flex flex-col justify-center gap-4">
         <div className="flex flex-col gap-2">
           <h1 className="text-5xl">
-            Capture, organize, and tackle your to-dos from anywhere.
+            Organize, prioritize and handle your to-dos with ease.
           </h1>
           <p className="text-lg">
-            Escape the clutter and chaos—unleash your productivity with
-            TaskMate.
+            Forget about the chaos of your work process. Simplify your
+            productivity with TaskMate.
           </p>
         </div>
 

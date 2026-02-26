@@ -1,11 +1,9 @@
 "use client";
 import { NAV_LINKS } from "@/lib/consts";
-// import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { Button } from "../../ui/button";
 import { usePathname } from "next/navigation";
 function Links() {
-  // const { isSignedIn } = useUser();
   const pathname = usePathname();
 
   return (
@@ -13,16 +11,16 @@ function Links() {
       {pathname !== NAV_LINKS.signin.pathname &&
         pathname !== NAV_LINKS.signup.pathname && (
           <div className="flex gap-2 md:flex-row flex-col">
-            <Button variant={"outline"}>
-              <Link href={NAV_LINKS.signin.pathname}>
+            <Link href={NAV_LINKS.signin.pathname}>
+              <Button variant={"outline"}>
                 <p className="text-base">Login</p>
-              </Link>
-            </Button>
-            <Button variant={"tertiary"}>
-              <Link href={NAV_LINKS.signup.pathname}>
+              </Button>
+            </Link>
+            <Link href={NAV_LINKS.signup.pathname}>
+              <Button variant={"tertiary"}>
                 <p className="text-base">Join for free</p>
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
         )}
       {pathname === NAV_LINKS.signup.pathname && (

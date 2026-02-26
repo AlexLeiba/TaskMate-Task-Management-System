@@ -47,7 +47,7 @@ export function Testimonials() {
                         </div>
                       </div>
                     </div>
-                    <div className="py-8 md:pl-4 pl-8 pr-8 bg-tertiary/50 md:rounded-tr-md md:rounded-bl-none rounded-bl-md rounded-br-md">
+                    <div className=" min-w-72 py-8 md:pl-4 pl-8 pr-8 bg-tertiary/50 md:rounded-tr-md md:rounded-bl-none rounded-bl-md rounded-br-md">
                       <p className="text-2xl font-medium">{item.result}</p>
                     </div>
                   </div>

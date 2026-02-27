@@ -1,3 +1,4 @@
+import { DATE_FORMAT } from "@/lib/consts";
 import { format } from "date-fns";
 import React from "react";
 
@@ -16,14 +17,14 @@ export function DateTime({ createdAt, updatedAt }: Props) {
         <p className="text-xs font-medium">Created:</p>
 
         <p className="text-xs font-medium">
-          {format(new Date(createdAt), "MMM d yyyy a HH:mm")}
+          {format(new Date(createdAt), DATE_FORMAT)}
         </p>
       </div>
 
       <div className="flex gap-2 items-center ">
         <p className="text-xs font-medium">Updated:</p>
         <p className="text-xs font-medium">
-          {format(new Date(updatedAt), "MMM d yyyy a HH:mm")}
+          {format(new Date(updatedAt), DATE_FORMAT)}
         </p>
       </div>
     </div>

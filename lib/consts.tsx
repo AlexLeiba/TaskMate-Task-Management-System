@@ -654,3 +654,6 @@ export const PRODUCTIVITY_DATA = [
     image: "/features-3.png",
   },
 ];
+
+/////DATE FORMAT
+export const DATE_FORMAT = "MMM d yyyy a HH:mm";

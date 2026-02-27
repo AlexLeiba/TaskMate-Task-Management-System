@@ -40,7 +40,7 @@ export function Attachments({ cardDetailsId }: Props) {
   >([]);
 
   const uploadFileRef = useRef<HTMLInputElement>(null);
-
+  // TODO add useQuery instead of useEffect and useState check on Comments
   async function getAttachmentsData() {
     const response = await getCardDetailsAttachments(cardDetailsId);
 

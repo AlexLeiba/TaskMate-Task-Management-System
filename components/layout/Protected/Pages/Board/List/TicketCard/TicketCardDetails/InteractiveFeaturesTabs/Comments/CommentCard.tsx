@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 
 import { Comment, User } from "@/lib/generated/prisma/client";
+import { DATE_FORMAT } from "@/lib/consts";
 
 type Props = {
   data: Comment & { author: User };
@@ -18,7 +19,7 @@ export function CommentCard({ data: comment, handleOpenDeleteModal }: Props) {
       <p>{comment.comment}</p>
       <div className="flex justify-between items-center pl-2">
         <p className="text-xs text-gray-400">
-          {format(new Date(comment?.createdAt as Date), "MMM d yyyy a HH:mm")}
+          {format(new Date(comment?.createdAt as Date), DATE_FORMAT)}
         </p>
 
         <IconButton

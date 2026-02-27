@@ -6,6 +6,7 @@ import { ComponentProps } from "react";
 import { UserCardSkeleton } from "./UserCardSkeleton";
 import { format } from "date-fns";
 import { User } from "@/lib/generated/prisma/client";
+import { DATE_FORMAT } from "@/lib/consts";
 
 const cardVariants = cva("", {
   variants: {
@@ -87,7 +88,7 @@ export function UserCard({
         <div className="flex flex-col gap-2 items-start">
           <p className="text-lg font-medium">{description}</p>
           <p className="text-xs text-gray-300">
-            {createdAt && format(new Date(createdAt), "MMM d yyyy a HH:mm")}
+            {createdAt && format(new Date(createdAt), DATE_FORMAT)}
           </p>
         </div>
       )}

@@ -5,6 +5,7 @@ import { DownloadFileCard } from "./DownloadFileCard";
 import { format } from "date-fns";
 import { Separator } from "@/components/ui/separator";
 import { Attachments, UploadedFile, User } from "@/lib/generated/prisma/client";
+import { DATE_FORMAT } from "@/lib/consts";
 
 type Props = {
   data: Attachments & {
@@ -54,10 +55,7 @@ export function AttachmentCard({
         <div className="flex flex-col w-full">
           <div className="flex justify-between items-center px-2">
             <p className="text-xs text-gray-400">
-              {format(
-                new Date(attachment.createdAt as Date),
-                "MMM d yyyy a HH:mm",
-              )}
+              {format(new Date(attachment.createdAt as Date), DATE_FORMAT)}
             </p>
           </div>
           <Separator className="h-px my-1" />

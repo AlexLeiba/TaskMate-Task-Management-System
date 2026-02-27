@@ -22,6 +22,7 @@ export function Activities({ cardDetailsId }: Props) {
   >([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  // TODO add useQuery instead of useEffect and useState
   async function getActivitiesData() {
     const response = await getCardDetailsActivities(cardDetailsId);
 

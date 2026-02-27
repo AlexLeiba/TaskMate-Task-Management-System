@@ -12,8 +12,6 @@ import { getCardDetailsActivities } from "@/app/actions/card-details";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-const now = new Date("2023-01-01T00:00:00").getTime();
-
 type Props = {
   cardDetailsId: string;
 };
@@ -23,10 +21,6 @@ export function Activities({ cardDetailsId }: Props) {
     (ActivityType & { author: User })[]
   >([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  const activitiesData: (ActivityType & { author: User })[] = [];
-
-  console.log("🚀 ~ Activities ~ activities:", activities);
 
   async function getActivitiesData() {
     const response = await getCardDetailsActivities(cardDetailsId);

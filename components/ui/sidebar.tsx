@@ -262,6 +262,7 @@ function SidebarTrigger({
 
   return (
     <Button
+      classNameChildren="flex items-center justify-center"
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
       variant="ghost"

@@ -1,4 +1,4 @@
-import { useEffect, useOptimistic, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { ProgressBar } from "./ProgressBar";
 import { AddNewInput } from "../../../../../AddNewInput";
 import { CheckSquare, Plus } from "lucide-react";
@@ -6,7 +6,7 @@ import { ChecklistCard } from "./ChecklistCard";
 import { Button } from "@/components/ui/button";
 import { ChecklistSkeleton } from "./ChecklistSkeleton";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { type Checklist } from "@/lib/generated/prisma/client";
+
 import toast from "react-hot-toast";
 import { useBoardId } from "@/hooks/useBoardId";
 import {
@@ -17,6 +17,12 @@ import {
 } from "@/app/actions/card-details";
 import { IconButton } from "@/components/ui/iconButton";
 import { Spacer } from "@/components/ui/spacer";
+import {
+  CreateChecklistProps,
+  DeleteChecklistProps,
+  UpdateChecklistProps,
+} from "@/lib/types";
+import { type Checklist } from "@/lib/generated/prisma/client";
 
 type Props = {
   cardDetailsId: string;
@@ -45,15 +51,8 @@ export function Checklist({ cardDetailsId }: Props) {
     isLoading,
   } = useQuery({
     queryFn: getChecklistData,
-    queryKey: ["checklist"],
+    queryKey: ["checklist", cardDetailsId],
   });
-
-  const [loadingOptimisticTransition, startOptimisticTransition] =
-    useTransition();
-
-  const [optimisticChecklistData, setOptimisticChecklistData] = useOptimistic<
-    Checklist[]
-  >(checklistData || []);
 
   useEffect(() => {
     if (error) {
@@ -64,57 +63,152 @@ export function Checklist({ cardDetailsId }: Props) {
   const { mutate: createMutation, isPending: isPendingCreate } = useMutation({
     mutationFn: createChecklistAction,
     mutationKey: ["create-checklist"],
+
+    onMutate: async (newItem: CreateChecklistProps) => {
+      await queryClient.cancelQueries({
+        queryKey: ["checklist", cardDetailsId],
+      });
+
+      const previousChecklist = queryClient.getQueryData([
+        "checklist",
+        cardDetailsId,
+      ]);
+
+      // FOR UPDATING UI INSTANTLY (OPTIMISTIC UPDATES)
+      queryClient.setQueryData(
+        ["checklist", cardDetailsId],
+        (oldData: Checklist[]) => {
+          const newData = [newItem, ...oldData];
+          return newData;
+        },
+      );
+
+      return { previousChecklist };
+    },
     onSuccess: () => {
       toast.dismiss("create-checklist");
       toast.success("Checklist created");
+    },
+    onError: (err, _, context) => {
+      queryClient.setQueryData(
+        ["checklist", cardDetailsId],
+        context?.previousChecklist,
+      );
+      toast.error(err?.message || "Something went wrong");
+    },
 
-      queryClient.invalidateQueries({
-        queryKey: ["card-details"],
-      });
+    onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ["checklist"],
       });
-    },
-    onError: ({ message }) => {
-      toast.error(message || "Something went wrong");
+      queryClient.invalidateQueries({
+        queryKey: ["card-details"],
+      });
     },
   });
 
   const { mutate: updateMutation, isPending: isPendingUpdate } = useMutation({
     mutationFn: updateChecklistAction,
     mutationKey: ["update-checklist"],
+
+    onMutate: async (newItem: UpdateChecklistProps) => {
+      await queryClient.cancelQueries({
+        queryKey: ["checklist", cardDetailsId],
+      });
+
+      const previousChecklist = queryClient.getQueryData([
+        "checklist",
+        cardDetailsId,
+      ]);
+
+      // FOR UPDATING UI INSTANTLY (OPTIMISTIC UPDATES)
+      queryClient.setQueryData(
+        ["checklist", cardDetailsId],
+        (oldData: Checklist[]) => {
+          const newData = oldData.map((item) => {
+            if (item.id === newItem.checklistId) {
+              return {
+                ...item,
+                isCompleted: !item.isCompleted,
+              };
+            }
+            return item;
+          });
+          return newData;
+        },
+      );
+
+      return { previousChecklist };
+    },
     onSuccess: () => {
       toast.dismiss("update-checklist");
       toast.success("Checklist updated");
       setIsOpenedTitleInput(false);
-      queryClient.invalidateQueries({
-        queryKey: ["card-details"],
-      });
+    },
+    onError: ({ message }, _, context) => {
+      queryClient.setQueryData(
+        ["checklist", cardDetailsId],
+        context?.previousChecklist,
+      );
+      toast.error(message || "Something went wrong");
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ["checklist"],
       });
-    },
-    onError: ({ message }) => {
-      toast.error(message || "Something went wrong");
+      queryClient.invalidateQueries({
+        queryKey: ["card-details"],
+      });
     },
   });
 
   const { isPending: isPendingDelete, mutate: mutateDelete } = useMutation({
     mutationFn: deleteChecklistAction,
     mutationKey: ["delete-checklist"],
+
+    onMutate: async (deletedItem: DeleteChecklistProps) => {
+      await queryClient.cancelQueries({
+        queryKey: ["checklist", cardDetailsId],
+      });
+
+      const previousChecklist = queryClient.getQueryData([
+        "checklist",
+        cardDetailsId,
+      ]);
+
+      // FOR UPDATING UI INSTANTLY (OPTIMISTIC UPDATES)
+      queryClient.setQueryData(
+        ["checklist", cardDetailsId],
+        (oldData: Checklist[]) => {
+          const newData = oldData.filter(
+            (item) => item.id !== deletedItem.checklistId,
+          );
+          return newData;
+        },
+      );
+
+      return { previousChecklist };
+    },
     onSuccess: () => {
       toast.dismiss("delete-checklist");
       toast.success("Checklist deleted");
+    },
+    onError: ({ message }, _, context) => {
+      queryClient.setQueryData(
+        ["checklist", cardDetailsId],
+        context?.previousChecklist,
+      );
+      toast.dismiss("delete-checklist");
+      toast.error(message || "Something went wrong");
+    },
+
+    onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ["card-details"],
       });
       queryClient.invalidateQueries({
         queryKey: ["checklist"],
       });
-    },
-    onError: ({ message }) => {
-      toast.dismiss("delete-checklist");
-      toast.error(message || "Something went wrong");
     },
   });
 
@@ -123,17 +217,6 @@ export function Checklist({ cardDetailsId }: Props) {
       return toast.error("Card Id not found");
     }
 
-    startOptimisticTransition(() => {
-      setOptimisticChecklistData((prev) => {
-        return prev.map((item) => {
-          if (item.id === id) {
-            return { ...item, isCompleted: !item.isCompleted };
-          }
-
-          return item;
-        });
-      });
-    });
     toast.loading("Updating checklist...", { id: "update-checklist" });
     updateMutation({ cardDetailsId, checklistId: id, boardId });
   }
@@ -143,11 +226,6 @@ export function Checklist({ cardDetailsId }: Props) {
       return toast.error("Card Id not found");
     }
 
-    startOptimisticTransition(() => {
-      setOptimisticChecklistData((prev) => {
-        return prev.filter((item) => item.id !== id);
-      });
-    });
     toast.loading("Deleting checklist...", { id: "delete-checklist" });
     mutateDelete({ cardDetailsId, checklistId: id, boardId });
   }
@@ -157,21 +235,6 @@ export function Checklist({ cardDetailsId }: Props) {
       return toast.error("Card Id not found");
     }
 
-    startOptimisticTransition(() => {
-      setOptimisticChecklistData((prev) => [
-        {
-          id: Date.now().toString(),
-          isCompleted: false,
-          title: value?.title,
-          cardId: cardDetailsId,
-          boardId: boardId || "",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          order: prev.length + 1,
-        },
-        ...prev,
-      ]);
-    });
     setIsOpenedTitleInput(false);
     toast.loading("Creating checklist...", { id: "create-checklist" });
     createMutation({
@@ -201,12 +264,11 @@ export function Checklist({ cardDetailsId }: Props) {
             <Plus className="text-green-600" />
           </IconButton>
         </div>
-        {optimisticChecklistData.length > 0 ? (
+        {checklistData.length > 0 ? (
           <ProgressBar
             percentage={Math.round(
-              (optimisticChecklistData?.filter((item) => item.isCompleted)
-                .length /
-                optimisticChecklistData.length) *
+              (checklistData?.filter((item) => item.isCompleted).length /
+                checklistData.length) *
                 100,
             )}
           />
@@ -219,6 +281,7 @@ export function Checklist({ cardDetailsId }: Props) {
         {checklistData.length > 0 && (
           <AddNewInput
             type="textarea"
+            buttonDirection="column"
             label="Add new item"
             disabled={isPendingCreate || isRefetching || isPendingDelete}
             loading={isPendingCreate}
@@ -237,6 +300,8 @@ export function Checklist({ cardDetailsId }: Props) {
 
         {checklistData.length === 0 ? (
           <AddNewInput
+            buttonDirection="column"
+            label="Add an item"
             type="textarea"
             disabled={isPendingCreate || isRefetching || isPendingDelete}
             loading={isPendingCreate}
@@ -251,14 +316,13 @@ export function Checklist({ cardDetailsId }: Props) {
         ) : (
           <>
             <div className="flex flex-col gap-1">
-              {optimisticChecklistData?.map((item) => (
+              {checklistData?.map((item) => (
                 <ChecklistCard
                   disabled={
                     isPendingDelete ||
                     isPendingUpdate ||
                     isPendingCreate ||
-                    isRefetching ||
-                    loadingOptimisticTransition
+                    isRefetching
                   }
                   loading={isPendingDelete}
                   data={item}

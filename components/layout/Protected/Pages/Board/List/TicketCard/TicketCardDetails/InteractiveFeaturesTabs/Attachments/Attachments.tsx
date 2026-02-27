@@ -22,6 +22,7 @@ import toast from "react-hot-toast";
 import { axiosInstance } from "@/lib/config";
 import { API_REQ_URL } from "@/lib/consts";
 import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   cardDetailsId: string;
@@ -346,7 +347,15 @@ export function Attachments({ cardDetailsId }: Props) {
             />
           ))
         ) : (
-          <p>No attachments</p>
+          <div>
+            <Button
+              onClick={handleOpenFileInput}
+              variant={"secondary"}
+              classNameChildren="flex items-center gap-2"
+            >
+              <Plus /> Add attachment
+            </Button>
+          </div>
         )}
       </div>
     </section>

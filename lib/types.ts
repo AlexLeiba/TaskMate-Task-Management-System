@@ -306,3 +306,22 @@ export type HeaderAdditionalInfoTabsType = {
     description: string;
   }[];
 };
+
+export type UpdateChecklistProps = {
+  cardDetailsId: string;
+
+  checklistId: string;
+  boardId: string;
+};
+
+export type CreateChecklistProps = {
+  cardDetailsId: string;
+  title: string;
+  boardId: string;
+};
+
+export type DeleteChecklistProps = {
+  cardDetailsId: string;
+  checklistId: string;
+  boardId: string;
+};

@@ -48,11 +48,12 @@ export function HeaderDashboard({ type = "dashboard" }: Props) {
       >
         <div className="flex justify-between">
           <div className="flex gap-2 items-center">
-            {type === "dashboard" && <SidebarTrigger title="Sidebar" />}
+            {type === "dashboard" && (
+              <SidebarTrigger title={"Toggle sidebar"} />
+            )}
             <Logo />
           </div>
 
-          {/* <Links /> */}
           <div className="flex gap-2">
             <Button
               size={"sm"}

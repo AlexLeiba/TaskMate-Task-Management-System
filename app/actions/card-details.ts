@@ -18,6 +18,11 @@ import { getCardDetailsData } from "@/lib/server/getCardData";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import {
+  CreateChecklistProps,
+  DeleteChecklistProps,
+  UpdateChecklistProps,
+} from "@/lib/types";
 
 export type CardDetailsType = CardDetails & {
   card: Card & {
@@ -596,11 +601,6 @@ export async function getChecklistDataAction({
   }
 }
 
-type CreateChecklistProps = {
-  cardDetailsId: string;
-  title: string;
-  boardId: string;
-};
 export async function createChecklistAction({
   cardDetailsId,
   title,
@@ -664,12 +664,6 @@ export async function createChecklistAction({
   }
 }
 
-type UpdateChecklistProps = {
-  cardDetailsId: string;
-
-  checklistId: string;
-  boardId: string;
-};
 export async function updateChecklistAction({
   cardDetailsId,
 
@@ -736,11 +730,6 @@ export async function updateChecklistAction({
   }
 }
 
-type DeleteChecklistProps = {
-  cardDetailsId: string;
-  checklistId: string;
-  boardId: string;
-};
 export async function deleteChecklistAction({
   cardDetailsId,
   checklistId,

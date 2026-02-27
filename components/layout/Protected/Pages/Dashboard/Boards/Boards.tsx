@@ -1,6 +1,6 @@
 "use client";
 import { Spacer } from "@/components/ui/spacer";
-import { Grid } from "lucide-react";
+import { LayoutDashboard } from "lucide-react";
 import { BoardCard } from "./BoardCard";
 import { CreateNewBoardCard } from "./CreateNewBoard/CreateNewBoardCard";
 import { useEffect, useState } from "react";
@@ -74,11 +74,11 @@ export function Boards({
   return (
     <div>
       <div className="flex gap-2 items-center">
-        <Grid />
+        <LayoutDashboard />
         <p className="text-xl font-medium">Boards</p>
       </div>
       <Spacer size={4} />
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(200px,229px))] gap-2">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(200px,243px))] gap-2">
         {/* CREATE NEW BOARD */}
         <CreateNewBoardCard disabled={isPending} />
 

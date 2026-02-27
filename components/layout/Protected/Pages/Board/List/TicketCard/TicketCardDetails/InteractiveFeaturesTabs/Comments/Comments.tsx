@@ -14,6 +14,7 @@ import {
 } from "@/app/actions/card-details";
 import toast from "react-hot-toast";
 import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   data: (Comment & { author: User })[] | undefined;
@@ -132,7 +133,6 @@ export function Comments({ cardDetailsId }: Props) {
           <Plus className="text-green-600" />
         </IconButton>
       </div>
-      {/* <Spacer size={4} /> */}
 
       {/* SCROLLABLE COMMENTS SECTION */}
       <div className="flex flex-col  overflow-y-auto h-58  ">
@@ -162,19 +162,28 @@ export function Comments({ cardDetailsId }: Props) {
         </AddNewInput>
 
         {/* COMMENTS */}
-        {commentsData && commentsData.length > 0 ? (
-          commentsData?.map((comment) => (
-            <CommentCard
-              key={comment.id}
-              data={comment}
-              handleOpenDeleteModal={() => handleOpenDeleteDialog(comment.id)}
-            />
-          ))
-        ) : (
-          <p>No comments</p>
-        )}
+        {commentsData && commentsData.length > 0
+          ? commentsData?.map((comment) => (
+              <CommentCard
+                key={comment.id}
+                data={comment}
+                handleOpenDeleteModal={() => handleOpenDeleteDialog(comment.id)}
+              />
+            ))
+          : !isOpenedCommentInput && (
+              <div>
+                <Button
+                  onClick={handleOpenNewCommentInput}
+                  variant={"secondary"}
+                  classNameChildren="flex items-center gap-2"
+                >
+                  <Plus /> Add new comment
+                </Button>
+              </div>
+            )}
 
         <DeleteDialog
+          loading={isPendingDelete}
           deleteDialogOpen={isDeleteModalOpened}
           setDeleteDialogOpen={setIsDeleteModalOpened}
           handleDelete={handleDeleteComment}

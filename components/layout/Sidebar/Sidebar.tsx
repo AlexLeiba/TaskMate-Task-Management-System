@@ -1,5 +1,11 @@
 "use client";
-import { Activity, CreditCard, Grid, Plus, Settings } from "lucide-react";
+import {
+  Activity,
+  CreditCard,
+  LayoutDashboard,
+  Plus,
+  Settings,
+} from "lucide-react";
 
 import {
   Sidebar as SidebarContainer,
@@ -43,7 +49,7 @@ export function Sidebar() {
         {
           title: "Boards",
           pathname: `/dashboard/${org.organization.id}`,
-          icon: <Grid />,
+          icon: <LayoutDashboard />,
         },
         {
           title: "Activity",

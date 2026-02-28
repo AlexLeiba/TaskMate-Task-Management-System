@@ -95,7 +95,7 @@ export function ListOptions({ listId }: Props) {
   function handleModalDeleteList() {
     setDeleteDialogOpen(true);
   }
-  // TODO add delete board api request
+
   async function handleDeleteList(listId: string) {
     await deleteFile(
       { type: "list", listId, fileType: "raw", boardId },

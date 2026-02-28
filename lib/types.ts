@@ -236,7 +236,7 @@ export type CardAndDueDateAndChecklistType = Card & {
 
 export type TabType = {
   label: string;
-  value: "features" | "solutions" | "about" | null;
+  value: "features" | "solutions" | "about" | "plans" | null;
 };
 
 export type HeaderTabsContentType = {
@@ -257,6 +257,14 @@ export type HeaderTabsContentType = {
     link: string;
   }[];
   about: {
+    id: string;
+    icon: JSX.Element;
+    title: string;
+    description: string;
+    color: string;
+    link: string;
+  }[];
+  plans: {
     id: string;
     icon: JSX.Element;
     title: string;
@@ -302,6 +310,10 @@ export type HeaderAdditionalInfoTabsType = {
     description: string;
   }[];
   about: {
+    title: string;
+    description: string;
+  }[];
+  plans: {
     title: string;
     description: string;
   }[];

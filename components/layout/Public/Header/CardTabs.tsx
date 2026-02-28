@@ -2,19 +2,22 @@
 
 import { IconButton } from "@/components/ui/iconButton";
 import { HEADER_CARD_TABS_FEATURES } from "@/lib/consts";
+import { TabType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { variantsTabCardColors } from "@/lib/variantsTabsCardsColors";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 type Props = {
-  type: "features" | "solutions" | "about";
+  type: TabType["value"];
 };
 
 export function CardTabs({ type }: Props) {
+  if (type === null) return null;
   return (
     <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-2">
       {type !== "about" &&
+        type !== "plans" &&
         HEADER_CARD_TABS_FEATURES[type].map((card, index) => {
           return (
             <Link
@@ -39,13 +42,13 @@ export function CardTabs({ type }: Props) {
           );
         })}
 
-      {type === "about" && (
+      {(type === "about" || type === "plans") && (
         <p className="whitespace-break-spaces text-lg">
           {HEADER_CARD_TABS_FEATURES[type][0].description}
         </p>
       )}
 
-      {type !== "about" && (
+      {type !== "about" && type !== "plans" && (
         <Link
           href={"/"}
           title={`see all ${type}`}

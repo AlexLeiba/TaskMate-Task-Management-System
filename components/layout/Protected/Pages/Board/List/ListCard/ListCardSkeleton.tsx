@@ -1,6 +1,6 @@
 export function ListCardSkeleton() {
   const skeletonArray = [1, 2, 3, 4];
-  // TODO: add it
+
   return (
     <div className="max-w-400 mx-auto p-4 overflow-x-auto  w-full flex gap-4 items-start   h-full">
       <div className="flex gap-4 w-full">

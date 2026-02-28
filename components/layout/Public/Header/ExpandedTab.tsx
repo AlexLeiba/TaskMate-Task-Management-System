@@ -5,9 +5,10 @@ import { cn } from "@/lib/utils";
 import { CardTabs } from "./CardTabs";
 import { SideTabsContent } from "./SideTabsContent";
 import { HEADER_TABS_TITLE } from "@/lib/consts";
+import { TabType } from "@/lib/types";
 
 type Props = {
-  type: "features" | "solutions" | "about" | null;
+  type: TabType["value"];
 };
 
 export function ExpandedTab({ type }: Props) {

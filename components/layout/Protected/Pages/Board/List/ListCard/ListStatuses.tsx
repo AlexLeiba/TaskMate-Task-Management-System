@@ -34,7 +34,7 @@ export function ListStatuses({ selectedStatus, listId }: Props) {
         toast.error(message || "Error changing list status, please try again");
       },
     });
-  // get list id here TODO
+
   const [statusData, setStatusData] = useState<StatusType>(
     LIST_STATUSES.find((s) => s.value === selectedStatus)!,
   );
@@ -87,7 +87,6 @@ export function ListStatuses({ selectedStatus, listId }: Props) {
               </div>
             </IconButton>
           ))}
-          {/* TODO update add custom status card */}
         </div>
       </PopoverContent>
     </Popover>

@@ -82,7 +82,6 @@ export function SubHeader({
           </div>
         </AddNewInput>
 
-        {/* TODO add org id from params */}
         <Link href={`/dashboard/${orgId || ""}`}>
           <IconButton
             className="p-1"

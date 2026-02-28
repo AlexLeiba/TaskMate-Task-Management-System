@@ -39,6 +39,8 @@ export function HeaderDesktopTabletContent() {
             <div className="flex items-center gap-8 px-4 py-2  ">
               {HEADER_TABS_LINKS.map((tab) => (
                 <IconButton
+                  title={`Open ${tab.label} tab`}
+                  aria-label={`Open ${tab.label} tab`}
                   onClick={() => setOpenedTabs(tab.value)}
                   key={tab.value}
                   classNameChildren="group"

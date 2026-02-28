@@ -4,13 +4,15 @@ import {
   HEADER_SIDEBAR_INFO_TABS,
   HEADER_SIDEBAR_INFO_TABS_TITLE,
 } from "@/lib/consts";
+import { TabType } from "@/lib/types";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 type Props = {
-  type: "features" | "solutions" | "about";
+  type: TabType["value"];
 };
 export function SideTabsContent({ type }: Props) {
+  if (type === null) return null;
   return (
     <div className="bg-tertiary/20 w-full h-full px-4 py-2">
       <p className="text-xl">{HEADER_SIDEBAR_INFO_TABS_TITLE[type]}</p>

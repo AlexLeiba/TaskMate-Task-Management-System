@@ -321,6 +321,7 @@ export const HEADER_CARD_TABS_TITLES = [
   { section: "features", label: "Features" },
   { section: "solutions", label: "Solutions" },
   { section: "about", label: "About" },
+  { section: "plans", label: "Plans" },
 ] as const;
 
 export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
@@ -453,6 +454,26 @@ Since the project was developed for personal use, learning purposes, and as part
       color: "",
     },
   ],
+  plans: [
+    {
+      id: "1",
+      title: "About Taskmate project",
+      description: `
+Permissions:
+Based on user role Admin or User will have certain restrictions.
+ User will still be able to read any data within its organization but won't be able to delete: boards, lists, cards and for Card features as: comments , attachments, checklists , dueDate, only assigned Members of the Card and Admin will be able to delete.
+
+Payment system with Stripe:
+Will integrate payment system with Stripe, limiting only 5 Boards per organization for free. The payment system will be in development mode. 
+
+Views:
+Table view and list view of the board
+`,
+      icon: <></>,
+      link: "",
+      color: "",
+    },
+  ],
 };
 
 export const HEADER_SIDEBAR_INFO_TABS: HeaderAdditionalInfoTabsType = {
@@ -506,23 +527,42 @@ export const HEADER_SIDEBAR_INFO_TABS: HeaderAdditionalInfoTabsType = {
         "The application was built using modern and reliable technologies, including Next.js, TypeScript, Tailwind CSS, Prisma, and several other supporting tools.",
     },
   ],
+  plans: [
+    {
+      title: "Permissions",
+      description:
+        "Users won't be able to delete: boards, lists, cards and for Card features as: comments , attachments, checklists , dueDate, only assigned Members of the Card  and Admin will be able to delete.",
+    },
+    {
+      title: "Views",
+      description: "Table view and list view of the board.",
+    },
+    {
+      title: "Payment system",
+      description:
+        "Will integrate payment system with Stripe, limiting only 5 Boards per organization for free. The payment system will be in development mode. ",
+    },
+  ],
 };
 
 export const HEADER_SIDEBAR_INFO_TABS_TITLE = {
   features: "Features",
   solutions: "Solutions",
   about: "About",
+  plans: "Plans",
 };
 export const HEADER_TABS_TITLE = {
   features: "Features",
   solutions: "Solutions",
   about: "About",
+  plans: "Plans",
 };
 
 export const HEADER_TABS_LINKS: TabType[] = [
   { label: "Features", value: "features" },
   { label: "Solutions", value: "solutions" },
   { label: "About", value: "about" },
+  { label: "Plans", value: "plans" },
 ];
 
 // FOOTER

@@ -37,12 +37,12 @@ export function Hero() {
         </Link>
       </div>
 
-      <div>
+      <div className="max-h-[368.28px]">
         <Image
           src="/taskmate-hero.webp"
           alt="hero"
           width={500}
-          height={500}
+          height={368}
           className="objecty-cover w-full h-full"
         />
       </div>

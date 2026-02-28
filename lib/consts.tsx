@@ -697,3 +697,5 @@ export const PRODUCTIVITY_DATA = [
 
 /////DATE FORMAT
 export const DATE_FORMAT = "MMM d yyyy a HH:mm";
+
+export const INITIAL_TIME = "00:00:00";

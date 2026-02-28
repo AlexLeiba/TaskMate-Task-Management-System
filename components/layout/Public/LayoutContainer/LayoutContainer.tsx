@@ -11,7 +11,6 @@ export function LayoutContainer({
 
   ...props
 }: Props) {
-  //  py - 12;
   return (
     <section
       className={cn(

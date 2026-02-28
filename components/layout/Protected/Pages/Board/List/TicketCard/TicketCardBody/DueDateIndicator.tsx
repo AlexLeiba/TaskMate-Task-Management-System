@@ -1,9 +1,12 @@
+"use cl;ient";
 import { duedateStatusColors } from "@/lib/dueDateStatusColors";
 import { DueDate } from "@/lib/generated/prisma/client";
+import { isValidDateString } from "@/lib/isValidDateString";
 import { parseDateTimeToLocal } from "@/lib/parseDateTimeToLocal";
 import { cn } from "@/lib/utils";
 import { differenceInDays, differenceInHours, format } from "date-fns";
 import { Clock10 } from "lucide-react";
+import toast from "react-hot-toast";
 
 type Props = {
   data: DueDate | undefined;
@@ -11,7 +14,13 @@ type Props = {
 export function DueDateIndicator({ data }: Props) {
   if (!data || !data.date || !data.time) return null;
 
-  //   TODO check if type of data is date
+  const isValidDate =
+    isValidDateString(data.date) && isValidDateString(data.time);
+
+  if (!isValidDate) {
+    return toast.error("Invalid date or time, please try again");
+  }
+
   const dueDate = parseDateTimeToLocal(data.date, data.time);
   const date = new Date(dueDate);
 

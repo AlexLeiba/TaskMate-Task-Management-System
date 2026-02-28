@@ -23,6 +23,8 @@ import toast from "react-hot-toast";
 import { useBoardId } from "@/hooks/useBoardId";
 
 import { parseDateTimeToLocal } from "@/lib/parseDateTimeToLocal";
+import { INITIAL_TIME } from "@/lib/consts";
+import { isValidDateString } from "@/lib/isValidDateString";
 
 const DeleteDialog = dynamic(() =>
   import("@/components/layout/Protected/DeleteDialog/DeleteDialog").then(
@@ -41,7 +43,7 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
   const now = new Date();
   const [date, setDate] = useState<{ date: Date; time: string }>({
     date: now,
-    time: "00:00:00",
+    time: INITIAL_TIME,
   });
 
   const [dueDate, setDueDate] = useState<string>("");
@@ -53,7 +55,14 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
   useEffect(() => {
     if (data?.[0]?.id) {
       const { time, date } = data[0];
-      // TODO check if type of data is date and time
+
+      const isValidDate = isValidDateString(date) && isValidDateString(time);
+
+      if (!isValidDate) {
+        toast.error("Invalid date, please try again");
+        return;
+      }
+
       const parsedDateWithTime = parseDateTimeToLocal(date, time);
 
       const formatedDate = format(parsedDateWithTime, "yyyy-MM-dd, HH:mm");
@@ -98,7 +107,15 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
   function handleAddDueDate() {
     const timeString = `2026-01-01T${date.time}`;
     const timeInUTC = new Date(timeString).toISOString();
-    const dateUTC = date.date.toISOString();
+    const dateUTC = date?.date?.toISOString();
+
+    const isValidDateAndTime =
+      isValidDateString(dateUTC) && isValidDateString(timeInUTC);
+
+    if (!isValidDateAndTime) {
+      toast.error("Invalid date or time, please try again");
+      return;
+    }
 
     mutateCreateDueDate({
       cardDetailsId: cardDetailsId || "",

@@ -87,12 +87,19 @@ export function Actions({ cardDetailsId, listId, cardId }: Props) {
     });
 
   async function handleCopyCard() {
+    if (!boardId || !listId || !cardId) {
+      return toast.error("Something went wrong, please try again");
+    }
+
     toast.loading("Copying card...", { id: "copy-card" });
     copyCardMutation({ listId, boardId: boardId || "", cardId });
   }
 
   async function handleDeleteCard() {
-    if (!boardId) return toast.error("Board not found");
+    if (!cardId || !listId || !boardId) {
+      toast.error("Something went wrong, please try again");
+    }
+
     toast.loading("Deleting card...", { id: "delete-card" });
     setIsDeleteModalOpened(false);
 

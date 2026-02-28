@@ -48,7 +48,6 @@ export async function POST(req: NextRequest) {
       unique_filename: false,
       resource_type: fileType,
     });
-    console.log("🚀 ~ POST ~ result \n\n\n:", result);
 
     const userAlreadyAttachedfile = await prisma.attachments.findFirst({
       where: {
@@ -175,7 +174,6 @@ export async function DELETE(req: NextRequest) {
       const result = await cloudinary.uploader.destroy(bodyData.fileId, {
         resource_type: bodyData.fileType,
       });
-      console.log("🚀 ~ DELETE ~ result:", result);
 
       if (!result || result?.result === "not found") {
         throw new Error("File not found");

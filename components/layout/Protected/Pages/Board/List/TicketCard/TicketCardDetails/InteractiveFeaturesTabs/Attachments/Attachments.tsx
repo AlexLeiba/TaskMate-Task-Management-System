@@ -169,12 +169,10 @@ export function Attachments({ cardDetailsId }: Props) {
   });
 
   function handleDeleteFile(fileId: string, fileName: string, id: string) {
-    console.log("fileId", fileId);
     mutateDelete({ fileId, fileName, fileType: "raw", id });
     toast.loading("Deleting file...", { id: "delete-file" });
   }
   function handleDeleteImage(fileId: string, fileName: string, id: string) {
-    console.log("imageId", fileId);
     mutateDelete({ fileId, fileName, fileType: "image", id });
     toast.loading("Deleting image...", { id: "delete-file" });
   }
@@ -210,8 +208,6 @@ export function Attachments({ cardDetailsId }: Props) {
       const reader = new FileReader();
       reader.readAsDataURL(event.target.files[0]);
       const fileName = event.target.files[0].name;
-      const fileType = event.target.files[0];
-      console.log("fileType", fileType);
 
       reader.onload = () => {
         const previewFileUrl = reader.result as string;

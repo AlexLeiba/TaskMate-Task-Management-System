@@ -55,6 +55,7 @@ export function SubHeader({
     <div className="bg-foreground/70 w-full">
       <div className="px-4 flex justify-between items-center max-w-400 mx-auto">
         <AddNewInput
+          defaultValue={board?.title}
           loading={isPending}
           disabled={isPending}
           handleSubmitValue={(v) => handleSubmitForm(v)}

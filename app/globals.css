@@ -257,6 +257,8 @@ Mental model: These are default visual rules of my app.
 
 .ql-editor {
   min-height: 200px !important;
+  max-height: 250px !important;
+
   overflow-y: auto !important;
   padding-bottom: 1rem !important; /* Add space for readability */
   overflow-y: auto; /* Add vertical scrolling if content is too long */
@@ -264,6 +266,13 @@ Mental model: These are default visual rules of my app.
   border: solid 1px rgb(209 213 219 / var(--tw-text-opacity, 1));
   border-bottom-right-radius: 8px;
   border-bottom-left-radius: 8px;
+}
+
+@media (max-width: 600px) {
+  .ql-editor {
+    min-height: 200px !important;
+    max-height: 230px !important;
+  }
 }
 
 .html-content a {

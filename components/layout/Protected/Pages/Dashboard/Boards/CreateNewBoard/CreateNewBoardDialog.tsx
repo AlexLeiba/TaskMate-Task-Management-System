@@ -17,7 +17,7 @@ export function CreateNewBoardDialog({
 }: Props) {
   return (
     <Dialog open={newBoardDialogOpen} onOpenChange={setNewBoardDialogOpen}>
-      <DialogContent className="lg:min-w-200!">
+      <DialogContent className="lg:min-w-200!  sm:h-auto h-full flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-2xl">Create new board</DialogTitle>
         </DialogHeader>

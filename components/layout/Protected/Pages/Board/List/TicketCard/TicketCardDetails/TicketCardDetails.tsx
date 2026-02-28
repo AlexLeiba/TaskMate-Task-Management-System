@@ -66,12 +66,12 @@ export function TicketCardDetails({
         className={cn(
           "flex flex-col overflow-y-auto h-full",
           "md:min-w-[80%] md:max-w-200 md:max-h-200 md:min-h-100",
-          "sm:min-w-full sm:min-h-full",
+          "min-w-full min-h-full",
           "lg:max-w-350  lg:max-h-210  ",
         )}
       >
         <DialogHeader>
-          <DialogTitle className="text-2xl">{cardTitle}</DialogTitle>
+          <DialogTitle className="text-2xl text-left">{cardTitle}</DialogTitle>
           <div className="flex gap-2">
             <MapPin />
             <span className="opacity-70">From list - </span>{" "}

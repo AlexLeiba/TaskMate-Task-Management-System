@@ -5,7 +5,7 @@ import { AddNewInput } from "../../../../../AddNewInput";
 import { CommentCard } from "./CommentCard";
 import { CommentsCardSkeleton } from "./CommentsCardSkeleton";
 import { Comment, User } from "@/lib/generated/prisma/client";
-import { DeleteDialog } from "@/components/layout/Protected/DeleteDialog/DeleteDialog";
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createCommentAction,
@@ -15,6 +15,13 @@ import {
 import toast from "react-hot-toast";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import dynamic from "next/dynamic";
+
+const DeleteDialog = dynamic(() =>
+  import("@/components/layout/Protected/DeleteDialog/DeleteDialog").then(
+    (m) => m.DeleteDialog,
+  ),
+);
 
 type Props = {
   data: (Comment & { author: User })[] | undefined;

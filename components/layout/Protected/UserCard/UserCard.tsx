@@ -1,4 +1,3 @@
-import { ActivityType, ReporterType, UserType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import Image from "next/image";
@@ -21,7 +20,7 @@ const cardVariants = cva("", {
   },
 });
 
-const nameVariants = cva("text-base text-gray-300 line-clamp-1", {
+const nameVariants = cva("text-base text-gray-200 line-clamp-1", {
   variants: {
     size: {
       sm: "text-sm",
@@ -33,7 +32,7 @@ const nameVariants = cva("text-base text-gray-300 line-clamp-1", {
     size: "md",
   },
 });
-const emailVariants = cva("text-gray-400", {
+const emailVariants = cva("text-gray-300", {
   variants: {
     size: {
       sm: "text-xs",
@@ -65,24 +64,33 @@ export function UserCard({
   return (
     <div
       className={cn(
-        "flex gap-4 items-center overflow-hidden text-left",
+        type === "activity"
+          ? "flex flex-col items-left "
+          : "flex items-center gap-4 ",
+        " overflow-hidden text-left flex-col",
         className,
       )}
     >
-      {data.avatar && (
-        <div className="rounded-full overflow-hidden">
-          <Image
-            src={data.avatar}
-            alt={data.name}
-            className={cn(cardVariants({ size }))}
-            width={20}
-            height={20}
-          />
+      <div
+        className={cn(
+          type === "activity" ? "flex items-center gap-4" : "flex gap-4",
+        )}
+      >
+        {data.avatar && (
+          <div className="rounded-full overflow-hidden">
+            <Image
+              src={data.avatar}
+              alt={data.name}
+              className={cn(cardVariants({ size }))}
+              width={20}
+              height={20}
+            />
+          </div>
+        )}
+        <div className="flex flex-col ">
+          <p className={cn(nameVariants({ size }))}>{data.name}</p>
+          <p className={cn(emailVariants({ size }))}>{data.email}</p>
         </div>
-      )}
-      <div className="flex flex-col ">
-        <p className={cn(nameVariants({ size }))}>{data.name}</p>
-        <p className={cn(emailVariants({ size }))}>{data.email}</p>
       </div>
       {type === "activity" && (
         <div className="flex flex-col gap-2 items-start">

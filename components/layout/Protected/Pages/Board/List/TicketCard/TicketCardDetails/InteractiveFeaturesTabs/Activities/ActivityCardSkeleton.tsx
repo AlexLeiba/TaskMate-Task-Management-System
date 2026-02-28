@@ -11,7 +11,7 @@ export function ActivityCardSkeleton() {
               <div className="bg-gray-700 rounded-full size-8"></div>
               <div className="h-full w-1/2 bg-gray-700"></div>
             </div>
-            <div className="bg-gray-700 h-full w-87.5"></div>
+            <div className="bg-gray-700 h-full md:w-87.5 w-full"></div>
           </div>
         );
       })}

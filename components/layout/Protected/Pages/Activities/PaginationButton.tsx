@@ -28,6 +28,8 @@ export function PaginationButton({ dataLength }: Props) {
   return (
     <div className="flex justify-between gap-4">
       <Button
+        title={`Previous page ${Number(currentPage) - 1}`}
+        aria-label={`Previous page ${Number(currentPage) - 1}`}
         variant={"secondary"}
         onClick={() => handlePageChange("prev")}
         disabled={currentPage === "1"}
@@ -35,6 +37,8 @@ export function PaginationButton({ dataLength }: Props) {
         <ChevronLeft />
       </Button>
       <Button
+        title={`Next page ${Number(currentPage) + 1}`}
+        aria-label={`Next page ${Number(currentPage) + 1}`}
         variant={"secondary"}
         onClick={() => handlePageChange("next")}
         disabled={Number(currentPage) * 10 >= dataLength}

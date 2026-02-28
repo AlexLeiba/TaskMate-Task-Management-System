@@ -104,12 +104,17 @@ export function Description({ description = "", cardDetailsId }: Props) {
       <Spacer size={2} />
       {isQuillVisible ? (
         <div className="h-72.5">
-          <ReactQuill theme="snow" value={value} onChange={setValue} />
+          <ReactQuill
+            theme="snow"
+            value={value}
+            onChange={setValue}
+            className="w-full"
+          />
         </div>
       ) : cardDetailsId ? (
         <InitialDescriptionState
           onClick={() => setIsQuillVisible(true)}
-          classNameChildren="flex flex-col justify-start items-start h-full wrap-break-word  "
+          classNameChildren="flex flex-col justify-start items-start h-full wrap-break-word"
         >
           {value !== "" ? (
             <div

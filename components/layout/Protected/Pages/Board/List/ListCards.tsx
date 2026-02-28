@@ -58,6 +58,7 @@ export function ListCards({ boardId, listData }: Props) {
 
   // RESPONSER, Top level app events used to perform state updates.
   function handleDragEnd(dragEventData: DropResult<string>) {
+    console.log("🚀 ~ handleDragEnd ~ dragEventData:", dragEventData);
     const destination = dragEventData?.destination;
     const source = dragEventData?.source;
 

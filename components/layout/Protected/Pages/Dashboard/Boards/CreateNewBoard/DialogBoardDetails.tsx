@@ -46,6 +46,7 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
       setValue("title", "");
       setSelectedImage(undefined);
       setNewBoardDialogOpen(false);
+
       toast.success("Board created successfully");
 
       if (type === "board") {
@@ -93,8 +94,8 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-12">
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-2">
+    <div className="flex flex-col md:gap-12 gap:4">
+      <div className="grid md:grid-cols-[repeat(auto-fit,minmax(140px,1fr))] grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-2">
         {isFetching ? (
           <DialogBoardCardSkeleton />
         ) : (
@@ -111,7 +112,7 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
         )}
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col md:gap-4 gap-2">
         <div className="flex justify-end">
           <Button
             disabled={isFetching || isPending}

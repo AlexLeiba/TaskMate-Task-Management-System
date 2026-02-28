@@ -7,7 +7,7 @@ export function FooterDashboard() {
     <footer className="p-4 bg-background-element text-white w-full">
       <div className="max-w-350 pl-4 mx-auto">
         <div className="flex justify-between items-center">
-          <Logo />
+          <Logo type="footer" />
 
           <div className="flex md:items-center  gap-2">
             <Link

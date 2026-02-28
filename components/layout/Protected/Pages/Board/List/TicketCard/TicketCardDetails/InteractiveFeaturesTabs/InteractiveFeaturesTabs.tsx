@@ -34,7 +34,7 @@ export function InteractiveFeaturesTabs({ cardDetailsId, comments }: Props) {
   }
   return (
     <div>
-      <div className="flex gap-4">
+      <div className="flex gap-4 flex-wrap">
         {/* TABS */}
         {TAB_ELEMENTS.map((data) => (
           <div key={data.value}>

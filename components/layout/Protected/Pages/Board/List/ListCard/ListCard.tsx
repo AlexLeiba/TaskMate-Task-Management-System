@@ -53,6 +53,10 @@ export function ListCard({ listData, index }: Props) {
                     );
                   })}
 
+                  {listData?.cards?.length === 0 && (
+                    <p className="text-sm text-gray-400 pt-2">No cards found</p>
+                  )}
+
                   {/* DROP AREA PLACEHOLDER */}
                   {provided.placeholder}
                 </ol>

@@ -78,7 +78,7 @@ export function Checklist({ cardDetailsId }: Props) {
       queryClient.setQueryData(
         ["checklist", cardDetailsId],
         (oldData: Checklist[]) => {
-          const newData = [newItem, ...oldData];
+          const newData = [{ ...newItem, id: Date.now() }, ...oldData];
           return newData;
         },
       );

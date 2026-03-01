@@ -136,7 +136,7 @@ export function TicketCardHeader({
           <IconButton
             className={cn(
               "absolute top-0 right-0",
-              isOpenedOptions ? "block" : "hidden group-hover:block",
+              isOpenedOptions ? "block" : "md:hidden md:group-hover:block",
             )}
             disabled={
               isPendingDeleteCardDeleteCard ||

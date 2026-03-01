@@ -39,10 +39,14 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Breakpoints of Grid Container
 
-### Content width: 80rem = 1280px , TW Utility: max-w-7xl;
+### Content width: 72rem = 1152px , TW Utility: max-w-6xl;
 
-### Content Board width: 100rem = 1600px , TW Utility: max-w-400;
+### Content Board width: 72rem = 1152px , TW Utility: max-w-6xl;
 
-### Layout Padding Top Bottom: 3.75rem = 60px , TW Utility: 15;
+### Layout Padding Top Bottom: From tablet to desktop:Tailwind utility: py-16 | 64px, For mobile: Tailwind utility py-12 | 48px,
 
-### Main Protected Page Title: font-size: 24px, font-weight:500, TW utilities: text-2xl font-medium
+## Headings
+
+### Main Protected Page Title Heading: font-size: 24px, font-weight:500, TW utilities: text-2xl font-medium
+
+### Second Protected Page Title Heading: font-size: 24px, font-weight:500, TW utilities: text-2xl font-medium

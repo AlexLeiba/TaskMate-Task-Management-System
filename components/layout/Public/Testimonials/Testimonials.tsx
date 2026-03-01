@@ -15,7 +15,7 @@ export function Testimonials() {
             <SliderItem key={item.id}>
               {/* <div className={cn(`   bg-black rounded-4xl z-50`)}> */}
               <div className="w-screen  md:h-100  ">
-                <div className="lg:w-[calc(100vw-((100vw-1152px+32px)))] w-[calc(100vw-48px)]     rounded-md bg-background-element  h-full">
+                <div className="lg:w-[calc(100vw-((100vw-1152px+32px)))]   w-[calc(100vw-32px)]    rounded-md bg-background-element  h-full">
                   <div className="flex gap-8 h-full md:flex-row flex-col">
                     <div className=" flex flex-col justify-between h-full p-8">
                       <p className="text-xl line-clamp-5">{item.description}</p>

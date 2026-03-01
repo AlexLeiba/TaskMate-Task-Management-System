@@ -14,7 +14,7 @@ export function LayoutContainer({
   return (
     <section
       className={cn(
-        fluid ? "w-full" : "w-full max-w-6xl mx-auto ",
+        fluid ? "w-full" : "w-full max-w-6xl  mx-auto ",
         "md:py-16 py-12",
       )}
       {...props}

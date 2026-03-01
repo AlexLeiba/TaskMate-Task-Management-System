@@ -58,7 +58,7 @@ export function HeaderMobileContent() {
     <>
       <div className="bg-background-element fixed top-0 left-0 right-0  px-4 py-2 z-50 md:hidden ">
         <div className="flex justify-between items-center ">
-          <Logo />
+          <Logo visible />
 
           <IconButton
             className="py-3 px-2"
@@ -106,7 +106,7 @@ export function HeaderMobileContent() {
                       <div key={item.id} className="flex flex-col gap-2">
                         <div className="flex items-center gap-2">
                           {item.icon}
-                          <p className="text-lg">{item.title}</p>;
+                          <p className="text-lg">{item.title}</p>
                         </div>
 
                         <p>{item.description}</p>

@@ -457,7 +457,7 @@ Since the project was developed for personal use, learning purposes, and as part
   plans: [
     {
       id: "1",
-      title: "About Taskmate project",
+      title: "Our Future plans",
       description: `
 Permissions:
 Based on user role Admin or User will have certain restrictions.

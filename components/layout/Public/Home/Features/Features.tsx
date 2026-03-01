@@ -49,7 +49,7 @@ export function Features() {
                     width={1000}
                     height={800}
                     alt="Hero-image"
-                    className="lg:w-[calc(50vw-((100vw-1152px+48px)/2))] w-[calc(100vw-48px)]   h-full object-cover rounded-md "
+                    className="lg:w-[calc(50vw-((100vw-1152px+48px)/2))] md:w-[calc(50vw-48px)]  w-[calc(100vw-32px)]  h-full object-cover rounded-md "
                   />
                 </div>
               </SliderItem>

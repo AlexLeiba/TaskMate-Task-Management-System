@@ -20,8 +20,6 @@ const CreateNewBoardDialog = dynamic(() =>
   ),
 );
 
-import { useStore } from "@/store/useStore";
-
 const OrganizationSwitcher = dynamic(
   () => import("@clerk/nextjs").then((m) => m.OrganizationSwitcher),
   { ssr: false, loading: () => <OrganizationSwitchSkeleton /> },
@@ -31,6 +29,9 @@ const UserButton = dynamic(
   () => import("@clerk/nextjs").then((m) => m.UserButton),
   { ssr: false, loading: () => <UserProfileSkeleton /> },
 );
+
+import { useStore } from "@/store/useStore";
+import { ButtonBack } from "./ButtonBack";
 
 type Props = {
   type?: "dashboard" | "board";
@@ -52,6 +53,7 @@ export function HeaderDashboard({ type = "dashboard" }: Props) {
               <SidebarTrigger title={"Toggle sidebar"} />
             )}
             <Logo />
+            {type === "board" && <ButtonBack />}
           </div>
 
           <div className="flex gap-2">

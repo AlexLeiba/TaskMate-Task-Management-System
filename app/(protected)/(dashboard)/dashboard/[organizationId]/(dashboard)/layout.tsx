@@ -9,6 +9,12 @@ import dynamic from "next/dynamic";
 
 import React from "react";
 
+export const metadata = {
+  title: "TaskMate - Dashboard",
+  description:
+    "TaskMate is a friendly task management system which can simplify and boost your productivity.",
+};
+
 function ProtectedLayout({ children }: { children: React.ReactNode }) {
   return (
     <>

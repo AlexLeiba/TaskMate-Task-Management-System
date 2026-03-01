@@ -11,7 +11,7 @@ export function Logo({ visible = false }: Props) {
       className={cn(visible ? "" : "md:block hidden", "w-25 ")}
     >
       <Image
-        src="/white-logo.webp"
+        src="/logo.webp"
         alt="Logo"
         width={100}
         height={24}

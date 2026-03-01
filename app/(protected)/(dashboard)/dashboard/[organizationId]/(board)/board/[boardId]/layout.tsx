@@ -5,6 +5,12 @@ import Image from "next/image";
 
 import React from "react";
 
+export const metadata = {
+  title: "TaskMate - Board",
+  description:
+    "TaskMate is a friendly task management system which can simplify and boost your productivity.",
+};
+
 async function ProtectedLayout({
   children,
   params,
@@ -21,7 +27,7 @@ async function ProtectedLayout({
     <>
       <SidebarProvider>
         <div className="min-h-screen flex flex-col w-full">
-          <HeaderDashboard />
+          <HeaderDashboard type="board" />
           <main className={` flex flex-1 py-14`}>
             {boardData?.bgImageUrl && (
               <Image

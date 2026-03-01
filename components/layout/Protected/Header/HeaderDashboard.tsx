@@ -90,8 +90,9 @@ export function HeaderDashboard({ type = "dashboard" }: Props) {
                   organizationSwitcherPopoverCard: " ",
                   organizationSwitcherPopoverActionButton:
                     "!text-white hover:opacity-70",
-                  organizationPreviewTextContainer: "text-white",
-                  organizationSwitcherButton: " text-white",
+                  organizationPreviewTextContainer: "!text-white",
+                  organizationSwitcherButton: "!text-white",
+                  organizationSwitcherInvitationAcceptButton: "!text-white",
                 },
               }}
             />

@@ -62,6 +62,10 @@ export function Actions({ cardDetailsId, listId, cardId }: Props) {
   } = useMutation({
     mutationKey: ["delete-card"],
     mutationFn: deleteCardAction,
+    onMutate: async () => {
+      // DELETE FILES FROM CLOUD
+      await deleteFile(); // execution of the mutation will wait until this request is resolved (removing all attachments from cloud)
+    },
     onSuccess: () => {
       toast.dismiss("delete-card");
       toast.success("Card deleted");
@@ -102,9 +106,6 @@ export function Actions({ cardDetailsId, listId, cardId }: Props) {
 
     toast.loading("Deleting card...", { id: "delete-card" });
     setIsDeleteModalOpened(false);
-
-    // DELETE FILES FROM CLOUD
-    await deleteFile(); //js will await until this fn is resolved before moving to next line
 
     // DELETE FILES FROM DB
     deleteCardMutation({ cardId, listId, boardId });
@@ -152,14 +153,12 @@ export function Actions({ cardDetailsId, listId, cardId }: Props) {
           <Delete size={20} /> Delete
         </IconButton>
 
-        {isDeleteModalOpened && (
-          <DeleteDialog
-            loading={isPendingDeleteCardDeleteCard}
-            deleteDialogOpen={isDeleteModalOpened}
-            setDeleteDialogOpen={setIsDeleteModalOpened}
-            handleDelete={handleDeleteCard}
-          />
-        )}
+        <DeleteDialog
+          loading={isPendingDeleteCardDeleteCard}
+          deleteDialogOpen={isDeleteModalOpened}
+          setDeleteDialogOpen={setIsDeleteModalOpened}
+          handleDelete={handleDeleteCard}
+        />
       </div>
     </div>
   );

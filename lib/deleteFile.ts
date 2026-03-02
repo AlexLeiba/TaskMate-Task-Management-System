@@ -13,10 +13,10 @@ export async function deleteFile(body: DeleteFileBodyType, boardId: string) {
       data: body,
     });
 
-    if (response?.data?.statusCode !== 200) {
-      return toast.error(response?.data?.error);
+    if (response?.data?.statusCode === 200) {
+      return true;
     }
   } catch (error: any) {
-    toast.error(error.message || "Error deleting files");
+    throw error;
   }
 }

@@ -23,6 +23,7 @@ export function OrgDetails() {
             alt={"Organization Logo"}
             width={35}
             height={35}
+            className="size-10 rounded-sm"
           />
         )}
       </div>

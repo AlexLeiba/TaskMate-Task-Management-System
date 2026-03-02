@@ -129,6 +129,7 @@ export function Sidebar() {
                                 alt={item.name}
                                 width={30}
                                 height={30}
+                                className="size-8 rounded-sm"
                               />
                             )}
                             {item.name}

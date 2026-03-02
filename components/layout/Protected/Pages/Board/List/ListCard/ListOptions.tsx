@@ -42,6 +42,12 @@ export function ListOptions({ listId }: Props) {
     useMutation({
       mutationKey: ["delete-list"],
       mutationFn: deleteListAction,
+      onMutate: async () => {
+        await deleteFile(
+          { type: "list", listId, fileType: "raw", boardId },
+          boardId,
+        ); // execution of the mutation will wait until this request is resolved (removing all attachments from cloud)
+      },
       onSuccess: () => {
         toast.dismiss("delete-list");
         toast.success("List deleted");
@@ -97,11 +103,6 @@ export function ListOptions({ listId }: Props) {
   }
 
   async function handleDeleteList(listId: string) {
-    await deleteFile(
-      { type: "list", listId, fileType: "raw", boardId },
-      boardId,
-    ); //js will await until this fn is resolved before moving to next line and deleting the card
-
     mutateDeleteList({ listId, boardId });
     toast.loading("Deleting list...", { id: "delete-list" });
     setDeleteDialogOpen(false);

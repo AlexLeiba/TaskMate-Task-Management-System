@@ -39,6 +39,9 @@ export function Boards({
   const { mutate: mutateDeleteBoard, isPending } = useMutation({
     mutationKey: ["delete-board"],
     mutationFn: deleteBoardAction,
+    onMutate: async (boardId) => {
+      await deleteFile({ type: "board", fileType: "raw", boardId }, boardId); //await deletion of all files from cloud from the board before deleting the board itself
+    },
     onSuccess: () => {
       setDeleteDialogOpen(false);
       toast.dismiss("delete-board");
@@ -64,7 +67,6 @@ export function Boards({
       toast.error("Please select a board to delete");
       return;
     }
-    await deleteFile({ type: "board", fileType: "raw", boardId }, boardId); //await deletion of all files in the board before deleting the board itself
 
     mutateDeleteBoard(boardId);
 

@@ -55,6 +55,13 @@ export function TicketCardHeader({
     mutate: deleteCardMutation,
     isPending: isPendingDeleteCardDeleteCard,
   } = useMutation({
+    onMutate: async () => {
+      // DELETE FILES FROM CLOUD
+      await deleteFile(
+        { type: "card", cardDetailsId, fileType: "raw" },
+        boardId,
+      ); // execution of the mutation will wait until this request is resolved (removing all attachments from cloud)
+    },
     mutationKey: ["delete-card"],
     mutationFn: deleteCardAction,
     onSuccess: () => {
@@ -111,9 +118,6 @@ export function TicketCardHeader({
 
   async function handleDeleteCard(cardId: string) {
     toast.loading("Deleting card...", { id: "delete-card" });
-
-    // DELETE FILES FROM CLOUD
-    await deleteFile({ type: "card", cardDetailsId, fileType: "raw" }, boardId); //js will await until this fn is resolved before moving to next line and deleting the card
 
     // DELETE FILES FROM DB
     deleteCardMutation({ cardId, listId, boardId });

@@ -53,14 +53,14 @@ export async function editBoardTitleAction({
   title: string;
 }): Promise<{ data: Board | null; error: { message: string } }> {
   try {
-    const { data: activeUser } = await checkCurrentActiveUser();
+    const { data: activeUserData } = await checkCurrentActiveUser();
 
     const { orgId } = await auth();
     if (!orgId) {
       throw new Error("User not authenticated");
     }
 
-    if (!activeUser) {
+    if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
 
@@ -88,7 +88,7 @@ export async function editBoardTitleAction({
     await createNewActivity({
       cardId: null,
       boardId,
-      authorId: activeUser.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Updated board title from "${prevBoardData?.title}" to "${response.title}"`,
       type: "updated",
     });

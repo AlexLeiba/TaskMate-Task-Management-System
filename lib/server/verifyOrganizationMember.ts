@@ -3,7 +3,7 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 export async function verifyOrganizationMember(
   currentOrgId: string | undefined | null,
 ): Promise<{
-  data: boolean;
+  data: { role: string; isMember: boolean } | null;
   error: { message: string };
 }> {
   try {
@@ -23,18 +23,31 @@ export async function verifyOrganizationMember(
       (org) => org?.organization?.id === (currentOrgId || orgId),
     );
 
+    // CURRENT ACTIVE MEMBER CLERK DATA
+    const currentMemberRole = currentOrgMembers?.find((org) => {
+      return (
+        org?.publicUserData?.userId === userId &&
+        org?.organization?.id === (currentOrgId || orgId)
+      );
+    });
+
     if (!foundMemberInCurrentOrg) {
       throw new Error("Not authorized for the current Organization");
     }
 
     return {
-      data: true,
+      data: {
+        role: currentMemberRole
+          ? currentMemberRole?.role?.replace("org:", "")
+          : "member",
+        isMember: foundMemberInCurrentOrg,
+      },
       error: { message: "" },
     };
   } catch (error: any) {
     console.log("🚀 ~ verifyOrganizationMember ~ error:", error);
     return {
-      data: false,
+      data: null,
       error: {
         message: error.message || "Not authorized for the current Organization",
       },

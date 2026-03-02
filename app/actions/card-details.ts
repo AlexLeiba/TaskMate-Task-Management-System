@@ -189,10 +189,9 @@ export async function createAttachment({
   data: Attachments | null;
   error: { message: string };
 }> {
+  const { data: activeUserData } = await checkCurrentActiveUser();
   try {
-    const activeUser = await checkCurrentActiveUser();
-
-    if (!activeUser.data) {
+    if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
 
@@ -205,7 +204,7 @@ export async function createAttachment({
     const hasUserAlreadyAttachedFile = await prisma.attachments.findFirst({
       where: {
         cardId: cardDetailsId,
-        authorId: activeUser.data.id,
+        authorId: activeUserData?.activeUser.id,
       },
     });
 
@@ -235,7 +234,7 @@ export async function createAttachment({
     const response = await prisma.attachments.create({
       data: {
         cardId: cardDetailsId,
-        authorId: activeUser.data.id,
+        authorId: activeUserData?.activeUser.id,
         files: {
           create: [
             {
@@ -256,7 +255,7 @@ export async function createAttachment({
     await createNewActivity({
       cardId: cardDetailsId,
       boardId: boardId,
-      authorId: activeUser.data.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Uploaded a new attachment: "${name}" in card: "${cardResponse?.card?.title}" from list: "${cardResponse?.card?.listName}"`,
       type: "created",
     });
@@ -285,10 +284,9 @@ export async function deleteAttachment({
   data: UploadedFile | null;
   error: { message: string };
 }> {
+  const { data: activeUserData } = await checkCurrentActiveUser();
   try {
-    const activeUser = await checkCurrentActiveUser();
-
-    if (!activeUser.data) {
+    if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
 
@@ -312,7 +310,7 @@ export async function deleteAttachment({
     await createNewActivity({
       cardId: cardDetailsId,
       boardId: boardId,
-      authorId: activeUser.data.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Deleted an attachment: "${name}" from card: "${cardResponse?.card?.title}" from list: "${cardResponse?.card?.listName}"`,
       type: "deleted",
     });
@@ -385,9 +383,9 @@ export async function createCommentAction({
   error: { message: string };
 }> {
   try {
-    const activeUser = await checkCurrentActiveUser();
+    const { data: activeUserData } = await checkCurrentActiveUser();
 
-    if (!activeUser.data) {
+    if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
 
@@ -401,7 +399,7 @@ export async function createCommentAction({
       data: {
         comment,
         cardId: cardDetailsId,
-        authorId: activeUser.data.id,
+        authorId: activeUserData?.activeUser.id,
       },
     });
 
@@ -428,7 +426,7 @@ export async function createCommentAction({
     await createNewActivity({
       cardId: cardDetailsId,
       boardId: boardId,
-      authorId: activeUser.data.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Created a comment in the card: "${cardResponse?.card?.title}" from the list: "${cardResponse?.card?.listName}"`,
       type: "created",
     });
@@ -455,9 +453,9 @@ export async function deleteCommentAction({
   error: { message: string };
 }> {
   try {
-    const activeUser = await checkCurrentActiveUser();
+    const { data: activeUserData } = await checkCurrentActiveUser();
 
-    if (!activeUser.data) {
+    if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
     const cardResponse = await getCardDetailsData({ cardDetailsId });
@@ -496,7 +494,7 @@ export async function deleteCommentAction({
     await createNewActivity({
       cardId: cardDetailsId,
       boardId: boardId,
-      authorId: activeUser.data.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Deleted a comment from the card: "${cardResponse?.card?.title}" in the list: "${cardResponse?.card?.listName}"`,
       type: "deleted",
     });
@@ -524,10 +522,9 @@ export async function updateDescriptionAction({
   data: string | null;
   error: { message: string };
 }> {
+  const { data: activeUserData } = await checkCurrentActiveUser();
   try {
-    const activeUser = await checkCurrentActiveUser();
-
-    if (!activeUser.data) {
+    if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
 
@@ -555,7 +552,7 @@ export async function updateDescriptionAction({
     await createNewActivity({
       cardId: cardDetailsId,
       boardId: boardId,
-      authorId: activeUser.data.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Updated the description from the card: "${cardResponse?.card?.title}" in the list: "${cardResponse?.card?.listName}"`,
       type: "updated",
     });
@@ -609,11 +606,11 @@ export async function createChecklistAction({
   data: Checklist | null;
   error: { message: string };
 }> {
+  const { data: activeUserData } = await checkCurrentActiveUser();
   try {
     const { orgId } = await auth();
-    const activeUser = await checkCurrentActiveUser();
 
-    if (!activeUser.data) {
+    if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
 
@@ -648,7 +645,7 @@ export async function createChecklistAction({
     await createNewActivity({
       cardId: cardDetailsId,
       boardId: boardId,
-      authorId: activeUser.data.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Created the checklist in the card: "${cardResponse?.card?.title}" in the list: "${cardResponse?.card?.listName}"`,
       type: "created",
     });
@@ -673,11 +670,11 @@ export async function updateChecklistAction({
   data: Checklist | null;
   error: { message: string };
 }> {
+  const { data: activeUserData } = await checkCurrentActiveUser();
   try {
     const { orgId } = await auth();
-    const activeUser = await checkCurrentActiveUser();
 
-    if (!activeUser.data) {
+    if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
 
@@ -715,7 +712,7 @@ export async function updateChecklistAction({
     await createNewActivity({
       cardId: cardDetailsId,
       boardId: boardId,
-      authorId: activeUser.data.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Updated the checklist from the card: "${cardResponse?.card?.title}" in the list: "${cardResponse?.card?.listName}"`,
       type: "updated",
     });
@@ -738,11 +735,11 @@ export async function deleteChecklistAction({
   data: Checklist | null;
   error: { message: string };
 }> {
+  const { data: activeUserData } = await checkCurrentActiveUser();
   try {
     const { orgId } = await auth();
-    const activeUser = await checkCurrentActiveUser();
 
-    if (!activeUser.data) {
+    if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
 
@@ -766,7 +763,7 @@ export async function deleteChecklistAction({
     await createNewActivity({
       cardId: cardDetailsId,
       boardId: boardId,
-      authorId: activeUser.data.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Deleted a checklist item from the card: "${cardResponse?.card?.title}" in the list: "${cardResponse?.card?.listName}"`,
       type: "deleted",
     });
@@ -800,11 +797,11 @@ export async function createDueDateAction({
   data: DueDate | null;
   error: { message: string };
 }> {
+  const { data: activeUserData } = await checkCurrentActiveUser();
   try {
     const { orgId } = await auth();
-    const activeUser = await checkCurrentActiveUser();
 
-    if (!activeUser.data) {
+    if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
 
@@ -829,7 +826,7 @@ export async function createDueDateAction({
     await createNewActivity({
       cardId: cardDetailsId,
       boardId: boardId,
-      authorId: activeUser.data.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Created due date in the card: "${cardResponse?.card?.title}" from the list: "${cardResponse?.card?.listName}"`,
       type: "created",
     });
@@ -858,11 +855,11 @@ export async function deleteDueDateAction({
   data: DueDate | null;
   error: { message: string };
 }> {
+  const { data: activeUserData } = await checkCurrentActiveUser();
   try {
     const { orgId } = await auth();
-    const activeUser = await checkCurrentActiveUser();
 
-    if (!activeUser.data) {
+    if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
 
@@ -886,7 +883,7 @@ export async function deleteDueDateAction({
     await createNewActivity({
       cardId: cardDetailsId,
       boardId: boardId,
-      authorId: activeUser.data.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Deleted due date from the card: "${cardResponse?.card?.title}" in the list: "${cardResponse?.card?.listName}"`,
       type: "deleted",
     });
@@ -913,11 +910,11 @@ export async function copyCardWithDetails({
   boardId,
   cardId,
 }: CopyCardWithDetailsProps) {
+  const { data: activeUserData } = await checkCurrentActiveUser();
   try {
     const { orgId } = await auth();
-    const activeUser = await checkCurrentActiveUser();
 
-    if (!activeUser.data) {
+    if (!activeUserData?.activeUser) {
       redirect("/dashboard");
     }
 
@@ -933,7 +930,7 @@ export async function copyCardWithDetails({
         listName: cardResponse?.card?.listName,
         title: cardResponse?.card?.title,
         priority: cardResponse?.card?.priority,
-        reporterId: activeUser.data.id,
+        reporterId: activeUserData?.activeUser.id,
         details: {
           create: {
             description: cardResponse?.description || "",
@@ -945,7 +942,7 @@ export async function copyCardWithDetails({
     await createNewActivity({
       cardId,
       boardId: boardId,
-      authorId: activeUser.data.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Copied the card: "${cardResponse?.card?.title}" from the list: "${cardResponse?.card?.listName}"`,
       type: "created",
     });

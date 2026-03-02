@@ -70,9 +70,9 @@ export async function createListAction({
 }): Promise<{ data: List | null; error: { message: string } }> {
   try {
     const { orgId } = await auth();
-    const { data: activeUser } = await checkCurrentActiveUser();
+    const { data: activeUserData } = await checkCurrentActiveUser();
 
-    if (!activeUser) {
+    if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
 
@@ -104,7 +104,7 @@ export async function createListAction({
 
     await createNewActivity({
       boardId: response.boardId as string,
-      authorId: activeUser.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Created new list "${response.title}" in Board "${boardData.title}"`,
       type: "created",
     });
@@ -127,11 +127,11 @@ export async function updateListTitleAction({
   title: string;
   listId: string;
 }): Promise<{ data: List | null; error: { message: string } }> {
+  const { data: activeUserData } = await checkCurrentActiveUser();
   try {
     const { orgId } = await auth();
-    const { data: activeUser } = await checkCurrentActiveUser();
 
-    if (!activeUser) {
+    if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
 
@@ -168,7 +168,7 @@ export async function updateListTitleAction({
 
     await createNewActivity({
       boardId: response.boardId as string,
-      authorId: activeUser.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Updated list title from "${prevListData.title}" to "${response.title}" in Board "${boardData.title}"`,
       type: "updated",
     });
@@ -192,10 +192,10 @@ export async function updateListStatusAction({
   status: StatusType;
   listId: string;
 }): Promise<{ data: List | null; error: { message: string } }> {
+  const { data: activeUserData } = await checkCurrentActiveUser();
   try {
     const { orgId } = await auth();
-    const { data: activeUser } = await checkCurrentActiveUser();
-    if (!activeUser) {
+    if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
 
@@ -232,7 +232,7 @@ export async function updateListStatusAction({
 
     await createNewActivity({
       boardId: response.boardId as string,
-      authorId: activeUser.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Updated list status from "${prevListData.status}" to "${response.status}" in Board "${boardData.title}"`,
       type: "updated",
     });
@@ -253,11 +253,11 @@ export async function copyListAction({
   boardId: string;
   listId: string;
 }): Promise<{ data: List | null; error: { message: string } }> {
+  const { data: activeUserData } = await checkCurrentActiveUser();
   try {
     const { orgId } = await auth();
-    const { data: activeUser } = await checkCurrentActiveUser();
 
-    if (!activeUser) {
+    if (!activeUserData?.activeUser?.id) {
       throw new Error("User not authorized");
     }
 
@@ -301,6 +301,7 @@ export async function copyListAction({
       throw new Error("List not found");
     }
 
+    const reporterId = activeUserData?.activeUser.id;
     const response = await prisma.list.create({
       data: {
         title: `${listData.title} - Copy`,
@@ -310,7 +311,7 @@ export async function copyListAction({
         cards: {
           create: listData.cards.map((card) => ({
             title: card.title,
-            reporterId: activeUser.id,
+            reporterId: reporterId,
             listName: `${listData.title} - Copy`,
             order: card.order,
             details: {
@@ -336,7 +337,7 @@ export async function copyListAction({
 
     await createNewActivity({
       boardId: response.boardId as string,
-      authorId: activeUser.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Created new list "${listData.title} - Copy" in Board "${boardData.title}"`,
       type: "created",
     });
@@ -360,11 +361,11 @@ export async function deleteListAction({
   boardId: string;
   listId: string;
 }): Promise<{ data: List | null; error: { message: string } }> {
+  const { data: activeUserData } = await checkCurrentActiveUser();
   try {
     const { orgId } = await auth();
-    const { data: activeUser } = await checkCurrentActiveUser();
 
-    if (!activeUser) {
+    if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
 
@@ -417,7 +418,7 @@ export async function deleteListAction({
 
     await createNewActivity({
       boardId: response.boardId as string,
-      authorId: activeUser.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Deleted the list "${listData.title}" from Board "${boardData.title}"`,
       type: "deleted",
     });
@@ -441,10 +442,10 @@ export async function createListCardAction({
   listId: string;
   title: string;
 }): Promise<{ data: Card | null; error: { message: string } }> {
-  const { data: activeUser, error } = await checkCurrentActiveUser();
+  const { data: activeUserData, error } = await checkCurrentActiveUser();
   try {
     const { orgId } = await auth();
-    if (error?.message || !activeUser) {
+    if (error?.message || !activeUserData?.activeUser) {
       throw new Error(error?.message || "User not authorized");
     }
     const listData = await prisma.list.findFirst({
@@ -479,7 +480,7 @@ export async function createListCardAction({
       data: {
         title,
         listId,
-        reporterId: activeUser.id,
+        reporterId: activeUserData.activeUser.id,
         listName: listData.title,
         order: newCardOrder,
 
@@ -493,7 +494,7 @@ export async function createListCardAction({
 
     await createNewActivity({
       boardId: boardData.id as string,
-      authorId: activeUser.id,
+      authorId: activeUserData.activeUser.id,
       activity: `Created new card "${response.title} in List "${listData.title}" in Board "${boardData.title}"`,
       type: "created",
     });

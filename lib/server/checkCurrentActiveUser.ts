@@ -8,7 +8,7 @@ import { getCurrentActiveUserData } from "./getCurrentActiveUserData";
 export async function checkCurrentActiveUser(
   currentOrgId?: string | undefined | null,
 ): Promise<{
-  data: User | null;
+  data: { activeUser: User | null; role: string } | null;
   error: { message: string };
 }> {
   // GET CURRENT ACTIVE USER
@@ -17,10 +17,10 @@ export async function checkCurrentActiveUser(
     redirect("/");
   }
   // CHECK USER MEMBER OF CURRENT ORGANIZATION
-  const { data: isMember, error: memberError } =
+  const { data: memberData, error: memberError } =
     await verifyOrganizationMember(currentOrgId);
 
-  if (!isMember || memberError?.message) {
+  if (!memberData?.isMember || memberError?.message) {
     redirect("/dashboard");
   }
 
@@ -51,7 +51,7 @@ export async function checkCurrentActiveUser(
     }
 
     return {
-      data: activeUser,
+      data: { activeUser, role: memberData.role },
       error: { message: "" },
     };
   } catch (error: any) {

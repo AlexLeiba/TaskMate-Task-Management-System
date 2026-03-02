@@ -2,6 +2,7 @@
 import {
   Activity,
   CreditCard,
+  Crown,
   LayoutDashboard,
   Plus,
   Settings,
@@ -30,6 +31,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { SidebarSkeleton } from "./SidebarSkeleton";
+import { USER_ROLES } from "@/lib/consts";
 
 export function Sidebar() {
   const router = useRouter();
@@ -41,10 +43,12 @@ export function Sidebar() {
   const { setActive } = useOrganizationList();
 
   const organizationsData = user?.organizationMemberships.map((org) => {
+    const organizationRole = org.role?.replace("org:", "") === USER_ROLES.admin;
     return {
       id: org.organization.id,
       name: org.organization.name,
       image: org.organization.imageUrl,
+      role: organizationRole,
       data: [
         {
           title: "Boards",
@@ -122,7 +126,7 @@ export function Sidebar() {
                             "transition-all duration-200 ease-in-out",
                           )}
                         >
-                          <div className="flex gap-2 items-center">
+                          <div className="flex gap-2 items-center relative">
                             {item.image && (
                               <Image
                                 src={item.image}
@@ -134,6 +138,11 @@ export function Sidebar() {
                             )}
                             {item.name}
                           </div>
+                          {item.role && (
+                            <div className="absolute top-0 right-0 text-primary">
+                              <Crown size={15} />
+                            </div>
+                          )}
                         </AccordionTrigger>
                         <AccordionContent className=" pt-2 flex flex-col gap-1 ">
                           {item.data.map((data) => {

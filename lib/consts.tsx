@@ -699,3 +699,8 @@ export const PRODUCTIVITY_DATA = [
 export const DATE_FORMAT = "MMM d yyyy a HH:mm";
 
 export const INITIAL_TIME = "00:00:00";
+
+export const USER_ROLES = {
+  admin: "admin",
+  member: "member",
+};

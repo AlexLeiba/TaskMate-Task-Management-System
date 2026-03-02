@@ -15,9 +15,9 @@ cloudinary.config({
 
 export async function POST(req: NextRequest) {
   try {
-    const activeUser = await checkCurrentActiveUser();
+    const { data: activeUserData } = await checkCurrentActiveUser();
 
-    if (!activeUser.data) {
+    if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
 
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
     const userAlreadyAttachedfile = await prisma.attachments.findFirst({
       where: {
         cardId: cardDetailsId,
-        authorId: activeUser.data.id,
+        authorId: activeUserData?.activeUser.id,
       },
     });
 
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
       const response = await prisma.attachments.create({
         data: {
           cardId: cardDetailsId,
-          authorId: activeUser.data.id,
+          authorId: activeUserData?.activeUser.id,
           files: {
             create: [
               {
@@ -122,7 +122,7 @@ export async function POST(req: NextRequest) {
     await createNewActivity({
       cardId: cardDetailsId,
       boardId: boardId,
-      authorId: activeUser.data.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Uploaded a new attachment: "${fileName}" in card: "${cardResponse?.card?.title}" from list: "${cardResponse?.card?.listName}"`,
       type: "created",
     });
@@ -142,10 +142,9 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const { data: activeUserData } = await checkCurrentActiveUser();
   try {
-    const activeUser = await checkCurrentActiveUser();
-
-    if (!activeUser.data) {
+    if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
 
@@ -190,7 +189,7 @@ export async function DELETE(req: NextRequest) {
       await createNewActivity({
         cardId: bodyData.cardDetailsId,
         boardId: bodyData.boardId,
-        authorId: activeUser.data.id,
+        authorId: activeUserData?.activeUser.id,
         activity: `Deleted the attachment: ${bodyData.fileName} from card: "${cardResponse?.card?.title}" in list: "${cardResponse?.card?.listName}"`,
         type: "deleted",
       });

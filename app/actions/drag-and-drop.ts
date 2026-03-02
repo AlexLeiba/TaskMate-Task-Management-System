@@ -20,12 +20,12 @@ export async function changeListPositionAction({
 }> {
   try {
     const { orgId } = await auth();
-    const { data: activeUser } = await checkCurrentActiveUser();
+    const { data: activeUserData } = await checkCurrentActiveUser();
 
     if (!orgId) {
       throw new Error("User not authenticated");
     }
-    if (!activeUser) {
+    if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
 
@@ -103,7 +103,7 @@ export async function changeListPositionAction({
 
     await createNewActivity({
       boardId: boardId as string,
-      authorId: activeUser.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Reordered list "${reorderedList.title}" in Board "${boardData.title}"`,
       type: "updated",
     });
@@ -144,7 +144,7 @@ export async function changeCardPositionAction({
   data: boolean | null;
   error: { message: string };
 }> {
-  const { data: activeUser, error } = await checkCurrentActiveUser();
+  const { data: activeUserData, error } = await checkCurrentActiveUser();
   try {
     const { orgId } = await auth();
 
@@ -152,7 +152,7 @@ export async function changeCardPositionAction({
       throw new Error("User not authenticated");
     }
 
-    if (error?.message || !activeUser) {
+    if (error?.message || !activeUserData?.activeUser) {
       throw new Error(error?.message || "User not authorized");
     }
 
@@ -261,7 +261,7 @@ export async function changeCardPositionAction({
 
     await createNewActivity({
       boardId: boardData.id as string,
-      authorId: activeUser.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Reordered card "${card.title}" in List "${listTitle}" in Board "${boardData.title}"`,
       type: "updated",
     });

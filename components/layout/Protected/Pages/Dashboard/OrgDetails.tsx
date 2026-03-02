@@ -1,11 +1,14 @@
 "use client";
 
 import { useOrganization } from "@clerk/nextjs";
-import { CreditCard } from "lucide-react";
+import { CreditCard, Crown } from "lucide-react";
 import Image from "next/image";
 import { OrganizationCardSkeleton } from "./Boards/OrganizationCardSkeleton";
+import { useRole } from "@/hooks/useRole";
+import { USER_ROLES } from "@/lib/consts";
 
 export function OrgDetails() {
+  const role = useRole();
   const { organization } = useOrganization();
 
   const orgDetails = {
@@ -16,7 +19,7 @@ export function OrgDetails() {
   if (!organization) return <OrganizationCardSkeleton />;
   return (
     <div className="flex items-center gap-2">
-      <div className="p-2 rounded-md bg-gray-800">
+      <div className="p-2 rounded-md bg-gray-800 relative">
         {orgDetails.imageUrl && (
           <Image
             src={orgDetails.imageUrl}
@@ -25,6 +28,12 @@ export function OrgDetails() {
             height={35}
             className="size-10 rounded-sm"
           />
+        )}
+
+        {role === USER_ROLES.admin && (
+          <div className="absolute -top-2 -right-2 text-primary">
+            <Crown size={15} />
+          </div>
         )}
       </div>
       <div className="flex flex-col ">

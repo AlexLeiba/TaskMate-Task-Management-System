@@ -40,14 +40,14 @@ export async function getBoardsAction(orgId: string): Promise<{
 export async function createNewBoardAction(
   boardData: Omit<Board, "id" | "createdAt" | "updatedAt" | "order">,
 ): Promise<{ data: Board; error: { message: string } }> {
+  const { data: activeUserData } = await checkCurrentActiveUser();
   try {
-    const { data: activeUser } = await checkCurrentActiveUser();
     const { orgId } = await auth();
 
     if (!orgId) {
       throw new Error("User not authenticated");
     }
-    if (!activeUser) {
+    if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
     const countBoards = await prisma.board.count({
@@ -64,7 +64,7 @@ export async function createNewBoardAction(
 
     await createNewActivity({
       boardId: createdBoard.id,
-      authorId: activeUser.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Created new board "${createdBoard.title}"`,
       type: "created",
     });
@@ -79,16 +79,17 @@ export async function createNewBoardAction(
 export async function deleteBoardAction(
   boardId: string,
 ): Promise<{ data: boolean; error: { message: string } }> {
+  const { data: activeUserData, error } = await checkCurrentActiveUser();
+
   try {
-    const { data: activeUser } = await checkCurrentActiveUser();
+    if (error?.message || !activeUserData?.activeUser) {
+      throw new Error(error?.message || "User not authorized");
+    }
 
     const { orgId } = await auth();
 
     if (!orgId) {
       throw new Error("User not authenticated");
-    }
-    if (!activeUser) {
-      throw new Error("User not authorized");
     }
 
     const boardToDelete = await prisma.board.findFirst({
@@ -106,7 +107,7 @@ export async function deleteBoardAction(
 
     await createNewActivity({
       boardId,
-      authorId: activeUser.id,
+      authorId: activeUserData?.activeUser.id,
       activity: `Deleted board "${deletedBoard.title}"`,
       type: "deleted",
     });

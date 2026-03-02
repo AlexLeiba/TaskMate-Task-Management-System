@@ -25,13 +25,23 @@ type Props = {
   comments: (Comment & { author: User })[] | undefined;
 };
 
+const TAB_COMPONENTS = {
+  comments: Comments,
+  attachments: Attachments,
+  activities: Activities,
+  checklist: Checklist,
+} as const;
+
 export function InteractiveFeaturesTabs({ cardDetailsId, comments }: Props) {
-  const [selectedTab, setSelectTab] = useState("comments");
+  const [selectedTab, setSelectTab] =
+    useState<(typeof TAB_ELEMENTS)[number]["value"]>("comments");
   // todo, CHANGE IT TO USEsTATE, to have the same tab at each new open card
 
   function handleSelectTab(data: (typeof TAB_ELEMENTS)[number]["value"]) {
     setSelectTab(data);
   }
+
+  const ActiveComponent = TAB_COMPONENTS[selectedTab];
   return (
     <div>
       <div className="flex gap-4 flex-wrap">
@@ -64,17 +74,8 @@ export function InteractiveFeaturesTabs({ cardDetailsId, comments }: Props) {
 
       {/* TABS CONTENT */}
       <div className="pl-2">
-        {selectedTab === "comments" && (
-          <Comments data={comments} cardDetailsId={cardDetailsId} />
-        )}
-        {selectedTab === "attachments" && (
-          <Attachments cardDetailsId={cardDetailsId} />
-        )}
-        {selectedTab === "activities" && (
-          <Activities cardDetailsId={cardDetailsId} />
-        )}
-        {selectedTab === "checklist" && (
-          <Checklist cardDetailsId={cardDetailsId} />
+        {ActiveComponent && (
+          <ActiveComponent data={comments} cardDetailsId={cardDetailsId} />
         )}
       </div>
     </div>

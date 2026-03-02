@@ -48,10 +48,10 @@ export function Actions({ cardDetailsId, listId, cardId }: Props) {
       });
 
       if (response?.data?.statusCode !== 200) {
-        return toast.error(response?.data?.error);
+        throw new Error(response?.data?.message || "Error deleting a file");
       }
     } catch (error: any) {
-      toast.error(error.message || "Error deleting a file");
+      throw new Error(error);
     }
   }
 
@@ -154,6 +154,8 @@ export function Actions({ cardDetailsId, listId, cardId }: Props) {
         </IconButton>
 
         <DeleteDialog
+          title="Card"
+          disabled={isPendingDeleteCardDeleteCard || isPendingCopyCard}
           loading={isPendingDeleteCardDeleteCard}
           deleteDialogOpen={isDeleteModalOpened}
           setDeleteDialogOpen={setIsDeleteModalOpened}

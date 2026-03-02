@@ -117,6 +117,10 @@ export function TicketCardHeader({
   }
 
   async function handleDeleteCard(cardId: string) {
+    if (!cardId || !listId || !boardId) {
+      toast.error("Something went wrong, please try again");
+    }
+
     toast.loading("Deleting card...", { id: "delete-card" });
 
     // DELETE FILES FROM DB
@@ -126,6 +130,10 @@ export function TicketCardHeader({
   }
 
   function handleCopyCard() {
+    if (!boardId || !listId || !cardId) {
+      return toast.error("Something went wrong, please try again");
+    }
+
     toast.loading("Copying card...", { id: "copy-card" });
     copyCardMutation({ cardId, listId, boardId });
     setIsOpenedOptions(false);

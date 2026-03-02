@@ -25,26 +25,30 @@ export function ListCardHeader({ status, title, listId }: Props) {
   const boardId = useBoardId();
   const [isOpenedTitleInput, setIsOpenedTitleInput] = useState(false);
   const { openTitleInput } = useStore();
-
-  const { mutate, isPending } = useMutation({
-    mutationKey: ["update-list-title"],
-    mutationFn: updateListTitleAction,
-    onSuccess() {
-      toast.dismiss("update-list-title");
-      toast.success("List title updated");
-    },
-    onError({ message }) {
-      toast.dismiss("update-list-title");
-      toast.error(message || "Error updating list title, please try again");
-    },
-  });
-
   const isInputOpened =
     openTitleInput.id === listId ? openTitleInput.isOpen : isOpenedTitleInput;
 
+  const { mutate: mutateListTitle, isPending: isPendingMutateListTitle } =
+    useMutation({
+      mutationKey: ["update-list-title"],
+      mutationFn: updateListTitleAction,
+      onSuccess() {
+        toast.dismiss("update-list-title");
+        toast.success("List title updated");
+      },
+      onError({ message }) {
+        toast.dismiss("update-list-title");
+        toast.error(message || "Error updating list title, please try again");
+      },
+    });
+
   function handleSubmitListTitle(value: { [inputName: string]: string }) {
     setIsOpenedTitleInput(false);
-    mutate({ listId, title: value.title, boardId });
+
+    if (!listId || !boardId)
+      return toast.error("Something went wrong, please try again");
+
+    mutateListTitle({ listId, title: value.title, boardId });
     toast.loading("Updating list title...", { id: "update-list-title" });
   }
 
@@ -57,8 +61,8 @@ export function ListCardHeader({ status, title, listId }: Props) {
 
       {/* ADD NEW LIST / LIST TITLE*/}
       <AddNewInput
-        loading={isPending}
-        disabled={isPending}
+        loading={isPendingMutateListTitle}
+        disabled={isPendingMutateListTitle}
         handleSubmitValue={(v) => handleSubmitListTitle(v)}
         inputName="title"
         placeholder="Edit list title here..."

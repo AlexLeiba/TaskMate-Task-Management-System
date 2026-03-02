@@ -1,6 +1,5 @@
 import { DATE_FORMAT } from "@/lib/consts";
 import { format } from "date-fns";
-import React from "react";
 
 type Props = {
   createdAt: Date | undefined | null;

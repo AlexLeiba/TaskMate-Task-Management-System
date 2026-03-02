@@ -13,7 +13,7 @@ import { updateDescriptionAction } from "@/app/actions/card-details";
 import toast from "react-hot-toast";
 
 import "react-quill-new/dist/quill.snow.css";
-import { usePathname } from "next/navigation";
+import { useBoardId } from "@/hooks/useBoardId";
 const ReactQuill = dynamic(() => import("react-quill-new"), {
   ssr: false,
   loading: () => <InitialDescriptionState />,
@@ -24,7 +24,7 @@ type Props = {
   cardDetailsId: string | undefined;
 };
 export function Description({ description = "", cardDetailsId }: Props) {
-  const boardId = usePathname()?.split("/").at(-1);
+  const boardId = useBoardId();
   const [value, setValue] = useState(description || "");
   const [isQuillVisible, setIsQuillVisible] = useState(false);
 
@@ -54,7 +54,10 @@ export function Description({ description = "", cardDetailsId }: Props) {
   }, [description]);
 
   function handleSaveDescription() {
-    if (!cardDetailsId) return;
+    if (!cardDetailsId || !boardId) {
+      return toast.error("Card not found, please try again");
+    }
+
     mutate({ description: value, cardDetailsId, boardId: boardId || "" });
     toast.loading("Updating description...", { id: "update-description" });
   }

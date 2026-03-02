@@ -5,7 +5,6 @@ import { AddNewInput } from "../../../../../AddNewInput";
 import { CommentCard } from "./CommentCard";
 import { CommentsCardSkeleton } from "./CommentsCardSkeleton";
 import { Comment, User } from "@/lib/generated/prisma/client";
-
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createCommentAction,
@@ -13,9 +12,9 @@ import {
   getCardDetailsComments,
 } from "@/app/actions/card-details";
 import toast from "react-hot-toast";
-import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
+import { useBoardId } from "@/hooks/useBoardId";
 
 const DeleteDialog = dynamic(() =>
   import("@/components/layout/Protected/DeleteDialog/DeleteDialog").then(
@@ -28,7 +27,7 @@ type Props = {
   cardDetailsId: string;
 };
 export function Comments({ cardDetailsId }: Props) {
-  const boardId = usePathname()?.split("/").at(-1);
+  const boardId = useBoardId();
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [isOpenedCommentInput, setIsOpenedCommentInput] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState<string | null>(
@@ -107,10 +106,13 @@ export function Comments({ cardDetailsId }: Props) {
   function handleOpenDeleteDialog(commentId: string) {
     setSelectedCommentId(commentId);
     setIsDeleteModalOpened(true);
-    // TODO, only admin can delete comment
   }
 
   function handleSubmitComment(data: { [inputName: string]: string }) {
+    if (!boardId || !cardDetailsId) {
+      return toast.error("Something went wrong, please try again");
+    }
+
     toast.loading("Creating comment...", { id: "create-comment" });
     mutateCreate({
       cardDetailsId,
@@ -124,7 +126,7 @@ export function Comments({ cardDetailsId }: Props) {
   const addNewCommentRef = useRef<HTMLButtonElement>(null);
 
   function handleOpenNewCommentInput() {
-    if (addNewCommentRef.current) addNewCommentRef.current.click();
+    if (addNewCommentRef?.current) addNewCommentRef.current.click();
   }
   if (isLoading) return <CommentsCardSkeleton />;
   return (

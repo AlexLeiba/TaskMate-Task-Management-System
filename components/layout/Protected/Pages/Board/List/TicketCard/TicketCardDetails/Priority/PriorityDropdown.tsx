@@ -42,7 +42,8 @@ export function PriorityDropdown({ priority = "none", listId, cardId }: Props) {
   function handleSelectPriority(priorityValue: PrioritiesType) {
     toast.loading("Editing card priority", { id: "priority" });
 
-    if (!boardId || !listId || !cardId) return;
+    if (!boardId || !listId || !cardId)
+      return toast.error("Something went wrong, please try again");
 
     mutate({ priority: priorityValue, boardId, listId, cardId });
   }

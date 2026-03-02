@@ -42,7 +42,6 @@ export function TicketCardDetails({
       if (response.data) {
         return response.data;
       }
-
       if (response?.error?.message) {
         throw new Error(response.error.message);
       }

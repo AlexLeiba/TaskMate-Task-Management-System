@@ -39,22 +39,23 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
     staleTime: 1000 * 60 * 60,
   });
 
-  const { mutate, isPending } = useMutation({
-    mutationKey: ["create-new-board"],
-    mutationFn: createNewBoardAction,
-    onSuccess: ({ data }) => {
-      setValue("title", "");
-      setSelectedImage(undefined);
-      setNewBoardDialogOpen(false);
+  const { mutate: mutateCreateNewBoard, isPending: isPendingCreateNewBoard } =
+    useMutation({
+      mutationKey: ["create-new-board"],
+      mutationFn: createNewBoardAction,
+      onSuccess: ({ data }) => {
+        setValue("title", "");
+        setSelectedImage(undefined);
+        setNewBoardDialogOpen(false);
 
-      toast.success("Board created successfully");
+        toast.success("Board created successfully");
 
-      if (type === "board") {
-        navigate.push(`/dashboard/${organizationId}/board/${data?.id}`);
-      }
-    },
-    onError: ({ message }) => toast.error(message || "Error creating board"),
-  });
+        if (type === "board") {
+          navigate.push(`/dashboard/${organizationId}/board/${data?.id}`);
+        }
+      },
+      onError: ({ message }) => toast.error(message || "Error creating board"),
+    });
 
   const {
     register,
@@ -90,7 +91,7 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
       bgImageUrl: selectedImage?.urls.full || selectedImage?.urls.regular || "",
       orgId: organizationId,
     };
-    mutate(newBoardData);
+    mutateCreateNewBoard(newBoardData);
   }
 
   return (
@@ -115,7 +116,7 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
       <div className="flex flex-col md:gap-4 gap-2">
         <div className="flex justify-end">
           <Button
-            disabled={isFetching || isPending}
+            disabled={isFetching || isPendingCreateNewBoard}
             loading={isFetching}
             onClick={handleGetNewImages}
             variant={"tertiary"}
@@ -140,8 +141,8 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
           />
         </div>
         <Button
-          disabled={isFetching || isPending}
-          loading={isPending}
+          disabled={isFetching || isPendingCreateNewBoard}
+          loading={isPendingCreateNewBoard}
           onClick={handleSubmit(onSubmitNewBoard)}
           size={"lg"}
           type="button"

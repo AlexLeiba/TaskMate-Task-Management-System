@@ -12,15 +12,19 @@ import { IconButton } from "@/components/ui/iconButton";
 import toast from "react-hot-toast";
 import { useMutation } from "@tanstack/react-query";
 import { updateListStatusAction } from "@/app/actions/list";
-import { usePathname } from "next/navigation";
+import { useBoardId } from "@/hooks/useBoardId";
 
 type Props = {
   selectedStatus: string;
   listId: string;
 };
 export function ListStatuses({ selectedStatus, listId }: Props) {
-  const pathname = usePathname();
-  const boardId = pathname.split("/").at(-1) || "";
+  const boardId = useBoardId();
+  const [statusData, setStatusData] = useState<StatusType>(
+    LIST_STATUSES.find((s) => s.value === selectedStatus)!,
+  );
+  const [isOpenedStatus, setIsOpenedStatus] = useState(false);
+
   const { mutate: mutateChangeStatus, isPending: isPendingChangeStatus } =
     useMutation({
       mutationKey: ["update-list-status"],
@@ -35,14 +39,11 @@ export function ListStatuses({ selectedStatus, listId }: Props) {
       },
     });
 
-  const [statusData, setStatusData] = useState<StatusType>(
-    LIST_STATUSES.find((s) => s.value === selectedStatus)!,
-  );
-  const [isOpenedStatus, setIsOpenedStatus] = useState(false);
-
   function handleSelectStatus(status: StatusType) {
-    setStatusData(status);
+    if (!boardId || !listId)
+      return toast.error("Something went wrong, please try again");
 
+    setStatusData(status);
     mutateChangeStatus({ boardId, listId, status: status.value });
     toast.loading("Changing list status...", { id: "list-status" });
   }

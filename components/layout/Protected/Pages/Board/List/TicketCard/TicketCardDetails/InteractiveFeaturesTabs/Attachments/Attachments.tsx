@@ -58,9 +58,10 @@ export function Attachments({ cardDetailsId }: Props) {
   }
 
   useEffect(() => {
-    // eslint-disable-next-line
     setIsLoading(true);
     getAttachmentsData();
+
+    // eslint-disable-next-line
   }, [cardDetailsId]);
 
   async function uploadFile({
@@ -73,7 +74,11 @@ export function Attachments({ cardDetailsId }: Props) {
     fileName: string;
   }) {
     if (!boardId) {
-      throw new Error("Board not found");
+      throw new Error("Board not found, please refresh the page");
+    }
+
+    if (!cardDetailsId) {
+      throw new Error("Card not found, please refresh the page");
     }
 
     const body: UploadFileBodyType = {
@@ -108,7 +113,11 @@ export function Attachments({ cardDetailsId }: Props) {
   }) {
     try {
       if (!boardId) {
-        return toast.error("Board not found");
+        return toast.error("Board not found, please try again");
+      }
+
+      if (!cardDetailsId) {
+        return toast.error("Card not found, please try again");
       }
       const body: DeleteFileBodyType = {
         fileId,
@@ -127,6 +136,7 @@ export function Attachments({ cardDetailsId }: Props) {
       if (response?.data?.statusCode !== 200) {
         return toast.error(response?.data?.error);
       }
+
       toast.success("Deleted successfully");
 
       const attachmentData: (Attachments & {

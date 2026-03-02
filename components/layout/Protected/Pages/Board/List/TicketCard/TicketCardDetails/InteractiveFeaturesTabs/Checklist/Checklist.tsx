@@ -214,7 +214,11 @@ export function Checklist({ cardDetailsId }: Props) {
 
   function handleCheckItem(id: string) {
     if (!cardDetailsId) {
-      return toast.error("Card Id not found");
+      return toast.error("Card Id not found, please try again");
+    }
+
+    if (!boardId) {
+      return toast.error("Something went wrong, please try again");
     }
 
     toast.loading("Updating checklist...", { id: "update-checklist" });
@@ -223,7 +227,10 @@ export function Checklist({ cardDetailsId }: Props) {
 
   function handleDeleteChecklist(id: string) {
     if (!cardDetailsId) {
-      return toast.error("Card Id not found");
+      return toast.error("Card Id not found, please try again");
+    }
+    if (!boardId) {
+      return toast.error("Something went wrong, please try again");
     }
 
     toast.loading("Deleting checklist...", { id: "delete-checklist" });
@@ -232,7 +239,10 @@ export function Checklist({ cardDetailsId }: Props) {
 
   function handleAddChecklist(value: { [inputName: string]: string }) {
     if (!cardDetailsId) {
-      return toast.error("Card Id not found");
+      return toast.error("Card Id not found , please try again");
+    }
+    if (!boardId) {
+      return toast.error("Something went wrong, please try again");
     }
 
     setIsOpenedTitleInput(false);

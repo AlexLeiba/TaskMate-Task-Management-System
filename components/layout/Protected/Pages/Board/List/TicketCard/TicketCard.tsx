@@ -43,6 +43,7 @@ export function TicketCard({ data, boardId, index }: Prop) {
               ref={provided.innerRef}
               onKeyDown={(e) => {
                 if (e.key === KEYBOARD.ENTER) {
+                  // Event delegation
                   const target = e.target as HTMLElement; // TypeScript now knows it’s an HTMLElement
                   const ticketCard = target.closest(".ticket-card");
 
@@ -50,6 +51,7 @@ export function TicketCard({ data, boardId, index }: Prop) {
                 }
               }}
               onClick={(e) => {
+                // Event delegation
                 const target = e.target as HTMLElement; // TypeScript now knows it’s an HTMLElement
                 const ticketCard = target.closest(".ticket-card");
 

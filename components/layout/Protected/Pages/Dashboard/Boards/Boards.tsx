@@ -36,23 +36,25 @@ export function Boards({
     }
   }, [data.error]);
 
-  const { mutate: mutateDeleteBoard, isPending } = useMutation({
-    mutationKey: ["delete-board"],
-    mutationFn: deleteBoardAction,
-    onMutate: async (boardId) => {
-      await deleteFile({ type: "board", fileType: "raw", boardId }, boardId); //await deletion of all files from cloud from the board before deleting the board itself
+  const { mutate: mutateDeleteBoard, isPending: isDeletePending } = useMutation(
+    {
+      mutationKey: ["delete-board"],
+      mutationFn: deleteBoardAction,
+      onMutate: async (boardId) => {
+        await deleteFile({ type: "board", fileType: "raw", boardId }, boardId); //await deletion of all files from cloud from the board before deleting the board itself
+      },
+      onSuccess: () => {
+        setDeleteDialogOpen(false);
+        toast.dismiss("delete-board");
+        toast.success("Board deleted successfully");
+      },
+      onError: ({ message }) => {
+        setDeleteDialogOpen(false);
+        toast.dismiss("delete-board");
+        toast.error(message || "Error deleting board");
+      },
     },
-    onSuccess: () => {
-      setDeleteDialogOpen(false);
-      toast.dismiss("delete-board");
-      toast.success("Board deleted successfully");
-    },
-    onError: ({ message }) => {
-      setDeleteDialogOpen(false);
-      toast.dismiss("delete-board");
-      toast.error(message || "Error deleting board");
-    },
-  });
+  );
 
   function handleSelectBoard(boardId: string) {
     router.push(`/dashboard/${orgId}/board/${boardId}`);
@@ -82,13 +84,13 @@ export function Boards({
       <Spacer size={4} />
       <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(200px,243px))] gap-2">
         {/* CREATE NEW BOARD */}
-        <CreateNewBoardCard disabled={isPending} />
+        <CreateNewBoardCard disabled={isDeletePending} />
 
         {/* BOARDS */}
         {data.data?.map((board) => (
           <BoardCard
             key={board.id}
-            disabled={isPending}
+            disabled={isDeletePending}
             data={board}
             handleModalDeleteBoard={() => handleOpenModalDeleteBoard(board.id)}
             handleSelectBoard={() => handleSelectBoard(board.id)}
@@ -99,8 +101,8 @@ export function Boards({
       {/* MODAL DELETE BOARD */}
       <DeleteDialog
         title="Board"
-        disabled={isPending}
-        loading={isPending}
+        disabled={isDeletePending}
+        loading={isDeletePending}
         deleteDialogOpen={deleteDialogOpen}
         setDeleteDialogOpen={setDeleteDialogOpen}
         handleDelete={() => handleDeleteBoard(selectedBoardToDelete)}

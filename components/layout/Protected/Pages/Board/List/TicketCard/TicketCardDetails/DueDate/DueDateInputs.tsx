@@ -260,6 +260,7 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
       )}
 
       <DeleteDialog
+        title="Due date"
         deleteDialogOpen={deleteDialogOpen}
         setDeleteDialogOpen={setDeleteDialogOpen}
         handleDelete={handleDeleteDuedate}

@@ -204,6 +204,7 @@ export function ListOptions({ listId }: Props) {
 
         {/* MODAL DELETE BOARD */}
         <DeleteDialog
+          title="List"
           loading={isPendingDeleteList}
           deleteDialogOpen={deleteDialogOpen}
           setDeleteDialogOpen={setDeleteDialogOpen}

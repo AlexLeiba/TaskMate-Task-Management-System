@@ -31,33 +31,33 @@ export function SubHeader({
     }
   }, [error.message]);
 
-  const { mutate, isPending } = useMutation({
-    mutationKey: ["edit-board-title"],
-    mutationFn: editBoardTitleAction,
-    onSuccess: () => {
-      toast.success("Board title updated");
-      setShowTitleInput(false);
-    },
-    onError: ({ message }) =>
-      toast.error(message || "Error updating board title, please try again"),
-  });
+  const { mutate: mutateEditBoardTitle, isPending: isPendingEditBoardTitle } =
+    useMutation({
+      mutationKey: ["edit-board-title"],
+      mutationFn: editBoardTitleAction,
+      onSuccess: () => {
+        toast.success("Board title updated");
+        setShowTitleInput(false);
+      },
+      onError: ({ message }) =>
+        toast.error(message || "Error updating board title, please try again"),
+    });
 
   function handleEditBoardTitle() {
     setShowTitleInput(true);
   }
 
   async function handleSubmitForm(data: { [inputName: string]: string }) {
-    mutate({ boardId, title: data.title });
-
-    // setShowTitleInput(false);
+    if (!boardId) return toast.error("Board not found, please try again");
+    mutateEditBoardTitle({ boardId, title: data.title });
   }
   return (
     <div className="bg-foreground/70 w-full">
       <div className="px-4 flex justify-between items-center max-w-400 mx-auto">
         <AddNewInput
           defaultValue={board?.title}
-          loading={isPending}
-          disabled={isPending}
+          loading={isPendingEditBoardTitle}
+          disabled={isPendingEditBoardTitle}
           handleSubmitValue={(v) => handleSubmitForm(v)}
           inputName="title"
           placeholder="Edit board title here..."
@@ -69,10 +69,11 @@ export function SubHeader({
               {board?.title}
             </p>
             <Button
-              disabled={isPending}
+              disabled={isPendingEditBoardTitle}
               variant={"ghost"}
               onClick={handleEditBoardTitle}
               title="Edit board title"
+              aria-label="Edit board title"
               className="group"
             >
               <Edit
@@ -83,12 +84,12 @@ export function SubHeader({
           </div>
         </AddNewInput>
 
-        <Link href={`/dashboard/${orgId || ""}`}>
-          <IconButton
-            className="p-1"
-            title="Close board"
-            aria-label="Close board"
-          >
+        <Link
+          href={`/dashboard/${orgId || ""}`}
+          title="Close board"
+          aria-label="Close board"
+        >
+          <IconButton className="p-1">
             <X size={30} className="text-text-secondary" />
           </IconButton>
         </Link>

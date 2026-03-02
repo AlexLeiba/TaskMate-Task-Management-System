@@ -99,7 +99,7 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
         name: foundSelectedUser.publicUserData?.firstName || "",
         avatar: foundSelectedUser.publicUserData?.imageUrl || "",
       };
-      // eslint-disable-next-line
+
       return setSelectedUser(selectedUser);
     }
 
@@ -109,7 +109,8 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
   }, [assignedTo, setSelectedUser]);
 
   function handleAssignTo(memberEmail: string) {
-    if (!boardId || !listId || !cardDetailsId) return;
+    if (!boardId || !listId || !cardDetailsId)
+      return toast.error("Something went wrong, please try again");
 
     if (memberEmail === "none") {
       handleUnassigneUser();
@@ -131,7 +132,8 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
   }
 
   function handleUnassigneUser() {
-    if (!boardId || !listId || !cardDetailsId) return;
+    if (!boardId || !listId || !cardDetailsId)
+      return toast.error("Something went wrong, please try again");
 
     unnasignMutation({
       assignedUserData: {

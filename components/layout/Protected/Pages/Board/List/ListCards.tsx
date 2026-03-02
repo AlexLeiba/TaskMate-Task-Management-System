@@ -56,7 +56,7 @@ export function ListCards({ boardId, listData }: Props) {
 
   if (!boardId || !listDataState) return <ListCardSkeleton />;
 
-  // RESPONSER, Top level app events used to perform state updates.
+  // DND RESPONSER
   function handleDragEnd(dragEventData: DropResult<string>) {
     const destination = dragEventData?.destination;
     const source = dragEventData?.source;

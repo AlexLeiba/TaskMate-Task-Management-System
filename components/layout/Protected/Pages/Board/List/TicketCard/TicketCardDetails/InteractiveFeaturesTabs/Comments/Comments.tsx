@@ -89,12 +89,15 @@ export function Comments({ cardDetailsId }: Props) {
   });
 
   function handleDeleteComment() {
-    // TODO, only admin can delete comment
     if (!selectedCommentId) {
-      return toast.error("Error deleting comment, No comment selected");
+      return toast.error("Error deleting comment, No comment was selected");
+    }
+    if (!boardId || !cardDetailsId) {
+      return toast.error("Something went wrong, please try again");
     }
     toast.loading("Deleting comment...", { id: "delete-comment" });
     setIsDeleteModalOpened(false);
+
     mutateDelete({
       cardDetailsId,
       commentId: selectedCommentId as string,
@@ -132,6 +135,7 @@ export function Comments({ cardDetailsId }: Props) {
           <h5 className="text-xl font-medium">Comments</h5>
         </div>
         <IconButton
+          disabled={isPendingDelete || isPendingCreate}
           className="px-2"
           title="Add new comment"
           aria-label="Add new comment"
@@ -180,6 +184,7 @@ export function Comments({ cardDetailsId }: Props) {
           : !isOpenedCommentInput && (
               <div>
                 <Button
+                  disabled={isPendingDelete || isPendingCreate}
                   onClick={handleOpenNewCommentInput}
                   variant={"secondary"}
                   classNameChildren="flex items-center gap-2"
@@ -190,6 +195,7 @@ export function Comments({ cardDetailsId }: Props) {
             )}
 
         <DeleteDialog
+          title="Comment"
           loading={isPendingDelete}
           deleteDialogOpen={isDeleteModalOpened}
           setDeleteDialogOpen={setIsDeleteModalOpened}

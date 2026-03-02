@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { User } from "@/lib/generated/prisma/client";
 import { DATE_FORMAT } from "@/lib/consts";
 
-const cardVariants = cva("", {
+const cardVariants = cva("rounded-full", {
   variants: {
     size: {
       sm: "size-8",
@@ -64,16 +64,16 @@ export function UserCard({
   return (
     <div
       className={cn(
-        type === "activity"
-          ? "flex flex-col items-left "
-          : "flex items-center gap-4 ",
+        type === "activity" ? "flex flex-col items-left " : "",
         " overflow-hidden text-left flex-col",
         className,
       )}
     >
       <div
         className={cn(
-          type === "activity" ? "flex items-center gap-4" : "flex gap-4",
+          type === "activity"
+            ? "flex items-center gap-4"
+            : "flex gap-4 items-center",
         )}
       >
         {data.avatar && (

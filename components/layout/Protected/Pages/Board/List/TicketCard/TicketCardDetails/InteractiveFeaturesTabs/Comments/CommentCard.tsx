@@ -16,6 +16,7 @@ export function CommentCard({ data: comment, handleOpenDeleteModal }: Props) {
   return (
     <div className="flex flex-col gap-1">
       <UserCard data={comment.author} size="sm" />
+
       <p>{comment.comment}</p>
       <div className="flex justify-between items-center pl-2">
         <p className="text-xs text-gray-400">

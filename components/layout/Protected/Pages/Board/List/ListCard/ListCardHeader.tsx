@@ -47,6 +47,7 @@ export function ListCardHeader({ status, title, listId }: Props) {
     mutate({ listId, title: value.title, boardId });
     toast.loading("Updating list title...", { id: "update-list-title" });
   }
+
   return (
     <div className="flex justify-between items-start mb-2 relative">
       {/* STATUSES */}

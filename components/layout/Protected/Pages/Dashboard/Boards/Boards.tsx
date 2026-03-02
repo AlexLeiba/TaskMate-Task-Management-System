@@ -98,6 +98,8 @@ export function Boards({
 
       {/* MODAL DELETE BOARD */}
       <DeleteDialog
+        title="Board"
+        disabled={isPending}
         loading={isPending}
         deleteDialogOpen={deleteDialogOpen}
         setDeleteDialogOpen={setDeleteDialogOpen}

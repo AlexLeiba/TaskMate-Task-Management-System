@@ -104,6 +104,12 @@ export async function copyCardAction({
       },
     });
 
+    const countCards = await prisma.card.count({
+      where: {
+        listId,
+      },
+    });
+
     if (!foundCard) {
       throw new Error("Card not found");
     }
@@ -114,6 +120,7 @@ export async function copyCardAction({
         listName: foundCard.listName,
         title: foundCard.title + " - copy",
         reporterId: activeUser.data.id,
+        order: countCards + 1,
         details: {
           create: {
             description: foundCard.details?.description || "",

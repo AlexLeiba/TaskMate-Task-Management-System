@@ -59,7 +59,7 @@ export function TicketCard({ data, boardId, index }: Prop) {
               }}
               role="button"
               title={`open - ${data.title}`}
-              aria-label={`open ${data.title}`}
+              aria-label={`open - ${data.title}`}
               tabIndex={0}
               className={cn(
                 "ticket-card",

@@ -216,6 +216,7 @@ export function TicketCardHeader({
               </IconButton>
             </AddNewInput>
 
+            {/* COPY CARD */}
             <IconButton
               disabled={
                 isPendingDeleteCardDeleteCard ||
@@ -256,6 +257,7 @@ export function TicketCardHeader({
 
             <Separator className="my-4 bg-gray-700" />
 
+            {/* DELETE CARD */}
             <IconButton
               disabled={
                 isPendingDeleteCardDeleteCard ||

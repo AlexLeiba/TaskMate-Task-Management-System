@@ -85,8 +85,6 @@ export function ListCards({ boardId, listData }: Props) {
         break;
       }
       case "card": {
-        if (!destination.droppableId || !source.droppableId) return;
-
         // SAME LIST
         if (destination.droppableId === source.droppableId) {
           if (destination.index === source.index) return;

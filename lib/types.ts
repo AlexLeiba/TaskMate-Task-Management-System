@@ -217,8 +217,8 @@ export type ListAndCardsType = List & { cards: Card[] };
 
 export type CardWithDetailsAndDueDateAndChecklistType = Card & {
   details: {
-    dueDate: { date: string; time: string }[];
-    checklist: { id: string; isCompleted: boolean }[];
+    dueDate: Pick<DueDate, "time" | "date">[];
+    checklist: Pick<Checklist, "isCompleted" | "id">[];
   } | null;
 };
 export type ListAndCardsAndDueDateAndChecklistType = List & {
@@ -227,8 +227,8 @@ export type ListAndCardsAndDueDateAndChecklistType = List & {
 
 export type CardAndDueDateAndChecklistType = Card & {
   details: {
-    dueDate: DueDate[];
-    checklist: Checklist[];
+    dueDate: Pick<DueDate, "time" | "date">[];
+    checklist: { id: string; isCompleted: boolean }[];
   } | null;
 };
 

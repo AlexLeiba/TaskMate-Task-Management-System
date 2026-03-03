@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { CheckSquare } from "lucide-react";
 
 type Props = {
-  data: Checklist[] | undefined;
+  data: Pick<Checklist, "isCompleted">[] | Checklist[] | undefined;
 };
 export function ChecklistIndicator({ data }: Props) {
   if (!data || data?.length === 0) return null;

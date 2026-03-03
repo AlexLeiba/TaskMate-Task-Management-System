@@ -9,7 +9,7 @@ import { Clock10 } from "lucide-react";
 import toast from "react-hot-toast";
 
 type Props = {
-  data: DueDate | undefined;
+  data: Pick<DueDate, "date" | "time"> | undefined;
 };
 export function DueDateIndicator({ data }: Props) {
   if (!data || !data.date || !data.time) return;

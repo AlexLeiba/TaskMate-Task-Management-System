@@ -4,7 +4,7 @@ import { EmailExampleCard } from "./EmailExampleCard";
 
 export function FromMessageToAction() {
   return (
-    <div className="relative lg:pb-41 pb-60 ">
+    <div className=" ">
       <div className="flex flex-col gap-8 text-center">
         <div className="flex flex-col gap-2 text-center">
           <h2 className="text-5xl">From inbox to action</h2>
@@ -15,8 +15,8 @@ export function FromMessageToAction() {
         </div>
 
         <EmailExampleCard />
+        <BoardExampleCard />
       </div>
-      <BoardExampleCard />
     </div>
   );
 }

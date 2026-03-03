@@ -5,7 +5,6 @@ import { Hero } from "@/components/layout/Public/Home/Hero/Hero";
 import { LayoutContainer } from "@/components/layout/Public/LayoutContainer/LayoutContainer";
 import { Testimonials } from "@/components/layout/Public/Testimonials/Testimonials";
 import { SliderProvider } from "@/components/ui/slider";
-import { Spacer } from "@/components/ui/spacer";
 
 export default async function Home() {
   return (
@@ -29,7 +28,6 @@ export default async function Home() {
       </LayoutContainer>
 
       <LayoutContainer>
-        <Spacer sm={64} md={72} size={64} />
         <MoreFeatures />
       </LayoutContainer>
 

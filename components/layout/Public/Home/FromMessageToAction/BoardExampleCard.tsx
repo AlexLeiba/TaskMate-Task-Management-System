@@ -4,7 +4,7 @@ import React from "react";
 
 export function BoardExampleCard() {
   return (
-    <div className="grid md:grid-cols-[1fr_2fr]  gap-8 bg-background-element/90 rounded-md md:p-10 p-6 absolute md:top-[calc(100%-100px)]    top-[calc(100%-180px)] ">
+    <div className="grid md:grid-cols-[1fr_2fr]  gap-8 bg-background-element/40 rounded-md md:p-10 p-6    ">
       <div className="flex flex-col gap-4 text-left">
         <div className="flex items-center gap-2">
           <LayoutDashboard />

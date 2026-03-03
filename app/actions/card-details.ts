@@ -104,6 +104,9 @@ export async function getCardDetailsComments(cardId: string): Promise<{
       include: {
         author: true,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     if (!response) {

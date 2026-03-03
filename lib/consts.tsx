@@ -460,14 +460,20 @@ Since the project was developed for personal use, learning purposes, and as part
       title: "Our Future plans",
       description: `
 Permissions:
-Based on user role Admin or User will have certain restrictions.
- User will still be able to read any data within its organization but won't be able to delete: boards, lists, cards and for Card features as: comments , attachments, checklists , dueDate, only assigned Members of the Card and Admin will be able to delete.
+Based on user role Admin or Member will have certain restrictions.
+User will still be able to read any data within its organization but won't be able to delete: boards, lists, cards and for Card features as: comments , attachments, checklists , due date, only assigned Members of the Card and Admin will be able to delete.
 
 Payment system with Stripe:
-Will integrate payment system with Stripe, limiting only 5 Boards per organization for free. The payment system will be in development mode. 
+Will integrate payment system with Stripe, limiting only 5 Boards per organization for free. The payment system will be only in development mode. 
 
 Views:
 Table view and list view of the board
+
+Sortings:
+Cards will be sorted by assigned, unassigned, all.
+
+Visualization:
+Will have a visualization per board and per organization with Bar chart and Pie chart.
 `,
       icon: <></>,
       link: "",
@@ -677,21 +683,21 @@ export const PRODUCTIVITY_DATA = [
     title: "Boards",
     description:
       "Boards can be created or removed from the dashboard and customized with a variety of beautiful background images.",
-    image: "/features-1.png",
+    image: "/boards.webp",
   },
   {
     id: 2,
     title: "Lists",
     description:
       "The lists support drag-and-drop, title and status editing, and can be duplicated along with all their cards.",
-    image: "/features-2.png",
+    image: "/lists.webp",
   },
   {
     id: 3,
     title: "Cards",
     description:
       "The Cards support drag-and-drop within the same list or between lists, title editing, copying, descriptions, due dates, checklists, comments, attachments, reporter and member assignment.",
-    image: "/features-3.png",
+    image: "/card.webp",
   },
 ];
 

@@ -19,7 +19,7 @@ export function BoardExampleCard() {
         </p>
       </div>
       <Image
-        src={"/features-1.png"}
+        src={"/org-board.webp"}
         width={400}
         height={200}
         alt="How to get involved in a project by email"

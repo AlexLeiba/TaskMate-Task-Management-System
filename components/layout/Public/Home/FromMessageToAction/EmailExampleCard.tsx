@@ -4,13 +4,13 @@ import React from "react";
 
 export function EmailExampleCard() {
   return (
-    <div className="grid md:grid-cols-[2fr_1fr]  gap-8 bg-background-element/80 rounded-md md:p-10 p-6">
+    <div className="grid md:grid-cols-[1fr_1fr]  gap-8 bg-background-element rounded-md md:p-10 p-6">
       <Image
-        src={"/features-3.png"}
+        src={"/invitation-email.webp"}
         width={400}
         height={200}
         alt="How to get involved in a project by email"
-        className="aspect-video w-full rounded-md"
+        className="aspect-video w-full rounded-md h-[250px] object-cover"
       />
 
       <div className="flex flex-col gap-4 text-left">

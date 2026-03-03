@@ -11,8 +11,13 @@ import { DATE_FORMAT } from "@/lib/consts";
 type Props = {
   data: Comment & { author: User };
   handleOpenDeleteModal: () => void;
+  isAuthor?: boolean;
 };
-export function CommentCard({ data: comment, handleOpenDeleteModal }: Props) {
+export function CommentCard({
+  data: comment,
+  isAuthor = false,
+  handleOpenDeleteModal,
+}: Props) {
   return (
     <div className="flex flex-col gap-1">
       <UserCard data={comment.author} size="sm" />
@@ -23,14 +28,16 @@ export function CommentCard({ data: comment, handleOpenDeleteModal }: Props) {
           {format(new Date(comment?.createdAt as Date), DATE_FORMAT)}
         </p>
 
-        <IconButton
-          className="px-2"
-          title="Detele comment"
-          aria-label="Delete comment"
-          onClick={handleOpenDeleteModal}
-        >
-          <X className="text-red-600" />
-        </IconButton>
+        {isAuthor && (
+          <IconButton
+            className="px-2"
+            title="Detele comment"
+            aria-label="Delete comment"
+            onClick={handleOpenDeleteModal}
+          >
+            <X className="text-red-600" />
+          </IconButton>
+        )}
       </div>
       <Separator className="h-px my-2" />
     </div>

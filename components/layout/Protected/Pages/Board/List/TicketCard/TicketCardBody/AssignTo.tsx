@@ -4,7 +4,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { FAKE_USERS, KEYBOARD } from "@/lib/consts";
+import { FAKE_USERS, KEYBOARD, USER_ROLES } from "@/lib/consts";
 import { Check, UserPlus, X } from "lucide-react";
 import { AssignedToType, UserType } from "@/lib/types";
 import Image from "next/image";
@@ -15,6 +15,7 @@ import { AssignToUserSkeleton } from "./AssignToUserSkeleton";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { assignToCardAction, unassigneCardAction } from "@/app/actions/card";
 import toast from "react-hot-toast";
+import { useRole } from "@/hooks/useRole";
 
 type Props = {
   assignedTo: AssignedToType["email"] | null;
@@ -26,6 +27,7 @@ export function AssignTo({ assignedTo, boardId, listId, cardId }: Props) {
   const [isOpenedAssign, setIsOpenedAssign] = useState(false);
 
   const [selectedUser, setSelectedUser] = useState<UserType>(FAKE_USERS[0]);
+  const role = useRole();
   const { organization, isLoaded } = useOrganization();
 
   const { isLoading, data: members } = useQuery({
@@ -133,16 +135,21 @@ export function AssignTo({ assignedTo, boardId, listId, cardId }: Props) {
   return (
     <Popover open={isOpenedAssign} onOpenChange={setIsOpenedAssign}>
       {/* TRIGGER */}
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild disabled={role === USER_ROLES.member}>
         <IconButton
-          disabled={isPending || isPendingUnassigne}
+          buttonType={"card"}
+          disabled={
+            isPending || isPendingUnassigne || role === USER_ROLES.member
+          }
           aria-label="Assign to"
           title="Assign to"
           onClick={(e) => {
-            e.stopPropagation();
+            if (role === USER_ROLES.admin) {
+              e.stopPropagation();
+            }
           }}
           onKeyDown={(e) => {
-            if (e.key === KEYBOARD.ENTER) {
+            if (e.key === KEYBOARD.ENTER && role === USER_ROLES.admin) {
               e.stopPropagation();
             }
           }}

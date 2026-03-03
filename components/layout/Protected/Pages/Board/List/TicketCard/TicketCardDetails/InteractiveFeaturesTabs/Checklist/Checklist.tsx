@@ -23,13 +23,19 @@ import {
   UpdateChecklistProps,
 } from "@/lib/types";
 import { type Checklist } from "@/lib/generated/prisma/client";
+import { useRole } from "@/hooks/useRole";
+import { useUserData } from "@/hooks/useUserData";
+import { USER_ROLES } from "@/lib/consts";
 
 type Props = {
   cardDetailsId: string;
+  assignedUserEmail: string | undefined | null;
 };
-export function Checklist({ cardDetailsId }: Props) {
+export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
   const boardId = useBoardId();
   const queryClient = useQueryClient();
+  const role = useRole();
+  const user = useUserData();
 
   const [isOpenedTitleInput, setIsOpenedTitleInput] = useState(false);
 
@@ -288,41 +294,43 @@ export function Checklist({ cardDetailsId }: Props) {
       </div>
 
       <div className="overflow-y-auto h-56 ">
-        {checklistData.length > 0 && (
-          <AddNewInput
-            type="textarea"
-            buttonDirection="column"
-            label="Add new item"
-            disabled={isPendingCreate || isRefetching || isPendingDelete}
-            loading={isPendingCreate}
-            handleSubmitValue={handleAddChecklist}
-            inputName="title"
-            isOpenedTitleInput={isOpenedTitleInput}
-            setIsOpenedTitleInput={setIsOpenedTitleInput}
-            classNameContainer="p-2"
-            placeholder="type checklist item here..."
-          >
-            <Button variant={"secondary"} className="hidden">
-              + Add an item
-            </Button>
-          </AddNewInput>
-        )}
-
+        {checklistData.length > 0 &&
+          (role === USER_ROLES.admin || user?.email === assignedUserEmail) && (
+            <AddNewInput
+              type="textarea"
+              buttonDirection="column"
+              label="Add new item"
+              disabled={isPendingCreate || isRefetching || isPendingDelete}
+              loading={isPendingCreate}
+              handleSubmitValue={handleAddChecklist}
+              inputName="title"
+              isOpenedTitleInput={isOpenedTitleInput}
+              setIsOpenedTitleInput={setIsOpenedTitleInput}
+              classNameContainer="p-2"
+              placeholder="type checklist item here..."
+            >
+              <Button variant={"secondary"} className="hidden">
+                + Add an item
+              </Button>
+            </AddNewInput>
+          )}
         {checklistData.length === 0 ? (
-          <AddNewInput
-            buttonDirection="column"
-            label="Add an item"
-            type="textarea"
-            disabled={isPendingCreate || isRefetching || isPendingDelete}
-            loading={isPendingCreate}
-            handleSubmitValue={handleAddChecklist}
-            inputName="title"
-            isOpenedTitleInput={isOpenedTitleInput}
-            setIsOpenedTitleInput={setIsOpenedTitleInput}
-            classNameContainer="p-2"
-          >
-            <Button variant={"secondary"}>+ Add an item</Button>
-          </AddNewInput>
+          (role === USER_ROLES.admin || user?.email === assignedUserEmail) && (
+            <AddNewInput
+              buttonDirection="column"
+              label="Add an item"
+              type="textarea"
+              disabled={isPendingCreate || isRefetching || isPendingDelete}
+              loading={isPendingCreate}
+              handleSubmitValue={handleAddChecklist}
+              inputName="title"
+              isOpenedTitleInput={isOpenedTitleInput}
+              setIsOpenedTitleInput={setIsOpenedTitleInput}
+              classNameContainer="p-2"
+            >
+              <Button variant={"secondary"}>+ Add an item</Button>
+            </AddNewInput>
+          )
         ) : (
           <>
             <div className="flex flex-col gap-1">
@@ -332,7 +340,9 @@ export function Checklist({ cardDetailsId }: Props) {
                     isPendingDelete ||
                     isPendingUpdate ||
                     isPendingCreate ||
-                    isRefetching
+                    isRefetching ||
+                    (user?.email !== assignedUserEmail &&
+                      role === USER_ROLES.member)
                   }
                   loading={isPendingDelete}
                   data={item}

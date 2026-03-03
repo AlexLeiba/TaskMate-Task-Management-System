@@ -19,7 +19,8 @@ import { UserCard } from "@/components/layout/Protected/UserCard/UserCard";
 import { assignToCardAction, unassigneCardAction } from "@/app/actions/card";
 import toast from "react-hot-toast";
 import { useBoardId } from "@/hooks/useBoardId";
-import { FAKE_USERS } from "@/lib/consts";
+import { FAKE_USERS, USER_ROLES } from "@/lib/consts";
+import { useRole } from "@/hooks/useRole";
 
 type Props = {
   assignedTo: string | undefined;
@@ -32,6 +33,7 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
   const [selectedUser, setSelectedUser] = useState<UserType>(FAKE_USERS[0]);
 
   const { organization, isLoaded } = useOrganization();
+  const role = useRole();
 
   // FETCH MEMBERS OF ORGANIZATION
   async function fetchMembers() {
@@ -162,7 +164,13 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
       value={selectedUser.email || "none"}
     >
       <SelectTrigger
-        disabled={!isLoaded || isPending || isPendingUnassigne}
+        buttonType="card"
+        disabled={
+          !isLoaded ||
+          isPending ||
+          isPendingUnassigne ||
+          role === USER_ROLES.member
+        }
         className="w-full flex justify-between text-left h-11!"
       >
         <SelectValue placeholder="Assign to" className="h-10" />

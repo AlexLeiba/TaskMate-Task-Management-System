@@ -7,6 +7,7 @@ type Props = ComponentProps<"button"> & {
   loading?: boolean;
   disabled?: boolean;
   classNameChildren?: string;
+  buttonType?: "card";
 };
 export function IconButton({
   children,
@@ -14,6 +15,7 @@ export function IconButton({
   className,
   loading,
   classNameChildren,
+  buttonType,
   ...props
 }: Props) {
   return (
@@ -22,7 +24,9 @@ export function IconButton({
       className={cn(
         "flex justify-center items-center transition-all",
         disabled
-          ? "opacity-50 pointer-events-none"
+          ? buttonType === "card"
+            ? "pointer-events-none"
+            : "opacity-50 "
           : "cursor-pointer hover:opacity-70",
         className,
       )}

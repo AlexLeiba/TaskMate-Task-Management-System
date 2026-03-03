@@ -8,6 +8,8 @@ import { updateListTitleAction } from "@/app/actions/list";
 import toast from "react-hot-toast";
 import dynamic from "next/dynamic";
 import { useBoardId } from "@/hooks/useBoardId";
+import { useRole } from "@/hooks/useRole";
+import { USER_ROLES } from "@/lib/consts";
 
 const ListStatuses = dynamic(() =>
   import("./ListStatuses").then((m) => m.ListStatuses),
@@ -23,6 +25,7 @@ type Props = {
 };
 export function ListCardHeader({ status, title, listId }: Props) {
   const boardId = useBoardId();
+  const role = useRole();
   const [isOpenedTitleInput, setIsOpenedTitleInput] = useState(false);
   const { openTitleInput } = useStore();
   const isInputOpened =
@@ -59,24 +62,33 @@ export function ListCardHeader({ status, title, listId }: Props) {
         <ListStatuses selectedStatus={status} listId={listId} />
       )}
 
-      {/* ADD NEW LIST / LIST TITLE*/}
-      <AddNewInput
-        loading={isPendingMutateListTitle}
-        disabled={isPendingMutateListTitle}
-        handleSubmitValue={(v) => handleSubmitListTitle(v)}
-        inputName="title"
-        placeholder="Edit list title here..."
-        label="Edit list title"
-        setIsOpenedTitleInput={setIsOpenedTitleInput}
-        isOpenedTitleInput={isInputOpened}
-        classNameContainer="py-0 py-0 w-full"
-        defaultValue={title}
-      >
-        <h3 className="text-lg font-medium line-clamp-3">{title}</h3>
-      </AddNewInput>
+      {role === USER_ROLES.admin && (
+        <>
+          {/* ADD NEW LIST / LIST TITLE*/}
+          <AddNewInput
+            loading={isPendingMutateListTitle}
+            disabled={isPendingMutateListTitle}
+            handleSubmitValue={(v) => handleSubmitListTitle(v)}
+            inputName="title"
+            placeholder="Edit list title here..."
+            label="Edit list title"
+            setIsOpenedTitleInput={setIsOpenedTitleInput}
+            isOpenedTitleInput={isInputOpened}
+            classNameContainer="py-0 py-0 w-full"
+            defaultValue={title}
+          >
+            <h3 className="text-lg font-medium line-clamp-3">{title}</h3>
+          </AddNewInput>
 
-      {/* OPTIONS */}
-      {!isInputOpened && <ListOptions listId={listId} />}
+          {/* OPTIONS */}
+          {!isInputOpened && <ListOptions listId={listId} />}
+        </>
+      )}
+      {role === USER_ROLES.member && (
+        <div className="w-full pl-2">
+          <h3 className="text-lg font-medium line-clamp-3">{title}</h3>
+        </div>
+      )}
     </div>
   );
 }

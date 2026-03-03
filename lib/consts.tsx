@@ -75,22 +75,22 @@ export const LIST_STATUSES = [
   {
     label: "In Progress",
     value: "progress",
-    icon: <Clock />,
+    icon: <Clock className="text-yellow-400" />,
   },
   {
     label: "In Review",
     value: "review",
-    icon: <Search />,
+    icon: <Search className="text-green-200" />,
   },
   {
     label: "Done",
     value: "done",
-    icon: <CircleCheck />,
+    icon: <CircleCheck className="text-green-400" />,
   },
   {
     label: "Backlog",
     value: "backlog",
-    icon: <Archive />,
+    icon: <Archive className="text-orange-400" />,
   },
 ] as const;
 

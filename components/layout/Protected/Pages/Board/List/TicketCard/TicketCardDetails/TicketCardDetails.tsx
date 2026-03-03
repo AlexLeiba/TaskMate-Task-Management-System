@@ -19,6 +19,9 @@ import { DateTime } from "./DateTime";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
+import { useUserData } from "@/hooks/useUserData";
+import { USER_ROLES } from "@/lib/consts";
+import { useRole } from "@/hooks/useRole";
 
 type Props = {
   handleCloseModal: () => void;
@@ -34,8 +37,11 @@ export function TicketCardDetails({
   cardTitle,
   listTitle,
 }: Props) {
+  const user = useUserData();
+  const role = useRole();
   async function getDetailsData() {
     if (!cardDetailsId) return;
+
     try {
       const response = await getCardDetails(cardDetailsId);
 
@@ -87,12 +93,16 @@ export function TicketCardDetails({
             <Description
               description={cardDetailsData?.description || ""}
               cardDetailsId={cardDetailsData?.id}
+              isAssignedUserEmail={
+                cardDetailsData?.card.assignedToEmail === user?.email
+              }
             />
 
             {/* TABS */}
             <InteractiveFeaturesTabs
               comments={cardDetailsData?.comments}
               cardDetailsId={cardDetailsData?.id || ""}
+              assignedUserEmail={cardDetailsData?.card.assignedToEmail}
             />
           </div>
 
@@ -124,11 +134,13 @@ export function TicketCardDetails({
               cardDetailsId={cardDetailsData?.id}
             />
             <div className="flex flex-col">
-              <Actions
-                cardDetailsId={cardDetailsData?.id || ""}
-                listId={cardDetailsData?.card.listId || ""}
-                cardId={cardDetailsData?.card.id || ""}
-              />
+              {role === USER_ROLES.admin && (
+                <Actions
+                  cardDetailsId={cardDetailsData?.id || ""}
+                  listId={cardDetailsData?.card.listId || ""}
+                  cardId={cardDetailsData?.card.id || ""}
+                />
+              )}
               <div className="flex justify-end my-4">
                 <DateTime
                   createdAt={cardDetailsData?.card.createdAt}

@@ -26,6 +26,13 @@ export function DueDate({ data, cardDetailsId }: Props) {
             <Info />
           </TooltipTrigger>
           <TooltipContent className="min-w-20 max-w-90 flex flex-col gap-1">
+            <p className="text-base">
+              Due date is the date when the ticket is expected to be completed.
+            </p>
+            <p className="text-base">
+              Based on the date and time selected, the due date will be
+              displayed in different colors:
+            </p>
             <p className="text-sm">
               <strong>Gray color -</strong> more than 24 hours remained.
             </p>

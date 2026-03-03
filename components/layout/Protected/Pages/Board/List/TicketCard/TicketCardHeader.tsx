@@ -139,10 +139,7 @@ export function TicketCardHeader({
     setIsOpenedOptions(false);
   }
   return (
-    <div className="flex justify-between w-full relative">
-      <h4 className="text-lg font-medium pr-6 line-clamp-2">{title}</h4>
-
-      {/* OPTIONS  */}
+    <>
       <Popover open={isOpenedOptions} onOpenChange={setIsOpenedOptions}>
         <PopoverTrigger asChild>
           <IconButton
@@ -296,6 +293,6 @@ export function TicketCardHeader({
         setDeleteDialogOpen={setDeleteDialogOpen}
         handleDelete={() => handleDeleteCard(cardId)}
       />
-    </div>
+    </>
   );
 }

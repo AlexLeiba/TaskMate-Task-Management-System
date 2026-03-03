@@ -12,6 +12,7 @@ type Props = {
     files: UploadedFile[];
     author: User;
   };
+  isAuthor?: boolean;
   handleDeleteImage: (fieldId: string, name: string | "", id: string) => void;
   handleDeleteFile: (fieldId: string, name: string | "", id: string) => void;
   handlePreviewImage: (url: string, name?: string) => void;
@@ -19,6 +20,7 @@ type Props = {
 };
 export function AttachmentCard({
   data: attachment,
+  isAuthor = false,
   handleDeleteImage,
   handleDeleteFile,
   handlePreviewImage,
@@ -35,6 +37,7 @@ export function AttachmentCard({
               {/*PREVIEW IMAGE */}
               {file.type === "image" ? (
                 <PreviewImageCard
+                  isAuthor={isAuthor}
                   key={file.id}
                   data={file}
                   handleDeleteImage={handleDeleteImage}
@@ -42,6 +45,7 @@ export function AttachmentCard({
                 />
               ) : (
                 <DownloadFileCard
+                  isAuthor={isAuthor}
                   handleDeleteFile={handleDeleteFile}
                   key={file.id}
                   data={file}

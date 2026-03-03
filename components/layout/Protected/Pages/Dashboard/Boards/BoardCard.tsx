@@ -1,5 +1,7 @@
 "use client";
 import { IconButton } from "@/components/ui/iconButton";
+import { useRole } from "@/hooks/useRole";
+import { USER_ROLES } from "@/lib/consts";
 import { X } from "lucide-react";
 import { ComponentProps } from "react";
 
@@ -18,6 +20,7 @@ export function BoardCard({
   handleSelectBoard,
   disabled = false,
 }: Props) {
+  const role = useRole();
   return (
     <>
       <div
@@ -38,14 +41,16 @@ export function BoardCard({
             {title}
           </p>
         </IconButton>
-        <IconButton
-          title={`Delete board - ${title}`}
-          aria-label={`Delete board - ${title}`}
-          onClick={handleModalDeleteBoard}
-          className="absolute top-2 right-2 rounded-full p-1 z-20 bg-gray-800/30 cursor-pointer hover:bg-gray-800 text-gray-500 hover:text-white"
-        >
-          <X className="" size={20} />
-        </IconButton>
+        {role === USER_ROLES.admin && (
+          <IconButton
+            title={`Delete board - ${title}`}
+            aria-label={`Delete board - ${title}`}
+            onClick={handleModalDeleteBoard}
+            className="absolute top-2 right-2 rounded-full p-1 z-20 bg-gray-800/30 cursor-pointer hover:bg-gray-800 text-gray-500 hover:text-white"
+          >
+            <X className="" size={20} />
+          </IconButton>
+        )}
       </div>
     </>
   );

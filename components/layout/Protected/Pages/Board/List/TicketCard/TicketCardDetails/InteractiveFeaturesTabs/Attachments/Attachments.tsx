@@ -21,14 +21,16 @@ import { getCardDetailsAttachments } from "@/app/actions/card-details";
 import toast from "react-hot-toast";
 import { axiosInstance } from "@/lib/config";
 import { API_REQ_URL } from "@/lib/consts";
-import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useBoardId } from "@/hooks/useBoardId";
+import { useUserData } from "@/hooks/useUserData";
 
 type Props = {
   cardDetailsId: string;
 };
 export function Attachments({ cardDetailsId }: Props) {
-  const boardId = usePathname().split("/").at(-1);
+  const user = useUserData();
+  const boardId = useBoardId();
   const [isDownloadingZip, setIsDownloadingZip] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -344,6 +346,7 @@ export function Attachments({ cardDetailsId }: Props) {
         {attachmentsData?.length > 0 ? (
           attachmentsData.map((attachment) => (
             <AttachmentCard
+              isAuthor={attachment?.author.email === user?.email}
               key={attachment?.author?.id}
               data={attachment}
               handleDeleteImage={handleDeleteImage}

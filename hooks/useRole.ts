@@ -1,11 +1,13 @@
 import { useOrganization } from "@clerk/nextjs";
 
-export function useRole() {
+export function useRole(): "admin" | "member" {
   const { membership } = useOrganization();
 
   const role = membership?.role;
 
-  console.log(role); // "admin" | "basic_member"
+  if (role) {
+    return role?.replace("org:", "") as "admin" | "member";
+  }
 
-  return role?.replace("org:", "") || "member";
+  return "member";
 }

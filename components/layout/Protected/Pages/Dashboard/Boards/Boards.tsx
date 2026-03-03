@@ -12,6 +12,8 @@ import dynamic from "next/dynamic";
 import { useMutation } from "@tanstack/react-query";
 import { deleteFile } from "@/lib/deleteFile";
 import { useAuth } from "@clerk/nextjs";
+import { useRole } from "@/hooks/useRole";
+import { USER_ROLES } from "@/lib/consts";
 
 const DeleteDialog = dynamic(() =>
   import("@/components/layout/Protected/DeleteDialog/DeleteDialog").then(
@@ -25,6 +27,7 @@ export function Boards({
   data: { error: { message: string }; data: BoardType[] };
 }) {
   const { orgId } = useAuth();
+  const role = useRole();
 
   const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -84,7 +87,9 @@ export function Boards({
       <Spacer size={4} />
       <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(200px,243px))] gap-2">
         {/* CREATE NEW BOARD */}
-        <CreateNewBoardCard disabled={isDeletePending} />
+        {role === USER_ROLES.admin && (
+          <CreateNewBoardCard disabled={isDeletePending} />
+        )}
 
         {/* BOARDS */}
         {data.data?.map((board) => (

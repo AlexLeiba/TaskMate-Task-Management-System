@@ -7,11 +7,13 @@ import Image from "next/image";
 
 type Props = {
   data: UploadedFile;
+  isAuthor?: boolean;
   handleDeleteImage: (imageId: string, name: string, id: string) => void;
   handleViewImage: (url: string, name?: string) => void;
 };
 export function PreviewImageCard({
   data,
+  isAuthor = false,
   handleDeleteImage,
   handleViewImage,
 }: Props) {
@@ -38,17 +40,19 @@ export function PreviewImageCard({
           className="object-contain w-full h-full"
         />
       </div>
-      <IconButton
-        onClick={(e) => {
-          e.stopPropagation();
-          handleDeleteImage(data.fileId, data?.name || "", data.id);
-        }}
-        className="absolute -top-6 -right-4 text-gray-300 p-2 hover:bg-gray-600 rounded-full hover:text-white hidden group-hover:block"
-        title="Detele image"
-        aria-label="Delete image"
-      >
-        <X size={15} />
-      </IconButton>
+      {isAuthor && (
+        <IconButton
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDeleteImage(data.fileId, data?.name || "", data.id);
+          }}
+          className="absolute -top-6 -right-4 text-gray-300 p-2 hover:bg-gray-600 rounded-full hover:text-white hidden group-hover:block"
+          title="Detele image"
+          aria-label="Delete image"
+        >
+          <X size={15} />
+        </IconButton>
+      )}
     </div>
   );
 }

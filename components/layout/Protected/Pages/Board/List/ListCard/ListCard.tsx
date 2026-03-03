@@ -4,12 +4,15 @@ import { ListCardHeader } from "./ListCardHeader";
 import { ListAndCardsAndDueDateAndChecklistType } from "@/lib/types";
 import { ComponentProps } from "react";
 import { Draggable, Droppable } from "@hello-pangea/dnd";
+import { USER_ROLES } from "@/lib/consts";
+import { useRole } from "@/hooks/useRole";
 
 type Props = ComponentProps<"li"> & {
   listData: ListAndCardsAndDueDateAndChecklistType;
   index: number;
 };
 export function ListCard({ listData, index }: Props) {
+  const role = useRole();
   return (
     <Draggable
       key={listData.id}
@@ -64,7 +67,9 @@ export function ListCard({ listData, index }: Props) {
             </Droppable>
 
             {/*ADD NEW TICKET CARD */}
-            <AddTicketCard listId={listData.id.toString()} />
+            {role === USER_ROLES.admin && (
+              <AddTicketCard listId={listData.id.toString()} />
+            )}
           </div>
         </li>
       )}

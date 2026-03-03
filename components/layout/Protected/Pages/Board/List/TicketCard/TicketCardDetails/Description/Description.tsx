@@ -14,6 +14,9 @@ import toast from "react-hot-toast";
 
 import "react-quill-new/dist/quill.snow.css";
 import { useBoardId } from "@/hooks/useBoardId";
+import { useRole } from "@/hooks/useRole";
+import { USER_ROLES } from "@/lib/consts";
+
 const ReactQuill = dynamic(() => import("react-quill-new"), {
   ssr: false,
   loading: () => <InitialDescriptionState />,
@@ -22,8 +25,14 @@ const ReactQuill = dynamic(() => import("react-quill-new"), {
 type Props = {
   description: string;
   cardDetailsId: string | undefined;
+  isAssignedUserEmail: boolean;
 };
-export function Description({ description = "", cardDetailsId }: Props) {
+export function Description({
+  description = "",
+  cardDetailsId,
+  isAssignedUserEmail = false,
+}: Props) {
+  const role = useRole();
   const boardId = useBoardId();
   const [value, setValue] = useState(description || "");
   const [isQuillVisible, setIsQuillVisible] = useState(false);
@@ -62,6 +71,14 @@ export function Description({ description = "", cardDetailsId }: Props) {
     toast.loading("Updating description...", { id: "update-description" });
   }
 
+  function handleOpenQuill() {
+    if (!isAssignedUserEmail && role === USER_ROLES.member)
+      return toast.error(
+        "You can't edit description. Only Admins or Assignees are allowed.",
+      );
+    setIsQuillVisible(true);
+  }
+
   return (
     <div>
       <div className="flex justify-between">
@@ -74,7 +91,7 @@ export function Description({ description = "", cardDetailsId }: Props) {
             disabled={isPending}
             title="Edit Description"
             aria-label="Edit Description"
-            onClick={() => setIsQuillVisible(true)}
+            onClick={handleOpenQuill}
             className="px-2"
           >
             <SquarePen className="text-green-500" />
@@ -116,7 +133,7 @@ export function Description({ description = "", cardDetailsId }: Props) {
         </div>
       ) : cardDetailsId ? (
         <InitialDescriptionState
-          onClick={() => setIsQuillVisible(true)}
+          onClick={handleOpenQuill}
           classNameChildren="flex flex-col justify-start items-start h-full wrap-break-word"
         >
           {value !== "" ? (

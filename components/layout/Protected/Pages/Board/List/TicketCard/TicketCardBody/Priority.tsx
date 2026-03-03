@@ -5,7 +5,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CARD_PRIORITIES, KEYBOARD } from "@/lib/consts";
+import { useRole } from "@/hooks/useRole";
+import { CARD_PRIORITIES, KEYBOARD, USER_ROLES } from "@/lib/consts";
 import { PriorityType } from "@/lib/types";
 import { useMutation } from "@tanstack/react-query";
 import { Check, X } from "lucide-react";
@@ -23,9 +24,9 @@ export function Priority({ priority, boardId, listId, cardId }: Props) {
   const [selectedPriority, setSelectedPriority] = useState<PriorityType>(
     CARD_PRIORITIES[0],
   );
+  const role = useRole();
 
   useEffect(() => {
-    // eslint-disable-next-line
     setSelectedPriority(
       CARD_PRIORITIES.find((p) => p.value === priority) || {
         label: "None",
@@ -55,16 +56,17 @@ export function Priority({ priority, boardId, listId, cardId }: Props) {
   }
   return (
     <Popover open={isOpenedOptions} onOpenChange={setIsOpenedOptions}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild disabled={role === USER_ROLES.member}>
         <IconButton
-          disabled={isPending}
+          buttonType={"card"}
+          disabled={isPending || role === USER_ROLES.member}
           aria-label="Priority"
           title="Priority"
           onClick={(e) => {
-            e.stopPropagation();
+            if (role === USER_ROLES.admin) e.stopPropagation();
           }}
           onKeyDown={(e) => {
-            if (e.key === KEYBOARD.ENTER) {
+            if (e.key === KEYBOARD.ENTER && role === USER_ROLES.admin) {
               e.stopPropagation();
             }
           }}

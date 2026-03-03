@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
 import { useBoardId } from "@/hooks/useBoardId";
+import { useUserData } from "@/hooks/useUserData";
 
 const DeleteDialog = dynamic(() =>
   import("@/components/layout/Protected/DeleteDialog/DeleteDialog").then(
@@ -27,12 +28,13 @@ type Props = {
   cardDetailsId: string;
 };
 export function Comments({ cardDetailsId }: Props) {
-  const boardId = useBoardId();
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [isOpenedCommentInput, setIsOpenedCommentInput] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState<string | null>(
     null,
   );
+  const boardId = useBoardId();
+  const user = useUserData();
 
   const queryClient = useQueryClient();
 
@@ -178,6 +180,7 @@ export function Comments({ cardDetailsId }: Props) {
         {commentsData && commentsData.length > 0
           ? commentsData?.map((comment) => (
               <CommentCard
+                isAuthor={comment?.author.email === user?.email}
                 key={comment.id}
                 data={comment}
                 handleOpenDeleteModal={() => handleOpenDeleteDialog(comment.id)}

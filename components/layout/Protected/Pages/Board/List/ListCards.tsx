@@ -12,6 +12,8 @@ import {
   changeCardPositionAction,
   changeListPositionAction,
 } from "@/app/actions/drag-and-drop";
+import { USER_ROLES } from "@/lib/consts";
+import { useRole } from "@/hooks/useRole";
 
 const DragDropContext = dynamic(() =>
   import("@hello-pangea/dnd").then((m) => m.DragDropContext),
@@ -28,7 +30,7 @@ export function ListCards({ boardId, listData }: Props) {
   const [listDataState, setListDataState] = useState<
     ListAndCardsAndDueDateAndChecklistType[] | null | undefined
   >(null);
-
+  const role = useRole();
   const hasToastedRef = useRef(false);
 
   const { mutate: mutateReorderList } = useMutation({
@@ -209,7 +211,7 @@ export function ListCards({ boardId, listData }: Props) {
         </Droppable>
       </DragDropContext>
       {/*  ADD NEW LIST*/}
-      <AddNewListCard boardId={boardId} />
+      {role === USER_ROLES.admin && <AddNewListCard boardId={boardId} />}
     </div>
   );
 }

@@ -8,13 +8,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CARD_PRIORITIES } from "@/lib/consts";
+import { CARD_PRIORITIES, USER_ROLES } from "@/lib/consts";
 import { PrioritySkeleton } from "./PrioritySkeleton";
 import { PriorityType } from "@/lib/generated/prisma/enums";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { editPriorityAction } from "@/app/actions/card";
 import { useBoardId } from "@/hooks/useBoardId";
+import { useRole } from "@/hooks/useRole";
 
 type Props = {
   priority: PriorityType | undefined;
@@ -23,6 +24,7 @@ type Props = {
 };
 export function PriorityDropdown({ priority = "none", listId, cardId }: Props) {
   const boardId = useBoardId();
+  const role = useRole();
 
   const { mutate, isPending, data } = useMutation({
     mutationFn: editPriorityAction,
@@ -57,7 +59,8 @@ export function PriorityDropdown({ priority = "none", listId, cardId }: Props) {
       value={updatedPriorityData || priority}
     >
       <SelectTrigger
-        disabled={isPending}
+        buttonType="card"
+        disabled={isPending || role === USER_ROLES.member}
         className="w-full flex justify-between text-left h-11!"
       >
         <SelectValue placeholder="Select Priority" className="h-11" />

@@ -23,6 +23,7 @@ type Props = {
   cardDetailsId: string;
 
   comments: (Comment & { author: User })[] | undefined;
+  assignedUserEmail: string | undefined | null;
 };
 
 const TAB_COMPONENTS = {
@@ -32,7 +33,11 @@ const TAB_COMPONENTS = {
   checklist: Checklist,
 } as const;
 
-export function InteractiveFeaturesTabs({ cardDetailsId, comments }: Props) {
+export function InteractiveFeaturesTabs({
+  cardDetailsId,
+  comments,
+  assignedUserEmail,
+}: Props) {
   const [selectedTab, setSelectTab] =
     useState<(typeof TAB_ELEMENTS)[number]["value"]>("comments");
   // todo, CHANGE IT TO USEsTATE, to have the same tab at each new open card
@@ -75,7 +80,11 @@ export function InteractiveFeaturesTabs({ cardDetailsId, comments }: Props) {
       {/* TABS CONTENT */}
       <div className="pl-2">
         {ActiveComponent && (
-          <ActiveComponent data={comments} cardDetailsId={cardDetailsId} />
+          <ActiveComponent
+            data={comments}
+            cardDetailsId={cardDetailsId}
+            assignedUserEmail={assignedUserEmail}
+          />
         )}
       </div>
     </div>

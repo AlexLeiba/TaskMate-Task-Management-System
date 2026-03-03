@@ -23,8 +23,9 @@ import toast from "react-hot-toast";
 import { useBoardId } from "@/hooks/useBoardId";
 
 import { parseDateTimeToLocal } from "@/lib/parseDateTimeToLocal";
-import { INITIAL_TIME } from "@/lib/consts";
+import { INITIAL_TIME, USER_ROLES } from "@/lib/consts";
 import { isValidDateString } from "@/lib/isValidDateString";
+import { useRole } from "@/hooks/useRole";
 
 const DeleteDialog = dynamic(() =>
   import("@/components/layout/Protected/DeleteDialog/DeleteDialog").then(
@@ -38,6 +39,7 @@ type Props = {
 };
 
 export function DueDateInputs({ data, cardDetailsId }: Props) {
+  const role = useRole();
   const boardId = useBoardId();
   const queryClient = useQueryClient();
   const now = new Date();
@@ -159,6 +161,7 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
       {!addDateInput && (
         <div className="flex gap-4 flex-col ">
           <Button
+            disabled={role === USER_ROLES.member}
             className="w-full"
             onClick={handleOpenDateInput}
             variant={"secondary"}
@@ -178,7 +181,9 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
           {dueDate ? (
             // CREATED DUE DATE CARD
             <DueDateCard
-              disabled={isPendingCreate || isPendingDelete}
+              disabled={
+                isPendingCreate || isPendingDelete || role === USER_ROLES.member
+              }
               dueDate={dueDate}
               handleDeleteDialogOpen={() => setDeleteDialogOpen(true)}
             />
@@ -236,7 +241,11 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
 
               <div className="flex justify-end gap-2">
                 <Button
-                  disabled={isPendingCreate || isPendingDelete}
+                  disabled={
+                    isPendingCreate ||
+                    isPendingDelete ||
+                    role === USER_ROLES.member
+                  }
                   variant={"secondary"}
                   onClick={handleAddDueDate}
                   title="Add due date"

@@ -9,6 +9,8 @@ import { editBoardTitleAction } from "@/app/actions/board";
 import toast from "react-hot-toast";
 import { Board } from "@/lib/generated/prisma/client";
 import { IconButton } from "@/components/ui/iconButton";
+import { useRole } from "@/hooks/useRole";
+import { USER_ROLES } from "@/lib/consts";
 
 type Props = {
   data: {
@@ -24,6 +26,7 @@ export function SubHeader({
   orgId,
 }: Props) {
   const [showTitleInput, setShowTitleInput] = useState(false);
+  const role = useRole();
 
   useEffect(() => {
     if (error.message) {
@@ -54,35 +57,42 @@ export function SubHeader({
   return (
     <div className="bg-foreground/70 w-full">
       <div className="px-4 flex justify-between items-center max-w-400 mx-auto">
-        <AddNewInput
-          defaultValue={board?.title}
-          loading={isPendingEditBoardTitle}
-          disabled={isPendingEditBoardTitle}
-          handleSubmitValue={(v) => handleSubmitForm(v)}
-          inputName="title"
-          placeholder="Edit board title here..."
-          setIsOpenedTitleInput={setShowTitleInput}
-          isOpenedTitleInput={showTitleInput}
-        >
-          <div className="flex gap-1 items-center">
-            <p className="text-lg font-bold line-clamp-1 text-text-secondary ">
-              {board?.title}
-            </p>
-            <Button
-              disabled={isPendingEditBoardTitle}
-              variant={"ghost"}
-              onClick={handleEditBoardTitle}
-              title="Edit board title"
-              aria-label="Edit board title"
-              className="group"
-            >
-              <Edit
-                size={15}
-                className="text-text-secondary group-hover:text-text-primary"
-              />
-            </Button>
-          </div>
-        </AddNewInput>
+        {role === USER_ROLES.admin && (
+          <AddNewInput
+            defaultValue={board?.title}
+            loading={isPendingEditBoardTitle}
+            disabled={isPendingEditBoardTitle}
+            handleSubmitValue={(v) => handleSubmitForm(v)}
+            inputName="title"
+            placeholder="Edit board title here..."
+            setIsOpenedTitleInput={setShowTitleInput}
+            isOpenedTitleInput={showTitleInput}
+          >
+            <div className="flex gap-1 items-center">
+              <p className="text-lg font-bold line-clamp-1 text-text-secondary ">
+                {board?.title}
+              </p>
+              <Button
+                disabled={isPendingEditBoardTitle}
+                variant={"ghost"}
+                onClick={handleEditBoardTitle}
+                title="Edit board title"
+                aria-label="Edit board title"
+                className="group"
+              >
+                <Edit
+                  size={15}
+                  className="text-text-secondary group-hover:text-text-primary"
+                />
+              </Button>
+            </div>
+          </AddNewInput>
+        )}
+        {role === USER_ROLES.member && (
+          <p className="text-lg font-bold line-clamp-1 text-text-secondary ">
+            {board?.title}
+          </p>
+        )}
 
         <Link
           href={`/dashboard/${orgId || ""}`}

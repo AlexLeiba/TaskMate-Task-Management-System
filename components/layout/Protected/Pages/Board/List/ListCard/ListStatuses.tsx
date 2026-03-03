@@ -5,7 +5,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Check, X } from "lucide-react";
-import { LIST_STATUSES } from "@/lib/consts";
+import { LIST_STATUSES, USER_ROLES } from "@/lib/consts";
 
 import { StatusType } from "@/lib/types";
 import { IconButton } from "@/components/ui/iconButton";
@@ -13,12 +13,14 @@ import toast from "react-hot-toast";
 import { useMutation } from "@tanstack/react-query";
 import { updateListStatusAction } from "@/app/actions/list";
 import { useBoardId } from "@/hooks/useBoardId";
+import { useRole } from "@/hooks/useRole";
 
 type Props = {
   selectedStatus: string;
   listId: string;
 };
 export function ListStatuses({ selectedStatus, listId }: Props) {
+  const role = useRole();
   const boardId = useBoardId();
   const [statusData, setStatusData] = useState<StatusType>(
     LIST_STATUSES.find((s) => s.value === selectedStatus)!,
@@ -50,7 +52,7 @@ export function ListStatuses({ selectedStatus, listId }: Props) {
 
   return (
     <Popover open={isOpenedStatus} onOpenChange={setIsOpenedStatus}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild disabled={role === USER_ROLES.member}>
         <IconButton title="List Statuses" aria-label="List Statuses">
           <p>{statusData?.icon}</p>
         </IconButton>

@@ -5,11 +5,13 @@ import { X } from "lucide-react";
 
 type Props = {
   data: UploadedFile;
+  isAuthor?: boolean;
   handleDownloadFile: (url: string, name?: string) => void;
   handleDeleteFile: (fileId: string, name: string | "", id: string) => void;
 };
 export function DownloadFileCard({
   data,
+  isAuthor = false,
   handleDownloadFile,
   handleDeleteFile,
 }: Props) {
@@ -24,17 +26,19 @@ export function DownloadFileCard({
       >
         <p className="line-clamp-1">{data.name}</p>
       </IconButton>
-      <IconButton
-        onClick={(e) => {
-          e.stopPropagation();
-          handleDeleteFile(data.fileId, data.name || "", data.id);
-        }}
-        className="absolute -top-6 right-0 text-gray-300 p-2 hover:bg-gray-600 rounded-full hover:text-white hidden group-hover:block"
-        title="Detele file"
-        aria-label="Delete file"
-      >
-        <X size={15} />
-      </IconButton>
+      {isAuthor && (
+        <IconButton
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDeleteFile(data.fileId, data.name || "", data.id);
+          }}
+          className="absolute -top-6 right-0 text-gray-300 p-2 hover:bg-gray-600 rounded-full hover:text-white hidden group-hover:block"
+          title="Detele file"
+          aria-label="Delete file"
+        >
+          <X size={15} />
+        </IconButton>
+      )}
     </div>
   );
 }

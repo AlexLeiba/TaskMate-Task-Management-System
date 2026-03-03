@@ -30,8 +30,18 @@ export async function getListDataAction(
           include: {
             details: {
               select: {
-                dueDate: true,
-                checklist: true,
+                dueDate: {
+                  select: {
+                    date: true,
+                    time: true,
+                  },
+                },
+                checklist: {
+                  select: {
+                    id: true,
+                    isCompleted: true,
+                  },
+                },
               },
             },
           },

@@ -1,4 +1,4 @@
-"use cl;ient";
+"use client";
 import { duedateStatusColors } from "@/lib/dueDateStatusColors";
 import { DueDate } from "@/lib/generated/prisma/client";
 import { isValidDateString } from "@/lib/isValidDateString";
@@ -12,7 +12,7 @@ type Props = {
   data: DueDate | undefined;
 };
 export function DueDateIndicator({ data }: Props) {
-  if (!data || !data.date || !data.time) return null;
+  if (!data || !data.date || !data.time) return;
 
   const isValidDate =
     isValidDateString(data.date) && isValidDateString(data.time);
@@ -22,9 +22,11 @@ export function DueDateIndicator({ data }: Props) {
   }
 
   const dueDate = parseDateTimeToLocal(data.date, data.time);
+
   const date = new Date(dueDate);
 
   const formattedDate = format(new Date(dueDate), "MMM dd");
+
   const dInDaysData = differenceInDays(new Date(date), new Date());
   const dInHoursData = differenceInHours(new Date(date), new Date());
 

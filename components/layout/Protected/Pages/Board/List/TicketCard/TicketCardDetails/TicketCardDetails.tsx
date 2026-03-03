@@ -68,6 +68,7 @@ export function TicketCardDetails({
   return (
     <Dialog open={isModalOpened} onOpenChange={handleCloseModal}>
       <DialogContent
+        aria-describedby="The dialog is used to view card details"
         className={cn(
           "flex flex-col overflow-y-auto h-full",
           "md:min-w-[75%] md:max-w-200 md:max-h-200 md:min-h-100",

@@ -30,7 +30,10 @@ export function DeleteDialog({
       open={loading ? true : deleteDialogOpen}
       onOpenChange={loading ? () => {} : setDeleteDialogOpen}
     >
-      <DialogContent className="px-8">
+      <DialogContent
+        className="px-8"
+        aria-describedby={`The dialog is used to delete ${title}`}
+      >
         <DialogHeader>
           <DialogTitle className="text-2xl">
             Are you absolutely sure?

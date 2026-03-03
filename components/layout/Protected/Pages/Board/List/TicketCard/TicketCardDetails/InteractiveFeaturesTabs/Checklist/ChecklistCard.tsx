@@ -15,7 +15,7 @@ type Props = {
 export function ChecklistCard({
   data,
   disabled,
-  loading,
+
   handleSelectChecklist,
   handleDeleteChecklist,
 }: Props) {
@@ -24,11 +24,13 @@ export function ChecklistCard({
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === KEYBOARD.ENTER) {
-          !disabled && handleSelectChecklist(data.id);
+          if (disabled) return;
+          handleSelectChecklist(data.id);
         }
       }}
       onClick={() => {
-        !disabled && handleSelectChecklist(data.id);
+        if (disabled) return;
+        handleSelectChecklist(data.id);
       }}
       key={data.id}
       className="flex items-center justify-between hover:opacity-70 cursor-pointer  group p-2 bg-background-element rounded-md"
@@ -48,8 +50,7 @@ export function ChecklistCard({
         title="Delete item"
         aria-label="Delete item"
         disabled={disabled}
-        loading={loading}
-        className="hidden group-hover:block group-focus-within:block"
+        className="lg:hidden group-hover:block group-focus-within:block"
         onClick={(e) => {
           e.stopPropagation();
 

@@ -6,12 +6,14 @@ import { X } from "lucide-react";
 type Props = {
   data: UploadedFile;
   isAuthor?: boolean;
+  disabled?: boolean;
   handleDownloadFile: (url: string, name?: string) => void;
   handleDeleteFile: (fileId: string, name: string | "", id: string) => void;
 };
 export function DownloadFileCard({
   data,
   isAuthor = false,
+  disabled = false,
   handleDownloadFile,
   handleDeleteFile,
 }: Props) {
@@ -28,11 +30,12 @@ export function DownloadFileCard({
       </IconButton>
       {isAuthor && (
         <IconButton
+          disabled={disabled}
           onClick={(e) => {
             e.stopPropagation();
             handleDeleteFile(data.fileId, data.name || "", data.id);
           }}
-          className="absolute -top-6 right-0 text-gray-300 p-2 hover:bg-gray-600 rounded-full hover:text-white hidden group-hover:block"
+          className="absolute -top-6 right-0 text-gray-300 p-2 hover:bg-gray-600 rounded-full hover:text-white lg:hidden  group-hover:block"
           title="Detele file"
           aria-label="Delete file"
         >

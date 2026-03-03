@@ -346,6 +346,12 @@ export function Attachments({ cardDetailsId }: Props) {
         {attachmentsData?.length > 0 ? (
           attachmentsData.map((attachment) => (
             <AttachmentCard
+              disabled={
+                isDownloadingZip ||
+                isPendingUpload ||
+                isPendingDelete ||
+                isLoading
+              }
               isAuthor={attachment?.author.email === user?.email}
               key={attachment?.author?.id}
               data={attachment}
@@ -358,6 +364,12 @@ export function Attachments({ cardDetailsId }: Props) {
         ) : (
           <div>
             <Button
+              disabled={
+                isDownloadingZip ||
+                isPendingUpload ||
+                isPendingDelete ||
+                isLoading
+              }
               onClick={handleOpenFileInput}
               variant={"secondary"}
               classNameChildren="flex items-center gap-2"

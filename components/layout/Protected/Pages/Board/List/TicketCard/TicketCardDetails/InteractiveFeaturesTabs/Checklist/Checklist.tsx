@@ -26,6 +26,7 @@ import { type Checklist } from "@/lib/generated/prisma/client";
 import { useRole } from "@/hooks/useRole";
 import { useUserData } from "@/hooks/useUserData";
 import { USER_ROLES } from "@/lib/consts";
+import { cn } from "@/lib/utils";
 
 type Props = {
   cardDetailsId: string;
@@ -292,68 +293,56 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
           <Spacer size={2} />
         )}
       </div>
-
       <div className="overflow-y-auto h-56 ">
-        {checklistData.length > 0 &&
-          (role === USER_ROLES.admin || user?.email === assignedUserEmail) && (
-            <AddNewInput
-              type="textarea"
-              buttonDirection="column"
-              label="Add new item"
-              disabled={isPendingCreate || isRefetching || isPendingDelete}
-              loading={isPendingCreate}
-              handleSubmitValue={handleAddChecklist}
-              inputName="title"
-              isOpenedTitleInput={isOpenedTitleInput}
-              setIsOpenedTitleInput={setIsOpenedTitleInput}
-              classNameContainer="p-2"
-              placeholder="type checklist item here..."
+        {(role === USER_ROLES.admin || user?.email === assignedUserEmail) && (
+          <AddNewInput
+            buttonDirection="column"
+            label="Add an item"
+            type="textarea"
+            disabled={isPendingCreate || isRefetching || isPendingDelete}
+            loading={isPendingCreate}
+            handleSubmitValue={handleAddChecklist}
+            inputName="title"
+            isOpenedTitleInput={isOpenedTitleInput}
+            setIsOpenedTitleInput={setIsOpenedTitleInput}
+            classNameContainer="p-2"
+            className="pl-0"
+            placeholder="type checklist item here..."
+          >
+            <Button
+              variant={"secondary"}
+              className={cn(
+                checklistData.length === 0
+                  ? ""
+                  : isOpenedTitleInput
+                    ? ""
+                    : "hidden",
+              )}
             >
-              <Button variant={"secondary"} className="hidden">
-                + Add an item
-              </Button>
-            </AddNewInput>
-          )}
-        {checklistData.length === 0 ? (
-          (role === USER_ROLES.admin || user?.email === assignedUserEmail) && (
-            <AddNewInput
-              buttonDirection="column"
-              label="Add an item"
-              type="textarea"
-              disabled={isPendingCreate || isRefetching || isPendingDelete}
-              loading={isPendingCreate}
-              handleSubmitValue={handleAddChecklist}
-              inputName="title"
-              isOpenedTitleInput={isOpenedTitleInput}
-              setIsOpenedTitleInput={setIsOpenedTitleInput}
-              classNameContainer="p-2"
-            >
-              <Button variant={"secondary"}>+ Add an item</Button>
-            </AddNewInput>
-          )
-        ) : (
-          <>
-            <div className="flex flex-col gap-1">
-              {checklistData?.map((item) => (
-                <ChecklistCard
-                  disabled={
-                    isPendingDelete ||
-                    isPendingUpdate ||
-                    isPendingCreate ||
-                    isRefetching ||
-                    (user?.email !== assignedUserEmail &&
-                      role === USER_ROLES.member)
-                  }
-                  loading={isPendingDelete}
-                  data={item}
-                  key={item.id}
-                  handleDeleteChecklist={() => handleDeleteChecklist(item.id)}
-                  handleSelectChecklist={() => handleCheckItem(item.id)}
-                />
-              ))}
-            </div>
-          </>
+              + Add an item
+            </Button>
+          </AddNewInput>
         )}
+
+        <div className="flex flex-col gap-1">
+          {checklistData?.map((item) => (
+            <ChecklistCard
+              disabled={
+                isPendingDelete ||
+                isPendingUpdate ||
+                isPendingCreate ||
+                isRefetching ||
+                (user?.email !== assignedUserEmail &&
+                  role === USER_ROLES.member)
+              }
+              loading={isPendingDelete}
+              data={item}
+              key={item.id}
+              handleDeleteChecklist={() => handleDeleteChecklist(item.id)}
+              handleSelectChecklist={() => handleCheckItem(item.id)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

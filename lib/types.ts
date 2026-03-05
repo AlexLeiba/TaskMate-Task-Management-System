@@ -1,4 +1,4 @@
-import { JSX } from "react";
+import { JSX, ReactNode } from "react";
 import { FILES_MIME_TYPES, IMAGES_MIME_TYPES } from "./consts";
 import { Card, Checklist, DueDate, List } from "./generated/prisma/client";
 
@@ -336,4 +336,13 @@ export type DeleteChecklistProps = {
   cardDetailsId: string;
   checklistId: string;
   boardId: string;
+};
+
+// BOARD HEADER SECTIONS TABS
+export type BoardTabSectionType = "summary" | "board" | "list";
+export type BoardTab = {
+  id: string;
+  label: string;
+  value: BoardTabSectionType;
+  icon: ReactNode;
 };

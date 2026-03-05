@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ProgressBar } from "./ProgressBar";
-import { AddNewInput } from "../../../../../AddNewInput";
+import { AddNewInput } from "../../../../../../AddNewInput";
 import { CheckSquare, Plus } from "lucide-react";
 import { ChecklistCard } from "./ChecklistCard";
 import { Button } from "@/components/ui/button";

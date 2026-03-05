@@ -1,7 +1,8 @@
 import { getBoardDataAction } from "@/app/actions/board";
 import { getListDataAction } from "@/app/actions/list";
-import { ListCards } from "@/components/layout/Protected/Pages/Board/List/ListCards";
-import { SubHeader } from "@/components/layout/Protected/Pages/Board/SubHeader";
+import { BoardViews } from "@/components/layout/Protected/Pages/Board/BoardViews/BoardViews";
+
+import { SubHeader } from "@/components/layout/Protected/Pages/Board/SubHeader/SubHeader";
 
 async function BoardPage({
   params,
@@ -18,8 +19,7 @@ async function BoardPage({
     <div className="w-full h-full">
       {/* BOARD CONTENT */}
       <SubHeader data={boardData} boardId={boardId} orgId={orgId} />
-      {/* LIST CARDS */}
-      <ListCards boardId={boardId} listData={listData} />
+      <BoardViews boardId={boardId} listData={listData} />
     </div>
   );
 }

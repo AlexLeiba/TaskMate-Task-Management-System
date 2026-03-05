@@ -6,7 +6,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { AddNewInput } from "../../AddNewInput";
+import { AddNewInput } from "../../../AddNewInput";
 import { Separator } from "@/components/ui/separator";
 import { IconButton } from "@/components/ui/iconButton";
 import { KEYBOARD } from "@/lib/consts";

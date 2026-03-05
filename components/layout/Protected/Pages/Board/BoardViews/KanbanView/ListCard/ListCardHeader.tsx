@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 
-import { AddNewInput } from "../../AddNewInput";
 import { useStore } from "@/store/useStore";
 import { useMutation } from "@tanstack/react-query";
 import { updateListTitleAction } from "@/app/actions/list";
@@ -10,6 +9,8 @@ import dynamic from "next/dynamic";
 import { useBoardId } from "@/hooks/useBoardId";
 import { useRole } from "@/hooks/useRole";
 import { USER_ROLES } from "@/lib/consts";
+import { AddNewInput } from "../../../AddNewInput";
+import { ListCardTicketsCounter } from "./ListCardTicketsCounter";
 
 const ListStatuses = dynamic(() =>
   import("./ListStatuses").then((m) => m.ListStatuses),
@@ -22,8 +23,14 @@ type Props = {
   status: string;
   title: string;
   listId: string;
+  listCardsDynamicCount: number;
 };
-export function ListCardHeader({ status, title, listId }: Props) {
+export function ListCardHeader({
+  status,
+  title,
+  listId,
+  listCardsDynamicCount,
+}: Props) {
   const boardId = useBoardId();
   const role = useRole();
   const [isOpenedTitleInput, setIsOpenedTitleInput] = useState(false);
@@ -74,10 +81,18 @@ export function ListCardHeader({ status, title, listId }: Props) {
             label="Edit list title"
             setIsOpenedTitleInput={setIsOpenedTitleInput}
             isOpenedTitleInput={isInputOpened}
-            classNameContainer="py-0 py-0 w-full"
+            classNameContainer="py-0 py-0 w-full "
             defaultValue={title}
           >
-            <h3 className="text-lg font-medium line-clamp-3">{title}</h3>
+            <>
+              <h3 className="text-lg font-medium line-clamp-3">
+                {title}{" "}
+                <ListCardTicketsCounter
+                  totalTicketCardsInList={listCardsDynamicCount}
+                  listId={listId}
+                />
+              </h3>
+            </>
           </AddNewInput>
 
           {/* OPTIONS */}
@@ -85,8 +100,14 @@ export function ListCardHeader({ status, title, listId }: Props) {
         </>
       )}
       {role === USER_ROLES.member && (
-        <div className="w-full pl-2">
-          <h3 className="text-lg font-medium line-clamp-3">{title}</h3>
+        <div className="w-full pl-2 ">
+          <h3 className="text-lg font-medium line-clamp-3">
+            {title}{" "}
+            <ListCardTicketsCounter
+              listId={listId}
+              totalTicketCardsInList={listCardsDynamicCount}
+            />
+          </h3>
         </div>
       )}
     </div>

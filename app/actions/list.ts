@@ -10,6 +10,8 @@ import { revalidatePath } from "next/cache";
 export async function getListDataAction(
   boardId: string,
   currentOrgId: string | undefined | null,
+  selectedMemberEmail?: string,
+  unassignedCard?: boolean,
 ): Promise<{
   data: ListAndCardsAndDueDateAndChecklistType[] | null;
   error: { message: string };
@@ -24,9 +26,33 @@ export async function getListDataAction(
     const response = await prisma.list.findMany({
       where: {
         boardId,
+        ...(selectedMemberEmail && {
+          cards: {
+            some: {
+              assignedToEmail: selectedMemberEmail,
+            },
+          },
+        }),
+        ...(unassignedCard && {
+          cards: {
+            some: {
+              assignedToEmail: null,
+            },
+          },
+        }),
       },
       include: {
         cards: {
+          ...(selectedMemberEmail && {
+            where: {
+              assignedToEmail: selectedMemberEmail,
+            },
+          }),
+          ...(unassignedCard && {
+            where: {
+              assignedToEmail: null,
+            },
+          }),
           include: {
             details: {
               select: {

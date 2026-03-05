@@ -14,6 +14,7 @@ import {
   Edit,
   Globe,
   LayoutDashboard,
+  LayoutList,
   Magnet,
   MonitorCog,
   NotebookPen,
@@ -28,11 +29,13 @@ import {
   WifiLow,
 } from "lucide-react";
 import {
+  BoardTab,
   HeaderAdditionalInfoTabsType,
   HeaderTabsContentType,
   TabType,
   UnsplashImagesType,
 } from "./types";
+import { ReactNode } from "react";
 
 export const API_REQ_URL = {
   upload: "api/fileupload",
@@ -709,4 +712,21 @@ export const INITIAL_TIME = "00:00:00";
 export const USER_ROLES = {
   admin: "admin",
   member: "member",
+};
+
+// BOARD TABS
+
+export const BOARD_HEADER_TABS: BoardTab[] = [
+  { id: "1", label: "Summary", value: "summary", icon: <Globe /> },
+  { id: "2", label: "Board", value: "board", icon: <Columns3 /> },
+  { id: "3", label: "List", value: "list", icon: <LayoutList /> },
+];
+
+export const UNASSIGNED_CARD = {
+  userId: "unassigned",
+  firstName: "Unassigned",
+  lastName: "",
+  identifier: "",
+  imageUrl: "",
+  hasImage: true,
 };

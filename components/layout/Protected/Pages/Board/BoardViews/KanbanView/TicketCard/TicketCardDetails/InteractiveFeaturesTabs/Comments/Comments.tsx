@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { IconButton } from "@/components/ui/iconButton";
 import { MessageCircle, Plus } from "lucide-react";
-import { AddNewInput } from "../../../../../AddNewInput";
+import { AddNewInput } from "../../../../../../AddNewInput";
 import { CommentCard } from "./CommentCard";
 import { CommentsCardSkeleton } from "./CommentsCardSkeleton";
 import { Comment, User } from "@/lib/generated/prisma/client";

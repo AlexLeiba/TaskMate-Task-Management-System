@@ -1,11 +1,12 @@
 import { AddTicketCard } from "./AddTicketCard";
-import { TicketCard } from "../TicketCard/TicketCard";
+
 import { ListCardHeader } from "./ListCardHeader";
 import { ListAndCardsAndDueDateAndChecklistType } from "@/lib/types";
 import { ComponentProps } from "react";
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { USER_ROLES } from "@/lib/consts";
 import { useRole } from "@/hooks/useRole";
+import { TicketCard } from "../TicketCard/TicketCard";
 
 type Props = ComponentProps<"li"> & {
   listData: ListAndCardsAndDueDateAndChecklistType;
@@ -31,6 +32,7 @@ export function ListCard({ listData, index }: Props) {
               status={listData.status}
               title={listData.title}
               listId={listData.id.toString()}
+              listCardsDynamicCount={listData?.cards?.length}
             />
 
             {/* TICKET CARDS */}

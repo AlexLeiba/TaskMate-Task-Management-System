@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { AddNewInput } from "../../AddNewInput";
+
 import { Plus } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { IconButton } from "@/components/ui/iconButton";
@@ -8,6 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { createListCardAction } from "@/app/actions/list";
 import toast from "react-hot-toast";
 import { usePathname } from "next/navigation";
+import { AddNewInput } from "../../../AddNewInput";
 
 type Props = {
   listId: string;

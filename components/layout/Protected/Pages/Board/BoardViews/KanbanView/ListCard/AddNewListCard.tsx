@@ -2,11 +2,12 @@
 
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { AddNewInput } from "../../AddNewInput";
+
 import { IconButton } from "@/components/ui/iconButton";
 import { useMutation } from "@tanstack/react-query";
 import { createListAction } from "@/app/actions/list";
 import toast from "react-hot-toast";
+import { AddNewInput } from "../../../AddNewInput";
 
 type Props = { boardId: string };
 export function AddNewListCard({ boardId }: Props) {

@@ -31,8 +31,11 @@ model User {
   comments Comment[]
   activitys Activity[]
 
+  doneCardTickets UserDoneCardTickets[] 
+
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
+
 
   reportedCards Card[] @relation("Reported")//inverse relation/ wont be included in req , unless using property include
   assignedCards Card[] @relation("Assigned")//inverse relation/ wont be included in req , unless using property include
@@ -200,6 +203,18 @@ model DueDate {
   time String //will store date in ISO string, is Timezone-safe, works across browsers,servers,DBs, parse format in localtime on using it
   cardId String
   cardDetails CardDetails @relation(fields:[cardId],references: [id], onDelete: Cascade)
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+// DONE CARD TICKETS PER USER
+model UserDoneCardTickets {
+  id String @id @default(uuid())
+  cardId String
+  assignedToEmail String
+  author User @relation(fields:[assignedToEmail],references: [email])
+  boardId String
+  orgId String
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
 }

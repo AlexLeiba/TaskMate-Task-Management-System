@@ -3,7 +3,7 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 export async function verifyOrganizationMember(
   currentOrgId: string | undefined | null,
 ): Promise<{
-  data: { role: string; isMember: boolean } | null;
+  data: { role: "admin" | "member"; isMember: boolean } | null;
   error: { message: string };
 }> {
   try {
@@ -38,7 +38,7 @@ export async function verifyOrganizationMember(
     return {
       data: {
         role: currentMemberRole
-          ? currentMemberRole?.role?.replace("org:", "")
+          ? (currentMemberRole?.role?.replace("org:", "") as "admin" | "member")
           : "member",
         isMember: foundMemberInCurrentOrg,
       },

@@ -162,13 +162,13 @@ export async function changeCardPositionAction({
       },
     });
 
-    const card = await prisma.card.findFirst({
+    const cardToBeMoved = await prisma.card.findFirst({
       where: {
         id: cardToMoveId,
       },
     });
 
-    if (!card) {
+    if (!cardToBeMoved) {
       throw new Error("Card not found");
     }
 
@@ -176,8 +176,9 @@ export async function changeCardPositionAction({
       throw new Error("Board not found");
     }
 
-    const oldCardOrderIndex = card?.order;
+    const oldCardOrderIndex = cardToBeMoved?.order;
 
+    // SAME LIST
     if (type === "same-list") {
       await prisma.$transaction(async (tx) => {
         // Moving UP
@@ -220,7 +221,51 @@ export async function changeCardPositionAction({
       });
     }
 
+    // DIFFERENT LIST
     if (type === "different-list") {
+      // SAVE DONE TICKET AUTHOR IN DB IF IS ASSIGNED
+
+      const destinationList = await prisma.list.findFirst({
+        where: {
+          id: destinationListId,
+        },
+      });
+      const sourceList = await prisma.list.findFirst({
+        where: {
+          id: sourceListId,
+        },
+      });
+
+      if (!destinationList) {
+        throw new Error("Destination list not found");
+      }
+      if (!sourceList) {
+        throw new Error("Source list not found");
+      }
+
+      if (destinationList?.status === "done" || sourceList?.status === "done") {
+        // ONLY ADMIN CAN MOVE TO DONE
+        if (activeUserData?.role === "member") {
+          revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
+          throw new Error("Only admin can move a card ticket to a DONE list");
+        }
+
+        // RECORD DESTINATION DONE TICKET CARD
+        if (
+          destinationList?.status === "done" &&
+          cardToBeMoved?.assignedToEmail
+        ) {
+          await prisma.userDoneCardTickets.create({
+            data: {
+              cardId: cardToMoveId,
+              assignedToEmail: cardToBeMoved.assignedToEmail,
+              boardId: boardData.id as string,
+              orgId: orgId,
+            },
+          });
+        }
+      }
+
       await prisma.$transaction(async (tx) => {
         //Close gap in SOURCE list
         await tx.card.updateMany({
@@ -262,7 +307,7 @@ export async function changeCardPositionAction({
     await createNewActivity({
       boardId: boardData.id as string,
       authorId: activeUserData?.activeUser.id,
-      activity: `Reordered card "${card.title}" in List "${listTitle}" in Board "${boardData.title}"`,
+      activity: `Reordered card "${cardToBeMoved.title}" in List "${listTitle}" in Board "${boardData.title}"`,
       type: "updated",
     });
 

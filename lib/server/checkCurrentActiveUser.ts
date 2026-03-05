@@ -8,7 +8,7 @@ import { getCurrentActiveUserData } from "./getCurrentActiveUserData";
 export async function checkCurrentActiveUser(
   currentOrgId?: string | undefined | null,
 ): Promise<{
-  data: { activeUser: User | null; role: string } | null;
+  data: { activeUser: User | null; role: "admin" | "member" } | null;
   error: { message: string };
 }> {
   // GET CURRENT ACTIVE USER

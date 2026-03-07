@@ -1,11 +1,10 @@
 "use server";
 
-import { Activity, User } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { checkCurrentActiveUser } from "@/lib/server/checkCurrentActiveUser";
+import { ActivityWithAuthor } from "@/lib/types";
 import { auth } from "@clerk/nextjs/server";
 
-export type ActivityWithAuthor = Activity & { author: User };
 export async function getActivitiesAction({
   limit = 10,
   page = 1,

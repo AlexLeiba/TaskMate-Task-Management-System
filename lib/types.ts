@@ -1,6 +1,13 @@
 import { JSX, ReactNode } from "react";
 import { FILES_MIME_TYPES, IMAGES_MIME_TYPES } from "./consts";
-import { Card, Checklist, DueDate, List } from "./generated/prisma/client";
+import {
+  Activity,
+  Card,
+  Checklist,
+  DueDate,
+  List,
+  User,
+} from "./generated/prisma/client";
 
 // REUSABLE TYPES
 export type ActivityActionType = "created" | "deleted" | "updated";
@@ -346,3 +353,43 @@ export type BoardTab = {
   value: BoardTabSectionType;
   icon: ReactNode;
 };
+
+// SUMMARY
+
+export type SummaryStatsType = {
+  completed: number;
+  // updatedInAWeek: number;
+  createdInAWeek: number;
+  dueDateInAWeek: number;
+  teamWorkLoadData: TeamWorkloadType[];
+  statusOverviewData: StatusOverviewType[];
+  priorityBreakdownData: PriorityBreakdownType[];
+  allAssignedWork: number;
+};
+
+export type TeamWorkloadType = {
+  name: string;
+  email: string;
+  value: number;
+  avatar: string;
+};
+
+export type StatusOverviewType = {
+  name: string;
+  value: number;
+  fill: string;
+};
+export type PriorityBreakdownType = {
+  name: string;
+  value: number;
+  fill: string;
+};
+export type FinishedWorkMembersType = {
+  fullName: string;
+  value: number;
+  fill: string;
+  email: string;
+  imageUrl: string;
+};
+
+export type ActivityWithAuthor = Activity & { author: User };

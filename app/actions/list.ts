@@ -16,9 +16,12 @@ export async function getListDataAction(
   data: ListAndCardsAndDueDateAndChecklistType[] | null;
   error: { message: string };
 }> {
+  const { data: activeUser, error } =
+    await checkCurrentActiveUser(currentOrgId);
   try {
-    const { data: activeUser } = await checkCurrentActiveUser(currentOrgId);
-
+    if (error?.message) {
+      throw new Error(error?.message || "User not authorized");
+    }
     if (!activeUser) {
       throw new Error("User not authorized");
     }

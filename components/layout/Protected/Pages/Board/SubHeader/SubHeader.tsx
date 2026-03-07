@@ -11,8 +11,10 @@ import { Board } from "@/lib/generated/prisma/client";
 import { IconButton } from "@/components/ui/iconButton";
 import { useRole } from "@/hooks/useRole";
 import { USER_ROLES } from "@/lib/consts";
-import { BoardMembers } from "./BoardMembers";
+import { BoardMemberFilters } from "./BoardMemberFilters";
 import { BoardTabSections } from "./BoardTabSections";
+import { FiltersDropdown } from "./FiltersDropdown";
+import { DropdownBoardTabSections } from "./DropdownBoardTabSections";
 
 type Props = {
   data: {
@@ -102,9 +104,20 @@ export function SubHeader({
           )}
         </div>
 
-        <div className="flex items-center">
-          <BoardMembers />
+        <div className="flex items-center gap-2">
+          {/* FILTER BY MEMBER ON DESKTOP*/}
+          <BoardMemberFilters />
+
+          {/* TABS SECTIONS ON DESKTOP AND TABLET */}
           <BoardTabSections />
+
+          {/* TABS SECTIONS DROPDOWN ON MOBILE */}
+          <DropdownBoardTabSections />
+
+          {/* FILTERS DROPDOWN ON TABLET AND MOBILE */}
+          <FiltersDropdown />
+
+          {/* CLOSE BOARD BUTTON */}
           <Link
             href={`/dashboard/${orgId || ""}`}
             title="Close board"

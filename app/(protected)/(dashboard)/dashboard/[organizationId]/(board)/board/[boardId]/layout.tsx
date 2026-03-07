@@ -1,7 +1,6 @@
 import { getBoardDataAction } from "@/app/actions/board";
 import { HeaderDashboard } from "@/components/layout/Protected/Header/HeaderDashboard";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import Image from "next/image";
 
 import React from "react";
 

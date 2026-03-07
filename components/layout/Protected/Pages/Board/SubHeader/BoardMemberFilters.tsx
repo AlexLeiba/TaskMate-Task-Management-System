@@ -11,7 +11,7 @@ import Image from "next/image";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-export function BoardMembers() {
+export function BoardMemberFilters() {
   const boardId = useBoardId();
   const { orgId } = useAuth();
   const { members } = useMembers();
@@ -60,7 +60,7 @@ export function BoardMembers() {
   function handleExpandMembers() {}
 
   return (
-    <div className="p-2">
+    <div className="p-2 hidden lg:block">
       <div className="flex items-center relative">
         <button
           onClick={() => handleSelectedMember(UNASSIGNED_CARD)}
@@ -107,7 +107,7 @@ export function BoardMembers() {
             aria-label="Filter by unassigned"
             className={cn(
               selectedMember?.userId === "unassigned" && "z-10 ring-offset-3",
-              "bg-background size-7 flex items-center ring-1 hover:z-10 hover:ring-2 ring-white rounded-full cursor-pointer -translate-x-[30px]",
+              "bg-background size-7 flex items-center ring-1 hover:z-10 hover:ring-2 ring-white rounded-full cursor-pointer -translate-x-7.5",
             )}
           >
             +{members?.length - 6}

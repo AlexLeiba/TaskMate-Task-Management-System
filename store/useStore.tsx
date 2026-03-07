@@ -58,6 +58,10 @@ type StoreType = {
   // BOARD HEADER TABS SECTIONS
   boardTabSections: BoardTabSectionType;
   setBoardTabSections: (sections: BoardTabSectionType) => void;
+
+  // BOARD SUBHEADER FILTERS STATES
+  boardSubHeaderFilterIsOpened: boolean;
+  setBoardSubHeaderFilterIsOpened: (open: boolean) => void;
 };
 export const useStore = create<StoreType>((set, get) => ({
   // INITIALIZE BOARD LIST CARDS DATA
@@ -178,4 +182,9 @@ export const useStore = create<StoreType>((set, get) => ({
   // BOARD HEADER TABS SECTIONS
   boardTabSections: "board",
   setBoardTabSections: (sections) => set({ boardTabSections: sections }),
+
+  // BOARD SUBHEADER FILTERS STATES
+  boardSubHeaderFilterIsOpened: false,
+  setBoardSubHeaderFilterIsOpened: (open) =>
+    set({ boardSubHeaderFilterIsOpened: open }),
 }));

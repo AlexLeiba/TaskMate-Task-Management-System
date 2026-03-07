@@ -13,7 +13,7 @@ export function BoardTabSections() {
     setBoardTabSections(tab);
   }
   return (
-    <div className="flex items-center gap-2">
+    <div className=" items-center gap-2 md:flex hidden">
       {BOARD_HEADER_TABS.map((tab) => {
         return (
           <IconButton

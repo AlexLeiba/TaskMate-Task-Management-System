@@ -9,7 +9,7 @@ export function ButtonBack() {
       title="Go back to dashboard"
       aria-label="Go back to dashboard"
     >
-      <Button className="md:hidden" variant={"ghost"}>
+      <Button size={"sm"} className="md:hidden " variant={"ghost"}>
         <ChevronLeft />
       </Button>
     </Link>

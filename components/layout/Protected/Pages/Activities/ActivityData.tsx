@@ -2,8 +2,8 @@
 
 import { useEffect } from "react";
 import { UserCard } from "../../UserCard/UserCard";
-import { ActivityWithAuthor } from "@/app/actions/activity";
 import toast from "react-hot-toast";
+import { ActivityWithAuthor } from "@/lib/types";
 
 type Props = {
   activityData: {

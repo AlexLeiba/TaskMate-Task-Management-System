@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { User } from "@/lib/generated/prisma/client";
 import { DATE_FORMAT } from "@/lib/consts";
 
-const cardVariants = cva("rounded-full", {
+const cardVariants = cva("rounded-full ", {
   variants: {
     size: {
       sm: "size-8",
@@ -77,7 +77,12 @@ export function UserCard({
         )}
       >
         {data.avatar && (
-          <div className="rounded-full overflow-hidden">
+          <div
+            className={cn(
+              "rounded-full overflow-hidden ",
+              cardVariants({ size }),
+            )}
+          >
             <Image
               src={data.avatar}
               alt={data.name}

@@ -15,6 +15,7 @@ import { BoardMemberFilters } from "./BoardMemberFilters";
 import { BoardTabSections } from "./BoardTabSections";
 import { FiltersDropdown } from "./FiltersDropdown";
 import { DropdownBoardTabSections } from "./DropdownBoardTabSections";
+import { useStore } from "@/store/useStore";
 
 type Props = {
   data: {
@@ -31,6 +32,7 @@ export function SubHeader({
 }: Props) {
   const [showTitleInput, setShowTitleInput] = useState(false);
   const role = useRole();
+  const { boardTabSections, setBoardTabSections } = useStore();
 
   useEffect(() => {
     if (error.message) {
@@ -105,17 +107,21 @@ export function SubHeader({
         </div>
 
         <div className="flex items-center gap-2">
-          {/* FILTER BY MEMBER ON DESKTOP*/}
-          <BoardMemberFilters />
+          {boardTabSections !== "summary" && (
+            <>
+              {/* FILTER BY MEMBER ON DESKTOP*/}
+              <BoardMemberFilters />
 
-          {/* TABS SECTIONS ON DESKTOP AND TABLET */}
-          <BoardTabSections />
+              {/* FILTERS DROPDOWN ON TABLET AND MOBILE */}
+              <FiltersDropdown />
+            </>
+          )}
 
           {/* TABS SECTIONS DROPDOWN ON MOBILE */}
           <DropdownBoardTabSections />
 
-          {/* FILTERS DROPDOWN ON TABLET AND MOBILE */}
-          <FiltersDropdown />
+          {/* TABS SECTIONS ON DESKTOP AND TABLET */}
+          <BoardTabSections />
 
           {/* CLOSE BOARD BUTTON */}
           <Link

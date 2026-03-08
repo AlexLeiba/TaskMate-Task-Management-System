@@ -34,7 +34,7 @@ export function DropdownBoardTabSections() {
           </IconButton>
         </PopoverTrigger>
 
-        <PopoverContent className="flex flex-col gap-2">
+        <PopoverContent className="flex flex-col gap-2" align="end">
           {BOARD_HEADER_TABS.map((tab) => {
             return (
               <IconButton

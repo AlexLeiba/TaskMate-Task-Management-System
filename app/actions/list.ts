@@ -3,7 +3,10 @@ import { Card, List, StatusType } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
 import { checkCurrentActiveUser } from "@/lib/server/checkCurrentActiveUser";
-import { ListAndCardsAndDueDateAndChecklistType } from "@/lib/types";
+import {
+  FilterStates,
+  ListAndCardsAndDueDateAndChecklistType,
+} from "@/lib/types";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
@@ -12,6 +15,7 @@ export async function getListDataAction(
   currentOrgId: string | undefined | null,
   selectedMemberEmail?: string,
   unassignedCard?: boolean,
+  filters: FilterStates = "all",
 ): Promise<{
   data: ListAndCardsAndDueDateAndChecklistType[] | null;
   error: { message: string };
@@ -25,6 +29,10 @@ export async function getListDataAction(
     if (!activeUser) {
       throw new Error("User not authorized");
     }
+
+    const now = new Date();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(now.getDate() - 7);
 
     const response = await prisma.list.findMany({
       where: {
@@ -40,6 +48,44 @@ export async function getListDataAction(
           cards: {
             some: {
               assignedToEmail: null,
+            },
+          },
+        }),
+        ...(filters === "dueSoon" && {
+          cards: {
+            some: {
+              details: {
+                dueDate: {
+                  some: {
+                    date: {
+                      gte: sevenDaysAgo.toISOString(),
+                    },
+                  },
+                },
+              },
+            },
+          },
+        }),
+        ...(filters === "created" && {
+          cards: {
+            some: {
+              details: {
+                createdAt: {
+                  gte: sevenDaysAgo.toISOString(),
+                },
+              },
+            },
+          },
+        }),
+        ...(filters === "completed" && {
+          status: StatusType.done,
+          cards: {
+            some: {
+              details: {
+                createdAt: {
+                  gte: sevenDaysAgo.toISOString(),
+                },
+              },
             },
           },
         }),

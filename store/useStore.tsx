@@ -1,5 +1,6 @@
 import {
   BoardTabSectionType,
+  FilterStates,
   ListAndCardsAndDueDateAndChecklistType,
 } from "@/lib/types";
 import { DraggableLocation } from "@hello-pangea/dnd";
@@ -8,6 +9,7 @@ import { create } from "zustand";
 type StoreType = {
   boardListData: ListAndCardsAndDueDateAndChecklistType[] | null | undefined;
   initialBoardListData: { id: string; cards: number }[] | null | undefined;
+
   setInitializeBoardListData: (
     data: ListAndCardsAndDueDateAndChecklistType[] | null | undefined,
   ) => void;
@@ -60,9 +62,15 @@ type StoreType = {
   setBoardTabSections: (sections: BoardTabSectionType) => void;
 
   // BOARD SUBHEADER FILTERS STATES
-  boardSubHeaderFilterIsOpened: boolean;
-  setBoardSubHeaderFilterIsOpened: (open: boolean) => void;
+  boardSubHeaderFilterSelected: FilterStates;
+  setBoardSubHeaderFilterSelected: (selected: FilterStates) => FilterStates;
+
+  boardSubHeaderMemberFilterSelected: string | null;
+  setBoardSubHeaderMemberFilterSelected: (
+    selected: string | null,
+  ) => string | null;
 };
+
 export const useStore = create<StoreType>((set, get) => ({
   // INITIALIZE BOARD LIST CARDS DATA
   boardListData: null,
@@ -82,7 +90,7 @@ export const useStore = create<StoreType>((set, get) => ({
     });
   },
 
-  // DRAG AND DROP BOARD LIST CARDS
+  // DRAG AND DROP BOARD LIST CARDS-----------------------------
   setDndSameListBoardListDataCards: (source, destination) => {
     const prevData = get()?.boardListData || [];
     let deletedCardId = "";
@@ -122,11 +130,11 @@ export const useStore = create<StoreType>((set, get) => ({
 
     // CLONED SOURCE NESTED CARDS AND  LISTS TO AVOID MUTATION
     const sourceList = {
-      ...newState[sourceListIndex], //GOT LIST DATA FROM SOURCE INDEX
-      cards: [...newState[sourceListIndex].cards], //[1,2]
+      ...newState[sourceListIndex],
+      cards: [...newState[sourceListIndex].cards],
     };
 
-    const [deletedCard] = sourceList.cards.splice(source.index - 1, 1); //modifies newState and returns deleted card
+    const [deletedCard] = sourceList.cards.splice(source.index - 1, 1);
 
     if (!deletedCard) {
       return "";
@@ -135,7 +143,7 @@ export const useStore = create<StoreType>((set, get) => ({
     // CLONED DESTINATION NESTED CARDS AND LISTS TO AVOID MUTATION
     const destinationList = {
       ...newState[destinationListIndex],
-      cards: [...newState[destinationListIndex].cards], //[3,4]
+      cards: [...newState[destinationListIndex].cards],
     };
 
     //add card to new destination
@@ -162,17 +170,20 @@ export const useStore = create<StoreType>((set, get) => ({
     set({ boardListData: prevCopy });
 
     return draggedElement?.id.toString() || "";
-    //  return { boardListData: prevCopy };
   },
+  // ---------------------------------------------------------
 
+  // OPEN TITLE INPUT FROM LIST OPTIONS MENU
   openTitleInput: { id: "", isOpen: false },
   setOpenTitleInput: ({ isOpen, id }: { isOpen: boolean; id: string }) =>
     set({ openTitleInput: { id, isOpen } }),
 
+  // OPEN NEW CARD INPUT FROM LIST OPTIONS MENU
   openNewCardInput: { isOpen: false, id: "" },
   setOpenNewCardInput: ({ isOpen, id }: { isOpen: boolean; id: string }) =>
     set({ openNewCardInput: { isOpen, id } }),
 
+  // CARD DETAILS TABS MENU
   selectedTab: "comments",
   setSelectTab: (value) => set({ selectedTab: value }),
 
@@ -184,7 +195,29 @@ export const useStore = create<StoreType>((set, get) => ({
   setBoardTabSections: (sections) => set({ boardTabSections: sections }),
 
   // BOARD SUBHEADER FILTERS STATES
-  boardSubHeaderFilterIsOpened: false,
-  setBoardSubHeaderFilterIsOpened: (open) =>
-    set({ boardSubHeaderFilterIsOpened: open }),
+  boardSubHeaderFilterSelected: "all",
+  setBoardSubHeaderFilterSelected: (selected) => {
+    const prevSelectedFilter = get().boardSubHeaderFilterSelected;
+
+    if (prevSelectedFilter === selected) {
+      set({ boardSubHeaderFilterSelected: "all" });
+      return "theSame";
+    }
+    set({ boardSubHeaderFilterSelected: selected });
+
+    return selected;
+  },
+
+  boardSubHeaderMemberFilterSelected: null,
+  setBoardSubHeaderMemberFilterSelected: (selected) => {
+    const prevSelectedFilter = get().boardSubHeaderMemberFilterSelected;
+
+    if (prevSelectedFilter === selected) {
+      set({ boardSubHeaderMemberFilterSelected: null });
+      return null;
+    }
+    set({ boardSubHeaderMemberFilterSelected: selected });
+
+    return selected;
+  },
 }));

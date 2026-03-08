@@ -2,6 +2,7 @@ import {
   Activity,
   Archive,
   Building2,
+  Calendar1,
   CalendarCog,
   CheckSquare,
   Circle,
@@ -12,6 +13,7 @@ import {
   Copy,
   Delete,
   Edit,
+  FolderCheck,
   Globe,
   LayoutDashboard,
   LayoutList,
@@ -30,12 +32,12 @@ import {
 } from "lucide-react";
 import {
   BoardTab,
+  FilterData,
   HeaderAdditionalInfoTabsType,
   HeaderTabsContentType,
   TabType,
   UnsplashImagesType,
 } from "./types";
-import { ReactNode } from "react";
 
 export const API_REQ_URL = {
   upload: "api/fileupload",
@@ -752,4 +754,22 @@ export const PRIORITY_BREAKDOWN_COLORS = [
   "#FF8042",
   "#ab0505",
   "#777777",
+];
+
+export const FILTERS_DATA: FilterData[] = [
+  {
+    id: "completed",
+    title: "Completed",
+    icon: <CircleCheck className="text-green-400" />,
+  },
+  {
+    id: "created",
+    title: "Recent created",
+    icon: <FolderCheck className="text-yellow-400" />,
+  },
+  {
+    id: "dueSoon",
+    title: "Due soon",
+    icon: <Calendar1 className="text-tertiary" />,
+  },
 ];

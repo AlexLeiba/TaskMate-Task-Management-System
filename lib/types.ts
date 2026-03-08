@@ -393,3 +393,17 @@ export type FinishedWorkMembersType = {
 };
 
 export type ActivityWithAuthor = Activity & { author: User };
+
+export type FilterData = {
+  id: FilterStates;
+  title: string;
+  icon: JSX.Element;
+};
+
+// BOARD SUBHEADER FILTERS STATES
+export type FilterStates =
+  | "created"
+  | "dueSoon"
+  | "completed"
+  | "all"
+  | "theSame";

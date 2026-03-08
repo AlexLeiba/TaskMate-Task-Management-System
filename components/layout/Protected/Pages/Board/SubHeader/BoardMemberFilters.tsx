@@ -8,16 +8,18 @@ import { useAuth } from "@clerk/nextjs";
 import { OrganizationMembershipPublicUserData } from "@clerk/nextjs/server";
 import { UserPlus } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
 import toast from "react-hot-toast";
 
 export function BoardMemberFilters() {
   const boardId = useBoardId();
   const { orgId } = useAuth();
   const { members } = useMembers();
-  const { setBoardListData } = useStore();
-  const [selectedMember, setSelectedMember] =
-    useState<OrganizationMembershipPublicUserData | null>(null);
+  const {
+    setBoardListData,
+    setBoardSubHeaderFilterSelected,
+    setBoardSubHeaderMemberFilterSelected,
+    boardSubHeaderMemberFilterSelected,
+  } = useStore();
 
   async function fetchBoardListData(
     selectedMemberEmail: string = "",
@@ -40,15 +42,17 @@ export function BoardMemberFilters() {
   async function handleSelectedMember(
     member: OrganizationMembershipPublicUserData | undefined | null,
   ) {
+    // DESELECT ANY OTHER FILTERS
+    setBoardSubHeaderFilterSelected("all");
     if (!member) return;
 
-    setSelectedMember((prev) => {
-      if (prev?.userId === member?.userId) {
-        fetchBoardListData("");
-        return null;
-      }
-      return member;
-    });
+    const selectedMember = setBoardSubHeaderMemberFilterSelected(
+      member?.userId || "",
+    );
+
+    if (!selectedMember) {
+      return fetchBoardListData("");
+    }
 
     if (member?.userId === UNASSIGNED_CARD.userId) {
       return fetchBoardListData("", true);
@@ -67,7 +71,7 @@ export function BoardMemberFilters() {
           title="Filter by unassigned"
           aria-label="Filter by unassigned"
           className={cn(
-            selectedMember?.userId === "unassigned"
+            boardSubHeaderMemberFilterSelected === "unassigned"
               ? "z-10 outline-offset-3 outline-2 outline-white "
               : "outline-1 outline-gray-300",
             "bg-accent-foreground flex items-center  hover:z-10 hover:outline-2 rounded-full cursor-pointer p-1",
@@ -82,7 +86,7 @@ export function BoardMemberFilters() {
               title={`Filter by ${member?.firstName} ${member?.lastName}`}
               style={{ transform: `translateX(-${index * 5}px)` }}
               className={cn(
-                selectedMember?.userId === member?.userId
+                boardSubHeaderMemberFilterSelected === member?.userId
                   ? "z-10 outline-offset-3 outline-2 outline-white"
                   : "outline-1 outline-gray-300",
                 "bg-accent-foreground -translate-x-1.25 flex items-center hover:z-10 hover:outline-2  rounded-full cursor-pointer",
@@ -106,7 +110,8 @@ export function BoardMemberFilters() {
             title="Filter by unassigned"
             aria-label="Filter by unassigned"
             className={cn(
-              selectedMember?.userId === "unassigned" && "z-10 ring-offset-3",
+              boardSubHeaderMemberFilterSelected === "unassigned" &&
+                "z-10 ring-offset-3",
               "bg-background size-7 flex items-center ring-1 hover:z-10 hover:ring-2 ring-white rounded-full cursor-pointer -translate-x-7.5",
             )}
           >

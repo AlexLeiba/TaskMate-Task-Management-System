@@ -1,6 +1,7 @@
+import { UserData } from "@/lib/types";
 import { useUser } from "@clerk/nextjs";
 
-export function useUserData() {
+export function useUserData(): UserData {
   const user = useUser();
 
   if (!user) {

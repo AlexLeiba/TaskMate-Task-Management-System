@@ -421,3 +421,9 @@ export type OrganizationMembersType = {
   email: string;
   imageUrl: string;
 };
+
+export type UserData = {
+  name: string;
+  email: string;
+  image: string;
+};

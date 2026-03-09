@@ -1,9 +1,13 @@
 import { getOrganizationMembersAction } from "@/app/actions/organization-members";
+import { OrganizationMembersType } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
 
 import toast from "react-hot-toast";
 
-export function useMembers() {
+export function useMembers(): {
+  members: OrganizationMembersType[] | undefined;
+  isFetching: boolean;
+} {
   async function fetchOrhanizationMembers() {
     try {
       const { data } = await getOrganizationMembersAction();

@@ -1,7 +1,7 @@
 import { BREAKPOINTS } from "@/lib/breakpoints";
 import * as React from "react";
 
-export function useResponsive(breakpoint: number = BREAKPOINTS.sm) {
+export function useResponsive(breakpoint: number = BREAKPOINTS.sm): boolean {
   const [isWidthSize, setIsWidthSize] = React.useState<boolean | undefined>(
     undefined,
   );

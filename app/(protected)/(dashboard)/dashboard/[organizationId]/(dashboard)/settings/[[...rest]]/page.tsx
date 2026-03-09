@@ -1,4 +1,4 @@
-import { OrganizationSettings } from "@/components/layout/Protected/Pages/Settings/OrganizationSettings";
+import { OrganizationSettings } from "@/components/Protected/Pages/Settings/OrganizationSettings";
 import { Separator } from "@/components/ui/separator";
 
 import { Settings } from "lucide-react";

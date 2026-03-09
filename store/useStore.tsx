@@ -1,5 +1,6 @@
 import {
   BoardTabSectionType,
+  CardDetailsTabs,
   FilterStates,
   ListAndCardsAndDueDateAndChecklistType,
 } from "@/lib/types";
@@ -48,11 +49,9 @@ type StoreType = {
     id: string;
   }) => void;
 
-  selectedTab: "checklist" | "comments" | "activities" | "attachments";
+  selectedTab: CardDetailsTabs;
 
-  setSelectTab: (
-    value: "checklist" | "comments" | "activities" | "attachments",
-  ) => void;
+  setSelectTab: (value: CardDetailsTabs) => void;
 
   newBoardDialogOpen: boolean;
   setNewBoardDialogOpen: (open: boolean) => void;

@@ -1,9 +1,9 @@
-import { MoreFeatures } from "@/components/layout/Public/Home/MoreFeatures/MoreFeatures";
-import { Features } from "@/components/layout/Public/Home/Features/Features";
-import { FromMessageToAction } from "@/components/layout/Public/Home/FromMessageToAction/FromMessageToAction";
-import { Hero } from "@/components/layout/Public/Home/Hero/Hero";
-import { LayoutContainer } from "@/components/layout/Public/LayoutContainer/LayoutContainer";
-import { Testimonials } from "@/components/layout/Public/Testimonials/Testimonials";
+import { MoreFeatures } from "@/components/Public/LandingPage/MoreFeatures/MoreFeatures";
+import { Features } from "@/components/Public/LandingPage/Features/Features";
+import { FromMessageToAction } from "@/components/Public/LandingPage/FromMessageToAction/FromMessageToAction";
+import { Hero } from "@/components/Public/LandingPage/Hero/Hero";
+import { LayoutContainer } from "@/components/Public/LayoutContainer/LayoutContainer";
+import { Testimonials } from "@/components/Public/Testimonials/Testimonials";
 import { SliderProvider } from "@/components/ui/slider";
 
 export default async function Home() {

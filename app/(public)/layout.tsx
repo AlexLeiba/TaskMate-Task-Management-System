@@ -1,5 +1,5 @@
-import { FooterLanding } from "@/components/layout/Public/Footer/FooterLanding";
-import { HeaderLanding } from "@/components/layout/Public/Header/HeaderLanding";
+import { FooterLanding } from "@/components/Public/Footer/FooterLanding";
+import { HeaderLanding } from "@/components/Public/Header/HeaderLanding";
 import React from "react";
 
 export const metadata = {

@@ -1,6 +1,6 @@
-import { BoardCardSkeleton } from "@/components/layout/Protected/Pages/Dashboard/Boards/BoardCardSkeleton";
-import { BoardsServerRender } from "@/components/layout/Protected/Pages/Dashboard/BoardsServerRender";
-import { OrgDetails } from "@/components/layout/Protected/Pages/Dashboard/OrgDetails";
+import { BoardCardSkeleton } from "@/components/Protected/Pages/Dashboard/Boards/BoardCardSkeleton";
+import { BoardsServerRender } from "@/components/Protected/Pages/Dashboard/BoardsServerRender";
+import { OrgDetails } from "@/components/Protected/Pages/Dashboard/OrgDetails";
 import { Separator } from "@/components/ui/separator";
 import { Suspense } from "react";
 

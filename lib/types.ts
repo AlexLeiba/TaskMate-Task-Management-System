@@ -148,6 +148,12 @@ export type CardDetailsType = {
   dueDate?: DueDateType;
 };
 
+export type CardDetailsTabs =
+  | "checklist"
+  | "comments"
+  | "activities"
+  | "attachments";
+
 export type ChecklistType = {
   id: string;
   title: string;
@@ -407,3 +413,5 @@ export type FilterStates =
   | "completed"
   | "all"
   | "theSame";
+
+//

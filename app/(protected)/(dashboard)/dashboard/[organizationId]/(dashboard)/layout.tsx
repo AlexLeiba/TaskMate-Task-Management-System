@@ -1,10 +1,8 @@
-import { FooterDashboard } from "@/components/layout/Protected/Footer/FooterDashboard";
-import { HeaderDashboard } from "@/components/layout/Protected/Header/HeaderDashboard";
+import { FooterDashboard } from "@/components/Protected/Footer/FooterDashboard";
+import { HeaderDashboard } from "@/components/Protected/Header/HeaderDashboard";
 
 const Sidebar = dynamic(() =>
-  import("@/components/layout/Protected/Sidebar/Sidebar").then(
-    (m) => m.Sidebar,
-  ),
+  import("@/components/Protected/Sidebar/Sidebar").then((m) => m.Sidebar),
 );
 import { SidebarProvider } from "@/components/ui/sidebar";
 import dynamic from "next/dynamic";

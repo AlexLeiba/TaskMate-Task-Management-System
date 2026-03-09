@@ -1,5 +1,5 @@
-import { FooterDashboard } from "@/components/layout/Protected/Footer/FooterDashboard";
-import { HeaderDashboard } from "@/components/layout/Protected/Header/HeaderDashboard";
+import { FooterDashboard } from "@/components/Protected/Footer/FooterDashboard";
+import { HeaderDashboard } from "@/components/Protected/Header/HeaderDashboard";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 // import { AppSidebar } from "@/components/app-sidebar";
 

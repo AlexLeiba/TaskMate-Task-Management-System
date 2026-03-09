@@ -22,7 +22,7 @@ export function useMembers() {
     }
 
     getMembersData();
-  }, [membership]);
+  }, [membersData]);
 
   return { members };
 }

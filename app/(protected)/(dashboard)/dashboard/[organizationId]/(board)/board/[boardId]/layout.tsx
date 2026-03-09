@@ -1,5 +1,5 @@
 import { getBoardDataAction } from "@/app/actions/board";
-import { HeaderDashboard } from "@/components/layout/Protected/Header/HeaderDashboard";
+import { HeaderDashboard } from "@/components/Protected/Header/HeaderDashboard";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 import React from "react";

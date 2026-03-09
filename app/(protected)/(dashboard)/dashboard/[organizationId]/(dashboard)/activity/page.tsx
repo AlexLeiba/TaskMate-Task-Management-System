@@ -1,5 +1,5 @@
-import { ActivityServerRender } from "@/components/layout/Protected/Pages/Activities/ActivityServerRender";
-import { ActivitySkeletonCard } from "@/components/layout/Protected/Pages/Activities/ActivitySkeletonCard";
+import { ActivityServerRender } from "@/components/Protected/Pages/Activities/ActivityServerRender";
+import { ActivitySkeletonCard } from "@/components/Protected/Pages/Activities/ActivitySkeletonCard";
 import { Separator } from "@/components/ui/separator";
 import { Activity } from "lucide-react";
 

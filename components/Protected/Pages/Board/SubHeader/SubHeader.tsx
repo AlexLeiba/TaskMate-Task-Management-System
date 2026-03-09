@@ -11,11 +11,14 @@ import { Board } from "@/lib/generated/prisma/client";
 import { IconButton } from "@/components/ui/iconButton";
 import { useRole } from "@/hooks/useRole";
 import { USER_ROLES } from "@/lib/consts";
-import { BoardMemberFilters } from "./BoardMemberFilters";
 import { BoardTabSections } from "./BoardTabSections";
-import { FiltersDropdown } from "./FiltersDropdown";
-import { DropdownBoardTabSections } from "./DropdownBoardTabSections";
+import { DropdownBoardTabSections } from "./DropdownBoardTabSections/DropdownBoardTabSections";
 import { useStore } from "@/store/useStore";
+import { BoardMemberFilters } from "./BoardMemberFilters";
+import { FiltersDropdown } from "./FilterDropdown/FilterDropdown";
+import { useResponsive } from "@/hooks/useResponsive";
+import { BREAKPOINTS } from "@/lib/breakpoints";
+import { cn } from "@/lib/utils";
 
 type Props = {
   data: {
@@ -30,9 +33,11 @@ export function SubHeader({
   boardId,
   orgId,
 }: Props) {
+  const isTablet = useResponsive(BREAKPOINTS.lg);
   const [showTitleInput, setShowTitleInput] = useState(false);
   const role = useRole();
-  const { boardTabSections, setBoardTabSections } = useStore();
+
+  const { boardTabSections } = useStore();
 
   useEffect(() => {
     if (error.message) {
@@ -60,80 +65,94 @@ export function SubHeader({
     if (!boardId) return toast.error("Board not found, please try again");
     mutateEditBoardTitle({ boardId, title: data.title });
   }
+
   return (
-    <div className="bg-foreground/70 w-full">
-      <div className="px-4 flex justify-between items-center max-w-400 mx-auto">
-        <div className="flex items-center w-90 text-wrap ">
-          {role === USER_ROLES.admin && (
-            <AddNewInput
+    <div className="bg-foreground/70 w-full h-13 px-4 flex justify-between items-center max-w-400 mx-auto">
+      <div className="flex items-center  w-90 ">
+        <AddNewInput
+          title={board?.title}
+          defaultValue={board?.title}
+          loading={isPendingEditBoardTitle}
+          disabled={isPendingEditBoardTitle}
+          handleSubmitValue={(v) => handleSubmitForm(v)}
+          inputName="title"
+          placeholder="Edit board title here..."
+          setIsOpenedTitleInput={
+            isPendingEditBoardTitle || role === USER_ROLES.member
+              ? () => {}
+              : setShowTitleInput
+          }
+          isOpenedTitleInput={showTitleInput}
+          className="px-0"
+          classNameContainer="px-0"
+        >
+          <div className="flex  items-center">
+            <p
+              className={cn(
+                "text-lg font-bold line-clamp-1 text-text-secondary ",
+              )}
               title={board?.title}
-              defaultValue={board?.title}
-              loading={isPendingEditBoardTitle}
-              disabled={isPendingEditBoardTitle}
-              handleSubmitValue={(v) => handleSubmitForm(v)}
-              inputName="title"
-              placeholder="Edit board title here..."
-              setIsOpenedTitleInput={setShowTitleInput}
-              isOpenedTitleInput={showTitleInput}
             >
-              <div className="flex gap-1 items-center">
-                <p
-                  className="text-lg font-bold line-clamp-1 text-text-secondary "
-                  title={board?.title}
-                >
-                  {board?.title}
-                </p>
-                <Button
-                  disabled={isPendingEditBoardTitle}
-                  variant={"ghost"}
-                  onClick={handleEditBoardTitle}
-                  title="Edit board title"
-                  aria-label="Edit board title"
-                  className="group"
-                >
-                  <Edit
-                    size={15}
-                    className="text-text-secondary group-hover:text-text-primary"
-                  />
-                </Button>
-              </div>
-            </AddNewInput>
-          )}
-          {role === USER_ROLES.member && (
-            <p className="text-lg font-bold line-clamp-1 text-text-secondary h-9">
               {board?.title}
             </p>
-          )}
-        </div>
 
-        <div className="flex items-center gap-2">
-          {boardTabSections !== "summary" && (
-            <>
-              {/* FILTER BY MEMBER ON DESKTOP*/}
-              <BoardMemberFilters />
+            <Button
+              disabled={isPendingEditBoardTitle}
+              variant={"ghost"}
+              onClick={
+                isPendingEditBoardTitle || role === USER_ROLES.member
+                  ? () => {}
+                  : handleEditBoardTitle
+              }
+              title="Edit board title"
+              aria-label="Edit board title"
+              className={cn(role === USER_ROLES.member && "opacity-0", "group")}
+            >
+              <Edit
+                size={15}
+                className="text-text-secondary group-hover:text-text-primary"
+              />
+            </Button>
+          </div>
+        </AddNewInput>
 
-              {/* FILTERS DROPDOWN ON TABLET AND MOBILE */}
-              <FiltersDropdown />
-            </>
-          )}
-
-          {/* TABS SECTIONS DROPDOWN ON MOBILE */}
-          <DropdownBoardTabSections />
-
-          {/* TABS SECTIONS ON DESKTOP AND TABLET */}
-          <BoardTabSections />
-
-          {/* CLOSE BOARD BUTTON */}
-          <Link
-            href={`/dashboard/${orgId || ""}`}
-            title="Close board"
-            aria-label="Close board"
+        {/* {role === USER_ROLES.member && (
+          <p
+            className="text-lg font-bold line-clamp-1 text-text-secondary "
+            title={board?.title}
           >
-            <IconButton className="p-1">
-              <X size={30} className="text-text-secondary" />
-            </IconButton>
-          </Link>
-        </div>
+            {board?.title}
+          </p>
+        )} */}
+      </div>
+
+      <div className="flex items-center gap-2">
+        {boardTabSections !== "summary" && (
+          <>
+            {/* FILTER BY MEMBER ON DESKTOP*/}
+            {!isTablet && <BoardMemberFilters />}
+
+            {/* FILTERS DROPDOWN ON TABLET AND MOBILE */}
+            <FiltersDropdown />
+          </>
+        )}
+
+        {/* TABS SECTIONS DROPDOWN ON MOBILE */}
+        {isTablet && <DropdownBoardTabSections />}
+
+        {/* TABS SECTIONS ON DESKTOP AND TABLET */}
+        <BoardTabSections />
+
+        {/* CLOSE BOARD BUTTON */}
+        <Link
+          href={`/dashboard/${orgId || ""}`}
+          title="Close board"
+          aria-label="Close board"
+        >
+          <IconButton className="p-1">
+            <X size={30} className="text-text-secondary" />
+          </IconButton>
+        </Link>
       </div>
     </div>
   );

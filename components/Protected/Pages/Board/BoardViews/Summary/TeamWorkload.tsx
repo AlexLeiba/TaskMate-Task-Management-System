@@ -5,6 +5,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { TeamWorkloadType } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 type Props = {
   data: TeamWorkloadType[] | undefined;
@@ -28,7 +29,7 @@ export function TeamWorkload({ data, allAssignedWork }: Props) {
           <div className="flex flex-col gap-3">
             {data?.map((item) => {
               const assignedTasksPercentage = Math.round(
-                (item.value / allAssignedWork) * 100,
+                ((item.value || 0) / (allAssignedWork || 0)) * 100,
               );
               return (
                 <div
@@ -43,9 +44,10 @@ export function TeamWorkload({ data, allAssignedWork }: Props) {
                       email: item.email,
                     }}
                   />
-                  <p className="text-base md:hidden">
+                  {/* MOBILE PERCENTAGE VIEW */}
+                  <p className={"text-base md:hidden"}>
                     {assignedTasksPercentage}%
-                    {` (${item.value} / ${allAssignedWork})`}
+                    {` (${item.value || 0} / ${allAssignedWork || 0})`}
                   </p>
                 </div>
               );
@@ -57,7 +59,7 @@ export function TeamWorkload({ data, allAssignedWork }: Props) {
           <div className="flex flex-col gap-3">
             {data?.map((item) => {
               const assignedTasksPercentage = Math.round(
-                (item.value / allAssignedWork) * 100,
+                ((item.value || 0) / (allAssignedWork || 0)) * 100,
               );
               return (
                 <Tooltip key={item.email}>
@@ -73,7 +75,14 @@ export function TeamWorkload({ data, allAssignedWork }: Props) {
                           width: `${assignedTasksPercentage}%`,
                         }}
                       >
-                        <p className="py-1 px-2 text-muted font-medium">
+                        <p
+                          className={cn(
+                            assignedTasksPercentage === 0
+                              ? "text-primary"
+                              : "text-muted",
+                            "py-1 px-2 font-medium",
+                          )}
+                        >
                           {assignedTasksPercentage}%
                         </p>
                       </div>
@@ -83,7 +92,7 @@ export function TeamWorkload({ data, allAssignedWork }: Props) {
                     <p>{item.email}</p>
                     <p className="text-base">
                       {assignedTasksPercentage}%
-                      {` (${item.value} / ${allAssignedWork})`}
+                      {` (${item.value || 0} / ${allAssignedWork || 0})`}
                     </p>
                   </TooltipContent>
                 </Tooltip>

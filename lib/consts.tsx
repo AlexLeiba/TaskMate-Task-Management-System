@@ -35,6 +35,7 @@ import {
   FilterData,
   HeaderAdditionalInfoTabsType,
   HeaderTabsContentType,
+  OrganizationMembersType,
   TabType,
   UnsplashImagesType,
 } from "./types";
@@ -69,7 +70,6 @@ export const NAV_LINKS = {
     label: "Board",
   },
 } as const;
-export const BREAKPOINTS = [{}];
 
 export const LIST_STATUSES = [
   {
@@ -724,13 +724,11 @@ export const BOARD_HEADER_TABS: BoardTab[] = [
   { id: "3", label: "List", value: "list", icon: <LayoutList /> },
 ];
 
-export const UNASSIGNED_CARD = {
+export const UNASSIGNED_CARD: OrganizationMembersType = {
   userId: "unassigned",
-  firstName: "Unassigned",
-  lastName: "",
-  identifier: "",
+  fullName: "Unassigned",
+  email: "",
   imageUrl: "",
-  hasImage: true,
 };
 
 ////// STATS CHARTS COLORS

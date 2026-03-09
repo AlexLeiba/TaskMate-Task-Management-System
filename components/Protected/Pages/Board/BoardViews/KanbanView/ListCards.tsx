@@ -44,12 +44,14 @@ export function ListCards({ boardId, listData }: Props) {
 
   const { mutate: mutateReorderList } = useMutation({
     mutationFn: changeListPositionAction,
+    mutationKey: ["reorder-list"],
     onError: (error: any) => {
       toast.error(error?.message || "Something went wrong");
     },
   });
   const { mutate: mutateReorderCard } = useMutation({
     mutationFn: changeCardPositionAction,
+    mutationKey: ["reorder-card"],
     onError: (error: any) => {
       toast.error(error?.message || "Something went wrong");
     },

@@ -8,6 +8,7 @@ import { DraggableLocation } from "@hello-pangea/dnd";
 import { create } from "zustand";
 
 type StoreType = {
+  // INITIALIZE BOARD LIST CARDS DATA
   boardListData: ListAndCardsAndDueDateAndChecklistType[] | null | undefined;
   initialBoardListData: { id: string; cards: number }[] | null | undefined;
 
@@ -15,10 +16,12 @@ type StoreType = {
     data: ListAndCardsAndDueDateAndChecklistType[] | null | undefined,
   ) => void;
 
+  // UPDATE BOARD LIST DATA WITH FILTERS OPTIONS
   setBoardListData: (
     data: ListAndCardsAndDueDateAndChecklistType[] | null | undefined,
   ) => void;
 
+  // OPTIMISTIC UPDATE OF BOARD LIST DATA WITH DRAG AND DROP-----------------------------
   setDndSameListBoardListDataCards: (
     source: DraggableLocation<string>,
     destination: DraggableLocation<string>,
@@ -34,13 +37,18 @@ type StoreType = {
     destination: DraggableLocation<string>,
   ) => string;
 
+  // ---------------------------------------------------------------------------------
+
+  // OPEN REMOTE INPUT FROM LIST OPTIONS MENU
   openTitleInput: { id: string; isOpen: boolean };
   setOpenTitleInput: ({ isOpen, id }: { isOpen: boolean; id: string }) => void;
 
+  // OPEN REMOTE NEW CARD INPUT FROM LIST OPTIONS MENU
   openNewCardInput: {
     isOpen: boolean;
     id: string;
   };
+
   setOpenNewCardInput: ({
     isOpen,
     id,
@@ -49,25 +57,25 @@ type StoreType = {
     id: string;
   }) => void;
 
+  // CARD DETAILS TABS
   selectedTab: CardDetailsTabs;
 
   setSelectTab: (value: CardDetailsTabs) => void;
 
+  // CREATE NEW BOARD DIALOG FROM HEADER BUTTON
   newBoardDialogOpen: boolean;
   setNewBoardDialogOpen: (open: boolean) => void;
 
-  // BOARD HEADER TABS SECTIONS
+  //SUBHEADER BOARD HEADER TABS SECTIONS
   boardTabSections: BoardTabSectionType;
   setBoardTabSections: (sections: BoardTabSectionType) => void;
 
-  // BOARD SUBHEADER FILTERS STATES
+  // SUBHEADER BOARD  FILTERS STATISTICS
   boardSubHeaderFilterSelected: FilterStates;
   setBoardSubHeaderFilterSelected: (selected: FilterStates) => FilterStates;
 
-  boardSubHeaderMemberFilterSelected: string | null;
-  setBoardSubHeaderMemberFilterSelected: (
-    selected: string | null,
-  ) => string | null;
+  boardSubHeaderMemberIdSelected: string | null;
+  setBoardSubHeaderMemberIdSelected: (selected: string | null) => string | null;
 };
 
 export const useStore = create<StoreType>((set, get) => ({
@@ -172,12 +180,12 @@ export const useStore = create<StoreType>((set, get) => ({
   },
   // ---------------------------------------------------------
 
-  // OPEN TITLE INPUT FROM LIST OPTIONS MENU
+  // OPEN TITLE INPUT REMOTE FROM LIST OPTIONS MENU
   openTitleInput: { id: "", isOpen: false },
   setOpenTitleInput: ({ isOpen, id }: { isOpen: boolean; id: string }) =>
     set({ openTitleInput: { id, isOpen } }),
 
-  // OPEN NEW CARD INPUT FROM LIST OPTIONS MENU
+  // OPEN REMOTE NEW CARD INPUT FROM LIST OPTIONS MENU
   openNewCardInput: { isOpen: false, id: "" },
   setOpenNewCardInput: ({ isOpen, id }: { isOpen: boolean; id: string }) =>
     set({ openNewCardInput: { isOpen, id } }),
@@ -207,15 +215,15 @@ export const useStore = create<StoreType>((set, get) => ({
     return selected;
   },
 
-  boardSubHeaderMemberFilterSelected: null,
-  setBoardSubHeaderMemberFilterSelected: (selected) => {
-    const prevSelectedFilter = get().boardSubHeaderMemberFilterSelected;
+  boardSubHeaderMemberIdSelected: null,
+  setBoardSubHeaderMemberIdSelected: (selected) => {
+    const prevSelectedFilter = get().boardSubHeaderMemberIdSelected;
 
     if (prevSelectedFilter === selected) {
-      set({ boardSubHeaderMemberFilterSelected: null });
+      set({ boardSubHeaderMemberIdSelected: null });
       return null;
     }
-    set({ boardSubHeaderMemberFilterSelected: selected });
+    set({ boardSubHeaderMemberIdSelected: selected });
 
     return selected;
   },

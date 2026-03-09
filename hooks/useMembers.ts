@@ -1,28 +1,23 @@
-import { useOrganization } from "@clerk/nextjs";
-import { OrganizationMembershipPublicUserData } from "@clerk/nextjs/server";
-import { useEffect, useState } from "react";
+import { getOrganizationMembersAction } from "@/app/actions/organization-members";
+import { useQuery } from "@tanstack/react-query";
+
+import toast from "react-hot-toast";
 
 export function useMembers() {
-  const [members, setMembers] = useState<
-    OrganizationMembershipPublicUserData[] | undefined[]
-  >([]);
+  async function fetchOrhanizationMembers() {
+    try {
+      const { data } = await getOrganizationMembersAction();
 
-  const { membership } = useOrganization();
-
-  const membersData = membership?.organization
-    ?.getMemberships()
-    .then((res) => res.data.map((member) => member.publicUserData));
-
-  useEffect(() => {
-    async function getMembersData() {
-      const data = await membersData;
-      if (data) {
-        setMembers(data as unknown as OrganizationMembershipPublicUserData[]);
-      }
+      return data?.members;
+    } catch (error: any) {
+      toast.error(error?.message || "Something went wrong");
     }
+  }
 
-    getMembersData();
-  }, [membersData]);
+  const { data: members, isFetching } = useQuery({
+    queryKey: ["organization-members"],
+    queryFn: fetchOrhanizationMembers,
+  });
 
-  return { members };
+  return { members, isFetching };
 }

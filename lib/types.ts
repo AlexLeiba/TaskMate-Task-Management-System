@@ -415,3 +415,9 @@ export type FilterStates =
   | "theSame";
 
 //
+export type OrganizationMembersType = {
+  userId: string;
+  fullName: string;
+  email: string;
+  imageUrl: string;
+};

@@ -115,15 +115,6 @@ export function SubHeader({
             </Button>
           </div>
         </AddNewInput>
-
-        {/* {role === USER_ROLES.member && (
-          <p
-            className="text-lg font-bold line-clamp-1 text-text-secondary "
-            title={board?.title}
-          >
-            {board?.title}
-          </p>
-        )} */}
       </div>
 
       <div className="flex items-center gap-2">

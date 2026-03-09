@@ -32,7 +32,9 @@ export async function getListDataAction(
 
     const now = new Date();
     const sevenDaysAgo = new Date();
+    const sevenDaysIntheFuture = new Date();
     sevenDaysAgo.setDate(now.getDate() - 7);
+    sevenDaysIntheFuture.setDate(now.getDate() + 7);
 
     const response = await prisma.list.findMany({
       where: {
@@ -58,7 +60,8 @@ export async function getListDataAction(
                 dueDate: {
                   some: {
                     date: {
-                      gte: sevenDaysAgo.toISOString(),
+                      lte: sevenDaysIntheFuture.toISOString(),
+                      gte: now.toISOString(),
                     },
                   },
                 },
@@ -100,6 +103,29 @@ export async function getListDataAction(
           ...(unassignedCard && {
             where: {
               assignedToEmail: null,
+            },
+          }),
+          ...(filters === "created" && {
+            where: {
+              details: {
+                createdAt: {
+                  gte: sevenDaysAgo.toISOString(),
+                },
+              },
+            },
+          }),
+          ...(filters === "dueSoon" && {
+            where: {
+              details: {
+                dueDate: {
+                  some: {
+                    date: {
+                      lt: sevenDaysIntheFuture.toISOString(),
+                      gte: now.toISOString(),
+                    },
+                  },
+                },
+              },
             },
           }),
           include: {

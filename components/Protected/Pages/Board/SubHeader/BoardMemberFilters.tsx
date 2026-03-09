@@ -11,7 +11,7 @@ import Image from "next/image";
 export function BoardMemberFilters() {
   const { fetchBoardFilteredListData, loading } = useGetBoardFilteredData();
 
-  const { members } = useMembers();
+  const { members, isFetching } = useMembers();
 
   const {
     setBoardSubHeaderFilterSelected,
@@ -48,7 +48,7 @@ export function BoardMemberFilters() {
     <div className="p-2 hidden lg:block">
       <div className="flex items-center relative">
         <IconButton
-          disabled={loading}
+          disabled={loading || isFetching}
           onClick={() => handleSelectedMember(UNASSIGNED_CARD)}
           title="Filter by unassigned"
           aria-label="Filter by unassigned"
@@ -64,7 +64,7 @@ export function BoardMemberFilters() {
         {members?.map((member, index) => {
           return (
             <IconButton
-              disabled={loading}
+              disabled={loading || isFetching}
               onClick={() => handleSelectedMember(member)}
               title={`Filter by ${member?.fullName}`}
               style={{ transform: `translateX(-${index * 5}px)` }}

@@ -1,5 +1,5 @@
 import { finishedWorkOverviewAction } from "@/app/actions/summary";
-import { UserCard } from "@/components/Protected/UserCard/UserCard";
+import { UserCard } from "@/components/Protected/Shared-protected/UserCard/UserCard";
 import { useBoardId } from "@/hooks/useBoardId";
 import { useAuth } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
@@ -9,16 +9,27 @@ import { Pie, PieChart, Tooltip } from "recharts";
 import { LegendValue } from "./LegendValue";
 import { LegendColor } from "./LegendColor";
 
-export function FinishedWorkOverview() {
+type Props = {
+  type?: "board" | "dashboard";
+};
+export function FinishedWorkOverview({ type }: Props) {
+  // TODO create a filter by days 7/14/30 /60/all time
   const boardId = useBoardId();
   const { orgId } = useAuth();
 
   async function fetchBoardFinishedWorkStats() {
-    if (!boardId || !orgId) return;
+    if (!orgId) return;
     try {
-      const response = await finishedWorkOverviewAction(orgId, boardId);
+      if (type === "board") {
+        const response = await finishedWorkOverviewAction(orgId, boardId);
 
-      return response;
+        return response;
+      }
+      if (type === "dashboard") {
+        const response = await finishedWorkOverviewAction(orgId, null);
+
+        return response || [];
+      }
     } catch (error: any) {
       toast.error(
         error.message || "Error on Finished work overview, please try again",

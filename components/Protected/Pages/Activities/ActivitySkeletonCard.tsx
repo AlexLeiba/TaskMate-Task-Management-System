@@ -1,4 +1,4 @@
-import { UserCardSkeleton } from "../../UserCard/UserCardSkeleton";
+import { UserCardSkeleton } from "../../Shared-protected/UserCard/UserCardSkeleton";
 
 const skeletonArray = Array.from({ length: 10 }, (_, index) => index);
 export function ActivitySkeletonCard() {

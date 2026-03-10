@@ -14,7 +14,7 @@ import { AssignToSkeleton } from "./AssignToSkeleton";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useOrganization } from "@clerk/nextjs";
-import { UserCard } from "@/components/Protected/UserCard/UserCard";
+import { UserCard } from "@/components/Protected/Shared-protected/UserCard/UserCard";
 
 import { assignToCardAction, unassigneCardAction } from "@/app/actions/card";
 import toast from "react-hot-toast";

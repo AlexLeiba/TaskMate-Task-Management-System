@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/tooltip";
 
 const DeleteDialog = dynamic(() =>
-  import("@/components/Protected/DeleteDialog/DeleteDialog").then(
+  import("@/components/Protected/Shared-protected/DeleteDialog/DeleteDialog").then(
     (m) => m.DeleteDialog,
   ),
 );

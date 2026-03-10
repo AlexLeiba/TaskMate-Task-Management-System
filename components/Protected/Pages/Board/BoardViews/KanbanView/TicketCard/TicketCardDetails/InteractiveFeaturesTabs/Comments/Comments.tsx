@@ -18,7 +18,7 @@ import { useBoardId } from "@/hooks/useBoardId";
 import { useUserData } from "@/hooks/useUserData";
 
 const DeleteDialog = dynamic(() =>
-  import("@/components/Protected/DeleteDialog/DeleteDialog").then(
+  import("@/components/Protected/Shared-protected/DeleteDialog/DeleteDialog").then(
     (m) => m.DeleteDialog,
   ),
 );

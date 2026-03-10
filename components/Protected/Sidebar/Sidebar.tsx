@@ -3,6 +3,7 @@ import {
   Activity,
   CreditCard,
   Crown,
+  Globe,
   LayoutDashboard,
   Plus,
   Settings,
@@ -70,6 +71,11 @@ export function Sidebar() {
           title: "Billings",
           pathname: `/dashboard/${org.organization.id}/billings`,
           icon: <CreditCard />,
+        },
+        {
+          title: "Summary",
+          pathname: `/dashboard/${org.organization.id}/summary`,
+          icon: <Globe />,
         },
       ],
     };

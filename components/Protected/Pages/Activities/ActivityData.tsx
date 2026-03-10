@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { UserCard } from "../../UserCard/UserCard";
+import { UserCard } from "../../Shared-protected/UserCard/UserCard";
 import toast from "react-hot-toast";
 import { ActivityWithAuthor } from "@/lib/types";
 

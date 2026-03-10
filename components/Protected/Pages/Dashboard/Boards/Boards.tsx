@@ -16,7 +16,7 @@ import { useRole } from "@/hooks/useRole";
 import { USER_ROLES } from "@/lib/consts";
 
 const DeleteDialog = dynamic(() =>
-  import("@/components/Protected/DeleteDialog/DeleteDialog").then(
+  import("@/components/Protected/Shared-protected/DeleteDialog/DeleteDialog").then(
     (m) => m.DeleteDialog,
   ),
 );

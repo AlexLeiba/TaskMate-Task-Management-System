@@ -1,4 +1,4 @@
-import { UserCard } from "../../../../../../../../UserCard/UserCard";
+import { UserCard } from "../../../../../../../../Shared-protected/UserCard/UserCard";
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 

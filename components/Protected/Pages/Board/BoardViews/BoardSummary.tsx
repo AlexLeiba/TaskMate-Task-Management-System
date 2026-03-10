@@ -1,23 +1,24 @@
 import toast from "react-hot-toast";
 import { getSummaryStatsAction } from "@/app/actions/summary";
 import { useAuth } from "@clerk/nextjs";
-import { StatusOverview } from "./StatusOverview";
-import { PriorityBreakdown } from "./PriorityBreakdown";
-import { FinishedWorkOverview } from "./FinishedWorkOverview";
-import { RecentActivity } from "./RecentActivity";
+import { StatusOverview } from "../../../Shared-protected/Summary/StatusOverview";
+import { PriorityBreakdown } from "../../../Shared-protected/Summary/PriorityBreakdown";
+import { FinishedWorkOverview } from "../../../Shared-protected/Summary/FinishedWorkOverview";
+import { RecentActivity } from "../../../Shared-protected/Summary/RecentActivity";
 import { useQuery } from "@tanstack/react-query";
 import { useBoardId } from "@/hooks/useBoardId";
 
-import { BoardStatsCard } from "./BoardStatsCard";
-import { TeamWorkload } from "./TeamWorkLoad/TeamWorkload";
-import { BoardStats } from "./BoardStats";
+import { BoardStatsCard } from "../../../Shared-protected/Summary/BoardStatsCard";
+import { TeamWorkload } from "../../../Shared-protected/Summary/TeamWorkLoad/TeamWorkload";
+import { BoardStats } from "../../../Shared-protected/Summary/BoardStats";
 
-export function Summary() {
+export function BoardSummary() {
   const boardId = useBoardId();
   const { orgId } = useAuth();
 
   async function fetchBoardSummary() {
     if (!boardId || !orgId) return;
+    toast.loading("Loading board summary...", { id: "boardSummary" });
     try {
       const response = await getSummaryStatsAction(orgId, boardId);
 
@@ -26,7 +27,8 @@ export function Summary() {
       toast.error(
         error.message || "Error getting board summary, please try again",
       );
-      throw error.message || "Error getting board summary, please try again";
+    } finally {
+      toast.dismiss("boardSummary");
     }
   }
 
@@ -39,7 +41,7 @@ export function Summary() {
     <div className="max-w-400 p-4 mx-auto flex flex-col gap-4">
       <BoardStats data={data} />
 
-      <div className="grid lg:grid-cols-[repeat(auto-fit,minmax(600px,1fr))] grid-cols-1 gap-2 w-full">
+      <div className="grid lg:grid-cols-[repeat(auto-fit,minmax(600px,1fr))] grid-cols-1 gap-2 w-full ">
         <BoardStatsCard>
           <StatusOverview data={data?.statusOverviewData} />
         </BoardStatsCard>

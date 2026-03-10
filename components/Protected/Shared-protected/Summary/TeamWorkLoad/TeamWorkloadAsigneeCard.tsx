@@ -1,4 +1,4 @@
-import { UserCard } from "@/components/Protected/UserCard/UserCard";
+import { UserCard } from "@/components/Protected/Shared-protected/UserCard/UserCard";
 import { UNASSIGNED_CARD } from "@/lib/consts";
 import React from "react";
 

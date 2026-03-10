@@ -1,6 +1,6 @@
 import { Spacer } from "@/components/ui/spacer";
 import { UserCog } from "lucide-react";
-import { UserCard } from "../../../../../../../UserCard/UserCard";
+import { UserCard } from "../../../../../../../Shared-protected/UserCard/UserCard";
 import { User } from "@/lib/generated/prisma/client";
 
 type Props = {

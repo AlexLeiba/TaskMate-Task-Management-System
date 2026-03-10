@@ -10,9 +10,9 @@ const ListView = dynamic(() =>
     (m) => m.ListView,
   ),
 );
-const Summary = dynamic(() =>
-  import("@/components/Protected/Pages/Board/BoardViews/Summary/Summary").then(
-    (m) => m.Summary,
+const BoardSummary = dynamic(() =>
+  import("@/components/Protected/Pages/Board/BoardViews/BoardSummary").then(
+    (m) => m.BoardSummary,
   ),
 );
 type Props = {
@@ -27,7 +27,7 @@ const BOARD_VIEW_SECTION: { [key: string]: React.FC<Props> | ComponentClass } =
   {
     board: ListCards,
     list: ListView,
-    summary: Summary,
+    summary: BoardSummary,
   };
 export function BoardViews({ boardId, listData }: Props) {
   // TODO, add here data in useStore, filter it, and pass to its component as prop.

@@ -1,5 +1,5 @@
 import { getRecentActivitiesAction } from "@/app/actions/summary";
-import { UserCard } from "@/components/Protected/UserCard/UserCard";
+import { UserCard } from "@/components/Protected/Shared-protected/UserCard/UserCard";
 import { Button } from "@/components/ui/button";
 import { useBoardId } from "@/hooks/useBoardId";
 import { useAuth } from "@clerk/nextjs";

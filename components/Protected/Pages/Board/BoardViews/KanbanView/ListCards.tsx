@@ -37,6 +37,9 @@ export function ListCards({ boardId, listData }: Props) {
     setDndBoardListData,
     setDndSameListBoardListDataCards,
     setDndDifferentListBoardListDataCards,
+
+    setBoardSubHeaderFilterSelected,
+    setBoardSubHeaderMemberIdSelected,
   } = useStore();
 
   const role = useRole();
@@ -65,9 +68,18 @@ export function ListCards({ boardId, listData }: Props) {
       return;
     }
 
-    setInitializeBoardListData(listData?.data); //SET INITIAL DATA
+    setBoardSubHeaderMemberIdSelected(""); // RESET FILTER MEMBER ON FIRST MOUNT
+    setBoardSubHeaderFilterSelected("all");
+    //RESET FILTER ON FIRST MOUNT
+    setInitializeBoardListData(listData?.data); //SET INITIAL DATA ON FIRST MOUNT
     // initial list column values
-  }, [listData.data, listData.error.message, setInitializeBoardListData]);
+  }, [
+    listData.data,
+    listData.error.message,
+    setInitializeBoardListData,
+    setBoardSubHeaderMemberIdSelected,
+    setBoardSubHeaderFilterSelected,
+  ]);
 
   if (!boardId || !boardListData) return <ListCardSkeleton />;
 

@@ -9,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useBoardId } from "@/hooks/useBoardId";
 
 import { BoardStatsCard } from "./BoardStatsCard";
-import { TeamWorkload } from "./TeamWorkload";
+import { TeamWorkload } from "./TeamWorkLoad/TeamWorkload";
 import { BoardStats } from "./BoardStats";
 
 export function Summary() {
@@ -26,6 +26,7 @@ export function Summary() {
       toast.error(
         error.message || "Error getting board summary, please try again",
       );
+      throw error.message || "Error getting board summary, please try again";
     }
   }
 
@@ -52,6 +53,7 @@ export function Summary() {
           <TeamWorkload
             data={data?.teamWorkLoadData}
             allAssignedWork={data?.allAssignedWork || 0}
+            totalTasks={data?.totalTasks || 0}
           />
         </BoardStatsCard>
       </div>

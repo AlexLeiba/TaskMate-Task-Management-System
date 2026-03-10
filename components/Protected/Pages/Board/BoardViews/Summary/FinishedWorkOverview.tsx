@@ -16,10 +16,7 @@ export function FinishedWorkOverview() {
   async function fetchBoardFinishedWorkStats() {
     if (!boardId || !orgId) return;
     try {
-      const response = await finishedWorkOverviewAction(
-        orgId,
-        "b5b20ba4-6d38-471c-95c6-c93887f4efc8",
-      );
+      const response = await finishedWorkOverviewAction(orgId, boardId);
 
       return response;
     } catch (error: any) {
@@ -39,9 +36,10 @@ export function FinishedWorkOverview() {
       <div>
         <h5 className="text-2xl font-medium">Finished work overview</h5>
         <p className="text-wrap">
-          Get an overview of the finished work by team member.
+          Get an overview of the finished work by team member for all time on
+          this board.
         </p>
-        <p>View all work items grouped by done status of a card ticket.</p>
+        <p>Filter finished work by time period.</p>
       </div>
 
       <div className="grid lg:grid-cols-[2fr_1fr] grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-2">

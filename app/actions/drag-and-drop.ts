@@ -223,8 +223,6 @@ export async function changeCardPositionAction({
 
     // DIFFERENT LIST
     if (type === "different-list") {
-      // SAVE DONE TICKET AUTHOR IN DB IF IS ASSIGNED
-
       const destinationList = await prisma.list.findFirst({
         where: {
           id: destinationListId,
@@ -243,14 +241,16 @@ export async function changeCardPositionAction({
         throw new Error("Source list not found");
       }
 
+      // ONLY ADMIN CAN MOVE TO OR FROM DONE LIST
       if (destinationList?.status === "done" || sourceList?.status === "done") {
-        // ONLY ADMIN CAN MOVE TO DONE
         if (activeUserData?.role === "member") {
           revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
-          throw new Error("Only admin can move a card ticket to a DONE list");
+          throw new Error(
+            "Only admin can move a CARD ticket to or from DONE list ",
+          );
         }
 
-        // RECORD DESTINATION DONE TICKET CARD
+        // RECORD WHO HAS DONE THE TICKET CARD
         if (
           destinationList?.status === "done" &&
           cardToBeMoved?.assignedToEmail
@@ -280,7 +280,7 @@ export async function changeCardPositionAction({
           },
         });
 
-        // 2️⃣ Make space in DESTINATION list
+        // Make space in DESTINATION list
         await tx.card.updateMany({
           where: {
             listId: destinationListId,
@@ -293,7 +293,7 @@ export async function changeCardPositionAction({
           },
         });
 
-        // 3️⃣ Move the card
+        //  Move the card
         await tx.card.update({
           where: { id: cardToMoveId },
           data: {

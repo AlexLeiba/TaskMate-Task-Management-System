@@ -9,7 +9,8 @@ export function PriorityBreakdown({ data }: Props) {
     <div className="flex flex-col gap-2">
       <div>
         <h5 className="text-2xl font-medium">Priority breakdown</h5>
-        <p>Get a holistic view of how work is being prioritized.</p>
+        <p>Get an overview of how work is being prioritized.</p>
+        <p>The overview is calculated by only unfished work.</p>
       </div>
       <div className="grid lg:grid-cols-[2fr,1fr] grid-cols-[repeat(auto-fit,minmax(600px,1fr))]  overflow-x-auto">
         <BarChart

@@ -37,6 +37,7 @@ import {
   HeaderTabsContentType,
   OrganizationMembersType,
   TabType,
+  TeamWorkloadType,
   UnsplashImagesType,
 } from "./types";
 
@@ -727,8 +728,14 @@ export const BOARD_HEADER_TABS: BoardTab[] = [
 export const UNASSIGNED_CARD: OrganizationMembersType = {
   userId: "unassigned",
   fullName: "Unassigned",
-  email: "",
+  email: "unassigned",
   imageUrl: "",
+};
+export const UNASSIGNED_WORKLOAD: TeamWorkloadType = {
+  name: "unassigned",
+  value: 0,
+  email: "unassigned",
+  avatar: "",
 };
 
 ////// STATS CHARTS COLORS

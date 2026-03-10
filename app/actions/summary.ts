@@ -79,6 +79,8 @@ export async function getSummaryStatsAction(
 
       let allAssignedWork = 0;
 
+      let totalTasks = 0;
+
       const teamWorkload: { [key: string]: number } = {};
 
       const priorityBreakdown: { [key: string]: number } = {
@@ -94,14 +96,12 @@ export async function getSummaryStatsAction(
         done: 0,
         backlog: 0,
       };
-      //   const finishedWorkOverview = [];
 
+      // INITIALIZE ALL BOARD MEMBERS
       members.forEach((member) => {
         teamWorkload[member?.publicUserData?.identifier || ""] = 0;
       });
 
-      // const now = new Date();
-      // const sevenDaysInTheFutureDate = new Date(now.setDate(now.getDate() + 7));
       const oneDayInMilliseconds = 1000 * 60 * 60 * 24;
 
       const today = new Date();
@@ -114,9 +114,14 @@ export async function getSummaryStatsAction(
         }
 
         list.cards?.forEach((card) => {
-          // priority breakdown
-          priorityBreakdown[card?.priority] =
-            (priorityBreakdown[card?.priority] || 0) + 1;
+          if (list.status !== "done") {
+            // count total undone tasks available per board
+            totalTasks++;
+
+            // priority breakdown by non finished work
+            priorityBreakdown[card?.priority] =
+              (priorityBreakdown[card?.priority] || 0) + 1;
+          }
 
           // assigned
           if (card.assignedToEmail) {
@@ -125,11 +130,12 @@ export async function getSummaryStatsAction(
               teamWorkload[card?.assignedToEmail] =
                 (teamWorkload[card?.assignedToEmail] || 0) + 1;
 
+              // assigned work by non finished work
               allAssignedWork++;
             }
           }
-          //   unassigned
-          if (!card?.assignedToEmail) {
+          //   unassigned work by non finished work
+          if (!card?.assignedToEmail && list.status !== "done") {
             teamWorkload[UNASSIGNED_CARD.userId] =
               (teamWorkload[UNASSIGNED_CARD.userId] || 0) + 1;
           }
@@ -179,8 +185,12 @@ export async function getSummaryStatsAction(
 
       //   TEAM WORKLOAD
       const teamWorkLoadData: TeamWorkloadType[] = [];
-      members.forEach((member) => {
-        Object.entries(teamWorkload).forEach(([key, value]) => {
+
+      Object.entries(teamWorkload).forEach(([key, value]) => {
+        const member = members.find(
+          (member) => member?.publicUserData?.identifier === key,
+        );
+        if (member) {
           if (member?.publicUserData?.identifier === key) {
             teamWorkLoadData.push({
               name:
@@ -191,10 +201,16 @@ export async function getSummaryStatsAction(
               value: value,
               avatar: member?.publicUserData?.imageUrl || "",
             });
+            return;
           }
+        }
+        teamWorkLoadData.push({
+          name: key,
+          email: key,
+          value: value,
+          avatar: "",
         });
       });
-
       //   STATUS OVERVIEW
       const statusOverviewData: StatusOverviewType[] = [];
       Object.entries(statusOverview).forEach(([keyof, value], index) => {
@@ -225,6 +241,7 @@ export async function getSummaryStatsAction(
         priorityBreakdownData,
         statusOverviewData,
         allAssignedWork,
+        totalTasks,
       };
       // console.log("🚀 ~ getSummaryData ~ stats=>>>>>>>>>>>:", stats);
 
@@ -279,6 +296,7 @@ export async function getSummaryStatsAction(
       let createdInAWeek = 0;
       let dueDateInAWeek = 0;
       let allAssignedWork = 0;
+      let totalTasks = 0;
 
       const teamWorkload: { [key: string]: number } = {};
 
@@ -314,17 +332,19 @@ export async function getSummaryStatsAction(
           }
 
           list.cards?.forEach((card) => {
-            // priority breakdown
-            priorityBreakdown[card?.priority] =
-              (priorityBreakdown[card?.priority] || 0) + 1;
-
             // assigned
             if (card.assignedToEmail) {
               teamWorkload[card?.assignedToEmail] =
                 (teamWorkload[card?.assignedToEmail] || 0) + 1;
 
               if (list.status !== "done") {
+                totalTasks++;
+
+                // assigned work of non done tasks
                 allAssignedWork++;
+                // priority breakdown of non done tsks
+                priorityBreakdown[card?.priority] =
+                  (priorityBreakdown[card?.priority] || 0) + 1;
               }
             }
             //   unassigned
@@ -421,6 +441,7 @@ export async function getSummaryStatsAction(
         priorityBreakdownData,
         statusOverviewData,
         allAssignedWork,
+        totalTasks,
       };
 
       return { data: stats };
@@ -437,6 +458,7 @@ export async function getSummaryStatsAction(
         statusOverviewData: [],
         priorityBreakdownData: [],
         allAssignedWork: 0,
+        totalTasks: 0,
       },
     };
   } catch (error: any) {

@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { User } from "@/lib/generated/prisma/client";
 import { DATE_FORMAT } from "@/lib/consts";
 
-const cardVariants = cva("rounded-full ", {
+const cardVariants = cva("rounded-full bg-text-secondary", {
   variants: {
     size: {
       sm: "size-8",

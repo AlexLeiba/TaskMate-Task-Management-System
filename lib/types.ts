@@ -371,6 +371,7 @@ export type SummaryStatsType = {
   statusOverviewData: StatusOverviewType[];
   priorityBreakdownData: PriorityBreakdownType[];
   allAssignedWork: number;
+  totalTasks: number;
 };
 
 export type TeamWorkloadType = {

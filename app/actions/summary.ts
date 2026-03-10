@@ -21,8 +21,11 @@ import {
 
 export async function getSummaryStatsAction(
   currentOrgId: string,
-  boardId: string,
-): Promise<{ data: SummaryStatsType }> {
+  boardId: string | null,
+): Promise<{
+  data: SummaryStatsType | null;
+  error: { message: string } | null;
+}> {
   const { data: activeUser, error } =
     await checkCurrentActiveUser(currentOrgId);
   try {
@@ -107,7 +110,7 @@ export async function getSummaryStatsAction(
       const today = new Date();
 
       boardData?.lists.forEach((list) => {
-        statusOverview[list?.status] = list.cards.length;
+        statusOverview[list?.status || ""] = list.cards.length;
 
         if (list.status === "done") {
           completed = list.cards.length;
@@ -119,25 +122,25 @@ export async function getSummaryStatsAction(
             totalTasks++;
 
             // priority breakdown by non finished work
-            priorityBreakdown[card?.priority] =
-              (priorityBreakdown[card?.priority] || 0) + 1;
-          }
+            priorityBreakdown[card?.priority || ""] =
+              (priorityBreakdown[card?.priority || ""] || 0) + 1;
 
-          // assigned
-          if (card.assignedToEmail) {
-            // workload except the work already done
-            if (list.status !== "done") {
-              teamWorkload[card?.assignedToEmail] =
-                (teamWorkload[card?.assignedToEmail] || 0) + 1;
+            // ASSIGNED TASKS
+            if (card.assignedToEmail) {
+              // workload except the work already done
+
+              teamWorkload[card?.assignedToEmail || ""] =
+                (teamWorkload[card?.assignedToEmail || ""] || 0) + 1;
 
               // assigned work by non finished work
               allAssignedWork++;
             }
           }
+
           //   unassigned work by non finished work
           if (!card?.assignedToEmail && list.status !== "done") {
-            teamWorkload[UNASSIGNED_CARD.userId] =
-              (teamWorkload[UNASSIGNED_CARD.userId] || 0) + 1;
+            teamWorkload[UNASSIGNED_CARD.userId || ""] =
+              (teamWorkload[UNASSIGNED_CARD.userId || ""] || 0) + 1;
           }
 
           // DUE DATE in next 7 days
@@ -168,18 +171,6 @@ export async function getSummaryStatsAction(
               createdInAWeek++;
             }
           }
-
-          // UPDATED in last 7 days
-          // const updatedCard = card.updatedAt?.getTime();
-          // if (updatedCard?.toString() !== createdDate) {
-          //   const timeDiffUpdated = Math.abs(today.getTime() - updatedCard);
-          //   const diffDaysUpdated = Math.ceil(
-          //     timeDiffUpdated / oneDayInMilliseconds,
-          //   );
-          //   if (diffDaysUpdated <= 7) {
-          //     updatedInAWeek++;
-          //   }
-          // }
         });
       });
 
@@ -245,7 +236,7 @@ export async function getSummaryStatsAction(
       };
       // console.log("🚀 ~ getSummaryData ~ stats=>>>>>>>>>>>:", stats);
 
-      return { data: stats };
+      return { data: stats, error: null };
     }
 
     // ORGANIZATION SUMMARY
@@ -315,6 +306,7 @@ export async function getSummaryStatsAction(
       };
       //   const finishedWorkOverview = [];
 
+      // INITIALIZE ALL ORG MEMBERS WITH UNIQUE EMAILS
       members.forEach((member) => {
         teamWorkload[member?.publicUserData?.identifier || ""] = 0;
       });
@@ -325,69 +317,72 @@ export async function getSummaryStatsAction(
 
       boardsData?.forEach((board) =>
         board?.lists.forEach((list) => {
-          statusOverview[list?.status] = list.cards.length;
+          statusOverview[list?.status] += list.cards.length;
 
           if (list.status === "done") {
-            completed = list.cards.length;
+            completed += list.cards.length;
           }
 
           list.cards?.forEach((card) => {
-            // assigned
-            if (card.assignedToEmail) {
-              teamWorkload[card?.assignedToEmail] =
-                (teamWorkload[card?.assignedToEmail] || 0) + 1;
+            // NON FINISHED WORK
+            if (list.status !== "done") {
+              totalTasks++;
 
-              if (list.status !== "done") {
-                totalTasks++;
+              // priority breakdown by non finished work
+              priorityBreakdown[card?.priority || ""] =
+                (priorityBreakdown[card?.priority || ""] || 0) + 1;
+
+              // ASSIGNED TASKS
+              if (card.assignedToEmail) {
+                teamWorkload[card?.assignedToEmail || ""] =
+                  (teamWorkload[card?.assignedToEmail || ""] || 0) + 1;
 
                 // assigned work of non done tasks
                 allAssignedWork++;
-                // priority breakdown of non done tsks
-                priorityBreakdown[card?.priority] =
-                  (priorityBreakdown[card?.priority] || 0) + 1;
-              }
-            }
-            //   unassigned
-            if (!card?.assignedToEmail) {
-              teamWorkload[UNASSIGNED_CARD.userId] =
-                (teamWorkload[UNASSIGNED_CARD.userId] || 0) + 1;
-            }
-            // DUE DATE in next 7 days
-            if (card.details?.dueDate) {
-              const dueDate = new Date(card.details.dueDate[0]?.date);
-              const timeDiffInSevenDaysInMilliseconds = Math.abs(
-                sevenDaysInTheFutureDate.getTime() - dueDate.getTime(),
-              );
-              const diffDays = Math.ceil(
-                timeDiffInSevenDaysInMilliseconds / oneDayInMilliseconds,
-              );
-              if (diffDays <= 7) {
-                dueDateInAWeek++;
               }
 
-              // CREATED in last 7 days
-              const createdDate = card.createdAt?.getTime();
-              if (createdDate) {
-                const timeDiffCreated = Math.abs(now.getTime() - createdDate);
-                const diffDaysCreated = Math.ceil(
-                  timeDiffCreated / oneDayInMilliseconds,
+              //   unassigned
+              if (!card?.assignedToEmail) {
+                teamWorkload[UNASSIGNED_CARD.userId || ""] =
+                  (teamWorkload[UNASSIGNED_CARD.userId || ""] || 0) + 1;
+              }
+              // DUE DATE in next 7 days
+              if (card.details?.dueDate) {
+                const dueDate = new Date(card.details.dueDate[0]?.date);
+                const timeDiffInSevenDaysInMilliseconds = Math.abs(
+                  sevenDaysInTheFutureDate.getTime() - dueDate.getTime(),
                 );
-                if (diffDaysCreated <= 7) {
-                  createdInAWeek++;
+                const diffDays = Math.ceil(
+                  timeDiffInSevenDaysInMilliseconds / oneDayInMilliseconds,
+                );
+                if (diffDays <= 7) {
+                  dueDateInAWeek++;
                 }
-              }
 
-              // UPDATED in last 7 days
-              // const updatedCard = card.updatedAt?.getTime();
-              // if (updatedCard) {
-              //   const timeDiffUpdated = Math.abs(now.getTime() - updatedCard);
-              //   const diffDaysUpdated = Math.ceil(
-              //     timeDiffUpdated / oneDayInMilliseconds,
-              //   );
-              //   if (diffDaysUpdated <= 7) {
-              //     updatedInAWeek++;
-              //   }
-              // }
+                // CREATED in last 7 days
+                const createdDate = card.createdAt?.getTime();
+                if (createdDate) {
+                  const timeDiffCreated = Math.abs(now.getTime() - createdDate);
+                  const diffDaysCreated = Math.ceil(
+                    timeDiffCreated / oneDayInMilliseconds,
+                  );
+                  if (diffDaysCreated <= 7) {
+                    createdInAWeek++;
+                  }
+                }
+
+                // UPDATED in last 7 days
+                // const updatedCard = card.updatedAt?.getTime();
+                // if (updatedCard) {
+                //   const timeDiffUpdated = Math.abs(now.getTime() - updatedCard);
+                //   const diffDaysUpdated = Math.ceil(
+                //     timeDiffUpdated / oneDayInMilliseconds,
+                //   );
+                //   if (diffDaysUpdated <= 7) {
+                //     updatedInAWeek++;
+                //   }
+                // }
+              }
             }
           });
         }),
@@ -395,8 +390,13 @@ export async function getSummaryStatsAction(
 
       //   TEAM WORKLOAD
       const teamWorkLoadData: TeamWorkloadType[] = [];
-      members.forEach((member) => {
-        Object.entries(teamWorkload).forEach(([key, value]) => {
+
+      Object.entries(teamWorkload).forEach(([key, value]) => {
+        const member = members.find(
+          (member) => member.publicUserData?.identifier === key,
+        );
+
+        if (member) {
           if (member?.publicUserData?.identifier === key) {
             teamWorkLoadData.push({
               name:
@@ -407,7 +407,14 @@ export async function getSummaryStatsAction(
               value: value,
               avatar: member?.publicUserData?.imageUrl || "",
             });
+            return;
           }
+        }
+        teamWorkLoadData.push({
+          name: key,
+          email: key,
+          value: value,
+          avatar: "",
         });
       });
 
@@ -444,7 +451,7 @@ export async function getSummaryStatsAction(
         totalTasks,
       };
 
-      return { data: stats };
+      return { data: stats, error: null };
     }
 
     // ELSE
@@ -460,19 +467,28 @@ export async function getSummaryStatsAction(
         allAssignedWork: 0,
         totalTasks: 0,
       },
+      error: {
+        message: "",
+      },
     };
   } catch (error: any) {
     console.log("🚀 ~ getSummaryData ~ error:", error);
 
-    throw error?.message || "Something went wrong";
+    return {
+      data: null,
+      error: {
+        message: error?.message || "Something went wrong",
+      },
+    };
   }
 }
 
 export async function finishedWorkOverviewAction(
   currentOrgId: string,
-  boardId: string,
+  boardId: string | null,
   nrOfDaysStats: number = 7,
 ): Promise<{ data: FinishedWorkMembersType[] }> {
+  console.log("🚀 ~ finishedWorkOverviewAction ~ boardId:", boardId);
   const { data: activeUser, error } =
     await checkCurrentActiveUser(currentOrgId);
   try {
@@ -485,7 +501,8 @@ export async function finishedWorkOverviewAction(
     const finishedWorkData = await prisma.userDoneCardTickets.findMany({
       where: {
         orgId: currentOrgId,
-        ...{ boardId: boardId }, //will be applied only if thisd will be provided
+        ...(boardId && { boardId: boardId }), //will be applied only if thisd will be provided
+
         createdAt: {
           gte: new Date(
             new Date().setDate(new Date().getDate() - nrOfDaysStats),

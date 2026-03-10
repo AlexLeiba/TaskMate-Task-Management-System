@@ -45,7 +45,7 @@ export function DueDate({ data, cardDetailsId }: Props) {
           </TooltipContent>
         </Tooltip>
       </div>
-      <Spacer size={4} />
+      <Spacer size={2} />
       <DueDateInputs data={data} cardDetailsId={cardDetailsId} />
     </div>
   );

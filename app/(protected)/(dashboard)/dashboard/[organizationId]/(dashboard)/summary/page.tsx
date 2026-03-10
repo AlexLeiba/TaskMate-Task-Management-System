@@ -1,5 +1,5 @@
 import { getSummaryStatsAction } from "@/app/actions/summary";
-import { OrgSummary } from "@/components/Protected/Pages/Summary/OrgSummary";
+import { OrgSummary } from "@/components/Protected/Pages/OrgSummary/OrgSummary";
 import { Separator } from "@/components/ui/separator";
 import { Globe } from "lucide-react";
 

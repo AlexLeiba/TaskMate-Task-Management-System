@@ -22,6 +22,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useUserData } from "@/hooks/useUserData";
 import { USER_ROLES } from "@/lib/consts";
 import { useRole } from "@/hooks/useRole";
+import { ChangeStatus } from "./ChangeStatus/ChangeStatus";
 
 type Props = {
   handleCloseModal: () => void;
@@ -130,6 +131,11 @@ export function TicketCardDetails({
                 cardDetailsId={cardDetailsData?.card.id}
               />
             </div>
+            <ChangeStatus
+              priority={cardDetailsData?.card.priority}
+              listId={cardDetailsData?.card.listId}
+              cardDetailsId={cardDetailsData?.card.id}
+            />
             <DueDate
               data={cardDetailsData?.dueDate}
               cardDetailsId={cardDetailsData?.id}
@@ -142,7 +148,7 @@ export function TicketCardDetails({
                   cardId={cardDetailsData?.card.id || ""}
                 />
               )}
-              <div className="flex justify-end my-4">
+              <div className="flex justify-end my-2">
                 <DateTime
                   createdAt={cardDetailsData?.card.createdAt}
                   updatedAt={cardDetailsData?.card.updatedAt}

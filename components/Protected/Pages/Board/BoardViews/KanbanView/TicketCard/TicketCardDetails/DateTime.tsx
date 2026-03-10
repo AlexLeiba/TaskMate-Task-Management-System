@@ -8,10 +8,10 @@ type Props = {
 export function DateTime({ createdAt, updatedAt }: Props) {
   if (!createdAt || !updatedAt)
     return (
-      <div className="h-10 bg-gray-700 animate-pulse rounded-md w-44.25"></div>
+      <div className="h-8 bg-gray-700 animate-pulse rounded-md w-44.25"></div>
     );
   return (
-    <div className="flex flex-col gap-2 dark:text-gray-400 ">
+    <div className="flex flex-col dark:text-gray-400 ">
       <div className="flex gap-2 items-center">
         <p className="text-xs font-medium">Created:</p>
 

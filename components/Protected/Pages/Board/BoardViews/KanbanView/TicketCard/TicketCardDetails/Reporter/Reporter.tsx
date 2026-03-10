@@ -13,7 +13,7 @@ export function Reporter({ data }: Props) {
         <UserCog />
         <p className="text-xl font-medium">Reporter</p>
       </div>
-      <Spacer size={4} />
+      <Spacer size={2} />
       <UserCard data={data} size={"sm"} />
     </div>
   );

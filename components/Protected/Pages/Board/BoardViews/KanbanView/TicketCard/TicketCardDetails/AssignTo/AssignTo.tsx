@@ -1,6 +1,10 @@
 import { Spacer } from "@/components/ui/spacer";
 import { UserPlus } from "lucide-react";
-import { AssignToDropdown } from "./AssignToDropdown";
+import dynamic from "next/dynamic";
+
+const AssignToDropdown = dynamic(() =>
+  import("./AssignToDropdown").then((m) => m.AssignToDropdown),
+);
 
 type Props = {
   assignedTo: string | undefined;
@@ -14,7 +18,7 @@ export function AssignTo({ assignedTo, listId, cardDetailsId }: Props) {
         <UserPlus />
         <p className="text-xl font-medium">Assign to</p>
       </div>
-      <Spacer size={4} />
+      <Spacer size={2} />
       <AssignToDropdown
         assignedTo={assignedTo}
         listId={listId}

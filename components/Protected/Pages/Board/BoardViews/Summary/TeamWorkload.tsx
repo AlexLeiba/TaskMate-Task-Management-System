@@ -15,7 +15,7 @@ export function TeamWorkload({ data, allAssignedWork }: Props) {
   return (
     <div className="flex flex-col gap-2">
       <div>
-        <h5 className="text-2xl font-medium"> Team workload </h5>
+        <h5 className="text-2xl font-medium"> Team workload / Assigned work</h5>
         <p className="text-wrap">
           Monitor the capacity of your team. Reassign work items to get the
           right balance.
@@ -83,7 +83,7 @@ export function TeamWorkload({ data, allAssignedWork }: Props) {
                             "py-1 px-2 font-medium",
                           )}
                         >
-                          {assignedTasksPercentage}%
+                          {assignedTasksPercentage || 0}%
                         </p>
                       </div>
                     </div>
@@ -91,7 +91,7 @@ export function TeamWorkload({ data, allAssignedWork }: Props) {
                   <TooltipContent className="min-w-20 max-w-80 flex flex-col gap-1">
                     <p>{item.email}</p>
                     <p className="text-base">
-                      {assignedTasksPercentage}%
+                      {assignedTasksPercentage || 0}%
                       {` (${item.value || 0} / ${allAssignedWork || 0})`}
                     </p>
                   </TooltipContent>

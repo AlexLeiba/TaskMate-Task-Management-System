@@ -26,7 +26,7 @@ export function OrgSummary({ data: { data, error } }: Props) {
     <div className="flex flex-col gap-4">
       <BoardStats data={data} />
 
-      <div className="grid lg:grid-cols-[repeat(auto-fit,minmax(600px,1fr))] grid-cols-1 gap-2 w-full">
+      <div className="md:grid md:grid-cols-[repeat(auto-fit,minmax(600px,1fr))] flex flex-col gap-2 w-full">
         <BoardStatsCard>
           <StatusOverview data={data?.statusOverviewData} />
         </BoardStatsCard>

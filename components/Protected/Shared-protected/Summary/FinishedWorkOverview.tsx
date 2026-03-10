@@ -21,15 +21,14 @@ export function FinishedWorkOverview({ type }: Props) {
     if (!orgId) return;
     if (type === "board" && !boardId) return;
     try {
-      toast.loading("Loading finished work overview...", {
-        id: "finishedWork",
-      });
       if (type === "board") {
         const response = await finishedWorkOverviewAction(orgId, boardId);
 
         return response;
       }
-
+      toast.loading("Loading finished work overview...", {
+        id: "finishedWork",
+      });
       const response = await finishedWorkOverviewAction(orgId, null);
 
       return response || { data: [] };

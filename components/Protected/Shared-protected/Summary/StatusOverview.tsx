@@ -8,10 +8,10 @@ type Props = {
 };
 export function StatusOverview({ data }: Props) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 justify-between h-full">
       <div>
         <h5 className="text-2xl font-medium">Status overview</h5>
-        <p className="text-wrap">
+        <p>
           Get a snapshot of the status of your work items. View all work items
           grouped by status
         </p>

@@ -5,8 +5,6 @@ import { useBoardId } from "@/hooks/useBoardId";
 import { useAuth } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { format } from "path";
-import React from "react";
 import toast from "react-hot-toast";
 
 export function RecentActivity() {
@@ -46,7 +44,7 @@ export function RecentActivity() {
         </Link>
       </div>
 
-      <div className="overflow-y-auto flex flex-col gap-4">
+      <div className=" flex flex-col gap-4 ">
         {data?.map((activity) => {
           return (
             <div key={activity.id}>

@@ -86,11 +86,12 @@ export function HeaderDashboard({ type = "dashboard" }: Props) {
                 },
 
                 elements: {
-                  organizationSwitcherTrigger: " !text-white",
+                  organizationSwitcherTrigger:
+                    " !text-white md:w-full w-[180px]",
                   organizationSwitcherPopoverCard: " ",
                   organizationSwitcherPopoverActionButton:
                     "!text-white hover:opacity-70",
-                  organizationPreviewTextContainer: "!text-white",
+                  organizationPreviewTextContainer: "!text-white line-clamp-1",
                   organizationSwitcherButton: "!text-white",
                   organizationSwitcherInvitationAcceptButton: "!text-white",
                 },

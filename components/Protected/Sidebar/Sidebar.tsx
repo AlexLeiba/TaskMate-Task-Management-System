@@ -17,6 +17,7 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 import {
@@ -35,6 +36,7 @@ import { SidebarSkeleton } from "./SidebarSkeleton";
 import { USER_ROLES } from "@/lib/consts";
 
 export function Sidebar() {
+  const { setOpenMobile } = useSidebar();
   const router = useRouter();
   const pathname = usePathname();
   const selectedSidebarPage = pathname.split("/").at(-1);
@@ -82,6 +84,7 @@ export function Sidebar() {
   });
 
   async function handleSelectOrganization(orgId: string, pathname?: string) {
+    setOpenMobile(false);
     if (setActive && pathname) {
       setActive({ organization: orgId });
       router.push(pathname);

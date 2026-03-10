@@ -19,27 +19,32 @@ export function FinishedWorkOverview({ type }: Props) {
 
   async function fetchBoardFinishedWorkStats() {
     if (!orgId) return;
+    if (type === "board" && !boardId) return;
     try {
+      toast.loading("Loading finished work overview...", {
+        id: "finishedWork",
+      });
       if (type === "board") {
         const response = await finishedWorkOverviewAction(orgId, boardId);
 
         return response;
       }
-      if (type === "dashboard") {
-        const response = await finishedWorkOverviewAction(orgId, null);
 
-        return response || [];
-      }
+      const response = await finishedWorkOverviewAction(orgId, null);
+
+      return response || { data: [] };
     } catch (error: any) {
       toast.error(
         error.message || "Error on Finished work overview, please try again",
       );
+    } finally {
+      toast.dismiss("finishedWork");
     }
   }
 
   const { data } = useQuery({
     queryFn: fetchBoardFinishedWorkStats,
-    queryKey: ["finishedWorkOverview"],
+    queryKey: ["finishedWorkOverview", orgId, boardId],
   });
 
   return (
@@ -85,7 +90,7 @@ export function FinishedWorkOverview({ type }: Props) {
         </PieChart>
 
         <div className="flex flex-col gap-2 justify-center">
-          {data?.data.map((item) => {
+          {data?.data?.map((item) => {
             return (
               <div key={item.email} className="flex items-center gap-3">
                 <LegendColor color={item.fill} />

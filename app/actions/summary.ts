@@ -312,6 +312,7 @@ export async function getSummaryStatsAction(
       });
 
       const now = new Date();
+      const today = new Date();
       const sevenDaysInTheFutureDate = new Date(now.setDate(now.getDate() + 7));
       const oneDayInMilliseconds = 1000 * 60 * 60 * 24;
 
@@ -324,64 +325,64 @@ export async function getSummaryStatsAction(
           }
 
           list.cards?.forEach((card) => {
-            // NON FINISHED WORK
-            if (list.status !== "done") {
-              totalTasks++;
-
-              // priority breakdown by non finished work
-              priorityBreakdown[card?.priority || ""] =
-                (priorityBreakdown[card?.priority || ""] || 0) + 1;
-
-              // ASSIGNED TASKS
-              if (card.assignedToEmail) {
-                teamWorkload[card?.assignedToEmail || ""] =
-                  (teamWorkload[card?.assignedToEmail || ""] || 0) + 1;
-
-                // assigned work of non done tasks
-                allAssignedWork++;
+            // CREATED in last 7 days
+            const createdDate = card.createdAt?.getTime();
+            if (createdDate) {
+              const timeDiffCreated = Math.abs(today.getTime() - createdDate);
+              const diffDaysCreated = Math.ceil(
+                timeDiffCreated / oneDayInMilliseconds,
+              );
+              if (diffDaysCreated <= 7) {
+                createdInAWeek++;
               }
 
-              //   unassigned
-              if (!card?.assignedToEmail) {
-                teamWorkload[UNASSIGNED_CARD.userId || ""] =
-                  (teamWorkload[UNASSIGNED_CARD.userId || ""] || 0) + 1;
-              }
-              // DUE DATE in next 7 days
-              if (card.details?.dueDate) {
-                const dueDate = new Date(card.details.dueDate[0]?.date);
-                const timeDiffInSevenDaysInMilliseconds = Math.abs(
-                  sevenDaysInTheFutureDate.getTime() - dueDate.getTime(),
-                );
-                const diffDays = Math.ceil(
-                  timeDiffInSevenDaysInMilliseconds / oneDayInMilliseconds,
-                );
-                if (diffDays <= 7) {
-                  dueDateInAWeek++;
+              // NON FINISHED WORK
+              if (list.status !== "done") {
+                totalTasks++;
+
+                // priority breakdown by non finished work
+                priorityBreakdown[card?.priority || ""] =
+                  (priorityBreakdown[card?.priority || ""] || 0) + 1;
+
+                // ASSIGNED TASKS
+                if (card.assignedToEmail) {
+                  teamWorkload[card?.assignedToEmail || ""] =
+                    (teamWorkload[card?.assignedToEmail || ""] || 0) + 1;
+
+                  // assigned work of non done tasks
+                  allAssignedWork++;
                 }
 
-                // CREATED in last 7 days
-                const createdDate = card.createdAt?.getTime();
-                if (createdDate) {
-                  const timeDiffCreated = Math.abs(now.getTime() - createdDate);
-                  const diffDaysCreated = Math.ceil(
-                    timeDiffCreated / oneDayInMilliseconds,
+                //   unassigned
+                if (!card?.assignedToEmail) {
+                  teamWorkload[UNASSIGNED_CARD.userId || ""] =
+                    (teamWorkload[UNASSIGNED_CARD.userId || ""] || 0) + 1;
+                }
+                // DUE DATE in next 7 days
+                if (card.details?.dueDate) {
+                  const dueDate = new Date(card.details.dueDate[0]?.date);
+                  const timeDiffInSevenDaysInMilliseconds = Math.abs(
+                    sevenDaysInTheFutureDate.getTime() - dueDate.getTime(),
                   );
-                  if (diffDaysCreated <= 7) {
-                    createdInAWeek++;
+                  const diffDays = Math.ceil(
+                    timeDiffInSevenDaysInMilliseconds / oneDayInMilliseconds,
+                  );
+                  if (diffDays <= 7) {
+                    dueDateInAWeek++;
                   }
-                }
 
-                // UPDATED in last 7 days
-                // const updatedCard = card.updatedAt?.getTime();
-                // if (updatedCard) {
-                //   const timeDiffUpdated = Math.abs(now.getTime() - updatedCard);
-                //   const diffDaysUpdated = Math.ceil(
-                //     timeDiffUpdated / oneDayInMilliseconds,
-                //   );
-                //   if (diffDaysUpdated <= 7) {
-                //     updatedInAWeek++;
-                //   }
-                // }
+                  // UPDATED in last 7 days
+                  // const updatedCard = card.updatedAt?.getTime();
+                  // if (updatedCard) {
+                  //   const timeDiffUpdated = Math.abs(now.getTime() - updatedCard);
+                  //   const diffDaysUpdated = Math.ceil(
+                  //     timeDiffUpdated / oneDayInMilliseconds,
+                  //   );
+                  //   if (diffDaysUpdated <= 7) {
+                  //     updatedInAWeek++;
+                  //   }
+                  // }
+                }
               }
             }
           });
@@ -488,7 +489,6 @@ export async function finishedWorkOverviewAction(
   boardId: string | null,
   nrOfDaysStats: number = 7,
 ): Promise<{ data: FinishedWorkMembersType[] }> {
-  console.log("🚀 ~ finishedWorkOverviewAction ~ boardId:", boardId);
   const { data: activeUser, error } =
     await checkCurrentActiveUser(currentOrgId);
   try {

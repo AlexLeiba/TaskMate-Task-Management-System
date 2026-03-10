@@ -9,7 +9,6 @@ import { StatusOverview } from "../../Shared-protected/Summary/StatusOverview";
 import { FinishedWorkOverview } from "../../Shared-protected/Summary/FinishedWorkOverview";
 import { PriorityBreakdown } from "../../Shared-protected/Summary/PriorityBreakdown";
 import { TeamWorkload } from "../../Shared-protected/Summary/TeamWorkLoad/TeamWorkload";
-import { RecentActivity } from "../../Shared-protected/Summary/RecentActivity";
 
 type Props = {
   data: {

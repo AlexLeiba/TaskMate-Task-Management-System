@@ -46,7 +46,7 @@ export function BoardSummary() {
           <StatusOverview data={data?.statusOverviewData} />
         </BoardStatsCard>
         <BoardStatsCard>
-          <FinishedWorkOverview />
+          <FinishedWorkOverview type="board" />
         </BoardStatsCard>
         <BoardStatsCard>
           <PriorityBreakdown data={data?.priorityBreakdownData} />

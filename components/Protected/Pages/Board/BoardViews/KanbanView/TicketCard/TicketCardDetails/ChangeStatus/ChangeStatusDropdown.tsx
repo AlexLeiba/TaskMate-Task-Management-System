@@ -32,7 +32,6 @@ export function ChangeStatusDropdown({
 }: Props) {
   const boardId = useBoardId();
   const role = useRole();
-  const queryClient = useQueryClient();
 
   const {
     mutate: mutateCardStatus,
@@ -44,7 +43,6 @@ export function ChangeStatusDropdown({
     onSuccess: () => {
       toast.dismiss("card-status");
       toast.success("Card card status was changed");
-      queryClient.invalidateQueries({ queryKey: ["card-details"] });
     },
     onError: ({ message }) => {
       toast.dismiss("card-status");

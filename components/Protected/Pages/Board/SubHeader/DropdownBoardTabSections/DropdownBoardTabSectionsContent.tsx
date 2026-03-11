@@ -5,10 +5,15 @@ import { BoardTabSectionType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/store/useStore";
 
-export function DropdownBoardTabSectionsContent() {
+export function DropdownBoardTabSectionsContent({
+  handleCloseMenu,
+}: {
+  handleCloseMenu: () => void;
+}) {
   const { boardTabSections, setBoardTabSections } = useStore();
 
   function handleSelectTabSection(tab: BoardTabSectionType) {
+    handleCloseMenu();
     setBoardTabSections(tab);
   }
   return (

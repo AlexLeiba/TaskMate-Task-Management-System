@@ -8,8 +8,12 @@ import { useStore } from "@/store/useStore";
 import { UserPlus } from "lucide-react";
 import Image from "next/image";
 
-export function FilterDropdownMembersContent() {
-  const { members } = useMembers();
+export function FilterDropdownMembersContent({
+  handleCloseMenu,
+}: {
+  handleCloseMenu: () => void;
+}) {
+  const { members, isFetching } = useMembers();
   const { fetchBoardFilteredListData } = useGetBoardFilteredData();
   const {
     boardSubHeaderMemberIdSelected,
@@ -20,21 +24,23 @@ export function FilterDropdownMembersContent() {
   async function handleSelectedMember(
     member: OrganizationMembersType | undefined | null,
   ) {
-    setBoardSubHeaderFilterSelected("all");
-    if (!member) return;
-
+    handleCloseMenu();
     const selectedMember = setBoardSubHeaderMemberIdSelected(
       member?.userId || "",
     );
 
+    setBoardSubHeaderFilterSelected("all");
+
     if (!selectedMember) {
       //  FETCH FRESH BOARD DATA WITH NO FILTERS APPLIED
       fetchBoardFilteredListData("");
+      return;
     }
 
     if (member?.userId === UNASSIGNED_CARD.userId) {
       // FETCH BOARD DATA WITH UNASSIGNED FILTER
-      return fetchBoardFilteredListData("", true);
+      fetchBoardFilteredListData("", true);
+      return;
     }
 
     // FETCH BOARD DATA WITH MEMBER FILTER APPLIED
@@ -43,6 +49,7 @@ export function FilterDropdownMembersContent() {
   return (
     <>
       <Button
+        disabled={isFetching}
         className={cn(
           "lg:hidden border",
           boardSubHeaderMemberIdSelected === UNASSIGNED_CARD.userId &&
@@ -69,8 +76,10 @@ export function FilterDropdownMembersContent() {
       {members?.map((member) => {
         return (
           <Button
+            disabled={isFetching}
             onClick={() => handleSelectedMember(member)}
             title={`Filter by ${member?.fullName}`}
+            aria-label={`Filter by ${member?.fullName}`}
             key={member?.userId}
             variant={"ghost"}
             className={cn(

@@ -13,19 +13,12 @@ export function BoardMemberFilters() {
 
   const { members, isFetching } = useMembers();
 
-  const {
-    setBoardSubHeaderFilterSelected,
-    setBoardSubHeaderMemberIdSelected,
-    boardSubHeaderMemberIdSelected,
-  } = useStore();
+  const { setBoardSubHeaderMemberIdSelected, boardSubHeaderMemberIdSelected } =
+    useStore();
 
   async function handleSelectedMember(
     member: OrganizationMembersType | undefined | null,
   ) {
-    // DESELECT ANY OTHER FILTERS
-    setBoardSubHeaderFilterSelected("all");
-    if (!member) return;
-
     const selectedMember = setBoardSubHeaderMemberIdSelected(
       member?.userId || "",
     );

@@ -1,13 +1,8 @@
 import { Popover, PopoverTrigger } from "@/components/ui/popover";
-
 import { useStore } from "@/store/useStore";
-
 import { Filter } from "lucide-react";
-
 import { useState } from "react";
-
 import { IconButton } from "@/components/ui/iconButton";
-
 import dynamic from "next/dynamic";
 
 const FilterDropdownContent = dynamic(() =>
@@ -45,7 +40,9 @@ export function FiltersDropdown() {
       </PopoverTrigger>
 
       {/* CONTENT */}
-      <FilterDropdownContent />
+      {isOpen && (
+        <FilterDropdownContent handleCloseMenu={() => setIsOpen(false)} />
+      )}
     </Popover>
   );
 }

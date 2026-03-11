@@ -18,11 +18,13 @@ export function useGetBoardFilteredData(): {
   const { orgId } = useAuth();
   const { setBoardListData } = useStore();
   const [loading, setLoading] = useState(false);
+
   async function fetchBoardFilteredListData(
     selectedMemberEmail: string = "",
     unassigned: boolean = false,
     selectedFilter: FilterStates = "all",
   ) {
+    toast.loading("loading...", { id: "useGetBoardFilteredData" });
     setLoading(true);
     try {
       const listData = await getListDataAction(
@@ -39,7 +41,9 @@ export function useGetBoardFilteredData(): {
       toast.error(error.message || "Something went wrong");
     } finally {
       setLoading(false);
+      toast.dismiss("useGetBoardFilteredData");
     }
   }
+
   return { fetchBoardFilteredListData, loading };
 }

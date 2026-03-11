@@ -210,7 +210,10 @@ export const useStore = create<StoreType>((set, get) => ({
       set({ boardSubHeaderFilterSelected: "all" });
       return "theSame";
     }
-    set({ boardSubHeaderFilterSelected: selected });
+    set({
+      boardSubHeaderFilterSelected: selected,
+      boardSubHeaderMemberIdSelected: null,
+    });
 
     return selected;
   },
@@ -223,7 +226,10 @@ export const useStore = create<StoreType>((set, get) => ({
       set({ boardSubHeaderMemberIdSelected: null });
       return null;
     }
-    set({ boardSubHeaderMemberIdSelected: selected });
+    set({
+      boardSubHeaderMemberIdSelected: selected,
+      boardSubHeaderFilterSelected: "all",
+    });
 
     return selected;
   },

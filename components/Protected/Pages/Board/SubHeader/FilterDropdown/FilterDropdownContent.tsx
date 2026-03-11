@@ -3,28 +3,26 @@ import { FILTERS_DATA } from "@/lib/consts";
 import { useStore } from "@/store/useStore";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { FilterData } from "@/lib/types";
+import { FilterStates } from "@/lib/types";
 import { useGetBoardFilteredData } from "@/hooks/useGetBoardFilteredData";
 import { useResponsive } from "@/hooks/useResponsive";
 import { BREAKPOINTS } from "@/lib/breakpoints";
 import { FilterDropdownMembersContent } from "./FilterDropdownMembersContent";
 
-export function FilterDropdownContent() {
+export function FilterDropdownContent({
+  handleCloseMenu,
+}: {
+  handleCloseMenu: () => void;
+}) {
   const { fetchBoardFilteredListData } = useGetBoardFilteredData();
   const isTablet = useResponsive(BREAKPOINTS.lg);
 
-  const {
-    boardSubHeaderFilterSelected,
-    setBoardSubHeaderFilterSelected,
-    setBoardSubHeaderMemberIdSelected,
-  } = useStore();
+  const { boardSubHeaderFilterSelected, setBoardSubHeaderFilterSelected } =
+    useStore();
 
-  async function handleSelectedFilter(filter: FilterData) {
-    setBoardSubHeaderMemberIdSelected(null);
-
-    if (!filter) return;
-
-    const selectedFilter = setBoardSubHeaderFilterSelected(filter.id);
+  function handleSelectedFilter(filterState: FilterStates) {
+    handleCloseMenu();
+    const selectedFilter = setBoardSubHeaderFilterSelected(filterState);
 
     if (selectedFilter === "theSame") {
       fetchBoardFilteredListData("", false, "all");
@@ -35,12 +33,21 @@ export function FilterDropdownContent() {
 
   return (
     <PopoverContent className="flex flex-col gap-3 p-2 w-full" align="end">
-      {isTablet && <FilterDropdownMembersContent />}
+      {/* MEMBER FILTERS */}
+      {isTablet && (
+        <FilterDropdownMembersContent
+          handleCloseMenu={() => handleCloseMenu()}
+        />
+      )}
 
+      {/* STATS FILTERS */}
       {FILTERS_DATA.map((data) => {
         return (
           <Button
-            onClick={() => handleSelectedFilter(data)}
+            onClick={() => {
+              // setBoardSubHeaderFilterSelected(data.id);
+              handleSelectedFilter(data.id);
+            }}
             title={`Filter by ${data?.title}`}
             key={data.id}
             variant={"ghost"}

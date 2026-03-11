@@ -30,7 +30,11 @@ export function DropdownBoardTabSections() {
           </IconButton>
         </PopoverTrigger>
         {/* CONTENT */}
-        <DropdownBoardTabSectionsContent />
+        {isOpen && (
+          <DropdownBoardTabSectionsContent
+            handleCloseMenu={() => setIsOpen(false)}
+          />
+        )}
       </Popover>
     </div>
   );

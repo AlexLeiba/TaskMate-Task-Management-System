@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { CHANGE_LIST_STATUS, USER_ROLES } from "@/lib/consts";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { editListStatusCardAction } from "@/app/actions/card";
 import { useBoardId } from "@/hooks/useBoardId";
@@ -32,6 +32,7 @@ export function ChangeStatusDropdown({
 }: Props) {
   const boardId = useBoardId();
   const role = useRole();
+  const queryClient = useQueryClient();
 
   const {
     mutate: mutateCardStatus,
@@ -43,6 +44,7 @@ export function ChangeStatusDropdown({
     onSuccess: () => {
       toast.dismiss("card-status");
       toast.success("Card card status was changed");
+      queryClient.invalidateQueries({ queryKey: ["card-details"] });
     },
     onError: ({ message }) => {
       toast.dismiss("card-status");

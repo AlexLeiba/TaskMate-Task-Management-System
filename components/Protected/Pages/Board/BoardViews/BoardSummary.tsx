@@ -35,6 +35,7 @@ export function BoardSummary() {
   const { data } = useQuery({
     queryFn: fetchBoardSummary,
     queryKey: ["boardSummary"],
+    staleTime: 1000 * 60 * 5,
   });
 
   return (

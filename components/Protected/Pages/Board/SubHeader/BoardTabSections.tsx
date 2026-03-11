@@ -15,6 +15,7 @@ export function BoardTabSections() {
   return (
     <div className=" items-center gap-2 md:flex hidden">
       {BOARD_HEADER_TABS.map((tab) => {
+        if (tab.value === "refresh") return null;
         return (
           <IconButton
             title={`Open ${tab.label} view`}

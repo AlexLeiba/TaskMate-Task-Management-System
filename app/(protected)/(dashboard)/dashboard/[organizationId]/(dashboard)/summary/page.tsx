@@ -1,7 +1,7 @@
-import { getSummaryStatsAction } from "@/app/actions/summary";
-import { OrgSummary } from "@/components/Protected/Pages/OrgSummary/OrgSummary";
+import { OrgSummaryServerRender } from "@/components/Protected/Pages/OrgSummary/OrgSummaryServerRender";
 import { Separator } from "@/components/ui/separator";
 import { Globe } from "lucide-react";
+import { Suspense } from "react";
 
 async function SummaryPage({
   params,
@@ -10,7 +10,6 @@ async function SummaryPage({
 }) {
   const { organizationId } = await params;
 
-  const response = await getSummaryStatsAction(organizationId, null);
   return (
     <div className="w-full ">
       <div className="flex gap-2 items-center">
@@ -19,7 +18,9 @@ async function SummaryPage({
       </div>
       <Separator className="bg-gray-600 w-full my-4" />
 
-      <OrgSummary data={response} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <OrgSummaryServerRender organizationId={organizationId} />
+      </Suspense>
     </div>
   );
 }

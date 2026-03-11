@@ -352,7 +352,7 @@ export type DeleteChecklistProps = {
 };
 
 // BOARD HEADER SECTIONS TABS
-export type BoardTabSectionType = "summary" | "board" | "list";
+export type BoardTabSectionType = "summary" | "board" | "list" | "refresh";
 export type BoardTab = {
   id: string;
   label: string;

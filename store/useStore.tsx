@@ -199,7 +199,16 @@ export const useStore = create<StoreType>((set, get) => ({
 
   // BOARD HEADER TABS SECTIONS
   boardTabSections: "board",
-  setBoardTabSections: (sections) => set({ boardTabSections: sections }),
+  setBoardTabSections: (sections) => {
+    if (sections === "refresh") {
+      set({
+        boardSubHeaderFilterSelected: "all",
+        boardSubHeaderMemberIdSelected: null,
+      });
+      return;
+    }
+    set({ boardTabSections: sections });
+  },
 
   // BOARD SUBHEADER FILTERS STATES
   boardSubHeaderFilterSelected: "all",

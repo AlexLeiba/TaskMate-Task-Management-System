@@ -23,6 +23,7 @@ import {
   PackageSearch,
   Palette,
   Plus,
+  RefreshCcw,
   Search,
   TicketCheck,
   User,
@@ -751,6 +752,12 @@ export const BOARD_HEADER_TABS: BoardTab[] = [
   { id: "1", label: "Summary", value: "summary", icon: <Globe /> },
   { id: "2", label: "Board", value: "board", icon: <Columns3 /> },
   { id: "3", label: "List", value: "list", icon: <LayoutList /> },
+  {
+    id: "4",
+    label: "Refresh board",
+    value: "refresh",
+    icon: <RefreshCcw />,
+  },
 ];
 
 export const UNASSIGNED_CARD: OrganizationMembersType = {

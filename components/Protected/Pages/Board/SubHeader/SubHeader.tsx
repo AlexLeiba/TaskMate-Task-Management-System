@@ -19,6 +19,7 @@ import { FiltersDropdown } from "./FilterDropdown/FilterDropdown";
 import { useResponsive } from "@/hooks/useResponsive";
 import { BREAKPOINTS } from "@/lib/breakpoints";
 import { cn } from "@/lib/utils";
+import { RefreshBoardData } from "./RefreshBoardData";
 
 type Props = {
   data: {
@@ -124,6 +125,7 @@ export function SubHeader({
         <div className="flex items-center gap-2">
           {boardTabSections !== "summary" && (
             <>
+              <RefreshBoardData />
               {/* FILTER BY MEMBER ON DESKTOP*/}
               {!isTablet && <BoardMemberFilters />}
 

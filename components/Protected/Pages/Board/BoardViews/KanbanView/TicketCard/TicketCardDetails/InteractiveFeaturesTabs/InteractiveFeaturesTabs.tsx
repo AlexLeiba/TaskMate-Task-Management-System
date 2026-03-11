@@ -49,10 +49,10 @@ export function InteractiveFeaturesTabs({
   const ActiveComponent = TAB_COMPONENTS[selectedTab];
   return (
     <div>
-      <div className="flex gap-4 flex-wrap">
+      <div className="flex gap-4 flex-wrap" role="tablist">
         {/* TABS */}
         {TAB_ELEMENTS.map((data) => (
-          <div key={data.value}>
+          <div key={data.value} role="tab">
             <IconButton
               className={cn()}
               onClick={() => handleSelectTab(data.value)}

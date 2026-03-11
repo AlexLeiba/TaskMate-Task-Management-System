@@ -394,3 +394,88 @@ export async function unassigneCardAction({
     throw error?.message || "Something went wrong";
   }
 }
+
+type EditListStatusCardActionType = {
+  cardId: string;
+  listId: string;
+  newListId: string;
+  boardId: string;
+};
+export async function editListStatusCardAction({
+  cardId,
+  listId,
+  newListId,
+  boardId,
+}: EditListStatusCardActionType): Promise<{
+  data: string;
+  error: { message: string };
+}> {
+  const { data: activeUserData } = await checkCurrentActiveUser();
+  try {
+    const { orgId } = await auth();
+
+    if (!activeUserData?.activeUser) {
+      throw new Error("User not authorized");
+    }
+
+    const foundCard = await prisma.card.findFirst({
+      where: {
+        id: cardId,
+        listId,
+      },
+      select: {
+        id: true,
+      },
+    });
+    const oldList = await prisma.list.findFirst({
+      where: {
+        id: listId,
+      },
+      select: {
+        status: true,
+      },
+    });
+    const newList = await prisma.list.findFirst({
+      where: {
+        id: newListId,
+      },
+      select: {
+        status: true,
+        id: true,
+      },
+    });
+    if (!foundCard) {
+      throw new Error("Card not found");
+    }
+    if (!oldList) {
+      throw new Error("Current list not found");
+    }
+    if (!newList) {
+      throw new Error("New list not found");
+    }
+
+    const response = await prisma.card.update({
+      where: {
+        id: cardId,
+        listId,
+      },
+      data: {
+        listId: newListId,
+      },
+      select: {
+        title: true,
+      },
+    });
+
+    await createNewActivity({
+      boardId: boardId,
+      authorId: activeUserData?.activeUser.id,
+      activity: `Changed card status from "${oldList.status}" to "${newList.status}", of card: "${response.title}"`,
+      type: "updated",
+    });
+    revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
+    return { data: newList.id, error: { message: "" } };
+  } catch (error: any) {
+    throw error?.message || "Something went wrong";
+  }
+}

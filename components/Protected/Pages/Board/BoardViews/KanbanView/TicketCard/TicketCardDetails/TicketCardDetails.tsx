@@ -23,6 +23,7 @@ import { useUserData } from "@/hooks/useUserData";
 import { USER_ROLES } from "@/lib/consts";
 import { useRole } from "@/hooks/useRole";
 import { ChangeStatus } from "./ChangeStatus/ChangeStatus";
+import { useBoardId } from "@/hooks/useBoardId";
 
 type Props = {
   handleCloseModal: () => void;
@@ -40,11 +41,12 @@ export function TicketCardDetails({
 }: Props) {
   const user = useUserData();
   const role = useRole();
+  const boardId = useBoardId();
   async function getDetailsData() {
     if (!cardDetailsId) return;
 
     try {
-      const response = await getCardDetails(cardDetailsId);
+      const response = await getCardDetails(cardDetailsId, boardId);
 
       if (response.data) {
         return response.data;
@@ -64,6 +66,7 @@ export function TicketCardDetails({
     queryKey: ["card-details", cardDetailsId],
     queryFn: getDetailsData,
     enabled: isModalOpened,
+    staleTime: 1000 * 60 * 5,
   });
 
   return (
@@ -93,58 +96,59 @@ export function TicketCardDetails({
           {/* 1COL */}
           <div className="flex flex-col gap-6  ">
             <Description
-              description={cardDetailsData?.description || ""}
-              cardDetailsId={cardDetailsData?.id}
+              description={cardDetailsData?.card?.description || ""}
+              cardDetailsId={cardDetailsData?.card?.id}
               isAssignedUserEmail={
-                cardDetailsData?.card.assignedToEmail === user?.email
+                cardDetailsData?.card?.card.assignedToEmail === user?.email
               }
             />
 
             {/* TABS */}
             <InteractiveFeaturesTabs
-              comments={cardDetailsData?.comments}
-              cardDetailsId={cardDetailsData?.id || ""}
-              assignedUserEmail={cardDetailsData?.card.assignedToEmail}
+              comments={cardDetailsData?.card?.comments}
+              cardDetailsId={cardDetailsData?.card?.id || ""}
+              assignedUserEmail={cardDetailsData?.card.card?.assignedToEmail}
             />
           </div>
 
           {/* 2COL */}
           <div className="flex flex-col gap-6 ">
             <div className="flex items-end justify-between w-full ">
-              <Reporter data={cardDetailsData?.card.reporter} />
+              <Reporter data={cardDetailsData?.card?.card?.reporter} />
             </div>
 
             <AssignTo
-              assignedTo={cardDetailsData?.card.assignedToEmail || ""}
-              listId={cardDetailsData?.card.listId}
+              assignedTo={cardDetailsData?.card.card?.assignedToEmail || ""}
+              listId={cardDetailsData?.card.card?.listId}
               cardDetailsId={cardDetailsData?.card.id || ""}
             />
             <div className="flex items-center gap-4 w-full justify-between ">
               <ChecklistList
                 cardDetailsId={cardDetailsData?.card.id}
-                listId={cardDetailsData?.card.listId}
-                data={cardDetailsData?.checklist || []}
+                listId={cardDetailsData?.card.card?.listId}
+                data={cardDetailsData?.card?.checklist || []}
               />
               <Priority
-                priority={cardDetailsData?.card.priority}
-                listId={cardDetailsData?.card.listId}
+                priority={cardDetailsData?.card.card?.priority}
+                listId={cardDetailsData?.card.card?.listId}
                 cardDetailsId={cardDetailsData?.card.id}
               />
             </div>
             <ChangeStatus
-              priority={cardDetailsData?.card.priority}
-              listId={cardDetailsData?.card.listId}
-              cardDetailsId={cardDetailsData?.card.id}
+              listId={cardDetailsData?.card?.card?.listId}
+              cardId={cardDetailsData?.card?.card.id}
+              currentStatusType={cardDetailsData?.card?.card?.list}
+              listsData={cardDetailsData?.list || []}
             />
             <DueDate
-              data={cardDetailsData?.dueDate}
-              cardDetailsId={cardDetailsData?.id}
+              data={cardDetailsData?.card.dueDate}
+              cardDetailsId={cardDetailsData?.card.id}
             />
             <div className="flex flex-col">
               {role === USER_ROLES.admin && (
                 <Actions
-                  cardDetailsId={cardDetailsData?.id || ""}
-                  listId={cardDetailsData?.card.listId || ""}
+                  cardDetailsId={cardDetailsData?.card.id || ""}
+                  listId={cardDetailsData?.card?.card?.listId || ""}
                   cardId={cardDetailsData?.card.id || ""}
                 />
               )}

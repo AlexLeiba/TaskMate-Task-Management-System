@@ -95,13 +95,15 @@ export function TicketCard({ data, boardId, index }: Prop) {
         )}
       </Draggable>
       {/* TICKET CARD DETAILS MODAL*/}
-      <TicketCardDetails
-        cardTitle={data.title}
-        listTitle={data.listName}
-        cardDetailsId={data?.id || ""}
-        isModalOpened={isCardDetailsOpened}
-        handleCloseModal={handleCloseDetails}
-      />
+      {isCardDetailsOpened && (
+        <TicketCardDetails
+          cardTitle={data.title}
+          listTitle={data.listName}
+          cardDetailsId={data?.id || ""}
+          isModalOpened={isCardDetailsOpened}
+          handleCloseModal={handleCloseDetails}
+        />
+      )}
     </>
   );
 }

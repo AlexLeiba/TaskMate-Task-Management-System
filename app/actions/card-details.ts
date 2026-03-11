@@ -8,6 +8,7 @@ import {
   Checklist,
   Comment,
   DueDate,
+  List,
   UploadedFile,
   User,
 } from "@/lib/generated/prisma/client";
@@ -27,6 +28,7 @@ import {
 export type CardDetailsType = CardDetails & {
   card: Card & {
     reporter: User;
+    list: Pick<List, "id" | "status" | "title">;
   };
   comments: (Comment & {
     author: User;
@@ -38,7 +40,14 @@ export type CardDetailsType = CardDetails & {
 // CARD DETAILS
 export async function getCardDetails(
   cardId: string,
-): Promise<{ data: CardDetailsType | null; error: { message: string } }> {
+  boardId?: string,
+): Promise<{
+  data: {
+    card: CardDetailsType;
+    list: Pick<List, "id" | "status" | "title">[];
+  } | null;
+  error: { message: string };
+}> {
   try {
     const activeUser = await checkCurrentActiveUser();
 
@@ -46,7 +55,7 @@ export async function getCardDetails(
       throw new Error("User not authorized");
     }
 
-    const response = await prisma.cardDetails.findFirst({
+    const cardDetailsResponse = await prisma.cardDetails.findFirst({
       where: {
         cardId,
       },
@@ -54,6 +63,13 @@ export async function getCardDetails(
         card: {
           include: {
             reporter: true,
+            list: {
+              select: {
+                id: true,
+                status: true,
+                title: true,
+              },
+            },
           },
         },
 
@@ -71,12 +87,27 @@ export async function getCardDetails(
       },
     });
 
-    if (!response) {
+    const boardListsResponse = await prisma.list.findMany({
+      where: {
+        boardId,
+      },
+      select: {
+        id: true,
+        status: true,
+        title: true,
+      },
+    });
+
+    if (!cardDetailsResponse) {
       throw new Error("Card not found");
     }
 
+    if (!boardListsResponse) {
+      throw new Error("List status not found");
+    }
+
     return {
-      data: response,
+      data: { card: cardDetailsResponse, list: boardListsResponse },
       error: { message: "" },
     };
   } catch (error: any) {

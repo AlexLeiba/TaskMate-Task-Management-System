@@ -1,7 +1,7 @@
 import { Spacer } from "@/components/ui/spacer";
+import { List } from "@/lib/generated/prisma/client";
 import { CircleCheck } from "lucide-react";
 
-import { PriorityType } from "@/lib/generated/prisma/enums";
 import dynamic from "next/dynamic";
 
 const ChangeStatusDropdown = dynamic(() =>
@@ -9,12 +9,18 @@ const ChangeStatusDropdown = dynamic(() =>
 );
 
 type Props = {
-  priority: PriorityType | undefined;
   listId: string | undefined;
-  cardDetailsId: string | undefined;
+  cardId: string | undefined;
+  currentStatusType: Pick<List, "id" | "status" | "title"> | undefined;
+  listsData: Pick<List, "id" | "status" | "title">[];
 };
 
-export function ChangeStatus({ priority, listId, cardDetailsId }: Props) {
+export function ChangeStatus({
+  listId,
+  cardId,
+  currentStatusType,
+  listsData,
+}: Props) {
   return (
     <div className="flex flex-col w-full">
       <div className="flex gap-2 items-center">
@@ -24,9 +30,10 @@ export function ChangeStatus({ priority, listId, cardDetailsId }: Props) {
 
       <Spacer size={2} />
       <ChangeStatusDropdown
-        priority={priority}
         listId={listId}
-        cardId={cardDetailsId}
+        cardId={cardId}
+        currentStatusType={currentStatusType}
+        listsData={listsData}
       />
     </div>
   );

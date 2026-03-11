@@ -1,4 +1,3 @@
-import { PrioritiesType } from "@/lib/types";
 import {
   Select,
   SelectContent,
@@ -8,31 +7,38 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LIST_STATUSES, USER_ROLES } from "@/lib/consts";
+import { CHANGE_LIST_STATUS, USER_ROLES } from "@/lib/consts";
 
-import { PriorityType } from "@/lib/generated/prisma/enums";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { editPriorityAction } from "@/app/actions/card";
+import { editListStatusCardAction } from "@/app/actions/card";
 import { useBoardId } from "@/hooks/useBoardId";
 import { useRole } from "@/hooks/useRole";
 import { ChangeStatusSkeleton } from "./ChangeStatusSkeleton";
+import { StatusType } from "@/lib/generated/prisma/enums";
+import { List } from "@/lib/generated/prisma/client";
 
 type Props = {
-  priority: PriorityType | undefined;
   listId: string | undefined;
   cardId: string | undefined;
+  currentStatusType: Pick<List, "id" | "status" | "title"> | undefined;
+  listsData: Pick<List, "id" | "status" | "title">[];
 };
 export function ChangeStatusDropdown({
-  priority = "none",
   listId,
   cardId,
+  currentStatusType,
+  listsData,
 }: Props) {
   const boardId = useBoardId();
   const role = useRole();
 
-  const { mutate, isPending, data } = useMutation({
-    mutationFn: editPriorityAction,
+  const {
+    mutate: mutateCardStatus,
+    isPending,
+    data,
+  } = useMutation({
+    mutationFn: editListStatusCardAction,
     mutationKey: ["card-status"],
     onSuccess: () => {
       toast.dismiss("card-status");
@@ -44,24 +50,27 @@ export function ChangeStatusDropdown({
     },
   });
 
-  const updatedPriorityData = data?.data?.priority;
+  const updatedCardStatus = data?.data;
 
-  function handleSelectPriority(priorityValue: PrioritiesType) {
+  function handleSelectNewStatus(newListId: StatusType) {
     toast.loading("Editing card status", { id: "card-status" });
 
     if (!boardId || !listId || !cardId)
       return toast.error("Something went wrong, please try again");
 
-    mutate({ priority: priorityValue, boardId, listId, cardId });
+    mutateCardStatus({ boardId, listId, cardId, newListId });
   }
   if (!cardId || !listId) return <ChangeStatusSkeleton />;
   return (
     <Select
       onValueChange={(v) => {
-        if (v === priority) return;
-        handleSelectPriority(v as PrioritiesType);
+        if (!currentStatusType?.id) {
+          return toast.error("Something went wrong, please try again");
+        }
+        if (v === currentStatusType?.id) return;
+        handleSelectNewStatus(v as StatusType);
       }}
-      value={updatedPriorityData || priority}
+      value={updatedCardStatus || currentStatusType?.id}
     >
       <SelectTrigger
         aria-label="Select status"
@@ -75,17 +84,19 @@ export function ChangeStatusDropdown({
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Statuses</SelectLabel>
-          {LIST_STATUSES.map((status) => (
+          {listsData.map((list) => (
             <SelectItem
               disabled={isPending}
-              value={status.value}
-              title={status.label}
-              aria-label={status.label}
-              key={status.value}
+              value={list.id}
+              title={list.title}
+              aria-label={list.title}
+              key={list.id}
             >
-              <div className="flex items-center gap-2">
-                <p className="text-base ">{status.icon}</p>
-                <p className="text-base ">{status.label}</p>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  {CHANGE_LIST_STATUS[list.status].icon}
+                  <span className="text-base">{list.title}</span>
+                </div>
               </div>
             </SelectItem>
           ))}

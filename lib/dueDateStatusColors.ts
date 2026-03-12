@@ -4,7 +4,7 @@ export const duedateStatusColors = cva("", {
   variants: {
     status: {
       expired: "bg-red-800",
-      today: "bg-yellow-700",
+      today: "bg-yellow-800",
       future: "bg-gray-800",
     },
   },

@@ -146,7 +146,11 @@ export function SubHeader({
             title="Close board"
             aria-label="Close board"
           >
-            <IconButton className="p-1">
+            <IconButton
+              className="p-1"
+              title="Close board"
+              aria-label="Close board"
+            >
               <X size={30} className="text-text-secondary" />
             </IconButton>
           </Link>

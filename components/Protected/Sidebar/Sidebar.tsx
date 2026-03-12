@@ -148,11 +148,7 @@ export function Sidebar() {
                             {item.name}
                           </div>
                           {item.role && (
-                            <div
-                              className="absolute top-0 right-0 text-primary"
-                              title="Admin"
-                              aria-label="Admin"
-                            >
+                            <div className="absolute top-0 right-0 text-primary">
                               <Crown size={15} />
                             </div>
                           )}

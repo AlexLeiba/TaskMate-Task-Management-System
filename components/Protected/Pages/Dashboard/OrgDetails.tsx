@@ -31,11 +31,7 @@ export function OrgDetails() {
         )}
 
         {role === USER_ROLES.admin && (
-          <div
-            className="absolute -top-2 -right-2 text-primary"
-            title="Admin"
-            aria-label="Admin"
-          >
+          <div className="absolute -top-2 -right-2 text-primary">
             <Crown size={15} />
           </div>
         )}

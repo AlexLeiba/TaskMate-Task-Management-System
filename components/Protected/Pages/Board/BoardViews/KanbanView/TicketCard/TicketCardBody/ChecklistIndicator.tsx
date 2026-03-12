@@ -20,7 +20,7 @@ export function ChecklistIndicator({ data }: Props) {
       )}
     >
       <CheckSquare size={20} />
-      <p className="text-xs">{`${checkedItems} / ${totalItems}`}</p>
+      <p className="text-xs text-white">{`${checkedItems} / ${totalItems}`}</p>
     </div>
   );
 }

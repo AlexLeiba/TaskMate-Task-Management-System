@@ -45,7 +45,7 @@ export function DueDateIndicator({ data }: Props) {
       )}
     >
       <Clock10 size={20} />
-      {formattedDate}
+      <p className="text-xs text-white">{formattedDate}</p>
     </div>
   );
 }

@@ -31,7 +31,7 @@ export function AddNewListCard({ boardId }: Props) {
     toast.loading("Creating list...", { id: "create-list" });
   }
   return (
-    <li className="shrink-0 flex flex-col justify-between  bg-card-foreground text-text-primary w-70 rounded-sm active:bg-card hover:ring-2 hover:ring-gray-400 py-1">
+    <div className="shrink-0 flex flex-col justify-between  bg-card-foreground text-text-primary w-70 rounded-sm active:bg-card hover:ring-2 hover:ring-gray-400 py-1">
       <AddNewInput
         disabled={isPending}
         loading={isPending}
@@ -54,6 +54,6 @@ export function AddNewListCard({ boardId }: Props) {
           </IconButton>
         </div>
       </AddNewInput>
-    </li>
+    </div>
   );
 }

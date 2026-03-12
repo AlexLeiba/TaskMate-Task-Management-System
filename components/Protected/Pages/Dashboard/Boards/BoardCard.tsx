@@ -34,7 +34,7 @@ export function BoardCard({
           width={240}
           height={112}
           priority
-          className="absolute inset-0 w-full h-full"
+          className="absolute inset-0 w-full h-full aspect-video"
         />
         <IconButton
           disabled={disabled}

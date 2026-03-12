@@ -2,12 +2,13 @@ import type { NextConfig } from "next";
 
 const ContentSecurityPolicy = `
               default-src 'self';
-              script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.com;
+              script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.com https://smooth-toucan-0.clerk.accounts.dev https://clerk-telemetry.com/v1/event;
               style-src 'self' 'unsafe-inline' https:;
-              img-src 'self' data: https://*.clerk.com  https://picsum.photos https://images.unsplash.com https://res.cloudinary.com ;
+              img-src 'self' data: https://*.clerk.com https://img.clerk.com  https://picsum.photos https://images.unsplash.com https://res.cloudinary.com ;
               font-src 'self' https: data:;
-              connect-src 'self' https://*.clerk.com;
+              connect-src 'self' https://*.clerk.com https://smooth-toucan-0.clerk.accounts.dev;
               frame-ancestors 'none';
+                worker-src 'self' blob:;
             `.replace(/\n/g, "");
 
 const nextConfig: NextConfig = {
@@ -29,7 +30,7 @@ const nextConfig: NextConfig = {
           {
             key: "Content-Security-Policy",
             value: ContentSecurityPolicy,
-            //iframes none / api calls: https only / fonts: my site or https only / images: my site or https / js: my site + https / css: my site + inline style
+            //iframes none / api calls: https only / fonts: my site or https only / images: my site or https / js: my site + https / css: my site + inline style/ connect-src : where api calls can connect / 'unsafe-inline' - inline scripts are blocked
           },
           {
             key: "X-Frame-Options",

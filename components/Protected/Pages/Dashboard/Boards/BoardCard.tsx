@@ -3,6 +3,7 @@ import { IconButton } from "@/components/ui/iconButton";
 import { useRole } from "@/hooks/useRole";
 import { USER_ROLES } from "@/lib/consts";
 import { X } from "lucide-react";
+import Image from "next/image";
 import { ComponentProps } from "react";
 
 type Props = ComponentProps<"button"> & {
@@ -24,9 +25,17 @@ export function BoardCard({
   return (
     <>
       <div
-        className="relative overflow-hidden bg-cover bg-center rounded-md "
-        style={{ backgroundImage: `url(${cardImageUrl})` }}
+        className="relative overflow-hidden  rounded-md "
+        // style={{ backgroundImage: `url(${cardImageUrl})` }}
       >
+        <Image
+          src={cardImageUrl}
+          alt={title}
+          width={240}
+          height={112}
+          priority
+          className="absolute inset-0 w-full h-full"
+        />
         <IconButton
           disabled={disabled}
           aria-label={`Open board - ${title}`}

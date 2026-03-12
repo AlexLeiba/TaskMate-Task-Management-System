@@ -142,7 +142,7 @@ export function TicketCardDetails({
             />
             <DueDate
               data={cardDetailsData?.card.dueDate}
-              cardDetailsId={cardDetailsData?.card?.card?.id}
+              cardDetailsId={cardDetailsData?.card?.id}
             />
             <div className="flex flex-col">
               {role === USER_ROLES.admin && (

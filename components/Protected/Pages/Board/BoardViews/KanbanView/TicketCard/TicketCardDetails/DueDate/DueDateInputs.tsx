@@ -21,7 +21,6 @@ import {
 } from "@/app/actions/card-details";
 import toast from "react-hot-toast";
 import { useBoardId } from "@/hooks/useBoardId";
-
 import { parseDateTimeToLocal } from "@/lib/parseDateTimeToLocal";
 import { INITIAL_TIME, USER_ROLES } from "@/lib/consts";
 import { isValidDateString } from "@/lib/isValidDateString";
@@ -268,12 +267,14 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
         </>
       )}
 
-      <DeleteDialog
-        title="Due date"
-        deleteDialogOpen={deleteDialogOpen}
-        setDeleteDialogOpen={setDeleteDialogOpen}
-        handleDelete={handleDeleteDuedate}
-      />
+      {deleteDialogOpen && (
+        <DeleteDialog
+          title="Due date"
+          deleteDialogOpen={deleteDialogOpen}
+          setDeleteDialogOpen={setDeleteDialogOpen}
+          handleDelete={handleDeleteDuedate}
+        />
+      )}
     </div>
   );
 }

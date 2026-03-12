@@ -15,7 +15,7 @@ export function Logo({ visible = false }: Props) {
         alt="Logo"
         width={100}
         height={24}
-        className="w-full h-6"
+        className="w-full h-6 object-contain"
       />
     </Link>
   );

@@ -28,6 +28,14 @@ const nextConfig: NextConfig = {
         source: "/(.*)",
         headers: [
           {
+            key: "Cache-Control",
+            value: "private, max-age=0, s-maxage=60, stale-white-revalidate=30",
+            // private - user specific , safe for logged in dashboards
+            // max-age=0 - do not cache for long on client
+            //s-maxage=60 - allow CDN to cache for 1 minute
+            // stale-while-revalidate → fast load even when revalidating
+          },
+          {
             key: "Content-Security-Policy",
             value: ContentSecurityPolicy,
             //iframes none / api calls: https only / fonts: my site or https only / images: my site or https / js: my site + https / css: my site + inline style/ connect-src : where api calls can connect / 'unsafe-inline' - inline scripts are blocked

@@ -4,6 +4,8 @@ import { OrgDetails } from "@/components/Protected/Pages/Dashboard/OrgDetails";
 import { Separator } from "@/components/ui/separator";
 import { Suspense } from "react";
 
+export const revalidate = 30;
+
 async function DashboardPage({
   params,
 }: {

@@ -3,6 +3,8 @@ import { getListDataAction } from "@/app/actions/list";
 import { BoardViews } from "@/components/Protected/Pages/Board/BoardViews/BoardViews";
 import { SubHeader } from "@/components/Protected/Pages/Board/SubHeader/SubHeader";
 
+export const revalidate = 30;
+
 async function BoardPage({
   params,
 }: {

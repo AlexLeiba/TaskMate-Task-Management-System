@@ -1,4 +1,5 @@
 "use client";
+
 import { Spacer } from "@/components/ui/spacer";
 import { LayoutDashboard } from "lucide-react";
 import { BoardCard } from "./BoardCard";
@@ -104,14 +105,16 @@ export function Boards({
       </div>
 
       {/* MODAL DELETE BOARD */}
-      <DeleteDialog
-        title="Board"
-        disabled={isDeletePending}
-        loading={isDeletePending}
-        deleteDialogOpen={deleteDialogOpen}
-        setDeleteDialogOpen={setDeleteDialogOpen}
-        handleDelete={() => handleDeleteBoard(selectedBoardToDelete)}
-      />
+      {deleteDialogOpen && (
+        <DeleteDialog
+          title="Board"
+          disabled={isDeletePending}
+          loading={isDeletePending}
+          deleteDialogOpen={deleteDialogOpen}
+          setDeleteDialogOpen={setDeleteDialogOpen}
+          handleDelete={() => handleDeleteBoard(selectedBoardToDelete)}
+        />
+      )}
     </div>
   );
 }

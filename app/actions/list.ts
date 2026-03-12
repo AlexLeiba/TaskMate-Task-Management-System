@@ -82,15 +82,6 @@ export async function getListDataAction(
         }),
         ...(filters === "completed" && {
           status: StatusType.done,
-          cards: {
-            some: {
-              details: {
-                createdAt: {
-                  gte: sevenDaysAgo.toISOString(),
-                },
-              },
-            },
-          },
         }),
       },
       include: {

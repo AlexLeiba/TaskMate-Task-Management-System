@@ -49,6 +49,7 @@ export function FilterDropdownContent({
               handleSelectedFilter(data.id);
             }}
             title={`Filter by ${data?.title}`}
+            aria-label={`Filter by ${data?.title}`}
             key={data.id}
             variant={"ghost"}
             className={cn(

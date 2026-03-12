@@ -1,14 +1,19 @@
 import { IconButton } from "@/components/ui/iconButton";
 import { useGetBoardFilteredData } from "@/hooks/useGetBoardFilteredData";
+import { useStore } from "@/store/useStore";
 import { RefreshCcw } from "lucide-react";
 
 export function RefreshBoardData() {
   const { fetchBoardFilteredListData, loading } = useGetBoardFilteredData();
+  const { setBoardTabSections } = useStore();
   return (
     <IconButton
       disabled={loading}
       loading={loading}
-      onClick={() => fetchBoardFilteredListData("")}
+      onClick={() => {
+        setBoardTabSections("refresh");
+        fetchBoardFilteredListData("");
+      }}
       title="Refresh board data"
       aria-label="Refresh board data"
       className="p-2 hidden md:block"

@@ -97,7 +97,7 @@ export function TicketCardDetails({
           <div className="flex flex-col gap-6  ">
             <Description
               description={cardDetailsData?.card?.description || ""}
-              cardDetailsId={cardDetailsData?.card?.card.id}
+              cardDetailsId={cardDetailsData?.card?.id}
               isAssignedUserEmail={
                 cardDetailsData?.card?.card.assignedToEmail === user?.email
               }

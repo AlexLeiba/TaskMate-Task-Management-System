@@ -5,13 +5,11 @@ import { Spacer } from "@/components/ui/spacer";
 import { Check, List, SquarePen, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { InitialDescriptionState } from "./InitialDescriptionState";
-
 import DOMPurify from "dompurify";
 import { DescriptionSkeleton } from "./DescriptionSkeleton";
 import { useMutation } from "@tanstack/react-query";
 import { updateDescriptionAction } from "@/app/actions/card-details";
 import toast from "react-hot-toast";
-
 import "react-quill-new/dist/quill.snow.css";
 import { useBoardId } from "@/hooks/useBoardId";
 import { useRole } from "@/hooks/useRole";

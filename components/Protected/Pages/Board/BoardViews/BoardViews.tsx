@@ -30,9 +30,6 @@ const BOARD_VIEW_SECTION: { [key: string]: React.FC<Props> | ComponentClass } =
     summary: BoardSummary,
   };
 export function BoardViews({ boardId, listData }: Props) {
-  // TODO, add here data in useStore, filter it, and pass to its component as prop.
-  // at first iteration pass the listdata directly to component,
-  // only if any filter is selected just then pass the filtered data, if no, pass server data unfiltered
   const boardTabSections = useStore((state) => state.boardTabSections);
 
   const BoardView = BOARD_VIEW_SECTION[boardTabSections];

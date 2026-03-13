@@ -5,13 +5,19 @@ import { BOARD_HEADER_TABS } from "@/lib/consts";
 import { BoardTabSectionType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/store/useStore";
+import { useShallow } from "zustand/shallow";
 
 export function DropdownBoardTabSectionsContent({
   handleCloseMenu,
 }: {
   handleCloseMenu: () => void;
 }) {
-  const { boardTabSections, setBoardTabSections } = useStore();
+  const { boardTabSections, setBoardTabSections } = useStore(
+    useShallow((state) => ({
+      boardTabSections: state.boardTabSections,
+      setBoardTabSections: state.setBoardTabSections,
+    })),
+  );
   const { fetchBoardFilteredListData, loading } = useGetBoardFilteredData();
 
   function handleSelectTabSection(tab: BoardTabSectionType) {

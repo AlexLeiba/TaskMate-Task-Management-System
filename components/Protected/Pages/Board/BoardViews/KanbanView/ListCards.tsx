@@ -17,6 +17,7 @@ import { ListCardSkeleton } from "./ListCard/ListCardSkeleton";
 import { ListCard } from "./ListCard/ListCard";
 import { AddNewListCard } from "./ListCard/AddNewListCard";
 import { useStore } from "@/store/useStore";
+import { useShallow } from "zustand/shallow";
 
 const DragDropContext = dynamic(() =>
   import("@hello-pangea/dnd").then((m) => m.DragDropContext),
@@ -33,14 +34,24 @@ export function ListCards({ boardId, listData }: Props) {
   const {
     boardListData,
     setInitializeBoardListData,
-
     setDndBoardListData,
     setDndSameListBoardListDataCards,
     setDndDifferentListBoardListDataCards,
-
     setBoardSubHeaderFilterSelected,
     setBoardSubHeaderMemberIdSelected,
-  } = useStore();
+  } = useStore(
+    useShallow((state) => ({
+      boardListData: state.boardListData,
+      setInitializeBoardListData: state.setInitializeBoardListData,
+      setDndBoardListData: state.setDndBoardListData,
+      setDndSameListBoardListDataCards: state.setDndSameListBoardListDataCards,
+      setDndDifferentListBoardListDataCards:
+        state.setDndDifferentListBoardListDataCards,
+      setBoardSubHeaderFilterSelected: state.setBoardSubHeaderFilterSelected,
+      setBoardSubHeaderMemberIdSelected:
+        state.setBoardSubHeaderMemberIdSelected,
+    })),
+  );
 
   const role = useRole();
   const hasToastedRef = useRef(false);

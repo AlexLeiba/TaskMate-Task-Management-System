@@ -9,6 +9,7 @@ import { Info, Plus } from "lucide-react";
 import { IconButton } from "@/components/ui/iconButton";
 import { useStore } from "@/store/useStore";
 import dynamic from "next/dynamic";
+import { useShallow } from "zustand/shallow";
 
 const DialogBoardDetails = dynamic(() =>
   import("./DialogBoardDetails").then((m) => m.DialogBoardDetails),
@@ -22,7 +23,12 @@ type Props = {
   disabled?: boolean;
 };
 export function CreateNewBoardCard({ disabled = false }: Props) {
-  const { newBoardDialogOpen, setNewBoardDialogOpen } = useStore();
+  const { newBoardDialogOpen, setNewBoardDialogOpen } = useStore(
+    useShallow((state) => ({
+      newBoardDialogOpen: state.newBoardDialogOpen,
+      setNewBoardDialogOpen: state.setNewBoardDialogOpen,
+    })),
+  );
 
   return (
     <>

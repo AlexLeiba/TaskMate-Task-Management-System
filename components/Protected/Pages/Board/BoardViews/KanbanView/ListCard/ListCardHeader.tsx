@@ -34,7 +34,7 @@ export function ListCardHeader({
   const boardId = useBoardId();
   const role = useRole();
   const [isOpenedTitleInput, setIsOpenedTitleInput] = useState(false);
-  const { openTitleInput } = useStore();
+  const openTitleInput = useStore((state) => state.openTitleInput);
   const isInputOpened =
     openTitleInput.id === listId ? openTitleInput.isOpen : isOpenedTitleInput;
 

@@ -9,7 +9,7 @@ export function ListCardTicketsCounter({
   totalTicketCardsInList,
   listId,
 }: Props) {
-  const { initialBoardListData } = useStore();
+  const initialBoardListData = useStore((state) => state.initialBoardListData);
 
   return (
     <span className="text-gray-300 text-sm bg-background-element px-1 ml-1">

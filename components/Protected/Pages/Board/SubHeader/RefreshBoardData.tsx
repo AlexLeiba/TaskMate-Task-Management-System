@@ -5,7 +5,7 @@ import { RefreshCcw } from "lucide-react";
 
 export function RefreshBoardData() {
   const { fetchBoardFilteredListData, loading } = useGetBoardFilteredData();
-  const { setBoardTabSections } = useStore();
+  const setBoardTabSections = useStore((state) => state.setBoardTabSections);
   return (
     <IconButton
       disabled={loading}

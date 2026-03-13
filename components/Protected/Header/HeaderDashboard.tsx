@@ -37,7 +37,10 @@ type Props = {
   type?: "dashboard" | "board";
 };
 export function HeaderDashboard({ type = "dashboard" }: Props) {
-  const { newBoardDialogOpen, setNewBoardDialogOpen } = useStore();
+  const newBoardDialogOpen = useStore((state) => state.newBoardDialogOpen);
+  const setNewBoardDialogOpen = useStore(
+    (state) => state.setNewBoardDialogOpen,
+  );
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-background-element z-50  ">
@@ -66,12 +69,14 @@ export function HeaderDashboard({ type = "dashboard" }: Props) {
               Create
             </Button>
 
-            <CreateNewBoardDialog
-              newBoardDialogOpen={newBoardDialogOpen}
-              setNewBoardDialogOpen={setNewBoardDialogOpen}
-            >
-              <DialogBoardDetails type="board" />
-            </CreateNewBoardDialog>
+            {newBoardDialogOpen && (
+              <CreateNewBoardDialog
+                newBoardDialogOpen={newBoardDialogOpen}
+                setNewBoardDialogOpen={setNewBoardDialogOpen}
+              >
+                <DialogBoardDetails type="board" />
+              </CreateNewBoardDialog>
+            )}
 
             <OrganizationSwitcher
               afterLeaveOrganizationUrl="/select-organization"

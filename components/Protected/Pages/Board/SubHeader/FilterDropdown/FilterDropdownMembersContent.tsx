@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useStore } from "@/store/useStore";
 import { UserPlus } from "lucide-react";
 import Image from "next/image";
+import { useShallow } from "zustand/shallow";
 
 export function FilterDropdownMembersContent({
   handleCloseMenu,
@@ -19,7 +20,14 @@ export function FilterDropdownMembersContent({
     boardSubHeaderMemberIdSelected,
     setBoardSubHeaderFilterSelected,
     setBoardSubHeaderMemberIdSelected,
-  } = useStore();
+  } = useStore(
+    useShallow((state) => ({
+      boardSubHeaderMemberIdSelected: state.boardSubHeaderMemberIdSelected,
+      setBoardSubHeaderFilterSelected: state.setBoardSubHeaderFilterSelected,
+      setBoardSubHeaderMemberIdSelected:
+        state.setBoardSubHeaderMemberIdSelected,
+    })),
+  );
 
   async function handleSelectedMember(
     member: OrganizationMembersType | undefined | null,

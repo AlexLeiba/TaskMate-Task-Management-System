@@ -16,7 +16,7 @@ type Props = {
 export function AddTicketCard({ listId }: Props) {
   const pathname = usePathname();
   const boardId = pathname.split("/").at(-1) || "";
-  const { openNewCardInput } = useStore();
+  const openNewCardInput = useStore((state) => state.openNewCardInput);
   const [isOpenedNewCardInput, setIsOpenedNewCardInput] = useState(false);
 
   const isCardInputOpened =

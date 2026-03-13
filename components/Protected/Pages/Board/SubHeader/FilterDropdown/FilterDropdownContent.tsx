@@ -8,6 +8,7 @@ import { useGetBoardFilteredData } from "@/hooks/useGetBoardFilteredData";
 import { useResponsive } from "@/hooks/useResponsive";
 import { BREAKPOINTS } from "@/lib/breakpoints";
 import { FilterDropdownMembersContent } from "./FilterDropdownMembersContent";
+import { useShallow } from "zustand/shallow";
 
 export function FilterDropdownContent({
   handleCloseMenu,
@@ -18,7 +19,12 @@ export function FilterDropdownContent({
   const isTablet = useResponsive(BREAKPOINTS.lg);
 
   const { boardSubHeaderFilterSelected, setBoardSubHeaderFilterSelected } =
-    useStore();
+    useStore(
+      useShallow((state) => ({
+        boardSubHeaderFilterSelected: state.boardSubHeaderFilterSelected,
+        setBoardSubHeaderFilterSelected: state.setBoardSubHeaderFilterSelected,
+      })),
+    );
 
   function handleSelectedFilter(filterState: FilterStates) {
     handleCloseMenu();

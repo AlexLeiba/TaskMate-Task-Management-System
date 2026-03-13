@@ -13,8 +13,13 @@ export function BoardMemberFilters() {
 
   const { members, isFetching } = useMembers();
 
-  const { setBoardSubHeaderMemberIdSelected, boardSubHeaderMemberIdSelected } =
-    useStore();
+  const setBoardSubHeaderMemberIdSelected = useStore(
+    (state) => state.setBoardSubHeaderMemberIdSelected,
+  );
+
+  const boardSubHeaderMemberIdSelected = useStore(
+    (state) => state.boardSubHeaderMemberIdSelected,
+  );
 
   async function handleSelectedMember(
     member: OrganizationMembersType | undefined | null,

@@ -21,6 +21,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useShallow } from "zustand/shallow";
 
 const DeleteDialog = dynamic(() =>
   import("@/components/Protected/Shared-protected/DeleteDialog/DeleteDialog").then(
@@ -36,7 +37,12 @@ export function ListOptions({ listId }: Props) {
   const boardId = pathname.split("/").at(-1) || "";
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isOpenedStatus, setIsOpenedStatus] = useState(false);
-  const { setOpenTitleInput, setOpenNewCardInput } = useStore();
+  const { setOpenTitleInput, setOpenNewCardInput } = useStore(
+    useShallow((state) => ({
+      setOpenTitleInput: state.setOpenTitleInput,
+      setOpenNewCardInput: state.setOpenNewCardInput,
+    })),
+  );
 
   const { mutate: mutateDeleteList, isPending: isPendingDeleteList } =
     useMutation({

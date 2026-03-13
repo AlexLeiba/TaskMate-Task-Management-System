@@ -24,7 +24,9 @@ type Props = {
 export function DialogBoardDetails({ type = "dashboard" }: Props) {
   const navigate = useRouter();
   const [selectedImage, setSelectedImage] = useState<UnsplashImagesType>();
-  const { setNewBoardDialogOpen } = useStore();
+  const setNewBoardDialogOpen = useStore(
+    (state) => state.setNewBoardDialogOpen,
+  );
   const queryClient = useQueryClient();
   const pathname = usePathname();
 

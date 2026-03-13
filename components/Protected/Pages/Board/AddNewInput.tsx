@@ -18,6 +18,7 @@ import { Plus, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { KEYBOARD } from "@/lib/consts";
 import zod from "zod";
+import { useShallow } from "zustand/shallow";
 
 type PropsTextarea = ComponentProps<"textarea"> & {
   type?: "textarea";
@@ -59,7 +60,15 @@ export function AddNewInput({
     setOpenNewCardInput,
     openNewCardInput,
     openTitleInput,
-  } = useStore();
+  } = useStore(
+    useShallow((state) => ({
+      setOpenTitleInput: state.setOpenTitleInput,
+      setOpenNewCardInput: state.setOpenNewCardInput,
+      openNewCardInput: state.openNewCardInput,
+      openTitleInput: state.openTitleInput,
+    })),
+  );
+
   const containerRef = useRef<HTMLDivElement>(null);
 
   const InputSchema = zod.object({

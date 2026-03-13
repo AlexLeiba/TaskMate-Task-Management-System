@@ -11,8 +11,12 @@ const FilterDropdownContent = dynamic(() =>
 
 export function FiltersDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const { boardSubHeaderMemberIdSelected, boardSubHeaderFilterSelected } =
-    useStore();
+  const boardSubHeaderMemberIdSelected = useStore(
+    (state) => state.boardSubHeaderMemberIdSelected,
+  );
+  const boardSubHeaderFilterSelected = useStore(
+    (state) => state.boardSubHeaderFilterSelected,
+  );
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>

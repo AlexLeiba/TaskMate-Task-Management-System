@@ -6,7 +6,8 @@ import { cn } from "@/lib/utils";
 import { useStore } from "@/store/useStore";
 
 export function BoardTabSections() {
-  const { boardTabSections, setBoardTabSections } = useStore();
+  const boardTabSections = useStore((state) => state.boardTabSections);
+  const setBoardTabSections = useStore((state) => state.setBoardTabSections);
 
   function handleSelectTabSection(tab: BoardTabSectionType) {
     // TODO, change zustand views based on selected view

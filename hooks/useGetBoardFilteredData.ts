@@ -16,7 +16,7 @@ export function useGetBoardFilteredData(): {
 } {
   const boardId = useBoardId();
   const { orgId } = useAuth();
-  const { setBoardListData } = useStore();
+  const setBoardListData = useStore((state) => state.setBoardListData);
   const [loading, setLoading] = useState(false);
 
   async function fetchBoardFilteredListData(

@@ -1,14 +1,9 @@
-import { ListCardSkeleton } from "@/components/Protected/Pages/Board/BoardViews/KanbanView/ListCard/ListCardSkeleton";
 import dynamic from "next/dynamic";
 
-const BoardServerRender = dynamic(
-  () =>
-    import("@/components/Protected/Pages/Board/BoardServerRender").then(
-      (m) => m.BoardServerRender,
-    ),
-  {
-    loading: () => <ListCardSkeleton />,
-  },
+const BoardServerRender = dynamic(() =>
+  import("@/components/Protected/Pages/Board/BoardServerRender").then(
+    (m) => m.BoardServerRender,
+  ),
 );
 
 const SubHeaderServerRender = dynamic(() =>

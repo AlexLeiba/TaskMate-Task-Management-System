@@ -30,7 +30,7 @@ export function TeamWorkload({
         <p>The workload is measured by unfinished work.</p>
       </div>
 
-      <div className="grid md:grid-cols-2 grid-cols-[1fr] gap-2 w-full">
+      <div className="grid md:grid-cols-2 grid-cols-[1fr] gap-2 w-full overflow-y-auto max-h-125">
         <div className="flex flex-col gap-4">
           <p className="text-md font-medium">Asignee</p>
           <div className="flex flex-col gap-3">

@@ -175,108 +175,110 @@ export function AssignTo({ assignedTo, boardId, listId, cardId }: Props) {
       </PopoverTrigger>
 
       {/* POPOVER DROP CONTENT */}
-      <PopoverContent align="start">
-        <div className="flex justify-between items-center mb-4">
-          <p className="text-xl font-medium">Assign to</p>
-          <IconButton
-            disabled={isPending || isPendingUnassigne}
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsOpenedAssign(false);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === KEYBOARD.ENTER) {
-                e.stopPropagation();
-                setIsOpenedAssign(false);
-              }
-            }}
-            className="cursor-pointer hover:opacity-80"
-            title="Close assign"
-            aria-label="Close assign"
-          >
-            <X />
-          </IconButton>
-        </div>
-
-        <div className="flex flex-col gap-2 items-start pl-2 ">
-          {/* ASSIGN USER*/}
-          <IconButton
-            disabled={isPending || isPendingUnassigne}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (selectedUser.email === "none") return;
-              handleUnassigneUser();
-            }}
-            onKeyDown={(e) => {
-              if (e.key === KEYBOARD.ENTER) {
-                e.stopPropagation();
-                if (selectedUser.email === "none") return;
-                handleUnassigneUser();
-              }
-            }}
-            className=" p-1.5 w-full"
-            classNameChildren="flex gap-4 justify-between items-center"
-          >
-            <div className="flex items-center gap-4">
-              <div className="rounded-full overflow-hidden bg-gray-700 size-8.75 flex justify-center items-center">
-                <UserPlus size={20} />
-              </div>
-              <p>None</p>
-            </div>
-            {selectedUser.email === "none" && (
-              <Check className="text-green-600" />
-            )}
-          </IconButton>
-          {members?.map((user) => (
+      {isOpenedAssign && (
+        <PopoverContent align="start">
+          <div className="flex justify-between items-center mb-4">
+            <p className="text-xl font-medium">Assign to</p>
             <IconButton
               disabled={isPending || isPendingUnassigne}
-              title={
-                user.publicUserData?.firstName +
-                " " +
-                user.publicUserData?.lastName
-              }
-              aria-label={
-                user.publicUserData?.firstName +
-                " " +
-                user.publicUserData?.lastName
-              }
-              key={user.id}
-              className=" p-1.5 w-full"
-              classNameChildren="flex items-center justify-between gap-1"
               onClick={(e) => {
                 e.stopPropagation();
-                if (user.publicUserData?.identifier === selectedUser.email)
-                  return;
-                handleAssignTo(user.publicUserData?.identifier || "");
+                setIsOpenedAssign(false);
               }}
               onKeyDown={(e) => {
                 if (e.key === KEYBOARD.ENTER) {
                   e.stopPropagation();
-                  if (user.publicUserData?.identifier === selectedUser.email)
-                    return;
-                  handleAssignTo(user.publicUserData?.identifier || "");
+                  setIsOpenedAssign(false);
                 }
               }}
+              className="cursor-pointer hover:opacity-80"
+              title="Close assign"
+              aria-label="Close assign"
             >
-              <UserCard
-                data={{
-                  email: user.publicUserData?.identifier || "",
-                  name:
-                    user.publicUserData?.firstName +
-                    " " +
-                    user.publicUserData?.lastName,
-                  avatar: user.publicUserData?.imageUrl || "",
-                }}
-                size={"sm"}
-              />
+              <X />
+            </IconButton>
+          </div>
 
-              {assignedTo === user.publicUserData?.identifier && (
+          <div className="flex flex-col gap-2 items-start pl-2 ">
+            {/* ASSIGN USER*/}
+            <IconButton
+              disabled={isPending || isPendingUnassigne}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (selectedUser.email === "none") return;
+                handleUnassigneUser();
+              }}
+              onKeyDown={(e) => {
+                if (e.key === KEYBOARD.ENTER) {
+                  e.stopPropagation();
+                  if (selectedUser.email === "none") return;
+                  handleUnassigneUser();
+                }
+              }}
+              className=" p-1.5 w-full"
+              classNameChildren="flex gap-4 justify-between items-center"
+            >
+              <div className="flex items-center gap-4">
+                <div className="rounded-full overflow-hidden bg-gray-700 size-8.75 flex justify-center items-center">
+                  <UserPlus size={20} />
+                </div>
+                <p>None</p>
+              </div>
+              {selectedUser.email === "none" && (
                 <Check className="text-green-600" />
               )}
             </IconButton>
-          ))}
-        </div>
-      </PopoverContent>
+            {members?.map((user) => (
+              <IconButton
+                disabled={isPending || isPendingUnassigne}
+                title={
+                  user.publicUserData?.firstName +
+                  " " +
+                  user.publicUserData?.lastName
+                }
+                aria-label={
+                  user.publicUserData?.firstName +
+                  " " +
+                  user.publicUserData?.lastName
+                }
+                key={user.id}
+                className=" p-1.5 w-full"
+                classNameChildren="flex items-center justify-between gap-1"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (user.publicUserData?.identifier === selectedUser.email)
+                    return;
+                  handleAssignTo(user.publicUserData?.identifier || "");
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === KEYBOARD.ENTER) {
+                    e.stopPropagation();
+                    if (user.publicUserData?.identifier === selectedUser.email)
+                      return;
+                    handleAssignTo(user.publicUserData?.identifier || "");
+                  }
+                }}
+              >
+                <UserCard
+                  data={{
+                    email: user.publicUserData?.identifier || "",
+                    name:
+                      user.publicUserData?.firstName +
+                      " " +
+                      user.publicUserData?.lastName,
+                    avatar: user.publicUserData?.imageUrl || "",
+                  }}
+                  size={"sm"}
+                />
+
+                {assignedTo === user.publicUserData?.identifier && (
+                  <Check className="text-green-600" />
+                )}
+              </IconButton>
+            ))}
+          </div>
+        </PopoverContent>
+      )}
     </Popover>
   );
 }

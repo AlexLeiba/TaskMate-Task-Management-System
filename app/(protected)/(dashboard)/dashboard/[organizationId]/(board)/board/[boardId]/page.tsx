@@ -1,7 +1,26 @@
-import { getBoardDataAction } from "@/app/actions/board";
-import { getListDataAction } from "@/app/actions/list";
-import { BoardViews } from "@/components/Protected/Pages/Board/BoardViews/BoardViews";
-import { SubHeader } from "@/components/Protected/Pages/Board/SubHeader/SubHeader";
+import { ListCardSkeleton } from "@/components/Protected/Pages/Board/BoardViews/KanbanView/ListCard/ListCardSkeleton";
+import { SubHeaderSkeleton } from "@/components/Protected/Pages/Board/SubHeader/SubHeaderSkeleton";
+import dynamic from "next/dynamic";
+
+const BoardServerRender = dynamic(
+  () =>
+    import("@/components/Protected/Pages/Board/BoardServerRender").then(
+      (m) => m.BoardServerRender,
+    ),
+  {
+    loading: () => <ListCardSkeleton />,
+  },
+);
+
+const SubHeaderServerRender = dynamic(
+  () =>
+    import("@/components/Protected/Pages/Board/SubHeaderServerRender").then(
+      (m) => m.SubHeaderServerRender,
+    ),
+  {
+    loading: () => <SubHeaderSkeleton />,
+  },
+);
 
 export const revalidate = 30;
 
@@ -13,16 +32,11 @@ async function BoardPage({
   const boardId = (await params).boardId;
   const orgId = (await params).organizationId;
 
-  const boardData = await getBoardDataAction(boardId, orgId);
-  const listData = await getListDataAction(boardId, orgId);
-
   return (
     <div className="w-full h-full">
-      {/* BOARD CONTENT */}
+      <SubHeaderServerRender boardId={boardId} orgId={orgId} />
 
-      <SubHeader data={boardData} boardId={boardId} orgId={orgId} />
-
-      <BoardViews boardId={boardId} listData={listData} />
+      <BoardServerRender boardId={boardId} orgId={orgId} />
     </div>
   );
 }

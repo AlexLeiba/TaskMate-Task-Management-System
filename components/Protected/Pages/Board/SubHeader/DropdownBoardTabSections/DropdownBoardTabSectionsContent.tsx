@@ -1,5 +1,4 @@
 import { IconButton } from "@/components/ui/iconButton";
-import { PopoverContent } from "@/components/ui/popover";
 import { useGetBoardFilteredData } from "@/hooks/useGetBoardFilteredData";
 import { BOARD_HEADER_TABS } from "@/lib/consts";
 import { BoardTabSectionType } from "@/lib/types";
@@ -30,7 +29,7 @@ export function DropdownBoardTabSectionsContent({
     }
   }
   return (
-    <PopoverContent className="flex flex-col gap-2" align="end">
+    <>
       {BOARD_HEADER_TABS.map((tab) => {
         return (
           <IconButton
@@ -51,6 +50,6 @@ export function DropdownBoardTabSectionsContent({
           </IconButton>
         );
       })}
-    </PopoverContent>
+    </>
   );
 }

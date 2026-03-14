@@ -1,4 +1,8 @@
-import { Popover, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { useStore } from "@/store/useStore";
 import { Filter } from "lucide-react";
 import { useState } from "react";
@@ -44,9 +48,11 @@ export function FiltersDropdown() {
       </PopoverTrigger>
 
       {/* CONTENT */}
-      {isOpen && (
-        <FilterDropdownContent handleCloseMenu={() => setIsOpen(false)} />
-      )}
+      <PopoverContent className="flex flex-col gap-3 p-2 w-full" align="end">
+        {isOpen && (
+          <FilterDropdownContent handleCloseMenu={() => setIsOpen(false)} />
+        )}
+      </PopoverContent>
     </Popover>
   );
 }

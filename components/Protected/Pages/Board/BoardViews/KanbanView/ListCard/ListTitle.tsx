@@ -1,0 +1,76 @@
+import { Dispatch, SetStateAction, useState } from "react";
+import { useStore } from "@/store/useStore";
+import { useMutation } from "@tanstack/react-query";
+import { updateListTitleAction } from "@/app/actions/list";
+import toast from "react-hot-toast";
+import { useBoardId } from "@/hooks/useBoardId";
+
+import { AddNewInput } from "../../../AddNewInput";
+import { ListCardTicketsCounter } from "./ListCardTicketsCounter";
+
+type Props = {
+  listId: string;
+  defaultTitle: string;
+  listCardsDynamicCount: number;
+  setIsOpenedTitleInput: Dispatch<SetStateAction<boolean>>;
+  isInputOpened: boolean;
+};
+export function ListTitle({
+  listId,
+  defaultTitle,
+  listCardsDynamicCount = 0,
+  setIsOpenedTitleInput,
+  isInputOpened,
+}: Props) {
+  const boardId = useBoardId();
+
+  const { mutate: mutateListTitle, isPending: isPendingMutateListTitle } =
+    useMutation({
+      mutationKey: ["update-list-title"],
+      mutationFn: updateListTitleAction,
+      onSuccess() {
+        toast.dismiss("update-list-title");
+        toast.success("List title updated");
+      },
+      onError({ message }) {
+        toast.dismiss("update-list-title");
+        toast.error(message || "Error updating list title, please try again");
+      },
+    });
+
+  function handleSubmitListTitle(value: { [inputName: string]: string }) {
+    setIsOpenedTitleInput(false);
+
+    if (!listId || !boardId)
+      return toast.error("Something went wrong, please try again");
+
+    mutateListTitle({ listId, title: value.title, boardId });
+    toast.loading("Updating list title...", { id: "update-list-title" });
+  }
+  return (
+    <>
+      <AddNewInput
+        loading={isPendingMutateListTitle}
+        disabled={isPendingMutateListTitle}
+        handleSubmitValue={(v) => handleSubmitListTitle(v)}
+        inputName="title"
+        placeholder="Edit list title here..."
+        label="Edit list title"
+        setIsOpenedTitleInput={setIsOpenedTitleInput}
+        isOpenedTitleInput={isInputOpened}
+        classNameContainer="py-0 py-0 w-full "
+        defaultValue={defaultTitle}
+      >
+        <>
+          <h3 className="text-lg font-medium line-clamp-3">
+            {defaultTitle}{" "}
+            <ListCardTicketsCounter
+              totalTicketCardsInList={listCardsDynamicCount}
+              listId={listId}
+            />
+          </h3>
+        </>
+      </AddNewInput>
+    </>
+  );
+}

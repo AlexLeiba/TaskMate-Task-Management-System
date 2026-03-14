@@ -1,4 +1,3 @@
-import { PopoverContent } from "@/components/ui/popover";
 import { FILTERS_DATA } from "@/lib/consts";
 import { useStore } from "@/store/useStore";
 import { Button } from "@/components/ui/button";
@@ -38,7 +37,7 @@ export function FilterDropdownContent({
   }
 
   return (
-    <PopoverContent className="flex flex-col gap-3 p-2 w-full" align="end">
+    <>
       {/* MEMBER FILTERS */}
       {isTablet && (
         <FilterDropdownMembersContent
@@ -77,6 +76,6 @@ export function FilterDropdownContent({
           </Button>
         );
       })}
-    </PopoverContent>
+    </>
   );
 }

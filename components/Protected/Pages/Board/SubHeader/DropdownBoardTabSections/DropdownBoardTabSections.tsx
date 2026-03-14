@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { IconButton } from "@/components/ui/iconButton";
-import { Popover, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 import { Menu } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -30,11 +34,13 @@ export function DropdownBoardTabSections() {
           </IconButton>
         </PopoverTrigger>
         {/* CONTENT */}
-        {isOpen && (
-          <DropdownBoardTabSectionsContent
-            handleCloseMenu={() => setIsOpen(false)}
-          />
-        )}
+        <PopoverContent className="flex flex-col gap-2" align="end">
+          {isOpen && (
+            <DropdownBoardTabSectionsContent
+              handleCloseMenu={() => setIsOpen(false)}
+            />
+          )}
+        </PopoverContent>
       </Popover>
     </div>
   );

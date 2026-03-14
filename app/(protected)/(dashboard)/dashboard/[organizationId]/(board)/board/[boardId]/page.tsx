@@ -12,8 +12,6 @@ const SubHeaderServerRender = dynamic(() =>
   ),
 );
 
-export const revalidate = 30;
-
 async function BoardPage({
   params,
 }: {

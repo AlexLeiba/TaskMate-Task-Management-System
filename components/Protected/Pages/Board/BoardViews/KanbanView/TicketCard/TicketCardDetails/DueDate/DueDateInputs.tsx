@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { ChevronDownIcon, Plus, X } from "lucide-react";
 import {
@@ -26,6 +25,9 @@ import { INITIAL_TIME, USER_ROLES } from "@/lib/consts";
 import { isValidDateString } from "@/lib/isValidDateString";
 import { useRole } from "@/hooks/useRole";
 
+const Calendar = dynamic(() =>
+  import("@/components/ui/calendar").then((m) => m.Calendar),
+);
 const DeleteDialog = dynamic(() =>
   import("@/components/Protected/Shared-protected/DeleteDialog/DeleteDialog").then(
     (m) => m.DeleteDialog,
@@ -88,6 +90,7 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
         toast.error(message || "Error creating due date, please try again");
       },
     });
+
   const { isPending: isPendingDelete, mutate: mutateDeleteDueDate } =
     useMutation({
       mutationFn: deleteDueDateAction,
@@ -212,17 +215,19 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
                     className="w-auto overflow-hidden p-0 "
                     align="start"
                   >
-                    <Calendar
-                      disabled={isPendingCreate || isPendingDelete}
-                      mode="single"
-                      selected={date.date}
-                      captionLayout="dropdown"
-                      onSelect={(date) => {
-                        if (!date) return;
-                        setDate((prev) => ({ ...prev, date }));
-                        setOpenPicker(false);
-                      }}
-                    />
+                    {openPicker && (
+                      <Calendar
+                        disabled={isPendingCreate || isPendingDelete}
+                        mode="single"
+                        selected={date.date}
+                        captionLayout="dropdown"
+                        onSelect={(date) => {
+                          if (!date) return;
+                          setDate((prev) => ({ ...prev, date }));
+                          setOpenPicker(false);
+                        }}
+                      />
+                    )}
                   </PopoverContent>
                 </Popover>
                 <Input

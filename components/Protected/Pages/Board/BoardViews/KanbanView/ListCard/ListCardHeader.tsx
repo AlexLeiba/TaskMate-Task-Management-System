@@ -8,10 +8,10 @@ import { ListCardTicketsCounter } from "./ListCardTicketsCounter";
 import { ListTitle } from "./ListTitle";
 
 const ListStatuses = dynamic(() =>
-  import("./ListStatuses").then((m) => m.ListStatuses),
+  import("./ListStatuses/ListStatuses").then((m) => m.ListStatuses),
 );
 const ListOptions = dynamic(() =>
-  import("./ListOptions").then((m) => m.ListOptions),
+  import("./ListOptions/ListOptions").then((m) => m.ListOptions),
 );
 
 type Props = {
@@ -39,7 +39,7 @@ export function ListCardHeader({
         <ListStatuses selectedStatus={status} listId={listId} />
       )}
 
-      {role === USER_ROLES.admin && (
+      {role === USER_ROLES.admin ? (
         <>
           {/* TITLE */}
           <ListTitle
@@ -53,8 +53,7 @@ export function ListCardHeader({
           {/* OPTIONS */}
           {!isInputOpened && <ListOptions listId={listId} />}
         </>
-      )}
-      {role === USER_ROLES.member && (
+      ) : (
         <div className="w-full pl-2 ">
           <h3 className="text-lg font-medium line-clamp-3">
             {title}

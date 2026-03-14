@@ -1,0 +1,199 @@
+import { Info, X } from "lucide-react";
+import { LIST_OPTIONS } from "@/lib/consts";
+import { Separator } from "@radix-ui/react-separator";
+import { useStore } from "@/store/useStore";
+import { IconButton } from "@/components/ui/iconButton";
+import React, { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { copyListAction, deleteListAction } from "@/app/actions/list";
+import toast from "react-hot-toast";
+import { deleteFile } from "@/lib/deleteFile";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useShallow } from "zustand/shallow";
+import { useBoardId } from "@/hooks/useBoardId";
+import dynamic from "next/dynamic";
+
+const DeleteDialog = dynamic(() =>
+  import("@/components/Protected/Shared-protected/DeleteDialog/DeleteDialog").then(
+    (m) => m.DeleteDialog,
+  ),
+);
+
+type Props = {
+  listId: string;
+};
+export function ListOptionsContent({ listId }: Props) {
+  const boardId = useBoardId();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const { setOpenTitleInput, setOpenNewCardInput } = useStore(
+    useShallow((state) => ({
+      setOpenTitleInput: state.setOpenTitleInput,
+      setOpenNewCardInput: state.setOpenNewCardInput,
+    })),
+  );
+
+  const { mutate: mutateDeleteList, isPending: isPendingDeleteList } =
+    useMutation({
+      mutationKey: ["delete-list"],
+      mutationFn: deleteListAction,
+      onMutate: async () => {
+        await deleteFile(
+          { type: "list", listId, fileType: "raw", boardId },
+          boardId,
+        ); // execution of the mutation will wait until this request is resolved (removing all attachments from cloud)
+      },
+      onSuccess: () => {
+        toast.dismiss("delete-list");
+        toast.success("List deleted");
+        setDeleteDialogOpen(false);
+      },
+      onError: () => {
+        toast.dismiss("delete-list");
+        toast.error("Error deleting list, please try again");
+      },
+    });
+
+  const { mutate: mutateCopyList, isPending: isPendingCopyList } = useMutation({
+    mutationFn: copyListAction,
+    onSuccess: () => {
+      toast.dismiss("copy-list");
+      toast.success("List copied");
+      setDeleteDialogOpen(false);
+    },
+    onError: () => {
+      toast.dismiss("copy-list");
+      toast.error("Error copying list, please try again");
+    },
+  });
+
+  function handleCopyList() {
+    mutateCopyList({ listId, boardId });
+    toast.loading("Copying list...", { id: "copy-list" });
+  }
+
+  function handleSelectOption(
+    option: "edit-list-title" | "delete-list" | "add-card" | "copy-list",
+  ) {
+    switch (option) {
+      case "edit-list-title":
+        setOpenTitleInput({ id: listId, isOpen: true });
+        break;
+      case "delete-list":
+        handleModalDeleteList();
+        break;
+      case "add-card":
+        setOpenNewCardInput({ id: listId, isOpen: true });
+        break;
+      case "copy-list":
+        handleCopyList();
+        break;
+      default:
+        break;
+    }
+  }
+
+  function handleModalDeleteList() {
+    setDeleteDialogOpen(true);
+  }
+
+  async function handleDeleteList(listId: string) {
+    mutateDeleteList({ listId, boardId });
+    toast.loading("Deleting list...", { id: "delete-list" });
+    setDeleteDialogOpen(false);
+  }
+  return (
+    <>
+      <div className="flex flex-col items-start ">
+        {LIST_OPTIONS.map((option) => {
+          if (option.value === "delete-list") {
+            // DELETE BUTTON
+            return (
+              <React.Fragment key={option.value}>
+                <Separator className="my-4 w-full h-px bg-gray-700" />
+                <IconButton
+                  disabled={isPendingDeleteList || isPendingCopyList}
+                  aria-label={option.label}
+                  title={option.label}
+                  onClick={() => handleSelectOption(option.value)}
+                  className="p-2 w-full"
+                  classNameChildren="flex gap-2 items-center"
+                >
+                  {option.icon}
+                  <p key={option.label}>{option.label}</p>
+                </IconButton>
+              </React.Fragment>
+            );
+          }
+          if (option.value === "copy-list") {
+            // COPY BUTTON
+            return (
+              <React.Fragment key={option.value}>
+                <IconButton
+                  disabled={isPendingDeleteList || isPendingCopyList}
+                  aria-label={option.label}
+                  title={option.label}
+                  onClick={() => handleSelectOption(option.value)}
+                  key={option.value}
+                  className="p-2 w-full"
+                  classNameChildren="flex gap-2 items-center justify-between w-full"
+                >
+                  <div className="flex items-center gap-2">
+                    {option.icon}
+                    <p key={option.label}>{option.label}</p>
+                  </div>
+
+                  <Tooltip>
+                    <TooltipTrigger asChild className=" text-gray-400">
+                      <Info />
+                    </TooltipTrigger>
+                    <TooltipContent className="min-w-20 max-w-80 flex flex-col gap-1">
+                      <p className="text-base">
+                        New List will include cloned values:
+                      </p>
+
+                      <p className="text-base">From List:</p>
+                      <strong>Title , Status , Cards.</strong>
+
+                      <p className="text-base"> From Cards: </p>
+                      <strong>Title, Description, Checklist.</strong>
+                    </TooltipContent>
+                  </Tooltip>
+                </IconButton>
+              </React.Fragment>
+            );
+          }
+          return (
+            <IconButton
+              disabled={isPendingDeleteList || isPendingCopyList}
+              aria-label={option.label}
+              title={option.label}
+              onClick={() => handleSelectOption(option.value)}
+              key={option.value}
+              className="p-2 w-full"
+              classNameChildren="flex gap-2 items-center"
+            >
+              {option.icon}
+              <p key={option.label}>{option.label}</p>
+            </IconButton>
+          );
+        })}
+      </div>
+
+      {/* MODAL DELETE BOARD */}
+      {deleteDialogOpen && (
+        <DeleteDialog
+          title="List"
+          loading={isPendingDeleteList}
+          deleteDialogOpen={deleteDialogOpen}
+          setDeleteDialogOpen={setDeleteDialogOpen}
+          handleDelete={() => handleDeleteList(listId)}
+        />
+      )}
+    </>
+  );
+}

@@ -1,5 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
-import { useStore } from "@/store/useStore";
+import { Dispatch, SetStateAction } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { updateListTitleAction } from "@/app/actions/list";
 import toast from "react-hot-toast";

@@ -1,8 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
-
 import toast from "react-hot-toast";
-
 import { ListAndCardsAndDueDateAndChecklistType } from "@/lib/types";
 import dynamic from "next/dynamic";
 import { Droppable, DropResult } from "@hello-pangea/dnd";

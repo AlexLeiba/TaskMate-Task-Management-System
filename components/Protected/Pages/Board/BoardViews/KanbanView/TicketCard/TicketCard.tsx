@@ -1,5 +1,5 @@
 "use client";
-import { TicketCardHeader } from "./TicketCardHeader";
+import { TicketCardHeader } from "./TicketCardHeader/TicketCardHeader";
 import { TicketCardBody } from "./TicketCardBody/TicketCardBody";
 import { useCallback, useState } from "react";
 import { KEYBOARD, USER_ROLES } from "@/lib/consts";

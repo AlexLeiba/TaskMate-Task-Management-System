@@ -1,5 +1,4 @@
 import { AddTicketCard } from "./AddTicketCard";
-
 import { ListCardHeader } from "./ListCardHeader";
 import { ListAndCardsAndDueDateAndChecklistType } from "@/lib/types";
 import { ComponentProps } from "react";

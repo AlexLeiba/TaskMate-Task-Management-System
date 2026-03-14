@@ -1,5 +1,4 @@
 import { ListCardSkeleton } from "@/components/Protected/Pages/Board/BoardViews/KanbanView/ListCard/ListCardSkeleton";
-import { SubHeaderSkeleton } from "@/components/Protected/Pages/Board/SubHeader/SubHeaderSkeleton";
 import dynamic from "next/dynamic";
 
 const BoardServerRender = dynamic(
@@ -12,14 +11,10 @@ const BoardServerRender = dynamic(
   },
 );
 
-const SubHeaderServerRender = dynamic(
-  () =>
-    import("@/components/Protected/Pages/Board/SubHeaderServerRender").then(
-      (m) => m.SubHeaderServerRender,
-    ),
-  {
-    loading: () => <SubHeaderSkeleton />,
-  },
+const SubHeaderServerRender = dynamic(() =>
+  import("@/components/Protected/Pages/Board/SubHeaderServerRender").then(
+    (m) => m.SubHeaderServerRender,
+  ),
 );
 
 export const revalidate = 30;

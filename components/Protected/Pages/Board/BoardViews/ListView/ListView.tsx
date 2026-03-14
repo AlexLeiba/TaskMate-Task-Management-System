@@ -1,6 +1,3 @@
-import { ListAndCardsAndDueDateAndChecklistType } from "@/lib/types";
-import React from "react";
-
 type Props = {
   boardId?: string;
 };

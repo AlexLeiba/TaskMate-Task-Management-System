@@ -113,6 +113,7 @@ export function ListOptions({ listId }: Props) {
     toast.loading("Deleting list...", { id: "delete-list" });
     setDeleteDialogOpen(false);
   }
+
   return (
     <Popover open={isOpenedStatus} onOpenChange={setIsOpenedStatus}>
       <PopoverTrigger asChild>
@@ -209,13 +210,15 @@ export function ListOptions({ listId }: Props) {
         </div>
 
         {/* MODAL DELETE BOARD */}
-        <DeleteDialog
-          title="List"
-          loading={isPendingDeleteList}
-          deleteDialogOpen={deleteDialogOpen}
-          setDeleteDialogOpen={setDeleteDialogOpen}
-          handleDelete={() => handleDeleteList(listId)}
-        />
+        {deleteDialogOpen && (
+          <DeleteDialog
+            title="List"
+            loading={isPendingDeleteList}
+            deleteDialogOpen={deleteDialogOpen}
+            setDeleteDialogOpen={setDeleteDialogOpen}
+            handleDelete={() => handleDeleteList(listId)}
+          />
+        )}
       </PopoverContent>
     </Popover>
   );

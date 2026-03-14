@@ -81,64 +81,66 @@ export function Priority({ priority, boardId, listId, cardId }: Props) {
         </IconButton>
       </PopoverTrigger>
 
-      {isOpenedOptions && (
-        <PopoverContent align="start" className="max-w-50 ">
-          <div className="flex justify-between items-center mb-4">
-            <p className="text-xl font-medium">Priority</p>
-            <button
-              disabled={isPending}
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsOpenedOptions(false);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === KEYBOARD.ENTER) {
-                  e.stopPropagation();
-                  setIsOpenedOptions(false);
-                }
-              }}
-              className="cursor-pointer hover:opacity-80"
-              title="Close list status"
-            >
-              <X />
-            </button>
-          </div>
-
-          <div className="flex flex-col gap-1 items-start pl-2 ">
-            {/* PRIORITIES */}
-            {CARD_PRIORITIES.map((priority) => (
-              <IconButton
+      <PopoverContent align="start" className="max-w-50 ">
+        {isOpenedOptions && (
+          <>
+            <div className="flex justify-between items-center mb-4">
+              <p className="text-xl font-medium">Priority</p>
+              <button
                 disabled={isPending}
-                title={priority.label}
-                aria-label={priority.label}
-                key={priority.value}
-                className=" p-1.5 w-full"
-                classNameChildren=" flex items-center justify-between gap-1  rounded-sm "
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (selectedPriority.value === priority.value) return;
-                  handleSelectPriority(priority);
+                  setIsOpenedOptions(false);
                 }}
                 onKeyDown={(e) => {
                   if (e.key === KEYBOARD.ENTER) {
                     e.stopPropagation();
-                    if (selectedPriority.value === priority.value) return;
-                    handleSelectPriority(priority);
+                    setIsOpenedOptions(false);
                   }
                 }}
+                className="cursor-pointer hover:opacity-80"
+                title="Close list status"
               >
-                <div className="flex gap-2 items-center">
-                  {priority.icon}
-                  <p className="text-lg">{priority.label}</p>
-                </div>
-                {selectedPriority.value === priority.value && (
-                  <Check className="text-green-600" />
-                )}
-              </IconButton>
-            ))}
-          </div>
-        </PopoverContent>
-      )}
+                <X />
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-1 items-start pl-2 ">
+              {/* PRIORITIES */}
+              {CARD_PRIORITIES.map((priority) => (
+                <IconButton
+                  disabled={isPending}
+                  title={priority.label}
+                  aria-label={priority.label}
+                  key={priority.value}
+                  className=" p-1.5 w-full"
+                  classNameChildren=" flex items-center justify-between gap-1  rounded-sm "
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (selectedPriority.value === priority.value) return;
+                    handleSelectPriority(priority);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === KEYBOARD.ENTER) {
+                      e.stopPropagation();
+                      if (selectedPriority.value === priority.value) return;
+                      handleSelectPriority(priority);
+                    }
+                  }}
+                >
+                  <div className="flex gap-2 items-center">
+                    {priority.icon}
+                    <p className="text-lg">{priority.label}</p>
+                  </div>
+                  {selectedPriority.value === priority.value && (
+                    <Check className="text-green-600" />
+                  )}
+                </IconButton>
+              ))}
+            </div>
+          </>
+        )}
+      </PopoverContent>
     </Popover>
   );
 }

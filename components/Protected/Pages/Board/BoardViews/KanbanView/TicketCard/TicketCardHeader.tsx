@@ -167,132 +167,137 @@ export function TicketCardHeader({
           </IconButton>
         </PopoverTrigger>
         <PopoverContent align="start" className="max-w-70 ">
-          <div className="flex justify-between items-center mb-4">
-            <p className="text-xl font-medium">Card Options</p>
-            <IconButton
-              disabled={
-                isPendingDeleteCardDeleteCard ||
-                isPendingEditTitleCard ||
-                isPendingCopyCard
-              }
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsOpenedOptions(false);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === KEYBOARD.ENTER) {
-                  e.stopPropagation();
-                  setIsOpenedOptions(false);
-                }
-              }}
-              title="Close card options"
-              aria-label="Close card options"
-            >
-              <X />
-            </IconButton>
-          </div>
-
-          <div className="flex flex-col gap-2 items-start pl-2">
-            {/* EDIT CARD TITLE*/}
-            <AddNewInput
-              disabled={
-                isPendingDeleteCardDeleteCard ||
-                isPendingEditTitleCard ||
-                isPendingCopyCard
-              }
-              type="textarea"
-              handleSubmitValue={(v) => handleChangeCardTitle(v)}
-              inputName="title"
-              placeholder="Edit card title here..."
-              label="Edit card title"
-              setIsOpenedTitleInput={setIsOpenedTitleInput}
-              isOpenedTitleInput={isOpenedTitleInput}
-              classNameContainer="p-0 mt-4 mb-2 w-full"
-              buttonDirection="column"
-              defaultValue={title}
-            >
-              <IconButton
-                aria-label="Edit"
-                title="Edit"
-                classNameChildren="flex  gap-2 "
-              >
-                <Edit />
-                <p>Edit card title</p>
-              </IconButton>
-            </AddNewInput>
-
-            {/* COPY CARD */}
-            <IconButton
-              disabled={
-                isPendingDeleteCardDeleteCard ||
-                isPendingEditTitleCard ||
-                isPendingCopyCard
-              }
-              onClick={(e) => {
-                e.stopPropagation();
-                handleCopyCard();
-              }}
-              onKeyDown={(e) => {
-                if (e.key === KEYBOARD.ENTER) {
-                  e.stopPropagation();
-                  handleCopyCard();
-                }
-              }}
-              aria-label="Copy"
-              title="Copy"
-              classNameChildren="flex  justify-between items-center"
-              className="w-full py-2"
-            >
-              <div className="flex gap-2 items-center">
-                <Copy size={20} /> Copy
+          {isOpenedOptions && (
+            <>
+              <div className="flex justify-between items-center mb-4">
+                <p className="text-xl font-medium">Card Options</p>
+                <IconButton
+                  disabled={
+                    isPendingDeleteCardDeleteCard ||
+                    isPendingEditTitleCard ||
+                    isPendingCopyCard
+                  }
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsOpenedOptions(false);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === KEYBOARD.ENTER) {
+                      e.stopPropagation();
+                      setIsOpenedOptions(false);
+                    }
+                  }}
+                  title="Close card options"
+                  aria-label="Close card options"
+                >
+                  <X />
+                </IconButton>
               </div>
-              <Tooltip>
-                <TooltipTrigger asChild className=" text-gray-400">
-                  <Info />
-                </TooltipTrigger>
-                <TooltipContent className="min-w-20 max-w-90 flex flex-col gap-1">
-                  <p className="text-base">
-                    New card will include cloned values:
-                  </p>
 
-                  <strong> Title , Description , Checklist </strong>
-                </TooltipContent>
-              </Tooltip>
-            </IconButton>
+              <div className="flex flex-col gap-2 items-start pl-2">
+                {/* EDIT CARD TITLE*/}
+                <AddNewInput
+                  disabled={
+                    isPendingDeleteCardDeleteCard ||
+                    isPendingEditTitleCard ||
+                    isPendingCopyCard
+                  }
+                  type="textarea"
+                  handleSubmitValue={(v) => handleChangeCardTitle(v)}
+                  inputName="title"
+                  placeholder="Edit card title here..."
+                  label="Edit card title"
+                  setIsOpenedTitleInput={setIsOpenedTitleInput}
+                  isOpenedTitleInput={isOpenedTitleInput}
+                  classNameContainer="p-0 mt-4 mb-2 w-full"
+                  buttonDirection="column"
+                  defaultValue={title}
+                >
+                  <IconButton
+                    aria-label="Edit"
+                    title="Edit"
+                    classNameChildren="flex  gap-2 "
+                  >
+                    <Edit />
+                    <p>Edit card title</p>
+                  </IconButton>
+                </AddNewInput>
 
-            <Separator className="my-4 bg-gray-700" />
+                {/* COPY CARD */}
+                <IconButton
+                  disabled={
+                    isPendingDeleteCardDeleteCard ||
+                    isPendingEditTitleCard ||
+                    isPendingCopyCard
+                  }
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCopyCard();
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === KEYBOARD.ENTER) {
+                      e.stopPropagation();
+                      handleCopyCard();
+                    }
+                  }}
+                  aria-label="Copy"
+                  title="Copy"
+                  classNameChildren="flex  justify-between items-center"
+                  className="w-full py-2"
+                >
+                  <div className="flex gap-2 items-center">
+                    <Copy size={20} /> Copy
+                  </div>
+                  <Tooltip>
+                    <TooltipTrigger asChild className=" text-gray-400">
+                      <Info />
+                    </TooltipTrigger>
+                    <TooltipContent className="min-w-20 max-w-90 flex flex-col gap-1">
+                      <p className="text-base">
+                        New card will include cloned values:
+                      </p>
 
-            {/* DELETE CARD */}
-            <IconButton
-              disabled={
-                isPendingDeleteCardDeleteCard ||
-                isPendingEditTitleCard ||
-                isPendingCopyCard
-              }
-              aria-label="Delete card"
-              title="Delete card"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleOpenModalDeleteCard();
-              }}
-              classNameChildren="flex  gap-2 items-center "
-              className="w-full"
-            >
-              <Delete /> Delete
-            </IconButton>
-          </div>
+                      <strong> Title , Description , Checklist </strong>
+                    </TooltipContent>
+                  </Tooltip>
+                </IconButton>
+
+                <Separator className="my-4 bg-gray-700" />
+
+                {/* DELETE CARD */}
+                <IconButton
+                  disabled={
+                    isPendingDeleteCardDeleteCard ||
+                    isPendingEditTitleCard ||
+                    isPendingCopyCard
+                  }
+                  aria-label="Delete card"
+                  title="Delete card"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleOpenModalDeleteCard();
+                  }}
+                  classNameChildren="flex  gap-2 items-center "
+                  className="w-full"
+                >
+                  <Delete /> Delete
+                </IconButton>
+              </div>
+            </>
+          )}
         </PopoverContent>
       </Popover>
       {/* DELETE CARD DIALOG */}
-
-      <DeleteDialog
-        title="Card"
-        disabled={!cardId}
-        loading={isPendingDeleteCardDeleteCard}
-        deleteDialogOpen={deleteDialogOpen}
-        setDeleteDialogOpen={setDeleteDialogOpen}
-        handleDelete={() => handleDeleteCard(cardId)}
-      />
+      {deleteDialogOpen && (
+        <DeleteDialog
+          title="Card"
+          disabled={!cardId}
+          loading={isPendingDeleteCardDeleteCard}
+          deleteDialogOpen={deleteDialogOpen}
+          setDeleteDialogOpen={setDeleteDialogOpen}
+          handleDelete={() => handleDeleteCard(cardId)}
+        />
+      )}
     </>
   );
 }

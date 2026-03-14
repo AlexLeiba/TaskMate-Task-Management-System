@@ -233,6 +233,10 @@ export type CardWithDetailsAndDueDateAndChecklistType = Card & {
     dueDate: Pick<DueDate, "time" | "date">[];
     checklist: Pick<Checklist, "isCompleted" | "id">[];
   } | null;
+} & {
+  assignedTo: {
+    avatar: string | null;
+  } | null;
 };
 export type ListAndCardsAndDueDateAndChecklistType = List & {
   cards: CardWithDetailsAndDueDateAndChecklistType[];

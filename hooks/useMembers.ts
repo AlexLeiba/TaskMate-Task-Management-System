@@ -8,7 +8,7 @@ export function useMembers(): {
   members: OrganizationMembersType[] | undefined;
   isFetching: boolean;
 } {
-  async function fetchOrhanizationMembers() {
+  async function fetchOrganizationMembers() {
     try {
       const { data } = await getOrganizationMembersAction();
 
@@ -20,7 +20,7 @@ export function useMembers(): {
 
   const { data: members, isFetching } = useQuery({
     queryKey: ["organization-members"],
-    queryFn: fetchOrhanizationMembers,
+    queryFn: fetchOrganizationMembers,
   });
 
   return { members, isFetching };

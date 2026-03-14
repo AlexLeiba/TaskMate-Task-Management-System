@@ -1,9 +1,13 @@
 import dynamic from "next/dynamic";
 
-const BoardServerRender = dynamic(() =>
-  import("@/components/Protected/Pages/Board/BoardServerRender").then(
-    (m) => m.BoardServerRender,
-  ),
+const BoardServerRender = dynamic(
+  () =>
+    import("@/components/Protected/Pages/Board/BoardServerRender").then(
+      (m) => m.BoardServerRender,
+    ),
+  // {
+  //   loading: () => <BoardCardSkeleton />,
+  // },
 );
 
 const SubHeaderServerRender = dynamic(() =>

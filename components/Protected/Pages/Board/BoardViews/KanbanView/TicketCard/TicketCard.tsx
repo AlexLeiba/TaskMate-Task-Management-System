@@ -6,7 +6,7 @@ import { KEYBOARD, USER_ROLES } from "@/lib/consts";
 
 import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
-import { CardAndDueDateAndChecklistType } from "@/lib/types";
+import { CardWithDetailsAndDueDateAndChecklistType } from "@/lib/types";
 import { Draggable } from "@hello-pangea/dnd";
 import { useRole } from "@/hooks/useRole";
 
@@ -17,7 +17,7 @@ const TicketCardDetails = dynamic(() =>
 );
 
 type Prop = {
-  data: CardAndDueDateAndChecklistType;
+  data: CardWithDetailsAndDueDateAndChecklistType;
   boardId: string;
   index: number;
 };

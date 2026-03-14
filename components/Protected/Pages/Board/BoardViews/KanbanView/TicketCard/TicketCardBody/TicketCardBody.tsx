@@ -1,23 +1,32 @@
 "use client";
 
-const AssignTo = dynamic(() => import("./AssignTo").then((m) => m.AssignTo), {
-  loading: () => <AssignToUserSkeleton />,
-});
+import { AssignToUserSkeleton } from "./AssignToUserSkeleton";
+import dynamic from "next/dynamic";
+import { CardWithDetailsAndDueDateAndChecklistType } from "@/lib/types";
+
+const AssignTo = dynamic(
+  () => import("./AssignTo/AssignTo").then((m) => m.AssignTo),
+  {
+    loading: () => <AssignToUserSkeleton />,
+  },
+);
 
 const Priority = dynamic(() => import("./Priority").then((m) => m.Priority));
 
-import { AssignToUserSkeleton } from "./AssignToUserSkeleton";
-import dynamic from "next/dynamic";
-import { DueDateIndicator } from "./DueDateIndicator";
-import { ChecklistIndicator } from "./ChecklistIndicator";
-import { CardAndDueDateAndChecklistType } from "@/lib/types";
+const DueDateIndicator = dynamic(() =>
+  import("./DueDateIndicator").then((m) => m.DueDateIndicator),
+);
+
+const ChecklistIndicator = dynamic(() =>
+  import("./ChecklistIndicator").then((m) => m.ChecklistIndicator),
+);
 
 type Props = {
-  data: CardAndDueDateAndChecklistType;
+  data: CardWithDetailsAndDueDateAndChecklistType;
   boardId: string;
 };
 export function TicketCardBody({
-  data: { priority, assignedToEmail, listId, id, details },
+  data: { priority, assignedTo, listId, id, details, assignedToEmail },
   boardId,
 }: Props) {
   return (
@@ -30,13 +39,16 @@ export function TicketCardBody({
         cardId={id}
       />
 
-      <DueDateIndicator data={details?.dueDate?.[0]} />
-      <ChecklistIndicator data={details?.checklist} />
+      {details?.dueDate?.[0] && (
+        <DueDateIndicator data={details?.dueDate?.[0]} />
+      )}
+      {details?.checklist && <ChecklistIndicator data={details?.checklist} />}
 
       {/* ASSIGN  */}
 
       <AssignTo
-        assignedTo={assignedToEmail}
+        assignedToAvatar={assignedTo?.avatar}
+        assignedToEmail={assignedToEmail}
         boardId={boardId}
         listId={listId}
         cardId={id}

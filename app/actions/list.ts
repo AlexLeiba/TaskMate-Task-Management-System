@@ -120,6 +120,11 @@ export async function getListDataAction(
             },
           }),
           include: {
+            assignedTo: {
+              select: {
+                avatar: true,
+              },
+            },
             details: {
               select: {
                 dueDate: {

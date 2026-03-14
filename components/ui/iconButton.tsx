@@ -22,7 +22,7 @@ export function IconButton({
     <button
       disabled={disabled || loading}
       className={cn(
-        "flex justify-center items-center transition-all",
+        "flex justify-center items-center transition-all relative",
         disabled
           ? buttonType === "card"
             ? "pointer-events-none"
@@ -34,8 +34,7 @@ export function IconButton({
     >
       <div
         className={cn(
-          "w-full",
-          loading ? "hidden" : "opacity-100",
+          loading ? "opacity-0" : "opacity-100 w-full",
           classNameChildren,
         )}
       >
@@ -43,7 +42,10 @@ export function IconButton({
       </div>
       {loading && (
         <Loader2
-          className={cn(loading ? "opacity-100" : "opacity-0", "animate-spin")}
+          className={cn(
+            loading ? "opacity-100" : "opacity-0",
+            "animate-spin absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
+          )}
         />
       )}
     </button>

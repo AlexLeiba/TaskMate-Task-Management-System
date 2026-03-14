@@ -52,6 +52,7 @@ export function ListCards({ boardId, listData }: Props) {
   );
 
   const role = useRole();
+
   const hasToastedRef = useRef(false);
 
   const { mutate: mutateReorderList } = useMutation({

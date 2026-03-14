@@ -1,18 +1,12 @@
 "use client";
 import { useState } from "react";
 import { useStore } from "@/store/useStore";
-import dynamic from "next/dynamic";
 import { useRole } from "@/hooks/useRole";
 import { USER_ROLES } from "@/lib/consts";
 import { ListCardTicketsCounter } from "./ListCardTicketsCounter";
 import { ListTitle } from "./ListTitle";
-
-const ListStatuses = dynamic(() =>
-  import("./ListStatuses/ListStatuses").then((m) => m.ListStatuses),
-);
-const ListOptions = dynamic(() =>
-  import("./ListOptions/ListOptions").then((m) => m.ListOptions),
-);
+import { ListStatuses } from "./ListStatuses/ListStatuses";
+import { ListOptions } from "./ListOptions/ListOptions";
 
 type Props = {
   status: string;

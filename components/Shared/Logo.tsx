@@ -14,8 +14,8 @@ export function Logo({ visible = false }: Props) {
         src="/logo.webp"
         alt="Logo"
         width={100}
-        height={24}
-        className="w-full h-6 object-contain"
+        height={32}
+        className="w-full h-8 object-contain"
       />
     </Link>
   );

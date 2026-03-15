@@ -32,6 +32,7 @@ const UserButton = dynamic(
 
 import { useStore } from "@/store/useStore";
 import { ButtonBack } from "./ButtonBack";
+import { useRole } from "@/hooks/useRole";
 
 type Props = {
   type?: "dashboard" | "board";
@@ -41,6 +42,7 @@ export function HeaderDashboard({ type = "dashboard" }: Props) {
   const setNewBoardDialogOpen = useStore(
     (state) => state.setNewBoardDialogOpen,
   );
+  const role = useRole();
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-background-element z-50  ">
@@ -60,22 +62,25 @@ export function HeaderDashboard({ type = "dashboard" }: Props) {
           </div>
 
           <div className="flex gap-2">
-            <Button
-              size={"sm"}
-              title="Create new board"
-              variant={"secondary"}
-              onClick={() => setNewBoardDialogOpen(true)}
-            >
-              Create
-            </Button>
-
-            {newBoardDialogOpen && (
-              <CreateNewBoardDialog
-                newBoardDialogOpen={newBoardDialogOpen}
-                setNewBoardDialogOpen={setNewBoardDialogOpen}
-              >
-                <DialogBoardDetails type="board" />
-              </CreateNewBoardDialog>
+            {role === "admin" && (
+              <>
+                <Button
+                  size={"sm"}
+                  title="Create new board"
+                  variant={"secondary"}
+                  onClick={() => setNewBoardDialogOpen(true)}
+                >
+                  Create
+                </Button>
+                {newBoardDialogOpen && (
+                  <CreateNewBoardDialog
+                    newBoardDialogOpen={newBoardDialogOpen}
+                    setNewBoardDialogOpen={setNewBoardDialogOpen}
+                  >
+                    <DialogBoardDetails type="board" />
+                  </CreateNewBoardDialog>
+                )}
+              </>
             )}
 
             <OrganizationSwitcher

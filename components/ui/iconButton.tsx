@@ -7,7 +7,7 @@ type Props = ComponentProps<"button"> & {
   loading?: boolean;
   disabled?: boolean;
   classNameChildren?: string;
-  buttonType?: "card";
+  buttonType?: "card" | "default";
 };
 export function IconButton({
   children,

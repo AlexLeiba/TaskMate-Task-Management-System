@@ -1,7 +1,10 @@
 import { currentUser, User } from "@clerk/nextjs/server";
 
 export async function getCurrentActiveUserData(): Promise<{
-  data: { email: string | undefined; user: User | null } | null;
+  data: {
+    email: string | undefined;
+    user: Pick<User, "fullName" | "imageUrl"> | null;
+  } | null;
   error: { message: string | null };
 }> {
   try {
@@ -9,7 +12,13 @@ export async function getCurrentActiveUserData(): Promise<{
     const userEmail = user?.emailAddresses?.[0]?.emailAddress;
 
     return {
-      data: { email: userEmail, user },
+      data: {
+        email: userEmail,
+        user: {
+          fullName: user?.fullName || user?.firstName || "",
+          imageUrl: user?.imageUrl || "",
+        },
+      },
       error: { message: null },
     };
   } catch (error: any) {

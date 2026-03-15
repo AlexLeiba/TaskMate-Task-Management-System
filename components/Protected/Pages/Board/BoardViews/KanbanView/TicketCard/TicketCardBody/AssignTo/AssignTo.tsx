@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -10,9 +10,9 @@ import { AssignedToType } from "@/lib/types";
 import Image from "next/image";
 import { IconButton } from "@/components/ui/iconButton";
 import { AssignToUserSkeleton } from "../AssignToUserSkeleton";
-
 import { useRole } from "@/hooks/useRole";
 import dynamic from "next/dynamic";
+import { useMutationState } from "@tanstack/react-query";
 
 const AssignToContent = dynamic(() =>
   import("./AssignToContent").then((m) => m.AssignToContent),
@@ -35,15 +35,29 @@ export function AssignTo({
   const [isOpenedAssign, setIsOpenedAssign] = useState(false);
   const role = useRole();
 
+  const handleClosePopup = useCallback(() => {
+    setIsOpenedAssign(false);
+  }, []);
+
+  const pendingMutations = useMutationState({
+    filters: {
+      mutationKey: ["assign-to"],
+      status: "pending",
+    },
+  });
+  const isPending = pendingMutations.length > 0;
   return (
     <Popover open={isOpenedAssign} onOpenChange={setIsOpenedAssign}>
       {/* TRIGGER */}
-      <PopoverTrigger asChild disabled={role === USER_ROLES.member}>
+      <PopoverTrigger
+        asChild
+        disabled={role === USER_ROLES.member || !boardId || isPending}
+      >
         <IconButton
-          buttonType={"card"}
-          disabled={role === USER_ROLES.member}
-          aria-label="Assign to"
-          title="Assign to"
+          buttonType={role === USER_ROLES.member ? "card" : "default"}
+          disabled={role === USER_ROLES.member || !boardId || isPending}
+          aria-label="Open Assign to popover"
+          title="Open Assign to popover"
           onClick={(e) => {
             if (role === USER_ROLES.admin) {
               e.stopPropagation();
@@ -93,13 +107,14 @@ export function AssignTo({
                   }
                 }}
                 className="cursor-pointer hover:opacity-80"
-                title="Close assign"
-                aria-label="Close assign"
+                title="Close assign to popover"
+                aria-label="Close assign to popover"
               >
                 <X />
               </IconButton>
             </div>
             <AssignToContent
+              handleClosePopup={handleClosePopup}
               assignedTo={assignedToEmail}
               boardId={boardId}
               listId={listId}

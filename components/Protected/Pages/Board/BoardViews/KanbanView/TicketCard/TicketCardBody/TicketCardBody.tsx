@@ -1,17 +1,8 @@
 "use client";
-
-import { AssignToUserSkeleton } from "./AssignToUserSkeleton";
 import dynamic from "next/dynamic";
 import { CardWithDetailsAndDueDateAndChecklistType } from "@/lib/types";
-
-const AssignTo = dynamic(
-  () => import("./AssignTo/AssignTo").then((m) => m.AssignTo),
-  {
-    loading: () => <AssignToUserSkeleton />,
-  },
-);
-
-const Priority = dynamic(() => import("./Priority").then((m) => m.Priority));
+import { AssignTo } from "./AssignTo/AssignTo";
+import { Priority } from "./Priority/Priority";
 
 const DueDateIndicator = dynamic(() =>
   import("./DueDateIndicator").then((m) => m.DueDateIndicator),

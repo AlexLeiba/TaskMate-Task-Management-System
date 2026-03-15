@@ -28,14 +28,7 @@ async function ProtectedLayout({
       <SidebarProvider>
         <div className="min-h-screen flex flex-col w-full">
           <HeaderDashboard type="board" />
-          <main
-            className={` flex flex-1 py-14 relative `}
-            // style={{
-            //   backgroundImage: boardData?.bgImageUrl
-            //     ? `url(${boardData?.bgImageUrl})`
-            //     : "none",
-            // }}
-          >
+          <main className={` flex flex-1 py-14 relative `}>
             <>
               {boardData?.bgImageUrl && (
                 <Image

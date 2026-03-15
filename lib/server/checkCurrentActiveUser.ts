@@ -43,7 +43,22 @@ export async function checkCurrentActiveUser(
     if (!activeUser) {
       activeUser = await prisma.user.create({
         data: {
-          name: `${data.user?.firstName} ${data.user?.lastName}`,
+          name: `${data?.user?.fullName}`,
+          email: data?.email,
+          avatar: data?.user?.imageUrl || "",
+        },
+      });
+    }
+
+    // IF USER HAS CHANGED NAME OR IMAGE
+    if (
+      activeUser?.avatar !== data?.user?.imageUrl ||
+      activeUser?.name !== data?.user?.fullName
+    ) {
+      activeUser = await prisma.user.update({
+        where: { id: activeUser?.id },
+        data: {
+          name: `${data?.user?.fullName}`,
           email: data?.email,
           avatar: data?.user?.imageUrl || "",
         },
@@ -61,7 +76,6 @@ export async function checkCurrentActiveUser(
       data: null,
       error: { message: error?.message || "Something went wrong" },
     };
-    //ERRORS WILL BE CAUGHT BY USEQUERY AND USEMUTATION HOOKS
   }
 }
 

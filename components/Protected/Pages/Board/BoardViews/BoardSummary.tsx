@@ -47,17 +47,18 @@ export function BoardSummary() {
           <StatusOverview data={data?.statusOverviewData} />
         </BoardStatsCard>
         <BoardStatsCard>
-          <FinishedWorkOverview type="board" />
-        </BoardStatsCard>
-        <BoardStatsCard>
-          <PriorityBreakdown data={data?.priorityBreakdownData} />
-        </BoardStatsCard>
-        <BoardStatsCard>
           <TeamWorkload
             data={data?.teamWorkLoadData}
             allAssignedWork={data?.allAssignedWork || 0}
             totalTasks={data?.totalTasks || 0}
           />
+        </BoardStatsCard>
+
+        <BoardStatsCard>
+          <PriorityBreakdown data={data?.priorityBreakdownData} />
+        </BoardStatsCard>
+        <BoardStatsCard>
+          <FinishedWorkOverview type="board" />
         </BoardStatsCard>
       </div>
       <BoardStatsCard>

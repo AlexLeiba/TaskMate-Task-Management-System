@@ -37,6 +37,7 @@ import {
   HeaderAdditionalInfoTabsType,
   HeaderTabsContentType,
   OrganizationMembersType,
+  PrioritiesType,
   TabType,
   TeamWorkloadType,
   UnsplashImagesType,
@@ -152,7 +153,11 @@ export const LIST_OPTIONS = [
   },
 ] as const;
 
-export const CARD_PRIORITIES = [
+export const CARD_PRIORITIES: {
+  label: string;
+  value: PrioritiesType;
+  icon?: React.ReactNode;
+}[] = [
   {
     label: "None",
     value: "none",

@@ -14,12 +14,14 @@ type Props = {
   boardId: string;
   listId: string;
   cardId: string;
+  handleClosePopup: () => void;
 };
 export function AssignToContent({
   assignedTo,
   boardId,
   listId,
   cardId,
+  handleClosePopup,
 }: Props) {
   const [selectedUser, setSelectedUser] = useState<UserType>(FAKE_USERS[0]);
   const { organization, isLoaded } = useOrganization();
@@ -97,6 +99,8 @@ export function AssignToContent({
   }
 
   function handleAssignTo(memberEmail: string) {
+    handleClosePopup();
+    toast.loading("Assigning to user...", { id: "assign-card" });
     mutate({
       assignedUserData: {
         email: memberEmail,
@@ -107,7 +111,6 @@ export function AssignToContent({
       listId,
       cardId,
     });
-    toast.loading("Assigning to user...", { id: "assign-card" });
   }
 
   function handleUnassigneUser() {

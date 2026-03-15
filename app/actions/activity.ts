@@ -16,10 +16,10 @@ export async function getActivitiesAction({
   count: number;
   error: { message: string };
 }> {
+  const { data: activeUser } = await checkCurrentActiveUser();
   try {
-    const { data: activeUser } = await checkCurrentActiveUser();
     const { orgId } = await auth();
-    if (!orgId || !activeUser) {
+    if (!orgId || !activeUser?.activeUser) {
       throw new Error("User not authenticated");
     }
 

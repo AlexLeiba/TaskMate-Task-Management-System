@@ -99,7 +99,7 @@ export async function getCardDetails(
     });
 
     if (!cardDetailsResponse) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
 
     if (!boardListsResponse) {
@@ -232,7 +232,7 @@ export async function createAttachment({
     const cardResponse = await getCardDetailsData({ cardDetailsId });
 
     if (!cardResponse) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
 
     const hasUserAlreadyAttachedFile = await prisma.attachments.findFirst({
@@ -327,7 +327,7 @@ export async function deleteAttachment({
     const cardResponse = await getCardDetailsData({ cardDetailsId });
 
     if (!cardResponse) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
 
     const response = await prisma.uploadedFile.delete({
@@ -426,7 +426,7 @@ export async function createCommentAction({
     const cardResponse = await getCardDetailsData({ cardDetailsId });
 
     if (!cardResponse) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
 
     const response = await prisma.comment.create({
@@ -495,7 +495,7 @@ export async function deleteCommentAction({
     const cardResponse = await getCardDetailsData({ cardDetailsId });
 
     if (!cardResponse) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
 
     const response = await prisma.comment.delete({
@@ -565,7 +565,7 @@ export async function updateDescriptionAction({
     const cardResponse = await getCardDetailsData({ cardDetailsId });
 
     if (!cardResponse) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
 
     const response = await prisma.cardDetails.update({
@@ -578,7 +578,7 @@ export async function updateDescriptionAction({
     });
 
     if (!response) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
 
     const responseDescription = response.description;
@@ -651,7 +651,7 @@ export async function createChecklistAction({
     const cardResponse = await getCardDetailsData({ cardDetailsId });
 
     if (!cardResponse) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
 
     const countChecklist = await prisma.checklist.count({
@@ -715,7 +715,7 @@ export async function updateChecklistAction({
     const cardResponse = await getCardDetailsData({ cardDetailsId });
 
     if (!cardResponse) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
 
     const isChecklistExists = await prisma.checklist.findFirst({
@@ -780,7 +780,7 @@ export async function deleteChecklistAction({
     const cardResponse = await getCardDetailsData({ cardDetailsId });
 
     if (!cardResponse) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
 
     const response = await prisma.checklist.delete({
@@ -791,7 +791,7 @@ export async function deleteChecklistAction({
     });
 
     if (!response) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
 
     await createNewActivity({
@@ -842,7 +842,7 @@ export async function createDueDateAction({
     const cardResponse = await getCardDetailsData({ cardDetailsId });
 
     if (!cardResponse) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
 
     const response = await prisma.dueDate.create({
@@ -900,7 +900,7 @@ export async function deleteDueDateAction({
     const cardResponse = await getCardDetailsData({ cardDetailsId });
 
     if (!cardResponse) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
 
     const response = await prisma.dueDate.delete({
@@ -955,7 +955,7 @@ export async function copyCardWithDetails({
     const cardResponse = await getCardDetailsData({ cardDetailsId });
 
     if (!cardResponse) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
 
     const response = await prisma.card.create({

@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
     const cardResponse = await getCardDetailsData({ cardDetailsId });
 
     if (!cardResponse) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
 
     // upload image to cloudinary and get the result
@@ -159,7 +159,7 @@ export async function DELETE(req: NextRequest) {
     // upload image to cloudinary and get the result
     if (bodyData.type === "single") {
       if (!bodyData.cardDetailsId) {
-        throw new Error("Card not found");
+        throw new Error("Card not found, please try again or refresh the page");
       }
 
       const cardResponse = await getCardDetailsData({
@@ -167,7 +167,7 @@ export async function DELETE(req: NextRequest) {
       });
 
       if (!cardResponse) {
-        throw new Error("Card not found");
+        throw new Error("Card not found, please try again or refresh the page");
       }
       // DELETE FROM CLOUD FILES
       const result = await cloudinary.uploader.destroy(bodyData.fileId, {

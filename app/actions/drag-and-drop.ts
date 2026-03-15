@@ -169,7 +169,7 @@ export async function changeCardPositionAction({
     });
 
     if (!cardToBeMoved) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
 
     if (!boardData) {

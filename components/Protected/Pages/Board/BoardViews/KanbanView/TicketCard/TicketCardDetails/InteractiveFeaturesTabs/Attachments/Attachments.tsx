@@ -77,11 +77,11 @@ export function Attachments({ cardDetailsId }: Props) {
     fileName: string;
   }) {
     if (!boardId) {
-      throw new Error("Board not found, please refresh the page");
+      throw new Error("Board not found, please try again or refresh the page");
     }
 
     if (!cardDetailsId) {
-      throw new Error("Card not found, please refresh the page");
+      throw new Error("Card not found, please try again or refresh the page");
     }
 
     const body: UploadFileBodyType = {
@@ -116,11 +116,15 @@ export function Attachments({ cardDetailsId }: Props) {
   }) {
     try {
       if (!boardId) {
-        return toast.error("Board not found, please try again");
+        return toast.error(
+          "Board not found, please try again or refresh the page",
+        );
       }
 
       if (!cardDetailsId) {
-        return toast.error("Card not found, please try again");
+        return toast.error(
+          "Card not found, please try again or refresh the page",
+        );
       }
       const body: DeleteFileBodyType = {
         fileId,

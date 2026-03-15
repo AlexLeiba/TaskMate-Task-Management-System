@@ -62,7 +62,9 @@ export function Description({
 
   function handleSaveDescription() {
     if (!cardDetailsId || !boardId) {
-      return toast.error("Card not found, please try again");
+      return toast.error(
+        "Card not found, please try again or refresh the page",
+      );
     }
 
     mutate({ description: value, cardDetailsId, boardId: boardId || "" });

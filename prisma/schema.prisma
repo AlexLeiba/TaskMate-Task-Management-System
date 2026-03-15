@@ -212,7 +212,7 @@ model UserDoneCardTickets {
   id String @id @default(uuid())
   cardId String
   assignedToEmail String
-  author User @relation(fields:[assignedToEmail],references: [email])
+  author User @relation(fields:[assignedToEmail],references: [email], onDelete: Cascade)
   boardId String
   orgId String
   createdAt DateTime? @default(now())

@@ -42,7 +42,7 @@ export async function editCardTitleAction({
     });
 
     if (!foundCard) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
 
     const response = await prisma.card.update({
@@ -111,7 +111,7 @@ export async function copyCardAction({
     });
 
     if (!foundCard) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
 
     const response = await prisma.card.create({
@@ -183,7 +183,7 @@ export async function deleteCardAction({
       },
     });
     if (!foundCard) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
     const response = await prisma.card.delete({
       where: {
@@ -262,7 +262,7 @@ export async function editPriorityAction({
       },
     });
     if (!foundCard) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
     const response = await prisma.card.update({
       where: {
@@ -322,7 +322,7 @@ export async function assignToCardAction({
       },
     });
     if (!foundCard) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
     const response = await prisma.card.update({
       where: {
@@ -370,7 +370,7 @@ export async function unassigneCardAction({
       },
     });
     if (!foundCard) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
     const response = await prisma.card.update({
       where: {
@@ -445,7 +445,7 @@ export async function editListStatusCardAction({
       },
     });
     if (!foundCard) {
-      throw new Error("Card not found");
+      throw new Error("Card not found, please try again or refresh the page");
     }
     if (!oldList) {
       throw new Error("Current list not found");

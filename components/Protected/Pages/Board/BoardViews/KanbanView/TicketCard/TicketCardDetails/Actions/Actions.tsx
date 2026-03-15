@@ -35,7 +35,9 @@ export function Actions({ cardDetailsId, listId, cardId }: Props) {
   async function deleteFile() {
     try {
       if (!cardDetailsId) {
-        return toast.error("Card not found");
+        return toast.error(
+          "Card not found, please try again or refresh the page",
+        );
       }
       const body: DeleteFileBodyType = {
         type: "card",

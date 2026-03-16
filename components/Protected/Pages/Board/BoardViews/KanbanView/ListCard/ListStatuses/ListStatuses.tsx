@@ -10,6 +10,7 @@ import { IconButton } from "@/components/ui/iconButton";
 import { useRole } from "@/hooks/useRole";
 import dynamic from "next/dynamic";
 import { X } from "lucide-react";
+
 const ListStatusesContent = dynamic(() =>
   import("./ListStatusesContent").then((m) => m.ListStatusesContent),
 );
@@ -33,7 +34,11 @@ export function ListStatuses({ selectedStatus, listId }: Props) {
   return (
     <Popover open={isOpenedStatus} onOpenChange={setIsOpenedStatus}>
       <PopoverTrigger asChild disabled={role === USER_ROLES.member}>
-        <IconButton title="List Statuses" aria-label="List Statuses">
+        <IconButton
+          title="List Statuses"
+          aria-label="List Statuses"
+          buttonType="card"
+        >
           <p>{statusData?.icon}</p>
         </IconButton>
       </PopoverTrigger>

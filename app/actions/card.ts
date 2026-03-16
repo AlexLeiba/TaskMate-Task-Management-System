@@ -465,6 +465,16 @@ export async function editListStatusCardAction({
       );
     }
 
+    if (newList.status === "done" || oldList?.status === "done") {
+      if (activeUserData?.role !== "admin") {
+        revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
+        throw new Error(
+          "only admin can move a card ticket to or from DONE list ",
+        );
+      }
+    }
+
+    // UPDATE LIST
     const response = await prisma.card.update({
       where: {
         id: cardId,
@@ -478,31 +488,24 @@ export async function editListStatusCardAction({
       },
     });
 
-    if (newList.status === "done" || oldList?.status === "done") {
-      if (activeUserData?.role !== "admin") {
-        revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
-        throw new Error(
-          "only admin can move a card ticket to or from DONE list ",
-        );
-      }
-      if (foundCard.assignedToEmail) {
-        await prisma.userDoneCardTickets.create({
-          data: {
-            cardId: cardId,
-            assignedToEmail: foundCard.assignedToEmail,
-            boardId: boardId,
-            orgId: orgId,
-          },
-        });
-      }
+    // RECORD WHO DONE THE TICKET
+    if (foundCard.assignedToEmail) {
+      await prisma.userDoneCardTickets.create({
+        data: {
+          cardId: cardId,
+          assignedToEmail: foundCard.assignedToEmail,
+          boardId: boardId,
+          orgId: orgId,
+        },
+      });
     }
-
     await createNewActivity({
       boardId: boardId,
       authorId: activeUserData?.activeUser.id,
       activity: `Changed card status from "${oldList.status}" to "${newList.status}", of card: "${response.title}"`,
       type: "updated",
     });
+
     revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
     return { data: newList.id, error: { message: "" } };
   } catch (error: any) {

@@ -33,9 +33,9 @@ export function BoardViews({ boardId, listData }: Props) {
   const boardTabSections = useStore((state) => state.boardTabSections);
 
   const BoardView = BOARD_VIEW_SECTION[boardTabSections];
+
   return (
     <div className="h-full">
-      {/* LIST CARDS */}
       <BoardView boardId={boardId} listData={listData} />
     </div>
   );

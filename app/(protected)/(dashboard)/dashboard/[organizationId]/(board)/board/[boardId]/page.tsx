@@ -1,3 +1,4 @@
+export const revalidate = 30;
 import { BoardServerRender } from "@/components/Protected/Pages/Board/BoardServerRender";
 import { SubHeaderServerRender } from "@/components/Protected/Pages/Board/SubHeaderServerRender";
 

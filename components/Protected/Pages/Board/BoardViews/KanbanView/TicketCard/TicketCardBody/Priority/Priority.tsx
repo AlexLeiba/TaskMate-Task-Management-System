@@ -33,7 +33,11 @@ export function Priority({ priority, boardId, listId, cardId }: Props) {
       status: "pending",
     },
   });
-  const isPending = pendingMutations.length > 0;
+
+  const pendingPriority = pendingMutations[0]?.variables as {
+    cardId: string;
+    priority: PrioritiesType;
+  };
 
   const handleClosePopup = useCallback(() => {
     setIsOpenedOptions(false);
@@ -44,11 +48,14 @@ export function Priority({ priority, boardId, listId, cardId }: Props) {
       {/* TRIGGER */}
       <PopoverTrigger
         asChild
-        disabled={role === USER_ROLES.member || isPending}
+        disabled={
+          role === USER_ROLES.member ||
+          pendingPriority?.cardId === cardId ||
+          !boardId
+        }
       >
         <IconButton
           buttonType={role === USER_ROLES.member ? "card" : "default"}
-          disabled={role === USER_ROLES.member || isPending}
           aria-label="Open Priority popover"
           title="Open Priority popover"
           onClick={(e) => {

@@ -7,13 +7,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CHANGE_LIST_STATUS, USER_ROLES } from "@/lib/consts";
+import { CHANGE_LIST_STATUS } from "@/lib/consts";
 
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { editListStatusCardAction } from "@/app/actions/card";
 import { useBoardId } from "@/hooks/useBoardId";
-import { useRole } from "@/hooks/useRole";
 import { ChangeStatusSkeleton } from "./ChangeStatusSkeleton";
 import { StatusType } from "@/lib/generated/prisma/enums";
 import { List } from "@/lib/generated/prisma/client";
@@ -31,7 +30,6 @@ export function ChangeStatusDropdown({
   listsData,
 }: Props) {
   const boardId = useBoardId();
-  const role = useRole();
 
   const {
     mutate: mutateCardStatus,
@@ -76,7 +74,7 @@ export function ChangeStatusDropdown({
         aria-label="Select status"
         title="Select status"
         buttonType="card"
-        disabled={isPending || role === USER_ROLES.member}
+        disabled={isPending}
         className="w-full flex justify-between text-left h-11!"
       >
         <SelectValue placeholder="Select status" className="h-11" />

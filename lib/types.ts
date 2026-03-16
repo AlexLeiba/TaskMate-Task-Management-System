@@ -432,3 +432,10 @@ export type UserData = {
   email: string;
   image: string;
 };
+
+export type AssignToCardActionProps = {
+  cardId: string;
+  listId: string;
+  boardId: string;
+  assignedUserData: Pick<User, "email" | "name" | "avatar">;
+};

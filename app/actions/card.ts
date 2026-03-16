@@ -1,6 +1,6 @@
 "use server";
 
-import { Card, PriorityType, User } from "@/lib/generated/prisma/client";
+import { Card, PriorityType } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
 import {
@@ -10,6 +10,7 @@ import {
 import { auth } from "@clerk/nextjs/server";
 
 import { revalidatePath } from "next/cache";
+import { AssignToCardActionProps } from "@/lib/types";
 
 type EditCardTitleProps = {
   cardId: string;
@@ -287,12 +288,6 @@ export async function editPriorityAction({
   }
 }
 
-type AssignToCardActionProps = {
-  cardId: string;
-  listId: string;
-  boardId: string;
-  assignedUserData: Pick<User, "email" | "name" | "avatar">;
-};
 export async function assignToCardAction({
   cardId,
   listId,

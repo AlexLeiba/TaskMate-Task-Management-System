@@ -45,17 +45,23 @@ export function AssignTo({
       status: "pending",
     },
   });
-  const isPending = pendingMutations.length > 0;
+
+  const pendingAssignTo = pendingMutations[0]?.variables as {
+    cardId: string;
+  };
   return (
     <Popover open={isOpenedAssign} onOpenChange={setIsOpenedAssign}>
       {/* TRIGGER */}
       <PopoverTrigger
         asChild
-        disabled={role === USER_ROLES.member || !boardId || isPending}
+        disabled={
+          role === USER_ROLES.member ||
+          !boardId ||
+          pendingAssignTo?.cardId === cardId
+        }
       >
         <IconButton
           buttonType={role === USER_ROLES.member ? "card" : "default"}
-          disabled={role === USER_ROLES.member || !boardId || isPending}
           aria-label="Open Assign to popover"
           title="Open Assign to popover"
           onClick={(e) => {

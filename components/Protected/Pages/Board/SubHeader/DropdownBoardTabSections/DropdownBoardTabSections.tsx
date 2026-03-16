@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { IconButton } from "@/components/ui/iconButton";
 import {
   Popover,
@@ -17,6 +17,8 @@ const DropdownBoardTabSectionsContent = dynamic(() =>
 
 export function DropdownBoardTabSections() {
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleCloseMenu = useCallback(() => setIsOpen(false), []);
 
   return (
     <div className="md:hidden">
@@ -37,7 +39,7 @@ export function DropdownBoardTabSections() {
         <PopoverContent className="flex flex-col gap-2" align="end">
           {isOpen && (
             <DropdownBoardTabSectionsContent
-              handleCloseMenu={() => setIsOpen(false)}
+              handleCloseMenu={handleCloseMenu}
             />
           )}
         </PopoverContent>

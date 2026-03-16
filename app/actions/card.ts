@@ -425,6 +425,7 @@ export async function editListStatusCardAction({
       },
       select: {
         id: true,
+        assignedToEmail: true,
       },
     });
     const oldList = await prisma.list.findFirst({
@@ -448,10 +449,20 @@ export async function editListStatusCardAction({
       throw new Error("Card not found, please try again or refresh the page");
     }
     if (!oldList) {
-      throw new Error("Current list not found");
+      throw new Error(
+        "Current list not found,  please try again or refresh the page",
+      );
     }
     if (!newList) {
-      throw new Error("New list not found");
+      throw new Error(
+        "New list not found,  please try again or refresh the page",
+      );
+    }
+
+    if (!orgId) {
+      throw new Error(
+        "Organization not found,  please try again or refresh the page",
+      );
     }
 
     const response = await prisma.card.update({
@@ -466,6 +477,25 @@ export async function editListStatusCardAction({
         title: true,
       },
     });
+
+    if (newList.status === "done" || oldList?.status === "done") {
+      if (activeUserData?.role !== "admin") {
+        revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
+        throw new Error(
+          "only admin can move a card ticket to or from DONE list ",
+        );
+      }
+      if (foundCard.assignedToEmail) {
+        await prisma.userDoneCardTickets.create({
+          data: {
+            cardId: cardId,
+            assignedToEmail: foundCard.assignedToEmail,
+            boardId: boardId,
+            orgId: orgId,
+          },
+        });
+      }
+    }
 
     await createNewActivity({
       boardId: boardId,

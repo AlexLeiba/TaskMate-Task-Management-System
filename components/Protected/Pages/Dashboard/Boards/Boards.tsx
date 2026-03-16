@@ -9,18 +9,12 @@ import { useRouter } from "next/navigation";
 import { deleteBoardAction } from "@/app/actions/dashboard";
 import toast from "react-hot-toast";
 import { BoardType } from "@/lib/types";
-import dynamic from "next/dynamic";
 import { useMutation } from "@tanstack/react-query";
 import { deleteFile } from "@/lib/deleteFile";
 import { useAuth } from "@clerk/nextjs";
 import { useRole } from "@/hooks/useRole";
 import { USER_ROLES } from "@/lib/consts";
-
-const DeleteDialog = dynamic(() =>
-  import("@/components/Protected/Shared-protected/DeleteDialog/DeleteDialog").then(
-    (m) => m.DeleteDialog,
-  ),
-);
+import { DeleteDialog } from "@/components/Protected/Shared-protected/DeleteDialog/DeleteDialog";
 
 export function Boards({
   data,

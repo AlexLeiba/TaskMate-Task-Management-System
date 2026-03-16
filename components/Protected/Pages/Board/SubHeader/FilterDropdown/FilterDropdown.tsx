@@ -5,7 +5,7 @@ import {
 } from "@/components/ui/popover";
 import { useStore } from "@/store/useStore";
 import { Filter } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { IconButton } from "@/components/ui/iconButton";
 import dynamic from "next/dynamic";
 
@@ -21,6 +21,8 @@ export function FiltersDropdown() {
   const boardSubHeaderFilterSelected = useStore(
     (state) => state.boardSubHeaderFilterSelected,
   );
+
+  const handleClosePopup = useCallback(() => setIsOpen(false), []);
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -49,9 +51,7 @@ export function FiltersDropdown() {
 
       {/* CONTENT */}
       <PopoverContent className="flex flex-col gap-3 p-2 w-full" align="end">
-        {isOpen && (
-          <FilterDropdownContent handleCloseMenu={() => setIsOpen(false)} />
-        )}
+        {isOpen && <FilterDropdownContent handleCloseMenu={handleClosePopup} />}
       </PopoverContent>
     </Popover>
   );

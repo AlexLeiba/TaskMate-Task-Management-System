@@ -7,7 +7,6 @@ import { FinishedWorkOverview } from "../../../Shared-protected/Summary/Finished
 import { RecentActivity } from "../../../Shared-protected/Summary/RecentActivity";
 import { useQuery } from "@tanstack/react-query";
 import { useBoardId } from "@/hooks/useBoardId";
-
 import { BoardStatsCard } from "../../../Shared-protected/Summary/BoardStatsCard";
 import { TeamWorkload } from "../../../Shared-protected/Summary/TeamWorkLoad/TeamWorkload";
 import { BoardStats } from "../../../Shared-protected/Summary/BoardStats";
@@ -35,7 +34,7 @@ export function BoardSummary() {
   const { data } = useQuery({
     queryFn: fetchBoardSummary,
     queryKey: ["boardSummary"],
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000, // TODO : change to 5 min.
   });
 
   return (

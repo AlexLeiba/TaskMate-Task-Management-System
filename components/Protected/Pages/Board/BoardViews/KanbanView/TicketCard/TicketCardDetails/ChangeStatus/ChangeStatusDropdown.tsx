@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { CHANGE_LIST_STATUS, USER_ROLES } from "@/lib/consts";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { editListStatusCardAction } from "@/app/actions/card";
 import { useBoardId } from "@/hooks/useBoardId";

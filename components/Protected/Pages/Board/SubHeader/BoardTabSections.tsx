@@ -4,10 +4,15 @@ import { BOARD_HEADER_TABS } from "@/lib/consts";
 import { BoardTabSectionType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/store/useStore";
+import { useShallow } from "zustand/shallow";
 
 export function BoardTabSections() {
-  const boardTabSections = useStore((state) => state.boardTabSections);
-  const setBoardTabSections = useStore((state) => state.setBoardTabSections);
+  const { boardTabSections, setBoardTabSections } = useStore(
+    useShallow((state) => ({
+      setBoardTabSections: state.setBoardTabSections,
+      boardTabSections: state.boardTabSections,
+    })),
+  );
 
   function handleSelectTabSection(tab: BoardTabSectionType) {
     // TODO, change zustand views based on selected view

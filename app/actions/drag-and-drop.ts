@@ -241,12 +241,13 @@ export async function changeCardPositionAction({
         throw new Error("Source list not found");
       }
 
+      // MOVE TO DONE STATUS LIST
       // ONLY ADMIN CAN MOVE TO OR FROM DONE LIST
       if (destinationList?.status === "done" || sourceList?.status === "done") {
         if (activeUserData?.role === "member") {
           revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
           throw new Error(
-            "Only admin can move a CARD ticket to or from DONE list ",
+            "only admin can move a card ticket to or from DONE list ",
           );
         }
 
@@ -255,6 +256,8 @@ export async function changeCardPositionAction({
           destinationList?.status === "done" &&
           cardToBeMoved?.assignedToEmail
         ) {
+          // CHECK IF RECORD EXISTS FOR SPECIFIC ORG AND BOARD.
+
           await prisma.userDoneCardTickets.create({
             data: {
               cardId: cardToMoveId,

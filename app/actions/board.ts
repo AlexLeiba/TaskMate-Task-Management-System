@@ -6,6 +6,8 @@ import { createNewActivity } from "@/lib/server/createActivity";
 import { checkCurrentActiveUser } from "@/lib/server/checkCurrentActiveUser";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { isOrgMember } from "@/lib/server/isAnOrgMember";
+import { redirect } from "next/navigation";
 
 export async function getBoardDataAction(
   boardId: string,
@@ -14,13 +16,17 @@ export async function getBoardDataAction(
   data: Board | null;
   error: { message: string };
 }> {
-  const { data: activeUser, error } =
-    await checkCurrentActiveUser(currentOrgId);
+  const isMember = await isOrgMember(currentOrgId);
+
+  if (!isMember.data) {
+    redirect("/dashboard");
+  }
 
   try {
-    if (error?.message || !activeUser) {
-      throw new Error(error?.message || "User not authorized");
+    if (isMember.error) {
+      throw new Error(isMember.error.message);
     }
+
     const { orgId } = await auth();
 
     if (!orgId) {
@@ -52,9 +58,8 @@ export async function editBoardTitleAction({
   boardId: string;
   title: string;
 }): Promise<{ data: Board | null; error: { message: string } }> {
+  const { data: activeUserData } = await checkCurrentActiveUser();
   try {
-    const { data: activeUserData } = await checkCurrentActiveUser();
-
     const { orgId } = await auth();
     if (!orgId) {
       throw new Error("User not authenticated");

@@ -12,8 +12,7 @@ import {
 
 import { AssignToSkeleton } from "./AssignToSkeleton";
 import { useEffect, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useOrganization } from "@clerk/nextjs";
+import { useMutation } from "@tanstack/react-query";
 import { UserCard } from "@/components/Protected/Shared-protected/UserCard/UserCard";
 
 import { assignToCardAction, unassigneCardAction } from "@/app/actions/card";
@@ -21,6 +20,8 @@ import toast from "react-hot-toast";
 import { useBoardId } from "@/hooks/useBoardId";
 import { FAKE_USERS, USER_ROLES } from "@/lib/consts";
 import { useRole } from "@/hooks/useRole";
+import { useMembers } from "@/hooks/useMembers";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 type Props = {
   assignedTo: string | undefined;
@@ -32,44 +33,29 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
 
   const [selectedUser, setSelectedUser] = useState<UserType>(FAKE_USERS[0]);
 
-  const { organization, isLoaded } = useOrganization();
   const role = useRole();
 
-  // FETCH MEMBERS OF ORGANIZATION
-  async function fetchMembers() {
-    if (!isLoaded || !organization || !organization.getMemberships()) return;
-    const res = await organization?.getMemberships();
-    if (!res) return;
-
-    return res?.data || [];
-  }
-
-  const { data: members } = useQuery({
-    queryFn: fetchMembers,
-    queryKey: ["members"],
-  });
+  const { members } = useMembers();
 
   const { mutate: mutateAssigneTo, isPending } = useMutation({
     mutationFn: assignToCardAction,
-    mutationKey: ["assign-to"],
+    mutationKey: [QUERY_KEYS.pages.board.cardDetails.assignTo],
     onSuccess: ({ data }) => {
-      toast.dismiss("assign-card");
+      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.assignTo);
       toast.success("Card assigned");
       const foundSelectedUser = members?.find(
-        (member) =>
-          member?.publicUserData?.identifier === data?.assignedToEmail,
+        (member) => member?.email === data?.assignedToEmail,
       );
       const selectedUser = {
-        id: foundSelectedUser?.id,
-        email: foundSelectedUser?.publicUserData?.identifier || "none",
-        name: foundSelectedUser?.publicUserData?.firstName || "none",
-        avatar: foundSelectedUser?.publicUserData?.imageUrl || "",
+        email: foundSelectedUser?.email || "none",
+        name: foundSelectedUser?.fullName || "none",
+        avatar: foundSelectedUser?.imageUrl || "",
       };
 
       setSelectedUser(selectedUser);
     },
     onError: ({ message }) => {
-      toast.dismiss("assign-card");
+      toast.dismiss(QUERY_KEYS.pages.board.cards.assignTo);
       toast.error(message || "Error assigning card, please try again");
     },
   });
@@ -77,29 +63,28 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
   const { mutate: unnasignMutation, isPending: isPendingUnassigne } =
     useMutation({
       mutationFn: unassigneCardAction,
-      mutationKey: ["unassign-to"],
+      mutationKey: [QUERY_KEYS.pages.board.cardDetails.unassign],
       onSuccess: () => {
-        toast.dismiss("unassign-card");
+        toast.dismiss(QUERY_KEYS.pages.board.cardDetails.unassign);
         toast.success("Card unassigned");
         setSelectedUser(FAKE_USERS[0]);
       },
       onError: ({ message }) => {
-        toast.dismiss("unassign-card");
+        toast.dismiss(QUERY_KEYS.pages.board.cardDetails.unassign);
         toast.error(message || "Error unassigning card, please try again");
       },
     });
 
   useEffect(() => {
     const foundSelectedUser = members?.find(
-      (member) => member?.publicUserData?.identifier === assignedTo,
+      (member) => member?.email === assignedTo,
     );
 
     if (foundSelectedUser) {
       const selectedUser = {
-        id: foundSelectedUser.id,
-        email: foundSelectedUser.publicUserData?.identifier || "",
-        name: foundSelectedUser.publicUserData?.firstName || "",
-        avatar: foundSelectedUser.publicUserData?.imageUrl || "",
+        email: foundSelectedUser.email || "",
+        name: foundSelectedUser.fullName || "",
+        avatar: foundSelectedUser.imageUrl || "",
       };
 
       return setSelectedUser(selectedUser);
@@ -130,7 +115,9 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
       cardId: cardDetailsId,
     });
 
-    toast.loading("Assigning to user...", { id: "assign-card" });
+    toast.loading("Assigning to user...", {
+      id: QUERY_KEYS.pages.board.cards.assignTo,
+    });
   }
 
   function handleUnassigneUser() {
@@ -148,10 +135,12 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
       cardId: cardDetailsId,
     });
 
-    toast.loading("Unassigning user...", { id: "unassign-card" });
+    toast.loading("Unassigning card...", {
+      id: QUERY_KEYS.pages.board.cardDetails.unassign,
+    });
   }
 
-  if (!listId || !cardDetailsId || !boardId || !isLoaded) {
+  if (!listId || !cardDetailsId || !boardId) {
     return <AssignToSkeleton />;
   }
 
@@ -165,12 +154,7 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
     >
       <SelectTrigger
         buttonType="card"
-        disabled={
-          !isLoaded ||
-          isPending ||
-          isPendingUnassigne ||
-          role === USER_ROLES.member
-        }
+        disabled={isPending || isPendingUnassigne || role === USER_ROLES.member}
         className="w-full flex justify-between text-left h-11!"
       >
         <SelectValue placeholder="Assign to" className="h-10" />
@@ -184,24 +168,17 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
 
           {members?.map((user) => (
             <SelectItem
-              disabled={!isLoaded || isPending || isPendingUnassigne}
-              defaultChecked={user.publicUserData?.identifier === assignedTo} //checked by member email
-              aria-label={
-                user.publicUserData?.firstName +
-                " " +
-                user.publicUserData?.lastName
-              }
-              key={user.id}
-              value={user.publicUserData?.identifier || ""}
+              disabled={isPending || isPendingUnassigne}
+              defaultChecked={user.email === assignedTo} //checked by member email
+              aria-label={user.fullName}
+              key={user.email}
+              value={user.email || ""}
             >
               <UserCard
                 data={{
-                  email: user.publicUserData?.identifier || "",
-                  name:
-                    user.publicUserData?.firstName +
-                    " " +
-                    user.publicUserData?.lastName,
-                  avatar: user.publicUserData?.imageUrl || "",
+                  email: user.email || "",
+                  name: user.fullName,
+                  avatar: user.imageUrl || "",
                 }}
                 size={"sm"}
               />

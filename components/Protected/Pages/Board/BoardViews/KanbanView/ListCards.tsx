@@ -16,6 +16,7 @@ import { ListCard } from "./ListCard/ListCard";
 import { AddNewListCard } from "./ListCard/AddNewListCard";
 import { useStore } from "@/store/useStore";
 import { useShallow } from "zustand/shallow";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 const DragDropContext = dynamic(() =>
   import("@hello-pangea/dnd").then((m) => m.DragDropContext),
@@ -57,14 +58,14 @@ export function ListCards({ boardId, listData }: Props) {
 
   const { mutate: mutateReorderList } = useMutation({
     mutationFn: changeListPositionAction,
-    mutationKey: ["reorder-list"],
+    mutationKey: [QUERY_KEYS.pages.board.lists.dragAndDrop.reorderList],
     onError: (error: any) => {
       toast.error(error?.message || "Something went wrong");
     },
   });
   const { mutate: mutateReorderCard } = useMutation({
     mutationFn: changeCardPositionAction,
-    mutationKey: ["reorder-card"],
+    mutationKey: [QUERY_KEYS.pages.board.lists.dragAndDrop.reorderCard],
     onError: (error: any) => {
       toast.error(error?.message || "Something went wrong");
     },

@@ -1,6 +1,12 @@
 export const QUERY_KEYS = {
   pages: {
-    boards: {},
+    boards: {
+      deleteBoard: "delete-board",
+      createNewBoard: {
+        create: "create-new-board",
+        getImages: "get-images",
+      },
+    },
     overview: {},
     board: {
       overview: {
@@ -8,8 +14,47 @@ export const QUERY_KEYS = {
         finishedWork: "finished-work-overview",
         recentActivities: "recent-activities",
       },
-      lists: {},
-      cards: {},
+      lists: {
+        editBoardTitle: "edit-board-title",
+        dragAndDrop: {
+          reorderList: "reorder-list",
+          reorderCard: "reorder-card",
+        },
+        statuses: {
+          updateStatus: "update-list-status",
+        },
+        editListTitle: "edit-list-title",
+        createListCard: "create-list-card",
+      },
+      cards: {
+        deleteCard: "delete-card",
+        copyCard: "copy-card",
+        editTitleCard: "edit-title-card",
+        editPriority: "edit-priority",
+        assignTo: "assign-to-card",
+        unassign: "unassign-card",
+      },
+      cardDetails: {
+        getCardDetails: "card-details",
+        updateDescription: "update-description",
+        getComments: "get-comments",
+        createComment: "create-comment",
+        deleteComment: "delete-comment",
+        uploadFile: "upload-file",
+        deleteFile: "delete-file",
+        getChecklist: "get-checklist",
+        createChecklist: "create-checklist",
+        updateChecklist: "update-checklist",
+        deleteChecklist: "delete-checklist",
+        assignTo: "assign-to-card",
+        unassign: "unassign-card",
+        editPriority: "edit-priority",
+        editStatus: "edit-status",
+        createDueDate: "create-due-date",
+        deleteDueDate: "delete-due-date",
+        deleteCard: "delete-card",
+        copyCard: "copy-card",
+      },
     },
   },
   hooks: {

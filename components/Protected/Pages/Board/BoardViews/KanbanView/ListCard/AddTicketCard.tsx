@@ -9,6 +9,7 @@ import { createListCardAction } from "@/app/actions/list";
 import toast from "react-hot-toast";
 import { usePathname } from "next/navigation";
 import { AddNewInput } from "../../../AddNewInput";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 type Props = {
   listId: string;
@@ -25,22 +26,24 @@ export function AddTicketCard({ listId }: Props) {
       : isOpenedNewCardInput;
 
   const { mutate, isPending } = useMutation({
-    mutationKey: ["create-list-card"],
+    mutationKey: [QUERY_KEYS.pages.board.lists.createListCard],
     mutationFn: createListCardAction,
     onSuccess: () => {
-      toast.dismiss("list-card");
+      toast.dismiss(QUERY_KEYS.pages.board.lists.createListCard);
       toast.success("List card changed");
       setIsOpenedNewCardInput(false);
     },
     onError: ({ message }) => {
-      toast.dismiss("list-card");
+      toast.dismiss(QUERY_KEYS.pages.board.lists.createListCard);
       toast.error(message || "Error creating list card, please try again");
     },
   });
 
   function handleAddNewCard(value: { [inputName: string]: string }) {
     mutate({ listId, title: value.title, boardId });
-    toast.loading("Creating list card...", { id: "list-card" });
+    toast.loading("Creating list card...", {
+      id: QUERY_KEYS.pages.board.lists.createListCard,
+    });
   }
   return (
     <div className="mt-2">

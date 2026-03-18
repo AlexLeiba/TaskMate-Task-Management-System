@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import { editPriorityAction } from "@/app/actions/card";
 import { useBoardId } from "@/hooks/useBoardId";
 import { useRole } from "@/hooks/useRole";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 type Props = {
   priority: PriorityType | undefined;
@@ -28,13 +29,13 @@ export function PriorityDropdown({ priority = "none", listId, cardId }: Props) {
 
   const { mutate, isPending, data } = useMutation({
     mutationFn: editPriorityAction,
-    mutationKey: ["priority"],
+    mutationKey: [QUERY_KEYS.pages.board.cardDetails.editPriority],
     onSuccess: () => {
-      toast.dismiss("priority");
+      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.editPriority);
       toast.success("Card priority was changed");
     },
     onError: ({ message }) => {
-      toast.dismiss("priority");
+      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.editPriority);
       toast.error(message || "Error editing card priority, please try again");
     },
   });
@@ -42,7 +43,9 @@ export function PriorityDropdown({ priority = "none", listId, cardId }: Props) {
   const updatedPriorityData = data?.data?.priority;
 
   function handleSelectPriority(priorityValue: PrioritiesType) {
-    toast.loading("Editing card priority", { id: "priority" });
+    toast.loading("Editing card priority", {
+      id: QUERY_KEYS.pages.board.cardDetails.editPriority,
+    });
 
     if (!boardId || !listId || !cardId)
       return toast.error("Something went wrong, please try again");

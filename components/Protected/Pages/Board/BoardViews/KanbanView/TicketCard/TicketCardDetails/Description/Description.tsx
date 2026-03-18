@@ -14,6 +14,7 @@ import "react-quill-new/dist/quill.snow.css";
 import { useBoardId } from "@/hooks/useBoardId";
 import { useRole } from "@/hooks/useRole";
 import { USER_ROLES } from "@/lib/consts";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), {
   ssr: false,
@@ -36,7 +37,10 @@ export function Description({
   const [isQuillVisible, setIsQuillVisible] = useState(false);
 
   const { mutate, isPending } = useMutation({
-    mutationKey: ["update-description"],
+    mutationKey: [
+      QUERY_KEYS.pages.board.cardDetails.updateDescription,
+      cardDetailsId,
+    ],
     mutationFn: updateDescriptionAction,
     onSuccess: ({ data: description }) => {
       if (description) {
@@ -44,12 +48,18 @@ export function Description({
 
         setIsQuillVisible(false);
       }
-      toast.dismiss("update-description");
+      toast.dismiss(
+        QUERY_KEYS.pages.board.cardDetails.updateDescription,
+        cardDetailsId,
+      );
       toast.success("Description updated");
     },
     onError: ({ message }) => {
       toast.error(message || "Error updating description, please try again");
-      toast.dismiss("update-description");
+      toast.dismiss(
+        QUERY_KEYS.pages.board.cardDetails.updateDescription,
+        cardDetailsId,
+      );
     },
   });
 
@@ -68,7 +78,9 @@ export function Description({
     }
 
     mutate({ description: value, cardDetailsId, boardId: boardId || "" });
-    toast.loading("Updating description...", { id: "update-description" });
+    toast.loading("Updating description...", {
+      id: QUERY_KEYS.pages.board.cardDetails.updateDescription,
+    });
   }
 
   function handleOpenQuill() {

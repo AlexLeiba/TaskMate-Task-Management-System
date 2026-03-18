@@ -15,6 +15,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 const DeleteDialog = dynamic(() =>
   import("@/components/Protected/Shared-protected/DeleteDialog/DeleteDialog").then(
@@ -62,32 +63,32 @@ export function Actions({ cardDetailsId, listId, cardId }: Props) {
     mutate: deleteCardMutation,
     isPending: isPendingDeleteCardDeleteCard,
   } = useMutation({
-    mutationKey: ["delete-card"],
+    mutationKey: [QUERY_KEYS.pages.board.cardDetails.deleteCard],
     mutationFn: deleteCardAction,
     onMutate: async () => {
       // DELETE FILES FROM CLOUD
       await deleteFile(); // execution of the mutation will wait until this request is resolved (removing all attachments from cloud)
     },
     onSuccess: () => {
-      toast.dismiss("delete-card");
+      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.deleteCard);
       toast.success("Card deleted");
     },
     onError: ({ message }) => {
-      toast.dismiss("delete-card");
+      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.deleteCard);
       toast.error(message || "Error deleting card, please try again");
     },
   });
   // COPY CARD
   const { mutate: copyCardMutation, isPending: isPendingCopyCard } =
     useMutation({
-      mutationKey: ["copy-card"],
+      mutationKey: [QUERY_KEYS.pages.board.cardDetails.copyCard],
       mutationFn: copyCardAction,
       onSuccess: () => {
-        toast.dismiss("copy-card");
+        toast.dismiss(QUERY_KEYS.pages.board.cardDetails.copyCard);
         toast.success("Card copied");
       },
       onError: ({ message }) => {
-        toast.dismiss("copy-card");
+        toast.dismiss(QUERY_KEYS.pages.board.cardDetails.copyCard);
         toast.error(message || "Error copying card, please try again");
       },
     });
@@ -97,7 +98,9 @@ export function Actions({ cardDetailsId, listId, cardId }: Props) {
       return toast.error("Something went wrong, please try again");
     }
 
-    toast.loading("Copying card...", { id: "copy-card" });
+    toast.loading("Copying card...", {
+      id: QUERY_KEYS.pages.board.cardDetails.copyCard,
+    });
     copyCardMutation({ listId, boardId: boardId || "", cardId });
   }
 
@@ -106,7 +109,9 @@ export function Actions({ cardDetailsId, listId, cardId }: Props) {
       toast.error("Something went wrong, please try again");
     }
 
-    toast.loading("Deleting card...", { id: "delete-card" });
+    toast.loading("Deleting card...", {
+      id: QUERY_KEYS.pages.board.cardDetails.deleteCard,
+    });
     setIsDeleteModalOpened(false);
 
     // DELETE FILES FROM DB

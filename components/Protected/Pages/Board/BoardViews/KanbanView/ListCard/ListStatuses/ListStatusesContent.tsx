@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { useMutation } from "@tanstack/react-query";
 import { updateListStatusAction } from "@/app/actions/list";
 import { useBoardId } from "@/hooks/useBoardId";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 type Props = {
   selectedStatus: string;
@@ -25,14 +26,14 @@ export function ListStatusesContent({
 
   const { mutate: mutateChangeStatus, isPending: isPendingChangeStatus } =
     useMutation({
-      mutationKey: ["update-list-status"],
+      mutationKey: [QUERY_KEYS.pages.board.lists.statuses.updateStatus],
       mutationFn: updateListStatusAction,
       onSuccess: () => {
-        toast.dismiss("list-status");
+        toast.dismiss(QUERY_KEYS.pages.board.lists.statuses.updateStatus);
         toast.success("List status changed");
       },
       onError: ({ message }) => {
-        toast.dismiss("list-status");
+        toast.dismiss(QUERY_KEYS.pages.board.lists.statuses.updateStatus);
         toast.error(message || "Error changing list status, please try again");
       },
     });
@@ -45,7 +46,9 @@ export function ListStatusesContent({
 
     setStatusData(status);
     mutateChangeStatus({ boardId, listId, status: status.value });
-    toast.loading("Changing list status...", { id: "list-status" });
+    toast.loading("Changing list status...", {
+      id: QUERY_KEYS.pages.board.lists.statuses.updateStatus,
+    });
   }
   return (
     <>

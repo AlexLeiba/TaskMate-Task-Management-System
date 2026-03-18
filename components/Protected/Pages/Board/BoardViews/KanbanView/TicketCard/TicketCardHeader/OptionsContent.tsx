@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/tooltip";
 import { DeleteDialog } from "@/components/Protected/Shared-protected/DeleteDialog/DeleteDialog";
 import { deleteFile } from "@/lib/deleteFile";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 type Props = {
   boardId: string;
@@ -48,16 +49,16 @@ export function OptionsContent({
         boardId,
       ); // execution of the mutation will wait until this request is resolved (removing all attachments from cloud)
     },
-    mutationKey: ["delete-card"],
+    mutationKey: [QUERY_KEYS.pages.board.cards.deleteCard],
     mutationFn: deleteCardAction,
     onSuccess: () => {
       setDeleteDialogOpen(false);
-      toast.dismiss("delete-card");
+      toast.dismiss(QUERY_KEYS.pages.board.cards.deleteCard);
       toast.success("Card deleted");
     },
     onError: ({ message }) => {
       setDeleteDialogOpen(false);
-      toast.dismiss("delete-card");
+      toast.dismiss(QUERY_KEYS.pages.board.cards.deleteCard);
       toast.error(message || "Error deleting card, please try again");
     },
   });
@@ -67,7 +68,9 @@ export function OptionsContent({
       toast.error("Something went wrong, please try again");
     }
 
-    toast.loading("Deleting card...", { id: "delete-card" });
+    toast.loading("Deleting card...", {
+      id: QUERY_KEYS.pages.board.cards.deleteCard,
+    });
 
     // DELETE FILES FROM DB
     deleteCardMutation({ cardId, listId, boardId });
@@ -76,14 +79,14 @@ export function OptionsContent({
   // EDIT TITLE
   const { mutate: editTitleCardMutation, isPending: isPendingEditTitleCard } =
     useMutation({
-      mutationKey: ["edit-title-card", cardId],
+      mutationKey: [QUERY_KEYS.pages.board.cards.editTitleCard, cardId],
       mutationFn: editCardTitleAction,
       onSuccess: () => {
-        toast.dismiss("edit-title-card");
+        toast.dismiss(QUERY_KEYS.pages.board.cards.editTitleCard);
         toast.success("Card title was edited");
       },
       onError: ({ message }) => {
-        toast.dismiss("edit-title-card");
+        toast.dismiss(QUERY_KEYS.pages.board.cards.editTitleCard);
         toast.error(message || "Error editing card title, please try again");
       },
     });
@@ -91,14 +94,14 @@ export function OptionsContent({
   // COPY CARD
   const { mutate: copyCardMutation, isPending: isPendingCopyCard } =
     useMutation({
-      mutationKey: ["copy-card"],
+      mutationKey: [QUERY_KEYS.pages.board.cards.copyCard],
       mutationFn: copyCardAction,
       onSuccess: () => {
-        toast.dismiss("copy-card");
+        toast.dismiss(QUERY_KEYS.pages.board.cards.copyCard);
         toast.success("Card was copied");
       },
       onError: ({ message }) => {
-        toast.dismiss("copy-card");
+        toast.dismiss(QUERY_KEYS.pages.board.cards.copyCard);
         toast.error(message || "Error copying card, please try again");
       },
     });
@@ -106,7 +109,9 @@ export function OptionsContent({
   //HANDLE CHANGE TITLE
   function handleChangeCardTitle(title: { [inputName: string]: string }) {
     editTitleCardMutation({ title: title.title, cardId, listId, boardId });
-    toast.loading("Editing card title...", { id: "edit-title-card" });
+    toast.loading("Editing card title...", {
+      id: QUERY_KEYS.pages.board.cards.editTitleCard,
+    });
     setIsOpenedTitleInput(false);
     // setIsOpenedOptions(false);
   }
@@ -120,7 +125,9 @@ export function OptionsContent({
       return toast.error("Something went wrong, please try again");
     }
 
-    toast.loading("Copying card...", { id: "copy-card" });
+    toast.loading("Copying card...", {
+      id: QUERY_KEYS.pages.board.cards.copyCard,
+    });
     copyCardMutation({ cardId, listId, boardId });
     // setIsOpenedOptions(false);
   }

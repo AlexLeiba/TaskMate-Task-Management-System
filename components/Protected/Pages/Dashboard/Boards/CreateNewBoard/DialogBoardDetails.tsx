@@ -17,6 +17,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { createNewBoardAction } from "@/app/actions/dashboard";
 import { useStore } from "@/store/useStore";
 import { type Board } from "@/lib/generated/prisma/client";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 type Props = {
   type?: "dashboard" | "board";
@@ -37,13 +38,13 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
 
   const { data, isFetching } = useQuery({
     queryFn: getUnsplashImagesAction,
-    queryKey: ["unsplash-images"],
+    queryKey: [QUERY_KEYS.pages.boards.createNewBoard.getImages],
     staleTime: 1000 * 60 * 60,
   });
 
   const { mutate: mutateCreateNewBoard, isPending: isPendingCreateNewBoard } =
     useMutation({
-      mutationKey: ["create-new-board"],
+      mutationKey: [QUERY_KEYS.pages.boards.createNewBoard.create],
       mutationFn: createNewBoardAction,
       onSuccess: ({ data }) => {
         setValue("title", "");
@@ -71,7 +72,9 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
   });
 
   function handleGetNewImages() {
-    queryClient.invalidateQueries({ queryKey: ["unsplash-images"] });
+    queryClient.invalidateQueries({
+      queryKey: [QUERY_KEYS.pages.boards.createNewBoard.getImages],
+    });
   }
 
   async function onSubmitNewBoard(data: InputTitleSchemaType) {

@@ -11,6 +11,7 @@ import { X } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useMutationState } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 const PriorityContent = dynamic(() =>
   import("./PriorityContent").then((m) => m.PriorityContent),
@@ -29,7 +30,7 @@ export function Priority({ priority, boardId, listId, cardId }: Props) {
 
   const pendingMutations = useMutationState({
     filters: {
-      mutationKey: ["edit-priority"],
+      mutationKey: [QUERY_KEYS.pages.board.cards.editPriority],
       status: "pending",
     },
   });

@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
 import { useBoardId } from "@/hooks/useBoardId";
 import { useUserData } from "@/hooks/useUserData";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 const DeleteDialog = dynamic(() =>
   import("@/components/Protected/Shared-protected/DeleteDialog/DeleteDialog").then(
@@ -51,41 +52,47 @@ export function Comments({ cardDetailsId }: Props) {
   }
 
   const { data: commentsData, isLoading } = useQuery({
-    queryKey: ["fetch-comments", cardDetailsId],
+    queryKey: [QUERY_KEYS.pages.board.cardDetails.getComments, cardDetailsId],
     queryFn: getCommentsData,
   });
 
   // CREATE
   const { mutate: mutateCreate, isPending: isPendingCreate } = useMutation({
-    mutationKey: ["update-description"],
+    mutationKey: [QUERY_KEYS.pages.board.cardDetails.createComment],
     mutationFn: createCommentAction,
     onSuccess: () => {
-      toast.dismiss("create-comment");
+      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.createComment);
       toast.success("Comment created");
       queryClient.invalidateQueries({
-        queryKey: ["fetch-comments", cardDetailsId],
+        queryKey: [
+          QUERY_KEYS.pages.board.cardDetails.getComments,
+          cardDetailsId,
+        ],
       });
     },
     onError: ({ message }) => {
       toast.error(message || "Error creating comment, please try again");
-      toast.dismiss("create-comment");
+      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.createComment);
     },
   });
 
   // DELETE
   const { mutate: mutateDelete, isPending: isPendingDelete } = useMutation({
-    mutationKey: ["update-description"],
+    mutationKey: [QUERY_KEYS.pages.board.cardDetails.deleteComment],
     mutationFn: deleteCommentAction,
     onSuccess: () => {
-      toast.dismiss("delete-comment");
+      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.deleteComment);
       toast.success("Comment deleted");
       queryClient.invalidateQueries({
-        queryKey: ["fetch-comments", cardDetailsId],
+        queryKey: [
+          QUERY_KEYS.pages.board.cardDetails.getComments,
+          cardDetailsId,
+        ],
       });
     },
     onError: ({ message }) => {
       toast.error(message || "Error deleting comment, please try again");
-      toast.dismiss("delete-comment");
+      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.deleteComment);
     },
   });
 
@@ -96,7 +103,9 @@ export function Comments({ cardDetailsId }: Props) {
     if (!boardId || !cardDetailsId) {
       return toast.error("Something went wrong, please try again");
     }
-    toast.loading("Deleting comment...", { id: "delete-comment" });
+    toast.loading("Deleting comment...", {
+      id: QUERY_KEYS.pages.board.cardDetails.deleteComment,
+    });
     setIsDeleteModalOpened(false);
 
     mutateDelete({
@@ -115,7 +124,9 @@ export function Comments({ cardDetailsId }: Props) {
       return toast.error("Something went wrong, please try again");
     }
 
-    toast.loading("Creating comment...", { id: "create-comment" });
+    toast.loading("Creating comment...", {
+      id: QUERY_KEYS.pages.board.cardDetails.createComment,
+    });
     mutateCreate({
       cardDetailsId,
       comment: data.comment,

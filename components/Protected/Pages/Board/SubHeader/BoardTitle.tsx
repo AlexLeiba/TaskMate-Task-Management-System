@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { USER_ROLES } from "@/lib/consts";
 import { cn } from "@/lib/utils";
 import { useRole } from "@/hooks/useRole";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 type Props = {
   boardId: string;
@@ -19,7 +20,7 @@ export function BoardTitle({ boardId, boardTitle }: Props) {
   const [showTitleInput, setShowTitleInput] = useState(false);
   const { mutate: mutateEditBoardTitle, isPending: isPendingEditBoardTitle } =
     useMutation({
-      mutationKey: ["edit-board-title"],
+      mutationKey: [QUERY_KEYS.pages.board.lists.editBoardTitle],
       mutationFn: editBoardTitleAction,
       onSuccess: () => {
         toast.success("Board title updated");

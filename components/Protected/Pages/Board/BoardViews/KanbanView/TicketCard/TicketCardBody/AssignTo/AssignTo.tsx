@@ -13,6 +13,7 @@ import { AssignToUserSkeleton } from "../AssignToUserSkeleton";
 import { useRole } from "@/hooks/useRole";
 import dynamic from "next/dynamic";
 import { useMutationState } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 const AssignToContent = dynamic(() =>
   import("./AssignToContent").then((m) => m.AssignToContent),
@@ -41,7 +42,7 @@ export function AssignTo({
 
   const pendingMutations = useMutationState({
     filters: {
-      mutationKey: ["assign-to"],
+      mutationKey: [QUERY_KEYS.pages.board.cards.assignTo],
       status: "pending",
     },
   });
@@ -62,8 +63,8 @@ export function AssignTo({
       >
         <IconButton
           buttonType={role === USER_ROLES.member ? "card" : "default"}
-          aria-label="Open Assign to popover"
-          title="Open Assign to popover"
+          aria-label="Open Assign"
+          title="Open Assign"
           onClick={(e) => {
             if (role === USER_ROLES.admin) {
               e.stopPropagation();
@@ -113,8 +114,8 @@ export function AssignTo({
                   }
                 }}
                 className="cursor-pointer hover:opacity-80"
-                title="Close assign to popover"
-                aria-label="Close assign to popover"
+                title="Close assign"
+                aria-label="Close assign"
               >
                 <X />
               </IconButton>

@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { assignToCardAction, unassigneCardAction } from "@/app/actions/card";
 import toast from "react-hot-toast";
 import { useMembers } from "@/hooks/useMembers";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 type Props = {
   assignedTo: AssignedToType["email"] | null;
@@ -26,13 +27,13 @@ export function AssignToContent({
 
   const { mutate, isPending } = useMutation({
     mutationFn: assignToCardAction,
-    mutationKey: ["assign-to"],
+    mutationKey: [QUERY_KEYS.pages.board.cards.assignTo],
     onSuccess: () => {
-      toast.dismiss("assign-card");
+      toast.dismiss(QUERY_KEYS.pages.board.cards.assignTo);
       toast.success("Card assigned");
     },
     onError: ({ message }) => {
-      toast.dismiss("assign-card");
+      toast.dismiss(QUERY_KEYS.pages.board.cards.assignTo);
       toast.error(message || "Error assigning card, please try again");
     },
   });
@@ -40,13 +41,13 @@ export function AssignToContent({
   const { mutate: unnasignMutation, isPending: isPendingUnassigne } =
     useMutation({
       mutationFn: unassigneCardAction,
-      mutationKey: ["unassign-to"],
+      mutationKey: [QUERY_KEYS.pages.board.cards.unassign],
       onSuccess: () => {
-        toast.dismiss("unassign-card");
+        toast.dismiss(QUERY_KEYS.pages.board.cards.unassign);
         toast.success("Card unassigned");
       },
       onError: ({ message }) => {
-        toast.dismiss("unassign-card");
+        toast.dismiss(QUERY_KEYS.pages.board.cards.unassign);
         toast.error(message || "Error unassigning card, please try again");
       },
     });
@@ -60,7 +61,9 @@ export function AssignToContent({
     "email" | "name" | "avatar"
   >) {
     handleClosePopup();
-    toast.loading("Assigning to user...", { id: "assign-card" });
+    toast.loading("Assigning card...", {
+      id: QUERY_KEYS.pages.board.cards.assignTo,
+    });
     mutate({
       assignedUserData: {
         email,
@@ -84,7 +87,9 @@ export function AssignToContent({
       listId,
       cardId,
     });
-    toast.loading("Unassigning user...", { id: "unassign-card" });
+    toast.loading("Unassigning card...", {
+      id: QUERY_KEYS.pages.board.cards.unassign,
+    });
   }
   return (
     <>

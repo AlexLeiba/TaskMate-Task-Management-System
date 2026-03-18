@@ -16,6 +16,7 @@ import { useBoardId } from "@/hooks/useBoardId";
 import { ChangeStatusSkeleton } from "./ChangeStatusSkeleton";
 import { StatusType } from "@/lib/generated/prisma/enums";
 import { List } from "@/lib/generated/prisma/client";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 type Props = {
   listId: string | undefined;
@@ -37,13 +38,13 @@ export function ChangeStatusDropdown({
     data,
   } = useMutation({
     mutationFn: editListStatusCardAction,
-    mutationKey: ["card-status"],
+    mutationKey: [QUERY_KEYS.pages.board.cardDetails.editStatus],
     onSuccess: () => {
-      toast.dismiss("card-status");
+      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.editStatus);
       toast.success("Card card status was changed");
     },
     onError: ({ message }) => {
-      toast.dismiss("card-status");
+      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.editStatus);
       toast.error(message || "Error editing card status, please try again");
     },
   });
@@ -51,7 +52,9 @@ export function ChangeStatusDropdown({
   const updatedCardStatus = data?.data;
 
   function handleSelectNewStatus(newListId: StatusType) {
-    toast.loading("Editing card status", { id: "card-status" });
+    toast.loading("Editing card status", {
+      id: QUERY_KEYS.pages.board.cardDetails.editStatus,
+    });
 
     if (!boardId || !listId || !cardId)
       return toast.error("Something went wrong, please try again");

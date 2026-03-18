@@ -1,6 +1,7 @@
 import { editPriorityAction } from "@/app/actions/card";
 import { IconButton } from "@/components/ui/iconButton";
 import { CARD_PRIORITIES, KEYBOARD } from "@/lib/consts";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { PrioritiesType, PriorityType } from "@/lib/types";
 import { useMutation } from "@tanstack/react-query";
 import { Check } from "lucide-react";
@@ -23,20 +24,22 @@ export function PriorityContent({
 }: Props) {
   const { mutate, isPending } = useMutation({
     mutationFn: editPriorityAction,
-    mutationKey: ["edit-priority"],
+    mutationKey: [QUERY_KEYS.pages.board.cards.editPriority],
     onSuccess: () => {
-      toast.dismiss("edit-priority");
+      toast.dismiss(QUERY_KEYS.pages.board.cards.editPriority);
       toast.success("Card priority was changed");
     },
     onError: ({ message }) => {
-      toast.dismiss("edit-priority");
+      toast.dismiss(QUERY_KEYS.pages.board.cards.editPriority);
       toast.error(message || "Error editing card priority, please try again");
     },
   });
 
   function handleSelectPriority(priorityValue: PriorityType) {
     handleClosePopup();
-    toast.loading("Editing card priority", { id: "edit-priority" });
+    toast.loading("Editing card priority", {
+      id: QUERY_KEYS.pages.board.cards.editPriority,
+    });
     mutate({ priority: priorityValue.value, boardId, listId, cardId });
   }
   return (

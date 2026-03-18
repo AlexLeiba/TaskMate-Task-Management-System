@@ -6,6 +6,7 @@ import { useBoardId } from "@/hooks/useBoardId";
 
 import { AddNewInput } from "../../../AddNewInput";
 import { ListCardTicketsCounter } from "./ListCardTicketsCounter";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 type Props = {
   listId: string;
@@ -25,14 +26,14 @@ export function ListTitle({
 
   const { mutate: mutateListTitle, isPending: isPendingMutateListTitle } =
     useMutation({
-      mutationKey: ["update-list-title"],
+      mutationKey: [QUERY_KEYS.pages.board.lists.editListTitle],
       mutationFn: updateListTitleAction,
       onSuccess() {
-        toast.dismiss("update-list-title");
+        toast.dismiss(QUERY_KEYS.pages.board.lists.editListTitle);
         toast.success("List title updated");
       },
       onError({ message }) {
-        toast.dismiss("update-list-title");
+        toast.dismiss(QUERY_KEYS.pages.board.lists.editListTitle);
         toast.error(message || "Error updating list title, please try again");
       },
     });
@@ -44,7 +45,9 @@ export function ListTitle({
       return toast.error("Something went wrong, please try again");
 
     mutateListTitle({ listId, title: value.title, boardId });
-    toast.loading("Updating list title...", { id: "update-list-title" });
+    toast.loading("Updating list title...", {
+      id: QUERY_KEYS.pages.board.lists.editListTitle,
+    });
   }
   return (
     <>

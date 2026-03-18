@@ -11,6 +11,7 @@ import { KEYBOARD } from "@/lib/consts";
 import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
 import { useMutationState } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 const OptionsContent = dynamic(() =>
   import("./OptionsContent").then((m) => m.OptionsContent),
@@ -33,7 +34,11 @@ export function TicketCardHeader({
   const [isOpenedOptions, setIsOpenedOptions] = useState(false);
   const pendingMutations = useMutationState({
     filters: {
-      mutationKey: ["edit-title-card", "copy-card", "delete-card"],
+      mutationKey: [
+        QUERY_KEYS.pages.board.cards.copyCard,
+        QUERY_KEYS.pages.board.cards.editTitleCard,
+        QUERY_KEYS.pages.board.cards.deleteCard,
+      ],
       status: "pending",
     },
   });

@@ -24,6 +24,7 @@ import { USER_ROLES } from "@/lib/consts";
 import { useRole } from "@/hooks/useRole";
 import { ChangeStatus } from "./ChangeStatus/ChangeStatus";
 import { useBoardId } from "@/hooks/useBoardId";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 type Props = {
   handleCloseModal: () => void;
@@ -63,7 +64,10 @@ export function TicketCardDetails({
   }
 
   const { data: cardDetailsData } = useQuery({
-    queryKey: ["card-details", cardDetailsId],
+    queryKey: [
+      QUERY_KEYS.pages.board.cardDetails.getCardDetails,
+      cardDetailsId,
+    ],
     queryFn: getDetailsData,
     enabled: isModalOpened,
     staleTime: 0,

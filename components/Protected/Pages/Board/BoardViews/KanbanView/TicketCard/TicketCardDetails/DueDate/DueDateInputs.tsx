@@ -21,9 +21,10 @@ import {
 import toast from "react-hot-toast";
 import { useBoardId } from "@/hooks/useBoardId";
 import { parseDateTimeToLocal } from "@/lib/parseDateTimeToLocal";
-import { INITIAL_TIME, USER_ROLES } from "@/lib/consts";
+import { DATE_FORMAT, INITIAL_TIME, USER_ROLES } from "@/lib/consts";
 import { isValidDateString } from "@/lib/isValidDateString";
 import { useRole } from "@/hooks/useRole";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 const Calendar = dynamic(() =>
   import("@/components/ui/calendar").then((m) => m.Calendar),
@@ -68,7 +69,7 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
 
       const parsedDateWithTime = parseDateTimeToLocal(date, time);
 
-      const formatedDate = format(parsedDateWithTime, "yyyy-MM-dd, HH:mm");
+      const formatedDate = format(parsedDateWithTime, DATE_FORMAT);
 
       setDueDate(formatedDate);
       setAddDateInput(true);
@@ -78,15 +79,19 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
   const { isPending: isPendingCreate, mutate: mutateCreateDueDate } =
     useMutation({
       mutationFn: createDueDateAction,
-      mutationKey: ["create-due-date"],
+      mutationKey: [QUERY_KEYS.pages.board.cardDetails.createDueDate],
       onSuccess: () => {
-        toast.dismiss("create-due-date");
-        toast.success("Due date created", { id: "create-due-date" });
-        queryClient.invalidateQueries({ queryKey: ["card-details"] });
+        toast.dismiss(QUERY_KEYS.pages.board.cardDetails.createDueDate);
+        toast.success("Due date created", {
+          id: QUERY_KEYS.pages.board.cardDetails.createDueDate,
+        });
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.pages.board.cardDetails.getCardDetails],
+        });
       },
       onError: ({ message }) => {
         setDueDate("");
-        toast.dismiss("create-due-date");
+        toast.dismiss(QUERY_KEYS.pages.board.cardDetails.createDueDate);
         toast.error(message || "Error creating due date, please try again");
       },
     });
@@ -94,14 +99,18 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
   const { isPending: isPendingDelete, mutate: mutateDeleteDueDate } =
     useMutation({
       mutationFn: deleteDueDateAction,
-      mutationKey: ["delete-due-date"],
+      mutationKey: [QUERY_KEYS.pages.board.cardDetails.deleteDueDate],
       onSuccess: () => {
-        toast.dismiss("delete-due-date");
-        toast.success("Due date Deleted", { id: "delete-due-date" });
-        queryClient.invalidateQueries({ queryKey: ["card-details"] });
+        toast.dismiss(QUERY_KEYS.pages.board.cardDetails.deleteDueDate);
+        toast.success("Due date Deleted", {
+          id: QUERY_KEYS.pages.board.cardDetails.deleteDueDate,
+        });
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.pages.board.cardDetails.getCardDetails],
+        });
       },
       onError: ({ message }) => {
-        toast.dismiss("delete-due-date");
+        toast.dismiss(QUERY_KEYS.pages.board.cardDetails.deleteDueDate);
         toast.error(message || "Error deleting due date, please try again");
       },
     });
@@ -128,7 +137,9 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
       boardId,
     });
 
-    toast.loading("Creating due date...", { id: "create-due-date" });
+    toast.loading("Creating due date...", {
+      id: QUERY_KEYS.pages.board.cardDetails.createDueDate,
+    });
 
     const parsedDateWithTime = parseDateTimeToLocal(dateUTC, timeInUTC);
 

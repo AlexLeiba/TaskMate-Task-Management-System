@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { useBoardId } from "@/hooks/useBoardId";
 import { useUserData } from "@/hooks/useUserData";
 import { downloadAsZip, DownloadZipTypeProps } from "@/lib/downloadZipFile";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 type Props = {
   cardDetailsId: string;
@@ -164,12 +165,12 @@ export function Attachments({ cardDetailsId }: Props) {
     mutationFn: uploadFile,
     onSuccess: (data) => {
       setAttachmentsData(data);
-      toast.dismiss("upload-file");
+      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.uploadFile);
       toast.success("Uploaded");
     },
     onError: ({ message }) => {
       toast.error(message || "Error uploading file, please try again");
-      toast.dismiss("upload-file");
+      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.uploadFile);
     },
   });
 
@@ -177,21 +178,25 @@ export function Attachments({ cardDetailsId }: Props) {
   const { mutate: mutateDelete, isPending: isPendingDelete } = useMutation({
     mutationFn: deleteFile,
     onSuccess: () => {
-      toast.dismiss("delete-file");
+      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.deleteFile);
     },
     onError: ({ message }) => {
       toast.error(message || "Error deleting file, please try again");
-      toast.dismiss("delete-file");
+      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.deleteFile);
     },
   });
 
   function handleDeleteFile(fileId: string, fileName: string, id: string) {
     mutateDelete({ fileId, fileName, fileType: "raw", id });
-    toast.loading("Deleting file...", { id: "delete-file" });
+    toast.loading("Deleting file...", {
+      id: QUERY_KEYS.pages.board.cardDetails.deleteFile,
+    });
   }
   function handleDeleteImage(fileId: string, fileName: string, id: string) {
     mutateDelete({ fileId, fileName, fileType: "image", id });
-    toast.loading("Deleting image...", { id: "delete-file" });
+    toast.loading("Deleting image...", {
+      id: QUERY_KEYS.pages.board.cardDetails.deleteFile,
+    });
   }
 
   function handleOpenFileInput() {
@@ -215,7 +220,9 @@ export function Attachments({ cardDetailsId }: Props) {
         const previewFileUrl = reader.result as string;
 
         mutateUpload({ file: previewFileUrl, fileType: "image", fileName });
-        toast.loading("Uploading image...", { id: "upload-file" });
+        toast.loading("Uploading image...", {
+          id: QUERY_KEYS.pages.board.cardDetails.uploadFile,
+        });
       };
 
       return;
@@ -234,7 +241,9 @@ export function Attachments({ cardDetailsId }: Props) {
           fileType: "raw",
           fileName: fileName || "file",
         });
-        toast.loading("Uploading file...", { id: "upload-file" });
+        toast.loading("Uploading file...", {
+          id: QUERY_KEYS.pages.board.cardDetails.uploadFile,
+        });
       };
 
       return;

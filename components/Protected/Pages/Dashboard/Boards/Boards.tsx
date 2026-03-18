@@ -15,6 +15,7 @@ import { useAuth } from "@clerk/nextjs";
 import { useRole } from "@/hooks/useRole";
 import { USER_ROLES } from "@/lib/consts";
 import { DeleteDialog } from "@/components/Protected/Shared-protected/DeleteDialog/DeleteDialog";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 export function Boards({
   data,
@@ -36,19 +37,19 @@ export function Boards({
 
   const { mutate: mutateDeleteBoard, isPending: isDeletePending } = useMutation(
     {
-      mutationKey: ["delete-board"],
+      mutationKey: [QUERY_KEYS.pages.boards.deleteBoard],
       mutationFn: deleteBoardAction,
       onMutate: async (boardId) => {
         await deleteFile({ type: "board", fileType: "raw", boardId }, boardId); //await deletion of all files from cloud from the board before deleting the board itself
       },
       onSuccess: () => {
         setDeleteDialogOpen(false);
-        toast.dismiss("delete-board");
+        toast.dismiss(QUERY_KEYS.pages.boards.deleteBoard);
         toast.success("Board deleted successfully");
       },
       onError: ({ message }) => {
         setDeleteDialogOpen(false);
-        toast.dismiss("delete-board");
+        toast.dismiss(QUERY_KEYS.pages.boards.deleteBoard);
         toast.error(message || "Error deleting board");
       },
     },
@@ -70,7 +71,9 @@ export function Boards({
 
     mutateDeleteBoard(boardId);
 
-    toast.loading("Deleting board...", { id: "delete-board" });
+    toast.loading("Deleting board...", {
+      id: QUERY_KEYS.pages.boards.deleteBoard,
+    });
   }
 
   return (

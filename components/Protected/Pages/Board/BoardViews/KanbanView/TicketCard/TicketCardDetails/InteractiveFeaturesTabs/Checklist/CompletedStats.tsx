@@ -7,7 +7,7 @@ type Props = ComponentProps<"div"> & {
 export function CompletedStats({ stats, className, ...props }: Props) {
   return (
     <div className={cn("rounded-md px-2 bg-green-400", className)} {...props}>
-      <p className="text-sm text-black">{stats}</p>
+      <p className="text-sm ">{stats}</p>
     </div>
   );
 }

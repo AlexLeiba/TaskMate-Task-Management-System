@@ -48,9 +48,8 @@ export async function getCardDetails(
   } | null;
   error: { message: string };
 }> {
+  const activeUser = await verifyCurrentActiveUser();
   try {
-    const activeUser = await verifyCurrentActiveUser();
-
     if (!activeUser.data) {
       throw new Error("User not authorized");
     }
@@ -121,9 +120,8 @@ export async function getCardDetailsComments(cardId: string): Promise<{
   data: (Comment & { author: User })[] | null;
   error: { message: string };
 }> {
+  const activeUser = await verifyCurrentActiveUser();
   try {
-    const activeUser = await verifyCurrentActiveUser();
-
     if (!activeUser.data) {
       throw new Error("User not authorized");
     }
@@ -161,9 +159,8 @@ export async function getCardDetailsAttachments(cardId: string): Promise<{
   data: (Attachments & { author: User } & { files: UploadedFile[] })[] | null;
   error: { message: string };
 }> {
+  const activeUser = await verifyCurrentActiveUser();
   try {
-    const activeUser = await verifyCurrentActiveUser();
-
     if (!activeUser.data) {
       throw new Error("User not authorized");
     }
@@ -366,9 +363,8 @@ export async function getCardDetailsActivities(cardId: string): Promise<{
     | null;
   error: { message: string };
 }> {
+  const activeUser = await verifyCurrentActiveUser();
   try {
-    const activeUser = await verifyCurrentActiveUser();
-
     if (!activeUser.data) {
       throw new Error("User not authorized");
     }
@@ -416,9 +412,8 @@ export async function createCommentAction({
   data: (Comment & { author: User })[] | null;
   error: { message: string };
 }> {
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
-    const { data: activeUserData } = await verifyCurrentActiveUser();
-
     if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
@@ -486,9 +481,8 @@ export async function deleteCommentAction({
   data: (Comment & { author: User })[] | null;
   error: { message: string };
 }> {
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
-    const { data: activeUserData } = await verifyCurrentActiveUser();
-
     if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
     }
@@ -606,9 +600,8 @@ type GetChecklistProps = {
 export async function getChecklistDataAction({
   cardDetailsId,
 }: GetChecklistProps) {
+  const activeUser = await verifyCurrentActiveUser();
   try {
-    const activeUser = await verifyCurrentActiveUser();
-
     if (!activeUser.data) {
       throw new Error("User not authorized");
     }

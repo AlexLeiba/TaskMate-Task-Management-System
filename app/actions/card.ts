@@ -3,10 +3,7 @@
 import { Card, PriorityType } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
-import {
-  createNewUser,
-  checkCurrentActiveUser,
-} from "@/lib/server/checkCurrentActiveUser";
+import { verifyCurrentActiveUser } from "@/lib/server/verifyCurrentActiveUser";
 import { auth } from "@clerk/nextjs/server";
 
 import { revalidatePath } from "next/cache";
@@ -27,7 +24,7 @@ export async function editCardTitleAction({
   data: Card;
   error: { message: string };
 }> {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
 
@@ -82,7 +79,7 @@ export async function copyCardAction({
   data: Card;
   error: { message: string };
 }> {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
 
@@ -169,7 +166,7 @@ export async function deleteCardAction({
   data: Card;
   error: { message: string };
 }> {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
 
@@ -248,7 +245,7 @@ export async function editPriorityAction({
   data: Card;
   error: { message: string };
 }> {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
 
@@ -297,17 +294,12 @@ export async function assignToCardAction({
   data: Card;
   error: { message: string };
 }> {
-  const { data: activeUserData, error } = await checkCurrentActiveUser();
+  const { data: activeUserData, error } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
 
     if (!activeUserData?.activeUser || error?.message) {
       throw new Error(error?.message || "User not authorized");
-    }
-
-    // CHECK IF USER EXISTS IN DB, OR JUST IN CLERK
-    if (activeUserData?.activeUser?.email !== assignedUserData?.email) {
-      await createNewUser({ data: assignedUserData });
     }
 
     const foundCard = await prisma.card.findFirst({
@@ -350,7 +342,7 @@ export async function unassigneCardAction({
   data: Card;
   error: { message: string };
 }> {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
 
@@ -405,7 +397,7 @@ export async function editListStatusCardAction({
   data: string;
   error: { message: string };
 }> {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
 

@@ -2,7 +2,7 @@
 import { Card, List, StatusType } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
-import { checkCurrentActiveUser } from "@/lib/server/checkCurrentActiveUser";
+import { verifyCurrentActiveUser } from "@/lib/server/verifyCurrentActiveUser";
 import {
   FilterStates,
   ListAndCardsAndDueDateAndChecklistType,
@@ -167,9 +167,9 @@ export async function createListAction({
   boardId: string;
   title: string;
 }): Promise<{ data: List | null; error: { message: string } }> {
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
-    const { data: activeUserData } = await checkCurrentActiveUser();
 
     if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
@@ -226,7 +226,7 @@ export async function updateListTitleAction({
   title: string;
   listId: string;
 }): Promise<{ data: List | null; error: { message: string } }> {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
 
@@ -291,7 +291,7 @@ export async function updateListStatusAction({
   status: StatusType;
   listId: string;
 }): Promise<{ data: List | null; error: { message: string } }> {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
     if (!activeUserData?.activeUser) {
@@ -352,7 +352,7 @@ export async function copyListAction({
   boardId: string;
   listId: string;
 }): Promise<{ data: List | null; error: { message: string } }> {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
 
@@ -460,7 +460,7 @@ export async function deleteListAction({
   boardId: string;
   listId: string;
 }): Promise<{ data: List | null; error: { message: string } }> {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
 
@@ -541,7 +541,7 @@ export async function createListCardAction({
   listId: string;
   title: string;
 }): Promise<{ data: Card | null; error: { message: string } }> {
-  const { data: activeUserData, error } = await checkCurrentActiveUser();
+  const { data: activeUserData, error } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
     if (error?.message || !activeUserData?.activeUser) {

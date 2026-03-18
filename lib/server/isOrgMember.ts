@@ -19,6 +19,7 @@ export async function isOrgMember(currentOrgId?: string | undefined | null) {
 
     return { data: foundMemberInCurrentOrg, error: null };
   } catch (error: any) {
+    console.log("🚀 ~ isOrgMember ~ error:", error);
     return {
       data: false,
       error: { message: error.message || "Something went wrong" },

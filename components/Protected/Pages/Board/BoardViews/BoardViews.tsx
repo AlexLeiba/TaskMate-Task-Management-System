@@ -10,9 +10,9 @@ const ListView = dynamic(() =>
     (m) => m.ListView,
   ),
 );
-const BoardSummary = dynamic(() =>
-  import("@/components/Protected/Pages/Board/BoardViews/BoardSummary").then(
-    (m) => m.BoardSummary,
+const BoardOverview = dynamic(() =>
+  import("@/components/Protected/Pages/Board/BoardViews/BoardOverview").then(
+    (m) => m.BoardOverview,
   ),
 );
 type Props = {
@@ -27,7 +27,7 @@ const BOARD_VIEW_SECTION: { [key: string]: React.FC<Props> | ComponentClass } =
   {
     board: ListCards,
     list: ListView,
-    summary: BoardSummary,
+    overview: BoardOverview,
   };
 export function BoardViews({ boardId, listData }: Props) {
   const boardTabSections = useStore((state) => state.boardTabSections);

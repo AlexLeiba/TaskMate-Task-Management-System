@@ -1,7 +1,8 @@
-import { getRecentActivitiesAction } from "@/app/actions/summary";
+import { getRecentActivitiesAction } from "@/app/actions/overview";
 import { UserCard } from "@/components/Protected/Shared-protected/UserCard/UserCard";
 import { Button } from "@/components/ui/button";
 import { useBoardId } from "@/hooks/useBoardId";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { useAuth } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
@@ -26,7 +27,9 @@ export function RecentActivity() {
 
   const { data } = useQuery({
     queryFn: fetchBoardSummary,
-    queryKey: ["recentActivities"],
+    queryKey: [QUERY_KEYS.pages.board.overview.recentActivities],
+    staleTime: 1000, // TODO : change to 5 min.
+    gcTime: 1000, // TODO : change to 5 min.
   });
   return (
     <div className="flex flex-col gap-4">

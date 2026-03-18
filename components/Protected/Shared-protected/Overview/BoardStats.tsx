@@ -1,4 +1,4 @@
-import { SummaryStatsType } from "@/lib/types";
+import { OverviewStatsType } from "@/lib/types";
 
 import {
   Calendar1,
@@ -11,7 +11,7 @@ import {
 import { BoardStatsCard } from "./BoardStatsCard";
 
 type Props = {
-  data: SummaryStatsType | null | undefined;
+  data: OverviewStatsType | null | undefined;
 };
 export function BoardStats({ data }: Props) {
   const stats = [

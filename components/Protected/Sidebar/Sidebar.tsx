@@ -1,9 +1,9 @@
 "use client";
 import {
   Activity,
+  ChartColumn,
   CreditCard,
   Crown,
-  Globe,
   LayoutDashboard,
   Plus,
   Settings,
@@ -75,9 +75,9 @@ export function Sidebar() {
           icon: <CreditCard />,
         },
         {
-          title: "Summary",
-          pathname: `/dashboard/${org.organization.id}/summary`,
-          icon: <Globe />,
+          title: "Overview",
+          pathname: `/dashboard/${org.organization.id}/overview`,
+          icon: <ChartColumn />,
         },
       ],
     };

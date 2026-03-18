@@ -3,7 +3,7 @@
 import { Board } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
-import { checkCurrentActiveUser } from "@/lib/server/checkCurrentActiveUser";
+import { verifyCurrentActiveUser } from "@/lib/server/verifyCurrentActiveUser";
 import { BoardType } from "@/lib/types";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
@@ -12,7 +12,7 @@ export async function getBoardsAction(orgId: string): Promise<{
   data: BoardType[];
   error: { message: string };
 }> {
-  const { data: activeUser, error } = await checkCurrentActiveUser(orgId);
+  const { data: activeUser, error } = await verifyCurrentActiveUser(orgId);
   try {
     if (!activeUser || error?.message) {
       throw new Error(error?.message || "User not authorized");
@@ -40,7 +40,7 @@ export async function getBoardsAction(orgId: string): Promise<{
 export async function createNewBoardAction(
   boardData: Omit<Board, "id" | "createdAt" | "updatedAt" | "order">,
 ): Promise<{ data: Board; error: { message: string } }> {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
 
@@ -79,7 +79,7 @@ export async function createNewBoardAction(
 export async function deleteBoardAction(
   boardId: string,
 ): Promise<{ data: boolean; error: { message: string } }> {
-  const { data: activeUserData, error } = await checkCurrentActiveUser();
+  const { data: activeUserData, error } = await verifyCurrentActiveUser();
 
   try {
     if (error?.message || !activeUserData?.activeUser) {

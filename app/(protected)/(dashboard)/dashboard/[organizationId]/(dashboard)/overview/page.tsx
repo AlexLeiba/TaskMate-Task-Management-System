@@ -1,9 +1,9 @@
-import { OrgSummaryServerRender } from "@/components/Protected/Pages/OrgSummary/OrgSummaryServerRender";
+import { OrgOverviewServerRender } from "@/components/Protected/Pages/OrgOverview/OrgOverviewServerRender";
 import { Separator } from "@/components/ui/separator";
 import { Globe } from "lucide-react";
 import { Suspense } from "react";
 
-async function SummaryPage({
+async function OverviewPage({
   params,
 }: {
   params: Promise<{ organizationId: string }>;
@@ -13,16 +13,16 @@ async function SummaryPage({
   return (
     <div className="w-full ">
       <div className="flex gap-2 items-center">
-        <h1 className="text-2xl font-medium">Summary</h1>
+        <h1 className="text-2xl font-medium">Overview</h1>
         <Globe />
       </div>
       <Separator className="bg-gray-600 w-full my-4" />
 
       <Suspense fallback={<div>Loading...</div>}>
-        <OrgSummaryServerRender organizationId={organizationId} />
+        <OrgOverviewServerRender organizationId={organizationId} />
       </Suspense>
     </div>
   );
 }
 
-export default SummaryPage;
+export default OverviewPage;

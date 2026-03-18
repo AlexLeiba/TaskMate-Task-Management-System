@@ -24,6 +24,7 @@ export async function getOrganizationMembersAction() {
         userId: member.publicUserData?.userId || "none",
       };
     });
+    console.log("🚀 ~ getOrganizationMembersAction ~ members:", members);
 
     return {
       data: {

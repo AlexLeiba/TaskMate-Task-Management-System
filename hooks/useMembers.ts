@@ -1,4 +1,5 @@
 import { getOrganizationMembersAction } from "@/app/actions/organization-members";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { OrganizationMembersType } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
 
@@ -18,10 +19,17 @@ export function useMembers(): {
     }
   }
 
-  const { data: members, isFetching } = useQuery({
-    queryKey: ["organization-members"],
+  const {
+    data: members,
+    isFetching,
+    isLoading,
+  } = useQuery({
+    queryKey: [QUERY_KEYS.hooks.useMembers],
     queryFn: fetchOrganizationMembers,
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+    gcTime: 1000 * 60 * 5,
   });
 
-  return { members, isFetching };
+  return { members, isFetching: isFetching && !isLoading };
 }

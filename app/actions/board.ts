@@ -3,10 +3,10 @@
 import { Board } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
-import { checkCurrentActiveUser } from "@/lib/server/checkCurrentActiveUser";
+import { verifyCurrentActiveUser } from "@/lib/server/verifyCurrentActiveUser";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
-import { isOrgMember } from "@/lib/server/isAnOrgMember";
+import { isOrgMember } from "@/lib/server/isOrgMember";
 import { redirect } from "next/navigation";
 
 export async function getBoardDataAction(
@@ -58,7 +58,7 @@ export async function editBoardTitleAction({
   boardId: string;
   title: string;
 }): Promise<{ data: Board | null; error: { message: string } }> {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
     if (!orgId) {

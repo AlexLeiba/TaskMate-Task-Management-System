@@ -1,40 +1,44 @@
 import toast from "react-hot-toast";
-import { getSummaryStatsAction } from "@/app/actions/summary";
+import { getOverviewStatsAction } from "@/app/actions/overview";
 import { useAuth } from "@clerk/nextjs";
-import { StatusOverview } from "../../../Shared-protected/Summary/StatusOverview";
-import { PriorityBreakdown } from "../../../Shared-protected/Summary/PriorityBreakdown";
-import { FinishedWorkOverview } from "../../../Shared-protected/Summary/FinishedWorkOverview";
-import { RecentActivity } from "../../../Shared-protected/Summary/RecentActivity";
+import { StatusOverview } from "../../../Shared-protected/Overview/StatusOverview";
+import { PriorityBreakdown } from "../../../Shared-protected/Overview/PriorityBreakdown";
+import { FinishedWorkOverview } from "../../../Shared-protected/Overview/FinishedWorkOverview";
+import { RecentActivity } from "../../../Shared-protected/Overview/RecentActivity";
 import { useQuery } from "@tanstack/react-query";
 import { useBoardId } from "@/hooks/useBoardId";
-import { BoardStatsCard } from "../../../Shared-protected/Summary/BoardStatsCard";
-import { TeamWorkload } from "../../../Shared-protected/Summary/TeamWorkLoad/TeamWorkload";
-import { BoardStats } from "../../../Shared-protected/Summary/BoardStats";
+import { BoardStatsCard } from "../../../Shared-protected/Overview/BoardStatsCard";
+import { TeamWorkload } from "../../../Shared-protected/Overview/TeamWorkLoad/TeamWorkload";
+import { BoardStats } from "../../../Shared-protected/Overview/BoardStats";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
-export function BoardSummary() {
+export function BoardOverview() {
   const boardId = useBoardId();
   const { orgId } = useAuth();
 
-  async function fetchBoardSummary() {
+  async function fetchBoardOverview() {
     if (!boardId || !orgId) return;
-    toast.loading("Loading board summary...", { id: "boardSummary" });
+    toast.loading("Loading Overview...", {
+      id: QUERY_KEYS.pages.board.overview.boardOverview,
+    });
     try {
-      const response = await getSummaryStatsAction(orgId, boardId);
+      const response = await getOverviewStatsAction(orgId, boardId);
 
       return response?.data;
     } catch (error: any) {
       toast.error(
-        error.message || "Error getting board summary, please try again",
+        error.message || "Error getting board Overview, please try again",
       );
     } finally {
-      toast.dismiss("boardSummary");
+      toast.dismiss(QUERY_KEYS.pages.board.overview.boardOverview);
     }
   }
 
   const { data } = useQuery({
-    queryFn: fetchBoardSummary,
-    queryKey: ["boardSummary"],
+    queryFn: fetchBoardOverview,
+    queryKey: [QUERY_KEYS.pages.board.overview],
     staleTime: 1000, // TODO : change to 5 min.
+    gcTime: 1000, // TODO : change to 5 min.
   });
 
   return (

@@ -356,7 +356,7 @@ export type DeleteChecklistProps = {
 };
 
 // BOARD HEADER SECTIONS TABS
-export type BoardTabSectionType = "summary" | "board" | "list" | "refresh";
+export type BoardTabSectionType = "overview" | "board" | "list" | "refresh";
 export type BoardTab = {
   id: string;
   label: string;
@@ -364,9 +364,9 @@ export type BoardTab = {
   icon: ReactNode;
 };
 
-// SUMMARY
+// OVERVIEW
 
-export type SummaryStatsType = {
+export type OverviewStatsType = {
   completed: number;
   // updatedInAWeek: number;
   createdInAWeek: number;

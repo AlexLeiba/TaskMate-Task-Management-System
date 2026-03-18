@@ -46,7 +46,7 @@ export function SubHeader({
 
         <div className="flex items-center gap-2">
           <RefreshBoardData />
-          {boardTabSections !== "summary" && (
+          {boardTabSections !== "overview" && (
             <>
               {/* FILTER BY MEMBER ON DESKTOP*/}
               {!isTablet && <BoardMemberFilters />}

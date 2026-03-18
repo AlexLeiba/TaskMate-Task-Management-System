@@ -1,5 +1,6 @@
 import { IconButton } from "@/components/ui/iconButton";
 import { useGetBoardFilteredData } from "@/hooks/useGetBoardFilteredData";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { useStore } from "@/store/useStore";
 import { useQueryClient } from "@tanstack/react-query";
 import { RefreshCcw } from "lucide-react";
@@ -12,10 +13,19 @@ export function RefreshBoardData() {
 
   function handleRefreshData() {
     setBoardTabSections("refresh");
-    if (boardTabSections === "summary") {
-      queryClient.invalidateQueries({ queryKey: ["boardSummary"] });
+    if (boardTabSections === "overview") {
+      queryClient.invalidateQueries({
+        queryKey: [
+          QUERY_KEYS.pages.board.overview.boardOverview,
+          QUERY_KEYS.pages.board.overview.finishedWork,
+          QUERY_KEYS.pages.board.overview.recentActivities,
+        ],
+      });
       return;
     }
+    queryClient.invalidateQueries({
+      queryKey: [QUERY_KEYS.hooks.useMembers],
+    });
     fetchBoardFilteredListData("");
   }
   return (

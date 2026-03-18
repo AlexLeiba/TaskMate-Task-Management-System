@@ -1,11 +1,10 @@
-import { currentUser } from "@clerk/nextjs/server";
 import { prisma } from "../prisma";
 import { User } from "../generated/prisma/client";
 import { verifyOrganizationMember } from "./verifyOrganizationMember";
 import { redirect } from "next/navigation";
 import { getCurrentActiveUserData } from "./getCurrentActiveUserData";
 
-export async function checkCurrentActiveUser(
+export async function verifyCurrentActiveUser(
   currentOrgId?: string | undefined | null,
 ): Promise<{
   data: { activeUser: User | null; role: "admin" | "member" } | null;
@@ -16,7 +15,7 @@ export async function checkCurrentActiveUser(
   if (!data?.email || !data?.user) {
     redirect("/");
   }
-  // CHECK USER MEMBER OF CURRENT ORGANIZATION
+  // CHECK IF USER IS MEMBER OF CURRENT ORGANIZATION
   const { data: memberData, error: memberError } =
     await verifyOrganizationMember(currentOrgId);
 
@@ -39,7 +38,7 @@ export async function checkCurrentActiveUser(
       where: { email: data?.email },
     });
 
-    // IF USER NOT EXISTS IN DB CREATE ONE WITH DATA FROM CLERK
+    // IF USER NOT EXISTS IN DB BUT IS AUTHENTICATED AND AUTHORIZED, CREATE ONE WITH DATA PROVIDED FROM CLERK AUTH
     if (!activeUser) {
       activeUser = await prisma.user.create({
         data: {
@@ -76,58 +75,5 @@ export async function checkCurrentActiveUser(
       data: null,
       error: { message: error?.message || "Something went wrong" },
     };
-  }
-}
-
-type Props = {
-  data: Pick<User, "email" | "name" | "avatar"> | null;
-};
-export async function createNewUser({ data }: Props): Promise<{
-  data: User | null;
-  error: { message: string };
-}> {
-  try {
-    if (!data?.email) {
-      throw new Error("User data not found");
-    }
-
-    // CHECK IF USER EXISTS IN DB
-    let activeUser = await prisma.user.findFirst({
-      where: { email: data?.email },
-    });
-
-    // IF USER NOT EXISTS IN DB CREATE ONE
-    if (!activeUser) {
-      activeUser = await prisma.user.create({
-        data: {
-          name: data?.name || "",
-          email: data.email,
-          avatar: data?.avatar || "",
-        },
-      });
-    }
-
-    return {
-      data: activeUser,
-      error: { message: "" },
-    };
-  } catch (error) {
-    console.log("🚀 ~ currentActiveUser ~ error:", error);
-
-    throw error;
-    //ERRORS WILL BE CAUGHT BY USEQUERY AND USEMUTATION HOOKS
-  }
-}
-
-export async function getActiveUser(): Promise<User | null> {
-  try {
-    const user = await currentUser();
-    const userEmail = user?.emailAddresses[0].emailAddress;
-    return await prisma.user.findFirst({
-      where: { email: userEmail },
-    });
-  } catch (error) {
-    console.log("🚀 ~ getActiveUser ~ error:", error);
-    return null;
   }
 }

@@ -1,4 +1,4 @@
-import { finishedWorkOverviewAction } from "@/app/actions/summary";
+import { finishedWorkOverviewAction } from "@/app/actions/overview";
 import { UserCard } from "@/components/Protected/Shared-protected/UserCard/UserCard";
 import { useBoardId } from "@/hooks/useBoardId";
 import { useAuth } from "@clerk/nextjs";
@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { Pie, PieChart, Tooltip } from "recharts";
 import { LegendValue } from "./LegendValue";
 import { LegendColor } from "./LegendColor";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 type Props = {
   type?: "board" | "dashboard";
@@ -27,7 +28,7 @@ export function FinishedWorkOverview({ type }: Props) {
         return response;
       }
       toast.loading("Loading finished work overview...", {
-        id: "finishedWork",
+        id: QUERY_KEYS.pages.board.overview.finishedWork,
       });
       const response = await finishedWorkOverviewAction(orgId, null);
 
@@ -37,13 +38,14 @@ export function FinishedWorkOverview({ type }: Props) {
         error.message || "Error on Finished work overview, please try again",
       );
     } finally {
-      toast.dismiss("finishedWork");
+      toast.dismiss(QUERY_KEYS.pages.board.overview.finishedWork);
     }
   }
 
   const { data } = useQuery({
     queryFn: fetchBoardFinishedWorkStats,
-    queryKey: ["finishedWorkOverview", orgId, boardId],
+    queryKey: [QUERY_KEYS.pages.board.overview.finishedWork, orgId, boardId],
+    staleTime: 1000, // TODO : change to 5 min.
   });
 
   return (

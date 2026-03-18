@@ -4,6 +4,7 @@ import {
   Building2,
   Calendar1,
   CalendarCog,
+  ChartColumn,
   CheckSquare,
   Circle,
   CircleAlert,
@@ -754,7 +755,7 @@ export const USER_ROLES = {
 // BOARD TABS
 
 export const BOARD_HEADER_TABS: BoardTab[] = [
-  { id: "1", label: "Summary", value: "summary", icon: <Globe /> },
+  { id: "1", label: "Overview", value: "overview", icon: <ChartColumn /> },
   { id: "2", label: "Board", value: "board", icon: <Columns3 /> },
   { id: "3", label: "List", value: "list", icon: <LayoutList /> },
   {

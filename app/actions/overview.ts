@@ -1,13 +1,13 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { checkCurrentActiveUser } from "@/lib/server/checkCurrentActiveUser";
+import { verifyCurrentActiveUser } from "@/lib/server/verifyCurrentActiveUser";
 import {
   ActivityWithAuthor,
   FinishedWorkMembersType,
   PriorityBreakdownType,
   StatusOverviewType,
-  SummaryStatsType,
+  OverviewStatsType,
   TeamWorkloadType,
 } from "@/lib/types";
 import { clerkClient } from "@clerk/nextjs/server";
@@ -19,15 +19,15 @@ import {
   UNASSIGNED_CARD,
 } from "@/lib/consts";
 
-export async function getSummaryStatsAction(
+export async function getOverviewStatsAction(
   currentOrgId: string,
   boardId: string | null,
 ): Promise<{
-  data: SummaryStatsType | null;
+  data: OverviewStatsType | null;
   error: { message: string } | null;
 }> {
   const { data: activeUser, error } =
-    await checkCurrentActiveUser(currentOrgId);
+    await verifyCurrentActiveUser(currentOrgId);
   try {
     if (error?.message || !activeUser) {
       throw new Error(error?.message || "User not authorized");
@@ -76,12 +76,9 @@ export async function getSummaryStatsAction(
       });
 
       let completed = 0;
-      // let updatedInAWeek = 0;
       let createdInAWeek = 0;
       let dueDateInAWeek = 0;
-
       let allAssignedWork = 0;
-
       let totalTasks = 0;
 
       const teamWorkload: { [key: string]: number } = {};
@@ -185,9 +182,11 @@ export async function getSummaryStatsAction(
           if (member?.publicUserData?.identifier === key) {
             teamWorkLoadData.push({
               name:
+                member?.publicUserData?.firstName +
+                  " " +
+                  member?.publicUserData?.lastName ||
                 member?.publicUserData?.firstName ||
-                "" + " " + member?.publicUserData?.lastName ||
-                "",
+                "Member",
               email: member?.publicUserData?.identifier || "",
               value: value,
               avatar: member?.publicUserData?.imageUrl || "",
@@ -223,9 +222,8 @@ export async function getSummaryStatsAction(
       });
 
       //   STATS
-      const stats: SummaryStatsType = {
+      const stats: OverviewStatsType = {
         completed,
-        // updatedInAWeek,
         createdInAWeek,
         dueDateInAWeek,
         teamWorkLoadData,
@@ -234,7 +232,6 @@ export async function getSummaryStatsAction(
         allAssignedWork,
         totalTasks,
       };
-      // console.log("🚀 ~ getSummaryData ~ stats=>>>>>>>>>>>:", stats);
 
       return { data: stats, error: null };
     }
@@ -370,18 +367,6 @@ export async function getSummaryStatsAction(
                   if (diffDays <= 7) {
                     dueDateInAWeek++;
                   }
-
-                  // UPDATED in last 7 days
-                  // const updatedCard = card.updatedAt?.getTime();
-                  // if (updatedCard) {
-                  //   const timeDiffUpdated = Math.abs(now.getTime() - updatedCard);
-                  //   const diffDaysUpdated = Math.ceil(
-                  //     timeDiffUpdated / oneDayInMilliseconds,
-                  //   );
-                  //   if (diffDaysUpdated <= 7) {
-                  //     updatedInAWeek++;
-                  //   }
-                  // }
                 }
               }
             }
@@ -401,9 +386,11 @@ export async function getSummaryStatsAction(
           if (member?.publicUserData?.identifier === key) {
             teamWorkLoadData.push({
               name:
+                member?.publicUserData?.firstName +
+                  " " +
+                  member?.publicUserData?.lastName ||
                 member?.publicUserData?.firstName ||
-                "" + " " + member?.publicUserData?.lastName ||
-                "",
+                "Member",
               email: member?.publicUserData?.identifier || "",
               value: value,
               avatar: member?.publicUserData?.imageUrl || "",
@@ -440,7 +427,7 @@ export async function getSummaryStatsAction(
       });
 
       //   STATS
-      const stats: SummaryStatsType = {
+      const stats: OverviewStatsType = {
         completed,
         // updatedInAWeek,
         createdInAWeek,
@@ -484,13 +471,14 @@ export async function getSummaryStatsAction(
   }
 }
 
+// TODO
 export async function finishedWorkOverviewAction(
   currentOrgId: string,
   boardId: string | null,
   nrOfDaysStats: number = 7,
 ): Promise<{ data: FinishedWorkMembersType[] }> {
   const { data: activeUser, error } =
-    await checkCurrentActiveUser(currentOrgId);
+    await verifyCurrentActiveUser(currentOrgId);
   try {
     if (error?.message || !activeUser) {
       throw new Error(error?.message || "User not authorized");
@@ -501,55 +489,43 @@ export async function finishedWorkOverviewAction(
     const finishedWorkData = await prisma.userDoneCardTickets.findMany({
       where: {
         orgId: currentOrgId,
-        ...(boardId && { boardId: boardId }), //will be applied only if thisd will be provided
+        ...(boardId && { boardId: boardId }), //by board id members will be applied only if this parameter will be provided
 
         createdAt: {
           gte: new Date(
-            new Date().setDate(new Date().getDate() - nrOfDaysStats),
+            new Date().setDate(new Date().getDate() - nrOfDaysStats), //filter by a period of time
           ),
         },
       },
+      include: {
+        author: true,
+      },
     });
 
-    const { data: members } = await (
-      await clerkClient()
-    )?.organizations?.getOrganizationMembershipList({
-      organizationId: currentOrgId,
-    });
+    const initialFinishedWorkData: { [key: string]: number } = {};
 
-    const finishedWorkMembers: { [key: string]: number } = {};
+    const countedFinishedWorkObject = finishedWorkData.reduce((acc, card) => {
+      acc[card?.assignedToEmail || ""] =
+        (acc[card?.assignedToEmail || ""] || 0) + 1;
+      return acc;
+    }, initialFinishedWorkData);
 
-    //   INITIALIZE ALL MEMBERS OF THE CURRENT BOARD
-    //   some members with 0 stats will be missing from finishedWorkData
-    members.forEach((member) => {
-      finishedWorkMembers[member?.publicUserData?.identifier || ""] = 0;
-    });
+    const finishedWorkOfAllMembersData: FinishedWorkMembersType[] = [];
 
-    //   REGISTER DONE WORK BY MEMBERS
-    finishedWorkData.forEach((card) => {
-      finishedWorkMembers[card?.assignedToEmail || ""]++;
-    });
-
-    const finishedWorkMembersData: FinishedWorkMembersType[] = [];
-
-    members.forEach((member, index) => {
-      Object.entries(finishedWorkMembers).forEach(([key, value]) => {
-        if (key === member?.publicUserData?.identifier) {
-          finishedWorkMembersData.push({
-            fullName:
-              member?.publicUserData?.firstName ||
-              "" + " " + member?.publicUserData?.lastName ||
-              "",
-            email: member?.publicUserData?.identifier || "",
-            imageUrl: member?.publicUserData?.imageUrl || "",
-            value: value,
-            fill: FINISHED_TASKS_COLORS[index % FINISHED_TASKS_COLORS.length],
-          });
-        }
+    Object.entries(countedFinishedWorkObject).forEach(([Key, value], index) => {
+      const authorData = finishedWorkData.find(
+        (card) => card?.assignedToEmail === Key,
+      );
+      finishedWorkOfAllMembersData.push({
+        fullName: authorData?.author?.name || "Member",
+        email: Key,
+        imageUrl: authorData?.author?.avatar || "",
+        value: value,
+        fill: FINISHED_TASKS_COLORS[index % FINISHED_TASKS_COLORS.length],
       });
     });
 
-    return { data: finishedWorkMembersData };
+    return { data: finishedWorkOfAllMembersData };
   } catch (error: any) {
     console.log("🚀 ~ finishedWorkOverviewAction ~ error:", error);
 

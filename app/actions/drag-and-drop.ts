@@ -1,6 +1,6 @@
 "use server";
 import { prisma } from "@/lib/prisma";
-import { checkCurrentActiveUser } from "@/lib/server/checkCurrentActiveUser";
+import { verifyCurrentActiveUser } from "@/lib/server/verifyCurrentActiveUser";
 import { createNewActivity } from "@/lib/server/createActivity";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
@@ -18,9 +18,9 @@ export async function changeListPositionAction({
   data: boolean | null;
   error: { message: string };
 }> {
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
-    const { data: activeUserData } = await checkCurrentActiveUser();
 
     if (!orgId) {
       throw new Error("User not authenticated");
@@ -144,7 +144,7 @@ export async function changeCardPositionAction({
   data: boolean | null;
   error: { message: string };
 }> {
-  const { data: activeUserData, error } = await checkCurrentActiveUser();
+  const { data: activeUserData, error } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
 

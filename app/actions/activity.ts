@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { checkCurrentActiveUser } from "@/lib/server/checkCurrentActiveUser";
+import { verifyCurrentActiveUser } from "@/lib/server/verifyCurrentActiveUser";
 import { ActivityWithAuthor } from "@/lib/types";
 import { auth } from "@clerk/nextjs/server";
 
@@ -16,7 +16,7 @@ export async function getActivitiesAction({
   count: number;
   error: { message: string };
 }> {
-  const { data: activeUser } = await checkCurrentActiveUser();
+  const { data: activeUser } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
     if (!orgId || !activeUser?.activeUser) {

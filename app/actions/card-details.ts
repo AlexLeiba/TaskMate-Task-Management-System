@@ -14,7 +14,7 @@ import {
 } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
-import { checkCurrentActiveUser } from "@/lib/server/checkCurrentActiveUser";
+import { verifyCurrentActiveUser } from "@/lib/server/verifyCurrentActiveUser";
 import { getCardDetailsData } from "@/lib/server/getCardData";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
@@ -49,7 +49,7 @@ export async function getCardDetails(
   error: { message: string };
 }> {
   try {
-    const activeUser = await checkCurrentActiveUser();
+    const activeUser = await verifyCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -122,7 +122,7 @@ export async function getCardDetailsComments(cardId: string): Promise<{
   error: { message: string };
 }> {
   try {
-    const activeUser = await checkCurrentActiveUser();
+    const activeUser = await verifyCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -162,7 +162,7 @@ export async function getCardDetailsAttachments(cardId: string): Promise<{
   error: { message: string };
 }> {
   try {
-    const activeUser = await checkCurrentActiveUser();
+    const activeUser = await verifyCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -223,7 +223,7 @@ export async function createAttachment({
   data: Attachments | null;
   error: { message: string };
 }> {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
@@ -318,7 +318,7 @@ export async function deleteAttachment({
   data: UploadedFile | null;
   error: { message: string };
 }> {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
@@ -367,7 +367,7 @@ export async function getCardDetailsActivities(cardId: string): Promise<{
   error: { message: string };
 }> {
   try {
-    const activeUser = await checkCurrentActiveUser();
+    const activeUser = await verifyCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -417,7 +417,7 @@ export async function createCommentAction({
   error: { message: string };
 }> {
   try {
-    const { data: activeUserData } = await checkCurrentActiveUser();
+    const { data: activeUserData } = await verifyCurrentActiveUser();
 
     if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
@@ -487,7 +487,7 @@ export async function deleteCommentAction({
   error: { message: string };
 }> {
   try {
-    const { data: activeUserData } = await checkCurrentActiveUser();
+    const { data: activeUserData } = await verifyCurrentActiveUser();
 
     if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
@@ -556,7 +556,7 @@ export async function updateDescriptionAction({
   data: string | null;
   error: { message: string };
 }> {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     if (!activeUserData?.activeUser) {
       throw new Error("User not authorized");
@@ -607,7 +607,7 @@ export async function getChecklistDataAction({
   cardDetailsId,
 }: GetChecklistProps) {
   try {
-    const activeUser = await checkCurrentActiveUser();
+    const activeUser = await verifyCurrentActiveUser();
 
     if (!activeUser.data) {
       throw new Error("User not authorized");
@@ -640,7 +640,7 @@ export async function createChecklistAction({
   data: Checklist | null;
   error: { message: string };
 }> {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
 
@@ -704,7 +704,7 @@ export async function updateChecklistAction({
   data: Checklist | null;
   error: { message: string };
 }> {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
 
@@ -769,7 +769,7 @@ export async function deleteChecklistAction({
   data: Checklist | null;
   error: { message: string };
 }> {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
 
@@ -831,7 +831,7 @@ export async function createDueDateAction({
   data: DueDate | null;
   error: { message: string };
 }> {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
 
@@ -889,7 +889,7 @@ export async function deleteDueDateAction({
   data: DueDate | null;
   error: { message: string };
 }> {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
 
@@ -944,7 +944,7 @@ export async function copyCardWithDetails({
   boardId,
   cardId,
 }: CopyCardWithDetailsProps) {
-  const { data: activeUserData } = await checkCurrentActiveUser();
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
     const { orgId } = await auth();
 

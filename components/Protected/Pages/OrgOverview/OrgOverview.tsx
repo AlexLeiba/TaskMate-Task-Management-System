@@ -1,18 +1,18 @@
 "use client";
 
-import { SummaryStatsType } from "@/lib/types";
+import { OverviewStatsType } from "@/lib/types";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import { BoardStats } from "../../Shared-protected/Summary/BoardStats";
-import { BoardStatsCard } from "../../Shared-protected/Summary/BoardStatsCard";
-import { StatusOverview } from "../../Shared-protected/Summary/StatusOverview";
-import { FinishedWorkOverview } from "../../Shared-protected/Summary/FinishedWorkOverview";
-import { PriorityBreakdown } from "../../Shared-protected/Summary/PriorityBreakdown";
-import { TeamWorkload } from "../../Shared-protected/Summary/TeamWorkLoad/TeamWorkload";
+import { BoardStats } from "../../Shared-protected/Overview/BoardStats";
+import { BoardStatsCard } from "../../Shared-protected/Overview/BoardStatsCard";
+import { StatusOverview } from "../../Shared-protected/Overview/StatusOverview";
+import { FinishedWorkOverview } from "../../Shared-protected/Overview/FinishedWorkOverview";
+import { PriorityBreakdown } from "../../Shared-protected/Overview/PriorityBreakdown";
+import { TeamWorkload } from "../../Shared-protected/Overview/TeamWorkLoad/TeamWorkload";
 
 type Props = {
   data: {
-    data: SummaryStatsType | null;
+    data: OverviewStatsType | null;
     error: {
       message: string;
     } | null;

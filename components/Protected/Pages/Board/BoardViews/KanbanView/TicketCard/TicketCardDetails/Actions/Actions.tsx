@@ -1,6 +1,6 @@
 import { IconButton } from "@/components/ui/iconButton";
 import { Spacer } from "@/components/ui/spacer";
-import { Copy, Delete, Info } from "lucide-react";
+import { Check, Copy, Delete, Info, X } from "lucide-react";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { useMutation } from "@tanstack/react-query";
@@ -27,9 +27,15 @@ type Props = {
   cardDetailsId: string;
   listId: string;
   cardId: string;
+  handleCloseModal: () => void;
 };
 
-export function Actions({ cardDetailsId, listId, cardId }: Props) {
+export function Actions({
+  cardDetailsId,
+  listId,
+  cardId,
+  handleCloseModal,
+}: Props) {
   const boardId = useBoardId();
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
 
@@ -125,7 +131,7 @@ export function Actions({ cardDetailsId, listId, cardId }: Props) {
       </div>
 
       <Spacer size={4} />
-      <div className="flex gap-4 ">
+      <div className="flex gap-4 flex-col md:flex-row">
         <IconButton
           loading={isPendingCopyCard}
           disabled={isPendingDeleteCardDeleteCard || isPendingCopyCard}
@@ -159,15 +165,27 @@ export function Actions({ cardDetailsId, listId, cardId }: Props) {
         >
           <Delete size={20} /> Delete
         </IconButton>
-
-        <DeleteDialog
-          title="Card"
+        <IconButton
           disabled={isPendingDeleteCardDeleteCard || isPendingCopyCard}
           loading={isPendingDeleteCardDeleteCard}
-          deleteDialogOpen={isDeleteModalOpened}
-          setDeleteDialogOpen={setIsDeleteModalOpened}
-          handleDelete={handleDeleteCard}
-        />
+          title="Close card details"
+          aria-label="Close card details"
+          classNameChildren="w-full flex gap-2 items-center"
+          className="w-full bg-green-800 p-2 rounded-md"
+          onClick={handleCloseModal}
+        >
+          <Check size={20} /> Close
+        </IconButton>
+        {isDeleteModalOpened && (
+          <DeleteDialog
+            title="Card"
+            disabled={isPendingDeleteCardDeleteCard || isPendingCopyCard}
+            loading={isPendingDeleteCardDeleteCard}
+            deleteDialogOpen={isDeleteModalOpened}
+            setDeleteDialogOpen={setIsDeleteModalOpened}
+            handleDelete={handleDeleteCard}
+          />
+        )}
       </div>
     </div>
   );

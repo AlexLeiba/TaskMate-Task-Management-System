@@ -48,6 +48,7 @@ export function ListCardHeader({
           {!isInputOpened && <ListOptions listId={listId} />}
         </>
       ) : (
+        //CARD TICKETS COUNTER
         <div className="w-full pl-2 ">
           <h3 className="text-lg font-medium line-clamp-3">
             {title}

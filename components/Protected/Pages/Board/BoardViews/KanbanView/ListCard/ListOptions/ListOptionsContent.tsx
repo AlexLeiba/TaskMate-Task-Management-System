@@ -1,4 +1,4 @@
-import { Info, X } from "lucide-react";
+import { Info } from "lucide-react";
 import { LIST_OPTIONS } from "@/lib/consts";
 import { Separator } from "@radix-ui/react-separator";
 import { useStore } from "@/store/useStore";
@@ -16,6 +16,7 @@ import {
 import { useShallow } from "zustand/shallow";
 import { useBoardId } from "@/hooks/useBoardId";
 import dynamic from "next/dynamic";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 const DeleteDialog = dynamic(() =>
   import("@/components/Protected/Shared-protected/DeleteDialog/DeleteDialog").then(
@@ -39,7 +40,7 @@ export function ListOptionsContent({ listId }: Props) {
 
   const { mutate: mutateDeleteList, isPending: isPendingDeleteList } =
     useMutation({
-      mutationKey: ["delete-list"],
+      mutationKey: [QUERY_KEYS.pages.board.lists.deleteList],
       mutationFn: deleteListAction,
       onMutate: async () => {
         await deleteFile(
@@ -48,12 +49,12 @@ export function ListOptionsContent({ listId }: Props) {
         ); // execution of the mutation will wait until this request is resolved (removing all attachments from cloud)
       },
       onSuccess: () => {
-        toast.dismiss("delete-list");
+        toast.dismiss(QUERY_KEYS.pages.board.lists.deleteList);
         toast.success("List deleted");
         setDeleteDialogOpen(false);
       },
       onError: () => {
-        toast.dismiss("delete-list");
+        toast.dismiss(QUERY_KEYS.pages.board.lists.deleteList);
         toast.error("Error deleting list, please try again");
       },
     });
@@ -61,19 +62,21 @@ export function ListOptionsContent({ listId }: Props) {
   const { mutate: mutateCopyList, isPending: isPendingCopyList } = useMutation({
     mutationFn: copyListAction,
     onSuccess: () => {
-      toast.dismiss("copy-list");
+      toast.dismiss(QUERY_KEYS.pages.board.lists.copyList);
       toast.success("List copied");
       setDeleteDialogOpen(false);
     },
     onError: () => {
-      toast.dismiss("copy-list");
+      toast.dismiss(QUERY_KEYS.pages.board.lists.copyList);
       toast.error("Error copying list, please try again");
     },
   });
 
   function handleCopyList() {
     mutateCopyList({ listId, boardId });
-    toast.loading("Copying list...", { id: "copy-list" });
+    toast.loading("Copying list...", {
+      id: QUERY_KEYS.pages.board.lists.copyList,
+    });
   }
 
   function handleSelectOption(
@@ -103,14 +106,15 @@ export function ListOptionsContent({ listId }: Props) {
 
   async function handleDeleteList(listId: string) {
     mutateDeleteList({ listId, boardId });
-    toast.loading("Deleting list...", { id: "delete-list" });
-    setDeleteDialogOpen(false);
+    toast.loading("Deleting list...", {
+      id: QUERY_KEYS.pages.board.lists.deleteList,
+    });
   }
   return (
     <>
       <div className="flex flex-col items-start ">
         {LIST_OPTIONS.map((option) => {
-          if (option.value === "delete-list") {
+          if (option.value === QUERY_KEYS.pages.board.lists.deleteList) {
             // DELETE BUTTON
             return (
               <React.Fragment key={option.value}>
@@ -187,6 +191,7 @@ export function ListOptionsContent({ listId }: Props) {
       {/* MODAL DELETE BOARD */}
       {deleteDialogOpen && (
         <DeleteDialog
+          disabled={isPendingDeleteList}
           title="List"
           loading={isPendingDeleteList}
           deleteDialogOpen={deleteDialogOpen}

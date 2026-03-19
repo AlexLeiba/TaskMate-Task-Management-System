@@ -80,8 +80,7 @@ export function TicketCardDetails({
         className={cn(
           "flex flex-col overflow-y-auto h-full",
           "md:min-w-[75%] md:max-w-200 md:max-h-200 md:min-h-100",
-          "lg:min-w-[70%]  lg:max-w-300 lg:max-h-210 lg:min-h-200",
-          "min-w-full min-h-full",
+          "lg:min-w-[70%]  lg:max-w-300 lg:max-h-210 lg:min-h-100",
         )}
       >
         <DialogHeader>
@@ -154,6 +153,7 @@ export function TicketCardDetails({
                   cardDetailsId={cardDetailsData?.card.id || ""}
                   listId={cardDetailsData?.card?.card?.listId || ""}
                   cardId={cardDetailsData?.card?.card?.id || ""}
+                  handleCloseModal={handleCloseModal}
                 />
               )}
               <div className="flex justify-end my-2">

@@ -25,6 +25,8 @@ export const QUERY_KEYS = {
         },
         editListTitle: "edit-list-title",
         createListCard: "create-list-card",
+        deleteList: "delete-list",
+        copyList: "copy-list",
       },
       cards: {
         deleteCard: "delete-card",

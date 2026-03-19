@@ -5,7 +5,7 @@ import { useStore } from "@/store/useStore";
 import { useIsFetching, useQueryClient } from "@tanstack/react-query";
 import { RefreshCcw } from "lucide-react";
 
-export function RefreshBoardData() {
+export function RefreshData() {
   const { boardTabSections } = useStore((state) => state);
 
   const { fetchBoardFilteredListData, loading } = useGetBoardFilteredData();

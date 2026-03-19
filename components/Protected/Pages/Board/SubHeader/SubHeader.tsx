@@ -12,7 +12,7 @@ import { BoardMemberFilters } from "./BoardMemberFilters";
 import { FiltersDropdown } from "./FilterDropdown/FilterDropdown";
 import { useResponsive } from "@/hooks/useResponsive";
 import { BREAKPOINTS } from "@/lib/breakpoints";
-import { RefreshBoardData } from "./RefreshBoardData";
+import { RefreshData } from "./RefreshData";
 import { BoardTitle } from "./BoardTitle";
 
 type Props = {
@@ -41,11 +41,11 @@ export function SubHeader({
   return (
     <div className="bg-foreground/70 w-full h-13">
       <div className="  flex justify-between items-center max-w-400  mx-auto px-4">
-        {/* Board title */}
+        {/*BOARD TITLE */}
         <BoardTitle boardId={boardId} boardTitle={board?.title || ""} />
 
         <div className="flex items-center gap-2">
-          <RefreshBoardData />
+          <RefreshData />
           {boardTabSections !== "overview" && (
             <>
               {/* FILTER BY MEMBER ON DESKTOP*/}

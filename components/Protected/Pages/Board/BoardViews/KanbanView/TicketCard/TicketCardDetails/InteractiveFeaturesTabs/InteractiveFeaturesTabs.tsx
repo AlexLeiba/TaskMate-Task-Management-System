@@ -4,10 +4,11 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { Comments } from "./Comments/Comments";
 import { Spacer } from "@/components/ui/spacer";
-import { TAB_ELEMENTS } from "@/lib/consts";
+
 import { Comment, User } from "@/lib/generated/prisma/client";
 import dynamic from "next/dynamic";
 import { useState } from "react";
+import { TAB_ELEMENTS } from "@/lib/consts/protected/card";
 
 const Activities = dynamic(() =>
   import("./Activities/Activities").then((m) => m.Activities),

@@ -1,4 +1,3 @@
-import { FILTERS_DATA } from "@/lib/consts";
 import { useStore } from "@/store/useStore";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -8,6 +7,7 @@ import { useResponsive } from "@/hooks/useResponsive";
 import { BREAKPOINTS } from "@/lib/breakpoints";
 import { FilterDropdownMembersContent } from "./FilterDropdownMembersContent";
 import { useShallow } from "zustand/shallow";
+import { FILTERS_DATA } from "@/lib/consts/protected/board";
 
 export function FilterDropdownContent({
   handleCloseMenu,

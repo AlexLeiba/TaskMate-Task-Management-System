@@ -20,12 +20,13 @@ import {
 import { getCardDetailsAttachments } from "@/app/actions/card-details";
 import toast from "react-hot-toast";
 import { axiosInstance } from "@/lib/config";
-import { API_REQ_URL } from "@/lib/consts";
+
 import { Button } from "@/components/ui/button";
 import { useBoardId } from "@/hooks/useBoardId";
 import { useUserData } from "@/hooks/useUserData";
 import { downloadAsZip, DownloadZipTypeProps } from "@/lib/downloadZipFile";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
+import { API_REQ_URL } from "@/lib/consts/links";
 
 type Props = {
   cardDetailsId: string;

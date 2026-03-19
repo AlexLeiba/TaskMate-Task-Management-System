@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CARD_PRIORITIES, USER_ROLES } from "@/lib/consts";
+import { USER_ROLES } from "@/lib/consts/consts";
 import { PrioritySkeleton } from "./PrioritySkeleton";
 import { PriorityType } from "@/lib/generated/prisma/enums";
 import { useMutation } from "@tanstack/react-query";
@@ -17,6 +17,7 @@ import { editPriorityAction } from "@/app/actions/card";
 import { useBoardId } from "@/hooks/useBoardId";
 import { useRole } from "@/hooks/useRole";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
+import { CARD_PRIORITIES } from "@/lib/consts/protected/card";
 
 type Props = {
   priority: PriorityType | undefined;

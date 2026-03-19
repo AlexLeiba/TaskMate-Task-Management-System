@@ -18,10 +18,11 @@ import { UserCard } from "@/components/Protected/Shared-protected/UserCard/UserC
 import { assignToCardAction, unassigneCardAction } from "@/app/actions/card";
 import toast from "react-hot-toast";
 import { useBoardId } from "@/hooks/useBoardId";
-import { FAKE_USERS, USER_ROLES } from "@/lib/consts";
+import { USER_ROLES } from "@/lib/consts/consts";
 import { useRole } from "@/hooks/useRole";
 import { useMembers } from "@/hooks/useMembers";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
+import { FAKE_USERS } from "@/lib/consts/protected/card";
 
 type Props = {
   assignedTo: string | undefined;

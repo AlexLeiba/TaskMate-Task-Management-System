@@ -4,8 +4,9 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { CardTabs } from "./CardTabs";
 import { SideTabsContent } from "./SideTabsContent";
-import { HEADER_TABS_TITLE } from "@/lib/consts";
+
 import { TabType } from "@/lib/types";
+import { HEADER_TABS_TITLE } from "@/lib/consts/public/header";
 
 type Props = {
   type: TabType["value"];

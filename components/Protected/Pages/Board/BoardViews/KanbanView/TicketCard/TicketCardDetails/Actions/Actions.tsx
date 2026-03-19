@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { copyCardAction, deleteCardAction } from "@/app/actions/card";
 import { DeleteFileBodyType } from "@/lib/types";
 import { axiosInstance } from "@/lib/config";
-import { API_REQ_URL } from "@/lib/consts";
+
 import { useBoardId } from "@/hooks/useBoardId";
 import {
   Tooltip,
@@ -16,6 +16,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
+import { API_REQ_URL } from "@/lib/consts/links";
 
 const DeleteDialog = dynamic(() =>
   import("@/components/Protected/Shared-protected/DeleteDialog/DeleteDialog").then(

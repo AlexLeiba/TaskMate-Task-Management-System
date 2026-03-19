@@ -3,7 +3,7 @@ import { Copy, Delete, Edit, Info, X } from "lucide-react";
 import { AddNewInput } from "../../../../AddNewInput";
 import { Separator } from "@/components/ui/separator";
 import { IconButton } from "@/components/ui/iconButton";
-import { KEYBOARD } from "@/lib/consts";
+import { KEYBOARD } from "@/lib/consts/consts";
 import { useMutation } from "@tanstack/react-query";
 import {
   copyCardAction,

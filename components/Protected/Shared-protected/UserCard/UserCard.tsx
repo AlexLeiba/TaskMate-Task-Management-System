@@ -5,7 +5,7 @@ import { ComponentProps } from "react";
 import { UserCardSkeleton } from "./UserCardSkeleton";
 import { format } from "date-fns";
 import { User } from "@/lib/generated/prisma/client";
-import { DATE_FORMAT } from "@/lib/consts";
+import { DATE_FORMAT } from "@/lib/consts/consts";
 
 const cardVariants = cva("rounded-full bg-text-secondary", {
   variants: {

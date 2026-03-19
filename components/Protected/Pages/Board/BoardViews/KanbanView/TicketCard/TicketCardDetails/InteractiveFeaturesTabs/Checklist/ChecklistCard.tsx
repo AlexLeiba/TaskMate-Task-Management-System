@@ -1,5 +1,5 @@
 import { Delete } from "lucide-react";
-import { KEYBOARD } from "@/lib/consts";
+import { KEYBOARD } from "@/lib/consts/consts";
 import { IconButton } from "@/components/ui/iconButton";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChecklistType } from "@/lib/types";

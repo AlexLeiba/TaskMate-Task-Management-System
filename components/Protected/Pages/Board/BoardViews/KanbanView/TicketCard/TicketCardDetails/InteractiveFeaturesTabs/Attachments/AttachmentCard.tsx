@@ -5,7 +5,7 @@ import { DownloadFileCard } from "./DownloadFileCard";
 import { format } from "date-fns";
 import { Separator } from "@/components/ui/separator";
 import { Attachments, UploadedFile, User } from "@/lib/generated/prisma/client";
-import { DATE_FORMAT } from "@/lib/consts";
+import { DATE_FORMAT } from "@/lib/consts/consts";
 
 type Props = {
   data: Attachments & {

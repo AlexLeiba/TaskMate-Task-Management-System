@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getUnsplashImagesAction } from "@/app/actions/unsplash-images";
 import { DialogBoardCardSkeleton } from "./DialogBoardCardSkeleton";
-import { UNSPLASH_DEFAULT_IMAGES } from "@/lib/consts";
+
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spacer } from "@/components/ui/spacer";
@@ -18,6 +18,7 @@ import { createNewBoardAction } from "@/app/actions/dashboard";
 import { useStore } from "@/store/useStore";
 import { type Board } from "@/lib/generated/prisma/client";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
+import { UNSPLASH_DEFAULT_IMAGES } from "@/lib/consts/protected/files";
 
 type Props = {
   type?: "dashboard" | "board";

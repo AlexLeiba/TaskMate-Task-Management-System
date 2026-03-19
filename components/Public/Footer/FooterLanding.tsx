@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { Logo } from "../../Shared/Logo";
-import { FOOTER_TABS_LINKS, NAV_LINKS } from "@/lib/consts";
+
 import { Separator } from "@/components/ui/separator";
 import { SocialMediaLinks } from "../../Shared/SocialMediaLinks";
+import { FOOTER_TABS_LINKS } from "@/lib/consts/public/footer";
+import { NAV_LINKS } from "@/lib/consts/links";
 
 export function FooterLanding() {
   const date = new Date();

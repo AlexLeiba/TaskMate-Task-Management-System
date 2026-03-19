@@ -12,12 +12,13 @@ import {
 } from "@/lib/types";
 import { clerkClient } from "@clerk/nextjs/server";
 
+import {} from "@/lib/consts/consts";
+import { UNASSIGNED_CARD } from "@/lib/consts/protected/card";
 import {
   FINISHED_TASKS_COLORS,
   PRIORITY_BREAKDOWN_COLORS,
   STATUS_OVERVIEW_COLORS,
-  UNASSIGNED_CARD,
-} from "@/lib/consts";
+} from "@/lib/consts/protected/overview";
 
 export async function getOverviewStatsAction(
   currentOrgId: string,

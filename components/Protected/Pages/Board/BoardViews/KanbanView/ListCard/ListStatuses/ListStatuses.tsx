@@ -4,12 +4,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { LIST_STATUSES, USER_ROLES } from "@/lib/consts";
+
 import { StatusType } from "@/lib/types";
 import { IconButton } from "@/components/ui/iconButton";
 import { useRole } from "@/hooks/useRole";
 import dynamic from "next/dynamic";
 import { X } from "lucide-react";
+import { LIST_STATUSES } from "@/lib/consts/protected/list";
+import { USER_ROLES } from "@/lib/consts/consts";
 
 const ListStatusesContent = dynamic(() =>
   import("./ListStatusesContent").then((m) => m.ListStatusesContent),

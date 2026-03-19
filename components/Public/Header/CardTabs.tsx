@@ -1,7 +1,8 @@
 "use client";
 
 import { IconButton } from "@/components/ui/iconButton";
-import { HEADER_CARD_TABS_FEATURES } from "@/lib/consts";
+import { HEADER_CARD_TABS_FEATURES } from "@/lib/consts/public/header";
+
 import { TabType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { variantsTabCardColors } from "@/lib/variantsTabsCardsColors";

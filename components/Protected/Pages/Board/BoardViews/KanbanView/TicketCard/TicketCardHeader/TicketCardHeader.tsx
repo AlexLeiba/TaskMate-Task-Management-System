@@ -7,7 +7,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { IconButton } from "@/components/ui/iconButton";
-import { KEYBOARD } from "@/lib/consts";
+import { KEYBOARD } from "@/lib/consts/consts";
 import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
 import { useMutationState } from "@tanstack/react-query";

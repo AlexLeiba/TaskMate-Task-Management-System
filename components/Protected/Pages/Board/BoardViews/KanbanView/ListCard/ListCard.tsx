@@ -3,7 +3,7 @@ import { ListCardHeader } from "./ListCardHeader";
 import { ListAndCardsAndDueDateAndChecklistType } from "@/lib/types";
 import { ComponentProps } from "react";
 import { Draggable, Droppable } from "@hello-pangea/dnd";
-import { USER_ROLES } from "@/lib/consts";
+import { USER_ROLES } from "@/lib/consts/consts";
 import { useRole } from "@/hooks/useRole";
 import { TicketCard } from "../TicketCard/TicketCard";
 

@@ -5,13 +5,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useRole } from "@/hooks/useRole";
-import { CARD_PRIORITIES, KEYBOARD, USER_ROLES } from "@/lib/consts";
+import { KEYBOARD, USER_ROLES } from "@/lib/consts/consts";
 import { PrioritiesType } from "@/lib/types";
 import { X } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useMutationState } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
+import { CARD_PRIORITIES } from "@/lib/consts/protected/card";
 
 const PriorityContent = dynamic(() =>
   import("./PriorityContent").then((m) => m.PriorityContent),

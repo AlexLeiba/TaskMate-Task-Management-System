@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import { useUserData } from "@/hooks/useUserData";
-import { USER_ROLES } from "@/lib/consts";
+import { USER_ROLES } from "@/lib/consts/consts";
 import { useRole } from "@/hooks/useRole";
 import { ChangeStatus } from "./ChangeStatus/ChangeStatus";
 import { useBoardId } from "@/hooks/useBoardId";

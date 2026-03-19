@@ -1,4 +1,4 @@
-import { MORE_FEATURES_CARD_DATA } from "@/lib/consts";
+import { MORE_FEATURES_CARD_DATA } from "@/lib/consts/public/body";
 import { AboutFeatureCard } from "./AboutFeatureCard";
 import { Spacer } from "@/components/ui/spacer";
 

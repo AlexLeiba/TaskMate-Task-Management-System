@@ -10,14 +10,15 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  HEADER_CARD_TABS_FEATURES,
-  HEADER_CARD_TABS_TITLES,
-  NAV_LINKS,
-} from "@/lib/consts";
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import {
+  HEADER_CARD_TABS_FEATURES,
+  HEADER_CARD_TABS_TITLES,
+} from "@/lib/consts/public/header";
+import { NAV_LINKS } from "@/lib/consts/links";
 
 export function HeaderMobileContent() {
   const navigate = useRouter();

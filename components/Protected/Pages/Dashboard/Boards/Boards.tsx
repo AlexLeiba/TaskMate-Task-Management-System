@@ -13,7 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 import { deleteFile } from "@/lib/deleteFile";
 import { useAuth } from "@clerk/nextjs";
 import { useRole } from "@/hooks/useRole";
-import { USER_ROLES } from "@/lib/consts";
+import { USER_ROLES } from "@/lib/consts/consts";
 import { DeleteDialog } from "@/components/Protected/Shared-protected/DeleteDialog/DeleteDialog";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 

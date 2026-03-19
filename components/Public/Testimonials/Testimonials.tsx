@@ -1,10 +1,11 @@
 import React from "react";
 import { Slider, SliderContent, SliderItem } from "@/components/ui/slider";
 import Image from "next/image";
-import { TESTIMONIALS_DATA } from "@/lib/consts";
+
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { TESTIMONIALS_DATA } from "@/lib/consts/public/body";
 
 export function Testimonials() {
   return (

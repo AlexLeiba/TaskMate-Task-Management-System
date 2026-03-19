@@ -9,7 +9,7 @@ import {
   changeCardPositionAction,
   changeListPositionAction,
 } from "@/app/actions/drag-and-drop";
-import { USER_ROLES } from "@/lib/consts";
+import { USER_ROLES } from "@/lib/consts/consts";
 import { useRole } from "@/hooks/useRole";
 import { ListCardSkeleton } from "./ListCard/ListCardSkeleton";
 import { ListCard } from "./ListCard/ListCard";

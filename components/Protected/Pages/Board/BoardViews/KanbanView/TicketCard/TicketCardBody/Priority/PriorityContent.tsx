@@ -1,6 +1,7 @@
 import { editPriorityAction } from "@/app/actions/card";
 import { IconButton } from "@/components/ui/iconButton";
-import { CARD_PRIORITIES, KEYBOARD } from "@/lib/consts";
+import { KEYBOARD } from "@/lib/consts/consts";
+import { CARD_PRIORITIES } from "@/lib/consts/protected/card";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { PrioritiesType, PriorityType } from "@/lib/types";
 import { useMutation } from "@tanstack/react-query";

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useStore } from "@/store/useStore";
 import { useRole } from "@/hooks/useRole";
-import { USER_ROLES } from "@/lib/consts";
+import { USER_ROLES } from "@/lib/consts/consts";
 import { ListCardTicketsCounter } from "./ListCardTicketsCounter";
 import { ListTitle } from "./ListTitle";
 import { ListStatuses } from "./ListStatuses/ListStatuses";

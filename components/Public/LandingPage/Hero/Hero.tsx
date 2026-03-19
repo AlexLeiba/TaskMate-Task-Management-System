@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { NAV_LINKS } from "@/lib/consts";
+import { NAV_LINKS } from "@/lib/consts/links";
+
 import { Video } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

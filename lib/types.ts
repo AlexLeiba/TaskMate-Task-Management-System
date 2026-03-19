@@ -1,5 +1,5 @@
 import { JSX, ReactNode } from "react";
-import { FILES_MIME_TYPES, IMAGES_MIME_TYPES } from "./consts";
+
 import {
   Activity,
   Card,
@@ -8,6 +8,7 @@ import {
   List,
   User,
 } from "./generated/prisma/client";
+import { FILES_MIME_TYPES, IMAGES_MIME_TYPES } from "./consts/protected/files";
 
 // REUSABLE TYPES
 export type ActivityActionType = "created" | "deleted" | "updated";

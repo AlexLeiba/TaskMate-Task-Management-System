@@ -1,6 +1,7 @@
 import { IconButton } from "@/components/ui/iconButton";
 import { useGetBoardFilteredData } from "@/hooks/useGetBoardFilteredData";
-import { BOARD_HEADER_TABS } from "@/lib/consts";
+import { BOARD_HEADER_TABS } from "@/lib/consts/protected/board";
+
 import { BoardTabSectionType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/store/useStore";

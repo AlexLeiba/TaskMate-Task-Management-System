@@ -6,7 +6,7 @@ import { AddNewInput } from "../AddNewInput";
 import { useMutation } from "@tanstack/react-query";
 import { editBoardTitleAction } from "@/app/actions/board";
 import toast from "react-hot-toast";
-import { USER_ROLES } from "@/lib/consts";
+import { USER_ROLES } from "@/lib/consts/consts";
 import { cn } from "@/lib/utils";
 import { useRole } from "@/hooks/useRole";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";

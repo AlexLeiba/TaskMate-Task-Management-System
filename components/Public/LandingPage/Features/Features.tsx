@@ -9,7 +9,7 @@ import {
 import Image from "next/image";
 
 import { FeatureCard } from "./FeatureCard";
-import { PRODUCTIVITY_DATA } from "@/lib/consts";
+import { PRODUCTIVITY_DATA } from "@/lib/consts/public/body";
 
 export function Features() {
   const { setSliderIndex, sliderIndex } = useSlider();

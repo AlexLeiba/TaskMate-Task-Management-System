@@ -7,7 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CHANGE_LIST_STATUS } from "@/lib/consts";
 
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -17,6 +16,7 @@ import { ChangeStatusSkeleton } from "./ChangeStatusSkeleton";
 import { StatusType } from "@/lib/generated/prisma/enums";
 import { List } from "@/lib/generated/prisma/client";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
+import { CHANGE_LIST_STATUS } from "@/lib/consts/protected/list";
 
 type Props = {
   listId: string | undefined;

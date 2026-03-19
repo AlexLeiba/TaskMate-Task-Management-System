@@ -1,7 +1,8 @@
 import { IconButton } from "@/components/ui/iconButton";
 import { useGetBoardFilteredData } from "@/hooks/useGetBoardFilteredData";
 import { useMembers } from "@/hooks/useMembers";
-import { UNASSIGNED_CARD } from "@/lib/consts";
+import { UNASSIGNED_CARD } from "@/lib/consts/protected/card";
+
 import { OrganizationMembersType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/store/useStore";

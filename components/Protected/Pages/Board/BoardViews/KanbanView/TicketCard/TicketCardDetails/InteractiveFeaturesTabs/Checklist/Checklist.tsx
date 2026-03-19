@@ -25,7 +25,7 @@ import {
 import { type Checklist } from "@/lib/generated/prisma/client";
 import { useRole } from "@/hooks/useRole";
 import { useUserData } from "@/hooks/useUserData";
-import { USER_ROLES } from "@/lib/consts";
+import { USER_ROLES } from "@/lib/consts/consts";
 import { cn } from "@/lib/utils";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 

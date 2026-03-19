@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { MoreFeaturesCardData } from "@/lib/consts";
+import { MoreFeaturesCardData } from "@/lib/consts/public/body";
+
 import React from "react";
 
 type Props = {

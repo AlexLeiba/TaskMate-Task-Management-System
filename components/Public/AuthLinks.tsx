@@ -1,8 +1,9 @@
 "use client";
-import { NAV_LINKS } from "@/lib/consts";
+
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { usePathname } from "next/navigation";
+import { NAV_LINKS } from "@/lib/consts/links";
 function Links() {
   const pathname = usePathname();
 

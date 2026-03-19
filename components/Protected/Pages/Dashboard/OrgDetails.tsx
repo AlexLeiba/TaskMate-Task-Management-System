@@ -5,7 +5,7 @@ import { CreditCard, Crown } from "lucide-react";
 import Image from "next/image";
 import { OrganizationCardSkeleton } from "./Boards/OrganizationCardSkeleton";
 import { useRole } from "@/hooks/useRole";
-import { USER_ROLES } from "@/lib/consts";
+import { USER_ROLES } from "@/lib/consts/consts";
 
 export function OrgDetails() {
   const role = useRole();

@@ -3,11 +3,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { UNASSIGNED_CARD } from "@/lib/consts";
+
 import { TeamWorkloadType } from "@/lib/types";
 import { TeamWorkloadDistributionCard } from "./TeamWorkloadDistributionCard";
 import { TeamWorkloadDistributionCardTooltipContent } from "./TeamWorkloadDistributionCardTooltipContent";
 import { TeamWorkloadAsigneeCard } from "./TeamWorkloadAsigneeCard";
+import { UNASSIGNED_CARD } from "@/lib/consts/protected/card";
 
 type Props = {
   data: TeamWorkloadType[] | undefined;

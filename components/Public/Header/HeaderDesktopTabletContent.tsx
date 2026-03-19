@@ -6,9 +6,9 @@ import { ExpandedTab } from "./ExpandedTab";
 import { Logo } from "../../Shared/Logo";
 import Links from "../AuthLinks";
 
-import { HEADER_TABS_LINKS } from "@/lib/consts";
 import { useEffect, useRef, useState } from "react";
 import { TabType } from "@/lib/types";
+import { HEADER_TABS_LINKS } from "@/lib/consts/links";
 
 export function HeaderDesktopTabletContent() {
   const tabContainerRef = useRef<HTMLDivElement>(null);

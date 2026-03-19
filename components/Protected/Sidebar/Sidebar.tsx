@@ -33,7 +33,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { SidebarSkeleton } from "./SidebarSkeleton";
-import { USER_ROLES } from "@/lib/consts";
+import { USER_ROLES } from "@/lib/consts/consts";
 
 export function Sidebar() {
   const { setOpenMobile } = useSidebar();

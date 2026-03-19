@@ -1,5 +1,5 @@
 import { IconButton } from "@/components/ui/iconButton";
-import { KEYBOARD } from "@/lib/consts";
+import { KEYBOARD } from "@/lib/consts/consts";
 import { UploadedFile } from "@/lib/generated/prisma/client";
 
 import { X } from "lucide-react";

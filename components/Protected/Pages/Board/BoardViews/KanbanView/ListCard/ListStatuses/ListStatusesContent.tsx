@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Check } from "lucide-react";
-import { LIST_STATUSES } from "@/lib/consts";
+
 import { StatusType } from "@/lib/types";
 import { IconButton } from "@/components/ui/iconButton";
 import toast from "react-hot-toast";
@@ -8,6 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { updateListStatusAction } from "@/app/actions/list";
 import { useBoardId } from "@/hooks/useBoardId";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
+import { LIST_STATUSES } from "@/lib/consts/protected/list";
 
 type Props = {
   selectedStatus: string;

@@ -16,7 +16,7 @@ import { useStore } from "@/store/useStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, X } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { KEYBOARD } from "@/lib/consts";
+import { KEYBOARD } from "@/lib/consts/consts";
 import zod from "zod";
 import { useShallow } from "zustand/shallow";
 

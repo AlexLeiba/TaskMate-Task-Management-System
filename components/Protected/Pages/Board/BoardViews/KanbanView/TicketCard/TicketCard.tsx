@@ -2,7 +2,7 @@
 import { TicketCardHeader } from "./TicketCardHeader/TicketCardHeader";
 import { TicketCardBody } from "./TicketCardBody/TicketCardBody";
 import { useCallback, useState } from "react";
-import { KEYBOARD, USER_ROLES } from "@/lib/consts";
+import { KEYBOARD, USER_ROLES } from "@/lib/consts/consts";
 
 import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";

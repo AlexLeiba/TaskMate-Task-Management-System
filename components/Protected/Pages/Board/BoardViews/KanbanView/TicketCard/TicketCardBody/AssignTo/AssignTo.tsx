@@ -4,7 +4,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { KEYBOARD, USER_ROLES } from "@/lib/consts";
+import { KEYBOARD, USER_ROLES } from "@/lib/consts/consts";
 import { UserPlus, X } from "lucide-react";
 import { AssignedToType } from "@/lib/types";
 import Image from "next/image";

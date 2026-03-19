@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 
 import { Comment, User } from "@/lib/generated/prisma/client";
-import { DATE_FORMAT } from "@/lib/consts";
+import { DATE_FORMAT } from "@/lib/consts/consts";
 
 type Props = {
   data: Comment & { author: User };

@@ -1,4 +1,4 @@
-import { KEYBOARD } from "@/lib/consts";
+import { KEYBOARD } from "@/lib/consts/consts";
 import { Check, UserPlus } from "lucide-react";
 import { AssignedToType, AssignToCardActionProps } from "@/lib/types";
 import { IconButton } from "@/components/ui/iconButton";

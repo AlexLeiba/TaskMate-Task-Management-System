@@ -1,6 +1,6 @@
 import { IconButton } from "@/components/ui/iconButton";
+import { BOARD_HEADER_TABS } from "@/lib/consts/protected/board";
 
-import { BOARD_HEADER_TABS } from "@/lib/consts";
 import { BoardTabSectionType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/store/useStore";

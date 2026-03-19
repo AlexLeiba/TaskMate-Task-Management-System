@@ -3,7 +3,8 @@ import { Separator } from "@/components/ui/separator";
 import {
   HEADER_SIDEBAR_INFO_TABS,
   HEADER_SIDEBAR_INFO_TABS_TITLE,
-} from "@/lib/consts";
+} from "@/lib/consts/public/header";
+
 import { TabType } from "@/lib/types";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";

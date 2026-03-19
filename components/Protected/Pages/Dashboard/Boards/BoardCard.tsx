@@ -1,7 +1,7 @@
 "use client";
 import { IconButton } from "@/components/ui/iconButton";
 import { useRole } from "@/hooks/useRole";
-import { USER_ROLES } from "@/lib/consts";
+import { USER_ROLES } from "@/lib/consts/consts";
 import { X } from "lucide-react";
 import Image from "next/image";
 import { ComponentProps } from "react";

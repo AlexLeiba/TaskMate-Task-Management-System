@@ -1,4 +1,4 @@
-import { DATE_FORMAT } from "@/lib/consts";
+import { DATE_FORMAT } from "@/lib/consts/consts";
 import { format } from "date-fns";
 
 type Props = {

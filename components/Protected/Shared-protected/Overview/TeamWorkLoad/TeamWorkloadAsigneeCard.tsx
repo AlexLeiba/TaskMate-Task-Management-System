@@ -1,6 +1,5 @@
 import { UserCard } from "@/components/Protected/Shared-protected/UserCard/UserCard";
-import { UNASSIGNED_CARD } from "@/lib/consts";
-import React from "react";
+import { UNASSIGNED_CARD } from "@/lib/consts/protected/card";
 
 type Props = {
   email: string;

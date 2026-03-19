@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 import "react-quill-new/dist/quill.snow.css";
 import { useBoardId } from "@/hooks/useBoardId";
 import { useRole } from "@/hooks/useRole";
-import { USER_ROLES } from "@/lib/consts";
+import { USER_ROLES } from "@/lib/consts/consts";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), {

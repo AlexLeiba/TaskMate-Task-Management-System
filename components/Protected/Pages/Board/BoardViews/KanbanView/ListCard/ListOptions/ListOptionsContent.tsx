@@ -1,5 +1,4 @@
 import { Info } from "lucide-react";
-import { LIST_OPTIONS } from "@/lib/consts";
 import { Separator } from "@radix-ui/react-separator";
 import { useStore } from "@/store/useStore";
 import { IconButton } from "@/components/ui/iconButton";
@@ -17,6 +16,7 @@ import { useShallow } from "zustand/shallow";
 import { useBoardId } from "@/hooks/useBoardId";
 import dynamic from "next/dynamic";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
+import { LIST_OPTIONS } from "@/lib/consts/protected/list";
 
 const DeleteDialog = dynamic(() =>
   import("@/components/Protected/Shared-protected/DeleteDialog/DeleteDialog").then(

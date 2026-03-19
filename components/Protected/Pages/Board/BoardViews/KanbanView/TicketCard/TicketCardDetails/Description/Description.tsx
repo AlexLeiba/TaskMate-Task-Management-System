@@ -127,6 +127,7 @@ export function Description({
               aria-label="Save Description"
               onClick={handleSaveDescription}
               className="px-2"
+              classNameChildren="border border-green-500 text-green-500 rounded-full"
             >
               <Check className="text-green-500" />
             </IconButton>

@@ -36,7 +36,7 @@ async function ProtectedLayout({
                   height={900}
                   width={1200}
                   src={boardData.bgImageUrl}
-                  className="absolute inset-0 w-full h-full object-cover -z-10"
+                  className="fixed inset-0 w-full h-full object-cover -z-10"
                   alt=""
                 />
               )}

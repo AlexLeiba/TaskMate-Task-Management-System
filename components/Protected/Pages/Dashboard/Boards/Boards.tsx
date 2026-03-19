@@ -86,7 +86,7 @@ export function Boards({
         <p className="text-xl font-medium">Boards</p>
       </div>
       <Spacer size={4} />
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(200px,243px))] gap-2">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))]  md:grid-cols-[repeat(auto-fit,minmax(200px,243px))] gap-2">
         {/* CREATE NEW BOARD */}
         {role === USER_ROLES.admin && (
           <CreateNewBoardCard disabled={isDeletePending} />

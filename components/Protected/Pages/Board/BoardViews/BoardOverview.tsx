@@ -3,7 +3,7 @@ import { getOverviewStatsAction } from "@/app/actions/overview";
 import { useAuth } from "@clerk/nextjs";
 import { StatusOverview } from "../../../Shared-protected/Overview/StatusOverview";
 import { PriorityBreakdown } from "../../../Shared-protected/Overview/PriorityBreakdown";
-import { FinishedWorkOverview } from "../../../Shared-protected/Overview/FinishedWorkOverview";
+import { FinishedWorkOverview } from "../../../Shared-protected/Overview/FinishedWorkOverview/FinishedWorkOverview";
 import { RecentActivity } from "../../../Shared-protected/Overview/RecentActivity";
 import { useQuery } from "@tanstack/react-query";
 import { useBoardId } from "@/hooks/useBoardId";

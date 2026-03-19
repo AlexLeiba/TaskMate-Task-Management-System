@@ -1,3 +1,5 @@
+import { FinishedWorkFilterTabs } from "@/lib/types";
+
 export const FINISHED_TASKS_COLORS = [
   "#0088FE",
   "#02c81f",
@@ -18,4 +20,8 @@ export const PRIORITY_BREAKDOWN_COLORS = [
   "#FF8042",
   "#ab0505",
   "#777777",
+];
+
+export const FILTER_TABS: FinishedWorkFilterTabs[] = [
+  7, 30, 90, 180, 365, 1000,
 ];

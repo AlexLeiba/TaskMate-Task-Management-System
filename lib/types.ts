@@ -440,3 +440,5 @@ export type AssignToCardActionProps = {
   boardId: string;
   assignedUserData: Pick<User, "email" | "name" | "avatar">;
 };
+
+export type FinishedWorkFilterTabs = 7 | 30 | 90 | 180 | 365 | 1000;

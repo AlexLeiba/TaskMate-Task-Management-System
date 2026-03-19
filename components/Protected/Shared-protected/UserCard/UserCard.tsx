@@ -92,7 +92,7 @@ export function UserCard({
             />
           </div>
         )}
-        <div className="flex flex-col ">
+        <div className="flex flex-col flex-wrap">
           <p className={cn(nameVariants({ size }))}>{data.name}</p>
           <p className={cn(emailVariants({ size }))}>{data.email}</p>
         </div>

@@ -24,10 +24,7 @@ export function BoardCard({
   const role = useRole();
   return (
     <>
-      <div
-        className="relative overflow-hidden  rounded-md "
-        // style={{ backgroundImage: `url(${cardImageUrl})` }}
-      >
+      <div className="relative overflow-hidden  rounded-md min-h-32.5">
         <Image
           src={cardImageUrl}
           alt={title}
@@ -40,11 +37,11 @@ export function BoardCard({
           disabled={disabled}
           aria-label={`Open board - ${title}`}
           title={`Open board - ${title}`}
-          className="w-full  rounded-md p-2 h-28  overflow-hidden cursor-pointer hover:opacity-70 flex items-start justify-start"
+          className="w-full min-h-32.5  rounded-md p-2 h-28  overflow-hidden cursor-pointer hover:opacity-70 flex items-start justify-start"
           onClick={handleSelectBoard}
         >
           {/* Black overlay */}
-          <div className="absolute inset-0 bg-black/50 z-10"></div>
+          <div className="absolute inset-0 bg-black/50 z-10  h-full"></div>
 
           <p className="text-left line-clamp-3 text-sm text-white font-bold z-20 relative">
             {title}

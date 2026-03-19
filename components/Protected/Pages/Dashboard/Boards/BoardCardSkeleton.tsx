@@ -10,11 +10,11 @@ export function BoardCardSkeleton() {
         <p className="text-xl font-medium">Boards</p>
       </div>
       <Spacer size={4} />
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-2">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))]  md:grid-cols-[repeat(auto-fit,minmax(200px,243px))] gap-2">
         {boards.map((board) => (
           <div
             key={board}
-            className="h-28 rounded-md bg-gray-700 animate-pulse"
+            className="min-h-32.5 rounded-md bg-gray-700 animate-pulse"
           />
         ))}
       </div>

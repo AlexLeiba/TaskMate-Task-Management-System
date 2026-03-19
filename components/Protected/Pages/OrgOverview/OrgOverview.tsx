@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { BoardStats } from "../../Shared-protected/Overview/BoardStats";
 import { BoardStatsCard } from "../../Shared-protected/Overview/BoardStatsCard";
 import { StatusOverview } from "../../Shared-protected/Overview/StatusOverview";
-import { FinishedWorkOverview } from "../../Shared-protected/Overview/FinishedWorkOverview";
+import { FinishedWorkOverview } from "../../Shared-protected/Overview/FinishedWorkOverview/FinishedWorkOverview";
 import { PriorityBreakdown } from "../../Shared-protected/Overview/PriorityBreakdown";
 import { TeamWorkload } from "../../Shared-protected/Overview/TeamWorkLoad/TeamWorkload";
 

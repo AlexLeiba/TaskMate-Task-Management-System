@@ -6,8 +6,6 @@ import dynamic from "next/dynamic";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { copyCardAction, deleteCardAction } from "@/app/actions/card";
-import { DeleteFileBodyType } from "@/lib/types";
-import { axiosInstance } from "@/lib/config";
 
 import { useBoardId } from "@/hooks/useBoardId";
 import {
@@ -16,7 +14,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
-import { API_REQ_URL } from "@/lib/consts/links";
+import { apiDeleteFile } from "@/lib/api/apiDeleteFile";
 
 const DeleteDialog = dynamic(() =>
   import("@/components/Protected/Shared-protected/DeleteDialog/DeleteDialog").then(
@@ -40,31 +38,6 @@ export function Actions({
   const boardId = useBoardId();
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
 
-  async function deleteFile() {
-    try {
-      if (!cardDetailsId) {
-        return toast.error(
-          "Card not found, please try again or refresh the page",
-        );
-      }
-      const body: DeleteFileBodyType = {
-        type: "card",
-        cardDetailsId,
-        fileType: "raw",
-      };
-
-      const response = await axiosInstance.delete(API_REQ_URL.upload, {
-        data: body,
-      });
-
-      if (response?.data?.statusCode !== 200) {
-        throw new Error(response?.data?.message || "Error deleting a file");
-      }
-    } catch (error: any) {
-      throw new Error(error);
-    }
-  }
-
   // DELETE CARD
   const {
     mutate: deleteCardMutation,
@@ -72,10 +45,8 @@ export function Actions({
   } = useMutation({
     mutationKey: [QUERY_KEYS.pages.board.cardDetails.deleteCard],
     mutationFn: deleteCardAction,
-    onMutate: async () => {
-      // DELETE FILES FROM CLOUD
-      await deleteFile(); // execution of the mutation will wait until this request is resolved (removing all attachments from cloud)
-    },
+    onMutate: async () =>
+      apiDeleteFile({ type: "card", cardDetailsId, fileType: "raw" }, boardId), // execution of the mutation will wait until this request is resolved (removing all attachments from cloud)
     onSuccess: () => {
       toast.dismiss(QUERY_KEYS.pages.board.cardDetails.deleteCard);
       toast.success("Card deleted");

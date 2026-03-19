@@ -17,7 +17,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { DeleteDialog } from "@/components/Protected/Shared-protected/DeleteDialog/DeleteDialog";
-import { deleteFile } from "@/lib/deleteFile";
+import { apiDeleteFile } from "@/lib/api/apiDeleteFile";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 type Props = {
@@ -44,7 +44,7 @@ export function OptionsContent({
   } = useMutation({
     onMutate: async () => {
       // DELETE FILES FROM CLOUD
-      await deleteFile(
+      await apiDeleteFile(
         { type: "card", cardDetailsId, fileType: "raw" },
         boardId,
       ); // execution of the mutation will wait until this request is resolved (removing all attachments from cloud)

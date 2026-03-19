@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { copyListAction, deleteListAction } from "@/app/actions/list";
 import toast from "react-hot-toast";
-import { deleteFile } from "@/lib/deleteFile";
+import { apiDeleteFile } from "@/lib/api/apiDeleteFile";
 import {
   Tooltip,
   TooltipContent,
@@ -43,7 +43,7 @@ export function ListOptionsContent({ listId }: Props) {
       mutationKey: [QUERY_KEYS.pages.board.lists.deleteList],
       mutationFn: deleteListAction,
       onMutate: async () => {
-        await deleteFile(
+        await apiDeleteFile(
           { type: "list", listId, fileType: "raw", boardId },
           boardId,
         ); // execution of the mutation will wait until this request is resolved (removing all attachments from cloud)

@@ -196,7 +196,7 @@ export type UploadFileBodyType = {
   fileName: string;
 };
 
-type DeleteSingleFile = {
+export type DeleteSingleFile = {
   type: "single";
   fileId: string;
   fileType: "image" | "raw";

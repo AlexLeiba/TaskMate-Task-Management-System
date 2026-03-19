@@ -1,9 +1,9 @@
 import toast from "react-hot-toast";
-import { DeleteFileBodyType } from "./types";
-import { axiosInstance } from "./config";
-import { API_REQ_URL } from "./consts/links";
+import { DeleteFileBodyType } from "../types";
+import { axiosInstance } from "../config";
+import { API_REQ_URL } from "../consts/links";
 
-export async function deleteFile(body: DeleteFileBodyType, boardId: string) {
+export async function apiDeleteFile(body: DeleteFileBodyType, boardId: string) {
   try {
     if (!boardId) {
       return toast.error("Board not found");

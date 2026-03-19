@@ -10,7 +10,7 @@ import { deleteBoardAction } from "@/app/actions/dashboard";
 import toast from "react-hot-toast";
 import { BoardType } from "@/lib/types";
 import { useMutation } from "@tanstack/react-query";
-import { deleteFile } from "@/lib/deleteFile";
+import { apiDeleteFile } from "@/lib/api/apiDeleteFile";
 import { useAuth } from "@clerk/nextjs";
 import { useRole } from "@/hooks/useRole";
 import { USER_ROLES } from "@/lib/consts/consts";
@@ -40,7 +40,10 @@ export function Boards({
       mutationKey: [QUERY_KEYS.pages.boards.deleteBoard],
       mutationFn: deleteBoardAction,
       onMutate: async (boardId) => {
-        await deleteFile({ type: "board", fileType: "raw", boardId }, boardId); //await deletion of all files from cloud from the board before deleting the board itself
+        await apiDeleteFile(
+          { type: "board", fileType: "raw", boardId },
+          boardId,
+        ); //await deletion of all files from cloud from the board before deleting the board itself
       },
       onSuccess: () => {
         setDeleteDialogOpen(false);

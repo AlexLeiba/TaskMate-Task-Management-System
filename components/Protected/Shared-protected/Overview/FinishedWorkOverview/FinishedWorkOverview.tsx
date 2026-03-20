@@ -34,9 +34,6 @@ export function FinishedWorkOverview({ type, orgId }: Props) {
       }
 
       // dashboard
-      toast.loading("Loading finished work overview...", {
-        id: QUERY_KEYS.pages.board.overview.finishedWork,
-      });
       const response = await finishedWorkOverviewAction(orgId, null);
 
       return response || { data: [] };
@@ -44,8 +41,8 @@ export function FinishedWorkOverview({ type, orgId }: Props) {
       toast.error(
         error.message || "Error on Finished work overview, please try again",
       );
-    } finally {
-      toast.dismiss(QUERY_KEYS.pages.board.overview.finishedWork);
+
+      return { data: [] };
     }
   }
 

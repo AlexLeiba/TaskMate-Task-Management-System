@@ -29,6 +29,8 @@ export function BoardOverview() {
       toast.error(
         error.message || "Error getting board Overview, please try again",
       );
+
+      return null;
     } finally {
       toast.dismiss(QUERY_KEYS.pages.board.overview.boardOverview);
     }
@@ -61,9 +63,9 @@ export function BoardOverview() {
         <BoardStatsCard>
           <PriorityBreakdown data={data?.priorityBreakdownData} />
         </BoardStatsCard>
-        {/* <BoardStatsCard>
+        <BoardStatsCard>
           {orgId && <FinishedWorkOverview type="board" orgId={orgId} />}
-        </BoardStatsCard> */}
+        </BoardStatsCard>
       </div>
       <BoardStatsCard>
         {orgId && <RecentActivity orgId={orgId} type="board" />}

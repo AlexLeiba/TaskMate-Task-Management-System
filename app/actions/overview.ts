@@ -517,6 +517,9 @@ export async function finishedWorkOverviewAction(
       const authorData = finishedWorkData.find(
         (card) => card?.assignedToEmail === Key,
       );
+      if (!authorData) {
+        return;
+      }
       finishedWorkOfAllMembersData.push({
         fullName: authorData?.author?.name || "Member",
         email: Key,

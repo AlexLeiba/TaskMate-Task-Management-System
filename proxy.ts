@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 const isProtectedRoute = createRouteMatcher(["/dashboard(.*)"]);
 
 const isPublicOnlyRoute = createRouteMatcher([
+  "/",
   "/sign-in(.*)",
   "/sign-up(.*)", // landing page (public-only)
 ]);

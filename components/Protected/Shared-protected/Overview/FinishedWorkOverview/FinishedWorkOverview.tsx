@@ -53,41 +53,42 @@ export function FinishedWorkOverview({ type, orgId }: Props) {
     staleTime: 1000, // TODO : change to 5 min.
   });
 
-  const {
-    data: filteredData,
-    mutate,
-    isPending,
-  } = useMutation({
-    mutationFn: async (selectedTab: FinishedWorkFilterTabs) => {
-      if (!orgId || !boardId) {
-        throw new Error("User not authenticated");
-      }
-      toast.loading("Loading finished work overview...", {
-        id: QUERY_KEYS.pages.board.overview.finishedWork,
-      });
-      const response = await finishedWorkOverviewAction(
-        orgId,
-        type === "board" ? boardId : null,
-        selectedTab,
-      );
+  //   const {
+  //     data: filteredData,
+  //     mutate,
+  //     isPending,
+  //   } = useMutation({
+  //     mutationFn: async (selectedTab: FinishedWorkFilterTabs) => {
+  //       if (!orgId || !boardId) {
+  //         throw new Error("User not authenticated");
+  //       }
+  //       toast.loading("Loading finished work overview...", {
+  //         id: QUERY_KEYS.pages.board.overview.finishedWork,
+  //       });
+  //       const response = await finishedWorkOverviewAction(
+  //         orgId,
+  //         type === "board" ? boardId : null,
+  //         selectedTab,
+  //       );
+  //
+  //       return response;
+  //     },
+  //     mutationKey: [QUERY_KEYS.pages.board.overview.finishedWork, orgId],
+  //     onSuccess: () => {
+  //       toast.dismiss(QUERY_KEYS.pages.board.overview.finishedWork);
+  //     },
+  //     onError: (err) => {
+  //       toast.error(err.message || "Something went wrong, please try again");
+  //       toast.dismiss(QUERY_KEYS.pages.board.overview.finishedWork);
+  //     },
+  //   });
 
-      return response;
-    },
-    mutationKey: [QUERY_KEYS.pages.board.overview.finishedWork, orgId],
-    onSuccess: () => {
-      toast.dismiss(QUERY_KEYS.pages.board.overview.finishedWork);
-    },
-    onError: (err) => {
-      toast.error(err.message || "Something went wrong, please try again");
-      toast.dismiss(QUERY_KEYS.pages.board.overview.finishedWork);
-    },
-  });
-
-  const finishedWorkData = filteredData?.data || data?.data;
+  const finishedWorkData = data?.data;
   console.log(
     "🚀 ~ FinishedWorkOverview ~ finishedWorkData:",
     finishedWorkData,
   );
+  const isPending = false;
 
   return (
     <div className="flex flex-col gap-2">
@@ -101,7 +102,7 @@ export function FinishedWorkOverview({ type, orgId }: Props) {
           Filter finished work by members over a certain nr of days.
         </p>
       </div>
-      <FilterTabs handleFilterTab={(selectedTab) => mutate(selectedTab)} />
+      {/* <FilterTabs handleFilterTab={(selectedTab) => mutate(selectedTab)} /> */}
 
       <div className="grid lg:grid-cols-[2fr_1fr] grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-2">
         <PieChart

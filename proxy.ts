@@ -1,17 +1,11 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-const isProtectedRoute = createRouteMatcher([
-  "/dashboard(.*)",
-  "/dashboard/:orgId/settings(.*)",
-  "/settings(.*)",
-  "/activities(.*)",
-]);
+const isProtectedRoute = createRouteMatcher(["/dashboard(.*)"]);
 
 const isPublicOnlyRoute = createRouteMatcher([
-  "/",
-  "/sign-in",
-  "/sign-up", // landing page (public-only)
+  "/sign-in(.*)",
+  "/sign-up(.*)", // landing page (public-only)
 ]);
 
 export default clerkMiddleware(async (auth, req) => {

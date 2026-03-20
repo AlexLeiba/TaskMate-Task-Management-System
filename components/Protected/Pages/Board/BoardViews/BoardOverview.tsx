@@ -62,11 +62,11 @@ export function BoardOverview() {
           <PriorityBreakdown data={data?.priorityBreakdownData} />
         </BoardStatsCard>
         <BoardStatsCard>
-          <FinishedWorkOverview type="board" orgId={orgId} />
+          {orgId && <FinishedWorkOverview type="board" orgId={orgId} />}
         </BoardStatsCard>
       </div>
       <BoardStatsCard>
-        <RecentActivity />
+        {orgId && <RecentActivity orgId={orgId} type="board" />}
       </BoardStatsCard>
     </div>
   );

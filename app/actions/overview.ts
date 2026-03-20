@@ -536,7 +536,7 @@ export async function finishedWorkOverviewAction(
 
 export async function getRecentActivitiesAction(
   currentOrgId: string,
-  boardId: string,
+  boardId: string | null,
 ): Promise<{ data: ActivityWithAuthor[] }> {
   //MOST RECENT BOARD ACTIVITIES
   if (boardId) {

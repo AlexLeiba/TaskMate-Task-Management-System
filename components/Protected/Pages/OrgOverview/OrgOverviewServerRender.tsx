@@ -6,5 +6,5 @@ type Props = {
 };
 export async function OrgOverviewServerRender({ organizationId }: Props) {
   const response = await getOverviewStatsAction(organizationId, null);
-  return <OrgSummary data={response} />;
+  return <OrgSummary data={response} orgId={organizationId} />;
 }

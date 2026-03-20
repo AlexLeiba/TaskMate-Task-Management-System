@@ -15,19 +15,20 @@ import { SkeletonMembers } from "./SkeletonMembers";
 
 type Props = {
   type?: "board" | "dashboard";
-  orgId?: string | null;
+  orgId: string;
 };
 export function FinishedWorkOverview({ type, orgId }: Props) {
   // TODO create a filter by days 7/14/30 /60/all time
   const boardId = useBoardId();
 
   async function fetchBoardFinishedWorkStats() {
-    if (!orgId) return;
-    if (type === "board" && !boardId) return;
-
     try {
       // board
       if (type === "board") {
+        if (!boardId) {
+          throw new Error("Board not found");
+        }
+
         const response = await finishedWorkOverviewAction(orgId, boardId);
 
         return response || { data: [] };

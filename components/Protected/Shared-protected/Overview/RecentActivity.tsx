@@ -3,31 +3,46 @@ import { UserCard } from "@/components/Protected/Shared-protected/UserCard/UserC
 import { Button } from "@/components/ui/button";
 import { useBoardId } from "@/hooks/useBoardId";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
-import { useAuth } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
-export function RecentActivity() {
+type Props = {
+  orgId: string;
+  type: "board" | "dashboard";
+};
+export function RecentActivity({ orgId, type = "board" }: Props) {
   const boardId = useBoardId();
-  const { orgId } = useAuth();
 
   async function fetchBoardSummary() {
-    if (!boardId || !orgId) return;
     try {
-      const response = await getRecentActivitiesAction(orgId, boardId);
+      if (!orgId) {
+        throw new Error("User not authenticated");
+      }
+      // board
+      if (type === "board") {
+        if (!boardId) {
+          throw new Error("Board not found");
+        }
 
+        const response = await getRecentActivitiesAction(orgId, boardId);
+        return response?.data;
+      }
+
+      // dashboard
+      const response = await getRecentActivitiesAction(orgId, null);
       return response?.data;
     } catch (error: any) {
       toast.error(
-        error.message || "Error getting board summary, please try again",
+        error.message ||
+          "Error getting board recent activity, please try again",
       );
     }
   }
 
   const { data } = useQuery({
     queryFn: fetchBoardSummary,
-    queryKey: [QUERY_KEYS.pages.board.overview.recentActivities, boardId],
+    queryKey: [QUERY_KEYS.pages.board.overview.recentActivities, orgId],
     staleTime: 1000, // TODO : change to 5 min.
     gcTime: 1000, // TODO : change to 5 min.
     refetchOnMount: true,

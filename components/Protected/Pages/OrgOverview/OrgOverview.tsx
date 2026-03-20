@@ -9,6 +9,7 @@ import { StatusOverview } from "../../Shared-protected/Overview/StatusOverview";
 import { FinishedWorkOverview } from "../../Shared-protected/Overview/FinishedWorkOverview/FinishedWorkOverview";
 import { PriorityBreakdown } from "../../Shared-protected/Overview/PriorityBreakdown";
 import { TeamWorkload } from "../../Shared-protected/Overview/TeamWorkLoad/TeamWorkload";
+import { RecentActivity } from "../../Shared-protected/Overview/RecentActivity";
 
 type Props = {
   data: {
@@ -17,11 +18,13 @@ type Props = {
       message: string;
     } | null;
   };
+  orgId: string;
 };
-export function OrgSummary({ data: { data, error } }: Props) {
+export function OrgSummary({ data: { data, error }, orgId }: Props) {
   useEffect(() => {
     if (error?.message) toast.error(error?.message);
   }, [error?.message]);
+
   return (
     <div className="flex flex-col gap-4">
       <BoardStats data={data} />
@@ -30,9 +33,7 @@ export function OrgSummary({ data: { data, error } }: Props) {
         <BoardStatsCard>
           <StatusOverview data={data?.statusOverviewData} />
         </BoardStatsCard>
-        <BoardStatsCard>
-          <FinishedWorkOverview type="dashboard" />
-        </BoardStatsCard>
+
         <BoardStatsCard>
           <PriorityBreakdown data={data?.priorityBreakdownData} />
         </BoardStatsCard>
@@ -42,6 +43,12 @@ export function OrgSummary({ data: { data, error } }: Props) {
             allAssignedWork={data?.allAssignedWork || 0}
             totalTasks={data?.totalTasks || 0}
           />
+        </BoardStatsCard>
+        <BoardStatsCard>
+          <FinishedWorkOverview type="dashboard" orgId={orgId} />
+        </BoardStatsCard>
+        <BoardStatsCard>
+          <RecentActivity orgId={orgId} type="dashboard" />
         </BoardStatsCard>
       </div>
     </div>

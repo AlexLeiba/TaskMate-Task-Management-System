@@ -28,7 +28,7 @@ export function BoardStats({ data }: Props) {
       icon: <FilePlus className="text-yellow-200" />,
       title: "created",
       value: data?.createdInAWeek,
-      description: "created tickets in the last 7 days",
+      description: "created card tickets in the last 7 days",
     },
     {
       id: 4,
@@ -40,23 +40,23 @@ export function BoardStats({ data }: Props) {
     {
       id: 5,
       icon: <Ticket className="text-yellow-400" />,
-      title: "total tasks",
+      title: "active tasks",
       value: data?.totalTasks,
-      description: "active task tickets",
+      description: "total active card tickets",
     },
     {
       id: 6,
       icon: <UserPlus className="text-green-400" />,
-      title: "total assigned",
+      title: "assigned",
       value: data?.allAssignedWork,
-      description: "active assigned task tickets",
+      description: "active assigned card tickets",
     },
     {
       id: 7,
       icon: <UserMinus className="text-orange-400" />,
-      title: "total unassigned",
+      title: "unassigned",
       value: Number(data?.totalTasks || 0) - Number(data?.allAssignedWork || 0),
-      description: "unassigned task tickets",
+      description: "unassigned card tickets",
     },
   ];
 

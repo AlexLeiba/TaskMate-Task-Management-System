@@ -44,9 +44,9 @@ export function OrgSummary({ data: { data, error }, orgId }: Props) {
             totalTasks={data?.totalTasks || 0}
           />
         </BoardStatsCard>
-        {/* <BoardStatsCard>
+        <BoardStatsCard>
           <FinishedWorkOverview type="dashboard" orgId={orgId} />
-        </BoardStatsCard> */}
+        </BoardStatsCard>
         <BoardStatsCard>
           <RecentActivity orgId={orgId} type="dashboard" />
         </BoardStatsCard>

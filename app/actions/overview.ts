@@ -529,6 +529,10 @@ export async function finishedWorkOverviewAction(
       });
     });
 
+    console.log(
+      "🚀 ~ finishedWorkOverviewAction ~ finishedWorkOfAllMembersData:",
+      finishedWorkOfAllMembersData,
+    );
     return { data: finishedWorkOfAllMembersData };
   } catch (error: any) {
     console.log("🚀 ~ finishedWorkOverviewAction ~ error:", error);

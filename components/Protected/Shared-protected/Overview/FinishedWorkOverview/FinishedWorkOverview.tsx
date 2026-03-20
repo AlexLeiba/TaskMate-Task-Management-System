@@ -41,6 +41,7 @@ export function FinishedWorkOverview({ type, orgId }: Props) {
       toast.error(
         error.message || "Error on Finished work overview, please try again",
       );
+      console.log("🚀 ~ fetchBoardFinishedWorkStats ~ error:", error);
 
       return { data: [] };
     }
@@ -83,6 +84,10 @@ export function FinishedWorkOverview({ type, orgId }: Props) {
   });
 
   const finishedWorkData = filteredData?.data || data?.data;
+  console.log(
+    "🚀 ~ FinishedWorkOverview ~ finishedWorkData:",
+    finishedWorkData,
+  );
 
   return (
     <div className="flex flex-col gap-2">

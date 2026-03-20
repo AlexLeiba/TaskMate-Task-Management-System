@@ -23,27 +23,28 @@ export function FinishedWorkOverview({ type, orgId }: Props) {
   async function fetchBoardFinishedWorkStats() {
     try {
       // board
-      if (type === "board") {
-        if (!boardId) {
-          throw new Error("Board not found");
-        }
-
-        const response = await finishedWorkOverviewAction(orgId, boardId);
-
-        return response || { data: [] };
+      // if (type === "board") {
+      if (!boardId) {
+        throw new Error("Board not found");
       }
 
-      // dashboard
-      const response = await finishedWorkOverviewAction(orgId, null);
+      const response = await finishedWorkOverviewAction(orgId, boardId);
+      console.log("🚀 ~ fetchBoardFinishedWorkStats ~ response:", response);
 
-      return response || { data: [] };
+      return response?.data || [];
+      // }
+
+      // dashboard
+      //       const response = await finishedWorkOverviewAction(orgId, null);
+      //
+      //       return response || { data: [] };
     } catch (error: any) {
       toast.error(
         error.message || "Error on Finished work overview, please try again",
       );
       console.log("🚀 ~ fetchBoardFinishedWorkStats ~ error:", error);
 
-      return { data: [] };
+      return [];
     }
   }
 
@@ -51,6 +52,8 @@ export function FinishedWorkOverview({ type, orgId }: Props) {
     queryFn: fetchBoardFinishedWorkStats,
     queryKey: [QUERY_KEYS.pages.board.overview.finishedWork],
     staleTime: 1000, // TODO : change to 5 min.
+    gcTime: 1000, // TODO : change to 5 min.
+    refetchOnMount: true,
   });
 
   //   const {
@@ -83,7 +86,7 @@ export function FinishedWorkOverview({ type, orgId }: Props) {
   //     },
   //   });
 
-  const finishedWorkData = data?.data;
+  const finishedWorkData = data;
   console.log(
     "🚀 ~ FinishedWorkOverview ~ finishedWorkData:",
     finishedWorkData,

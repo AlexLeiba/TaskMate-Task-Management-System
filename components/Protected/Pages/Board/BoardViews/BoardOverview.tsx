@@ -24,7 +24,7 @@ export function BoardOverview() {
     try {
       const response = await getOverviewStatsAction(orgId, boardId);
 
-      return response?.data;
+      return response?.data || null;
     } catch (error: any) {
       toast.error(
         error.message || "Error getting board Overview, please try again",
@@ -62,7 +62,7 @@ export function BoardOverview() {
           <PriorityBreakdown data={data?.priorityBreakdownData} />
         </BoardStatsCard>
         <BoardStatsCard>
-          <FinishedWorkOverview type="board" />
+          <FinishedWorkOverview type="board" orgId={orgId} />
         </BoardStatsCard>
       </div>
       <BoardStatsCard>

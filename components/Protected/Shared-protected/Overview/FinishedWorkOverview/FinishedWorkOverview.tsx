@@ -1,7 +1,6 @@
 import { finishedWorkOverviewAction } from "@/app/actions/overview";
 import { UserCard } from "@/components/Protected/Shared-protected/UserCard/UserCard";
 import { useBoardId } from "@/hooks/useBoardId";
-import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import toast from "react-hot-toast";
@@ -16,11 +15,11 @@ import { SkeletonMembers } from "./SkeletonMembers";
 
 type Props = {
   type?: "board" | "dashboard";
+  orgId?: string | null;
 };
-export function FinishedWorkOverview({ type }: Props) {
+export function FinishedWorkOverview({ type, orgId }: Props) {
   // TODO create a filter by days 7/14/30 /60/all time
   const boardId = useBoardId();
-  const { orgId } = useAuth();
 
   async function fetchBoardFinishedWorkStats() {
     if (!orgId) return;
@@ -31,7 +30,7 @@ export function FinishedWorkOverview({ type }: Props) {
       if (type === "board") {
         const response = await finishedWorkOverviewAction(orgId, boardId);
 
-        return response;
+        return response || { data: [] };
       }
 
       // dashboard

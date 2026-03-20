@@ -38,7 +38,7 @@ export function BoardOverview() {
 
   const { data } = useQuery({
     queryFn: fetchBoardOverview,
-    queryKey: [QUERY_KEYS.pages.board.overview.boardOverview, orgId],
+    queryKey: [QUERY_KEYS.pages.board.overview.boardOverview],
     staleTime: 1000, // TODO : change to 5 min.
     gcTime: 1000, // TODO : change to 5 min.
     refetchOnMount: true,

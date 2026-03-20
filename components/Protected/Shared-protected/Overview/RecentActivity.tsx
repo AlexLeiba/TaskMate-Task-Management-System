@@ -43,7 +43,7 @@ export function RecentActivity({ orgId, type = "board" }: Props) {
 
   const { data } = useQuery({
     queryFn: fetchBoardSummary,
-    queryKey: [QUERY_KEYS.pages.board.overview.recentActivities, orgId],
+    queryKey: [QUERY_KEYS.pages.board.overview.recentActivities],
     staleTime: 1000, // TODO : change to 5 min.
     gcTime: 1000, // TODO : change to 5 min.
     refetchOnMount: true,

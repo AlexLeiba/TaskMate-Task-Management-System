@@ -2,13 +2,11 @@ import { IconButton } from "@/components/ui/iconButton";
 import { useGetBoardFilteredData } from "@/hooks/useGetBoardFilteredData";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { useStore } from "@/store/useStore";
-import { useAuth } from "@clerk/nextjs";
 import { useIsFetching, useQueryClient } from "@tanstack/react-query";
 import { RefreshCcw } from "lucide-react";
 
 export function RefreshData() {
   const { boardTabSections } = useStore((state) => state);
-  const { orgId } = useAuth();
 
   const { fetchBoardFilteredListData, loading } = useGetBoardFilteredData();
   const setBoardTabSections = useStore((state) => state.setBoardTabSections);
@@ -25,15 +23,15 @@ export function RefreshData() {
     setBoardTabSections("refresh");
     if (boardTabSections === "overview") {
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.pages.board.overview.boardOverview, orgId],
+        queryKey: [QUERY_KEYS.pages.board.overview.boardOverview],
       });
 
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.pages.board.overview.finishedWork, orgId],
+        queryKey: [QUERY_KEYS.pages.board.overview.finishedWork],
       });
 
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.pages.board.overview.recentActivities, orgId],
+        queryKey: [QUERY_KEYS.pages.board.overview.recentActivities],
       });
       return;
     }

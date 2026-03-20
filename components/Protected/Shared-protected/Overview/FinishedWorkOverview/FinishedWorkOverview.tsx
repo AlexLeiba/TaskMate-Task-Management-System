@@ -141,8 +141,9 @@ export function FinishedWorkOverview({ type, orgId }: Props) {
         <div className="flex flex-col gap-2 justify-center md:w-70">
           {isPending && <SkeletonMembers />}
           {!isPending && finishedWorkData && finishedWorkData.length > 0
-            ? [...finishedWorkData]
-                ?.sort((a, b) => b.value - a.value)
+            ? finishedWorkData
+                .slice()
+                .sort((a, b) => b.value - a.value)
                 .map((item, index) => {
                   return (
                     <div

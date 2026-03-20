@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 
 type Props = {
   orgId: string;
-  type: "board" | "dashboard";
+  type: "board" | "organization";
 };
 export function RecentActivity({ orgId, type = "board" }: Props) {
   const boardId = useBoardId();

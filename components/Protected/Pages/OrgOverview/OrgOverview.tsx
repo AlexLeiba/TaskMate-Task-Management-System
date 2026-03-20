@@ -45,10 +45,10 @@ export function OrgSummary({ data: { data, error }, orgId }: Props) {
           />
         </BoardStatsCard>
         <BoardStatsCard>
-          <FinishedWorkOverview type="dashboard" orgId={orgId} />
+          <FinishedWorkOverview type="organization" orgId={orgId} />
         </BoardStatsCard>
         <BoardStatsCard>
-          <RecentActivity orgId={orgId} type="dashboard" />
+          <RecentActivity orgId={orgId} type="organization" />
         </BoardStatsCard>
       </div>
     </div>

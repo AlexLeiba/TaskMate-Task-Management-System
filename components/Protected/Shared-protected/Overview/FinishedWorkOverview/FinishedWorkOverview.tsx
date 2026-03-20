@@ -14,7 +14,7 @@ import { FinishedWorkFilterTabs } from "@/lib/types";
 import { SkeletonMembers } from "./SkeletonMembers";
 
 type Props = {
-  type?: "board" | "dashboard";
+  type?: "board" | "organization";
   orgId: string;
 };
 export function FinishedWorkOverview({ type, orgId }: Props) {
@@ -90,13 +90,17 @@ export function FinishedWorkOverview({ type, orgId }: Props) {
   return (
     <div className="flex flex-col gap-2">
       <div>
-        <h5 className="text-2xl font-medium">Finished work overview</h5>
+        <h5 className="text-2xl font-medium">
+          Finished work overview
+          <span className="text-lg text-tertiary"> of {type}</span>
+        </h5>
         <p className="text-wrap">
-          Get an overview of the finished work by team member for all time on
-          this board.
+          Get an overview of the finished work by each team member for a certain
+          period of time.
         </p>
-        <p className="text-lg">
-          Filter finished work by members over a certain nr of days.
+        <p className="text-primary/70">
+          Filter by last number of days. By default is displayed all time
+          finished work.
         </p>
       </div>
       <FilterTabs handleFilterTab={(selectedTab) => mutate(selectedTab)} />

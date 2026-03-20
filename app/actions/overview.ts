@@ -476,7 +476,7 @@ export async function getOverviewStatsAction(
 export async function finishedWorkOverviewAction(
   currentOrgId: string,
   boardId: string | null,
-  nrOfDaysStats: number = 1000,
+  nrOfDaysStats: number = 7,
 ): Promise<{ data: FinishedWorkMembersType[] }> {
   const { data: activeUser, error } =
     await verifyCurrentActiveUser(currentOrgId);

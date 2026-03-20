@@ -52,8 +52,9 @@ export function FinishedWorkOverview({ type }: Props) {
 
   const { data } = useQuery({
     queryFn: fetchBoardFinishedWorkStats,
-    queryKey: [QUERY_KEYS.pages.board.overview.finishedWork],
+    queryKey: [QUERY_KEYS.pages.board.overview.finishedWork, orgId],
     staleTime: 1000, // TODO : change to 5 min.
+    refetchOnMount: true,
   });
 
   const {
@@ -75,8 +76,7 @@ export function FinishedWorkOverview({ type }: Props) {
       return response;
     },
     mutationKey: [QUERY_KEYS.pages.board.overview.finishedWork],
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: () => {
       toast.dismiss(QUERY_KEYS.pages.board.overview.finishedWork);
     },
     onError: (err) => {

@@ -27,9 +27,10 @@ export function RecentActivity() {
 
   const { data } = useQuery({
     queryFn: fetchBoardSummary,
-    queryKey: [QUERY_KEYS.pages.board.overview.recentActivities],
+    queryKey: [QUERY_KEYS.pages.board.overview.recentActivities, boardId],
     staleTime: 1000, // TODO : change to 5 min.
     gcTime: 1000, // TODO : change to 5 min.
+    refetchOnMount: true,
   });
   return (
     <div className="flex flex-col gap-4">

@@ -18,7 +18,6 @@ type Props = {
   orgId: string;
 };
 export function FinishedWorkOverview({ type, orgId }: Props) {
-  // TODO create a filter by days 7/14/30 /60/all time
   const boardId = useBoardId();
 
   async function fetchBoardFinishedWorkStats() {
@@ -63,7 +62,9 @@ export function FinishedWorkOverview({ type, orgId }: Props) {
     isPending,
   } = useMutation({
     mutationFn: async (selectedTab: FinishedWorkFilterTabs) => {
-      if (!orgId || !boardId) return;
+      if (!orgId || !boardId) {
+        throw new Error("User not authenticated");
+      }
       toast.loading("Loading finished work overview...", {
         id: QUERY_KEYS.pages.board.overview.finishedWork,
       });

@@ -34,8 +34,10 @@ import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { SidebarSkeleton } from "./SidebarSkeleton";
 import { USER_ROLES } from "@/lib/consts/consts";
+import { useState } from "react";
 
 export function Sidebar() {
+  const [expandedOrg, setExpandedOrg] = useState<string | null>(null);
   const { setOpenMobile } = useSidebar();
   const router = useRouter();
   const pathname = usePathname();
@@ -47,6 +49,7 @@ export function Sidebar() {
 
   const organizationsData = user?.organizationMemberships.map((org) => {
     const organizationRole = org.role?.replace("org:", "") === USER_ROLES.admin;
+
     return {
       id: org.organization.id,
       name: org.organization.name,
@@ -122,9 +125,15 @@ export function Sidebar() {
                       type="single"
                       collapsible
                       defaultValue={selectedOrgId === item.id ? item.name : ""}
+                      value={
+                        expandedOrg === item.name || selectedOrgId === item.id
+                          ? item.name
+                          : ""
+                      }
                     >
                       <AccordionItem value={item.name}>
                         <AccordionTrigger
+                          onClick={() => setExpandedOrg(item.name)}
                           title={item.name}
                           aria-label={item.name}
                           className={cn(
@@ -158,6 +167,7 @@ export function Sidebar() {
                             const currentPathname = data?.pathname
                               .split("/")
                               .at(-1);
+
                             return (
                               <Button
                                 title={`${item.name} - ${data?.title}`}

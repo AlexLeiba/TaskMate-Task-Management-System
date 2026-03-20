@@ -37,6 +37,7 @@ export function RecentActivity({ orgId, type = "board" }: Props) {
         error.message ||
           "Error getting board recent activity, please try again",
       );
+      return [];
     }
   }
 

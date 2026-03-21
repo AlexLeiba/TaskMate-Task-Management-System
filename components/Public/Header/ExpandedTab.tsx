@@ -16,7 +16,7 @@ export function ExpandedTab({ type }: Props) {
   return (
     <div
       style={{
-        transform: type ? `translateY(52px) ` : `translateY(-200%)`,
+        transform: type ? `translateY(52px) ` : `translateY(-100%)`,
       }}
       className={cn(
         " transition-all ease-in-out duration-500 fixed left-0 right-0 bg-background-element w-full  z-10",

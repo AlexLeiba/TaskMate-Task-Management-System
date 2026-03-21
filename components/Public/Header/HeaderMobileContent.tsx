@@ -22,25 +22,10 @@ import { NAV_LINKS } from "@/lib/consts/links";
 
 export function HeaderMobileContent() {
   const navigate = useRouter();
-  const tabContainerRef = useRef<HTMLDivElement>(null);
   const [openedTabs, setOpenedTabs] = useState<TabType["value"]>(null);
   const [isOpened, setIsOpened] = useState(false);
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        tabContainerRef.current &&
-        !tabContainerRef.current.contains(event.target as Node)
-      ) {
-        setOpenedTabs(null);
-      }
-    }
-    document.addEventListener("click", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const scrollValue = useRef(0);
 
   useEffect(() => {
     if (isOpened) {
@@ -50,6 +35,27 @@ export function HeaderMobileContent() {
     }
   }, [isOpened]);
 
+  useEffect(() => {
+    document.addEventListener("scroll", handleScroll);
+
+    function handleScroll() {
+      const scrollY = window.scrollY;
+
+      if (scrollValue.current < scrollY && scrollY > 100) {
+        setIsHeaderVisible(false);
+        scrollValue.current = scrollY;
+        return;
+      }
+      setIsHeaderVisible(true);
+      scrollValue.current = scrollY;
+    }
+
+    return () => {
+      document.removeEventListener("scroll", handleScroll);
+      scrollValue.current = 0;
+    };
+  }, []);
+
   function handleNavigate(pathname: string) {
     setIsOpened(false);
     setOpenedTabs(null);
@@ -57,7 +63,12 @@ export function HeaderMobileContent() {
   }
   return (
     <>
-      <div className="bg-background-element fixed top-0 left-0 right-0  px-4 py-2 z-50 md:hidden ">
+      <div
+        style={{
+          transform: isHeaderVisible ? `translateY(0)` : `translateY(-100%)`,
+        }}
+        className="transition-all bg-background-element fixed top-0 left-0 right-0  px-4 py-2 z-50 md:hidden "
+      >
         <div className="flex justify-between items-center ">
           <Logo visible />
 

@@ -9,10 +9,18 @@ import Links from "../AuthLinks";
 import { useEffect, useRef, useState } from "react";
 import { TabType } from "@/lib/types";
 import { HEADER_TABS_LINKS } from "@/lib/consts/links";
+import { cn } from "@/lib/utils";
+import dynamic from "next/dynamic";
+
+const ScrollProgressBar = dynamic(() =>
+  import("./ScrollProgressBar").then((m) => m.ScrollProgressBar),
+);
 
 export function HeaderDesktopTabletContent() {
   const tabContainerRef = useRef<HTMLDivElement>(null);
+  const scrollValue = useRef(0);
   const [openedTabs, setOpenedTabs] = useState<TabType["value"]>(null);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -30,14 +38,44 @@ export function HeaderDesktopTabletContent() {
     };
   }, []);
 
+  useEffect(() => {
+    document.addEventListener("scroll", handleScroll);
+
+    function handleScroll() {
+      const scrollY = window.scrollY;
+
+      if (scrollValue.current < scrollY && scrollY > 100) {
+        setIsHeaderVisible(false);
+        scrollValue.current = scrollY;
+        return;
+      }
+      setIsHeaderVisible(true);
+      scrollValue.current = scrollY;
+    }
+
+    return () => {
+      document.removeEventListener("scroll", handleScroll);
+      scrollValue.current = 0;
+    };
+  }, []);
+
   return (
-    <div ref={tabContainerRef} className="hidden md:block">
-      <div className="bg-background-element fixed top-0 left-0 right-0   py-2 z-20 ">
+    <div ref={tabContainerRef} className="hidden md:block relative">
+      <div
+        style={{
+          transform: isHeaderVisible ? `translateY(0)` : `translateY(-99%)`,
+        }}
+        className={cn(
+          openedTabs ? "bg-background-element" : "bg-tertiary-dark",
+          " fixed top-0 left-0 right-0   py-2 z-20 transition-all ",
+        )}
+      >
         <div className="flex justify-between items-center max-w-6xl mx-auto px-4">
           <div className="flex items-center gap-12">
             <Logo />
-            <div className="flex items-center gap-8 px-4 py-2  ">
-              {HEADER_TABS_LINKS.map((tab) => (
+            <div className="flex items-center gap-8 px-4 py-2 ">
+              {/* TRIGGER */}
+              {HEADER_TABS_LINKS.map((tab, i) => (
                 <IconButton
                   title={`Open ${tab.label} tab`}
                   aria-label={`Open ${tab.label} tab`}
@@ -51,8 +89,9 @@ export function HeaderDesktopTabletContent() {
                         <p>{tab.label}</p>
 
                         <ChevronDown
+                          style={{ animationDelay: `${i * 100}ms` }}
                           size={20}
-                          className="group-hover:translate-y-1.25 transition-all group-hover:text-tertiary"
+                          className="group-hover:translate-y-1.25 transition-all group-hover:text-tertiary header-chevron-down"
                         />
                       </div>
                       <div
@@ -71,8 +110,9 @@ export function HeaderDesktopTabletContent() {
           {/* AUTH BUTTONS */}
           <Links />
         </div>
+        <ScrollProgressBar />
       </div>
-
+      {/* CONTENT */}
       <ExpandedTab type={openedTabs} />
     </div>
   );

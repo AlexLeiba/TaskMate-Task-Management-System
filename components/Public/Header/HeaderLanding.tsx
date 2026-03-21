@@ -1,16 +1,19 @@
+"use client";
+import { useResponsive } from "@/hooks/useResponsive";
 import { HeaderDesktopTabletContent } from "./HeaderDesktopTabletContent";
 import { HeaderMobileContent } from "./HeaderMobileContent";
+import { BREAKPOINTS } from "@/lib/breakpoints";
 
 export function HeaderLanding() {
-  return (
-    <header>
-      {/* DESKTOP */}
+  const isMobile = useResponsive(BREAKPOINTS.md);
 
-      <HeaderDesktopTabletContent />
+  return (
+    <header className="">
+      {/* DESKTOP */}
+      {!isMobile && <HeaderDesktopTabletContent />}
 
       {/* MOBILE */}
-
-      <HeaderMobileContent />
+      {isMobile && <HeaderMobileContent />}
     </header>
   );
 }

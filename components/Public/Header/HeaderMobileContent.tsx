@@ -67,7 +67,7 @@ export function HeaderMobileContent() {
         style={{
           transform: isHeaderVisible ? `translateY(0)` : `translateY(-100%)`,
         }}
-        className="transition-all bg-background-element fixed top-0 left-0 right-0  px-4 py-2 z-50 md:hidden "
+        className="transition-all duration-500 ease-in-out  bg-background-element fixed top-0 left-0 right-0  px-4 py-2 z-50 md:hidden "
       >
         <div className="flex justify-between items-center ">
           <Logo visible />

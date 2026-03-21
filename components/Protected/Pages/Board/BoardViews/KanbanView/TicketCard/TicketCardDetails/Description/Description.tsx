@@ -48,18 +48,12 @@ export function Description({
 
         setIsQuillVisible(false);
       }
-      toast.dismiss(
-        QUERY_KEYS.pages.board.cardDetails.updateDescription,
-        cardDetailsId,
-      );
+      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.updateDescription);
       toast.success("Description updated");
     },
     onError: ({ message }) => {
       toast.error(message || "Error updating description, please try again");
-      toast.dismiss(
-        QUERY_KEYS.pages.board.cardDetails.updateDescription,
-        cardDetailsId,
-      );
+      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.updateDescription);
     },
   });
 

@@ -21,7 +21,7 @@ import {
 import toast from "react-hot-toast";
 import { useBoardId } from "@/hooks/useBoardId";
 import { parseDateTimeToLocal } from "@/lib/parseDateTimeToLocal";
-import { DATE_FORMAT, INITIAL_TIME, USER_ROLES } from "@/lib/consts/consts";
+import { INITIAL_TIME, USER_ROLES } from "@/lib/consts/consts";
 import { isValidDateString } from "@/lib/isValidDateString";
 import { useRole } from "@/hooks/useRole";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
@@ -69,9 +69,7 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
 
       const parsedDateWithTime = parseDateTimeToLocal(date, time);
 
-      const formatedDate = format(parsedDateWithTime, DATE_FORMAT);
-
-      setDueDate(formatedDate);
+      setDueDate(parsedDateWithTime);
       setAddDateInput(true);
     }
   }, [data]);

@@ -58,8 +58,8 @@ export function Priority({ priority, boardId, listId, cardId }: Props) {
       >
         <IconButton
           buttonType={role === USER_ROLES.member ? "card" : "default"}
-          aria-label="Open Priority popover"
-          title="Open Priority popover"
+          aria-label="Open Priority "
+          title="Open Priority "
           onClick={(e) => {
             if (role === USER_ROLES.admin) e.stopPropagation();
           }}

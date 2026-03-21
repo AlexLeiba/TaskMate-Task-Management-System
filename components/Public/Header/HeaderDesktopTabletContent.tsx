@@ -67,10 +67,14 @@ export function HeaderDesktopTabletContent() {
         }}
         className={cn(
           openedTabs ? "bg-background-element" : "bg-tertiary-dark",
-          " fixed top-0 left-0 right-0   py-2 z-20 transition-all ",
+          " fixed top-0 left-0 right-0   py-2 z-20 transition-all duration-500 ease-in-out",
         )}
       >
-        <div className="flex justify-between items-center max-w-6xl mx-auto px-4">
+        <div
+          className={cn(
+            "flex justify-between items-center max-w-6xl mx-auto px-4 hover:shadow-2xl p-2 rounded-md transition-all",
+          )}
+        >
           <div className="flex items-center gap-12">
             <Logo />
             <div className="flex items-center gap-8 px-4 py-2 ">
@@ -91,7 +95,7 @@ export function HeaderDesktopTabletContent() {
                         <ChevronDown
                           style={{ animationDelay: `${i * 100}ms` }}
                           size={20}
-                          className="group-hover:translate-y-1.25 transition-all group-hover:text-tertiary header-chevron-down"
+                          className="group-hover:translate-y-1.25 transition-all group-hover:text-orange-400 header-chevron-down"
                         />
                       </div>
                       <div
@@ -109,8 +113,8 @@ export function HeaderDesktopTabletContent() {
 
           {/* AUTH BUTTONS */}
           <Links />
+          <ScrollProgressBar />
         </div>
-        <ScrollProgressBar />
       </div>
       {/* CONTENT */}
       <ExpandedTab type={openedTabs} />

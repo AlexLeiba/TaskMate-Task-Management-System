@@ -80,7 +80,7 @@ export function BoardMemberFilters() {
                 width={28}
                 height={28}
                 src={member?.imageUrl || "/avatar-default.svg"}
-                className="rounded-full size-7"
+                className="rounded-full size-7 object-cover"
               />
             </IconButton>
           );

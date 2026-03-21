@@ -13,14 +13,17 @@ export function Hero() {
           <h1 className="text-5xl">
             Organize, prioritize and handle your to-dos with ease.
           </h1>
-          <p className="text-lg">
+          <p className="text-lg" data-aos="fade-right" data-aos-delay="200">
             Forget about the chaos of your work process. Simplify your
             productivity with TaskMate.
           </p>
         </div>
 
-        <Link href={NAV_LINKS.signup.pathname}>
-          <Button variant={"tertiary"} className="md:max-w-60 z-0">
+        <Link href={NAV_LINKS.signup.pathname} data-aos="fade-right">
+          <Button
+            variant={"tertiary"}
+            className="md:max-w-60 z-0 bg-linear-to-t from-tertiary-dark  to-orange-400 hover:to-orange-700 hover:text-white "
+          >
             <p className="text-base">Join for free</p>
           </Button>
         </Link>
@@ -29,12 +32,19 @@ export function Hero() {
           target="_blank"
           title="Watch how TaskMate was developed"
           href={"/"}
-          className="group"
+          className="group max-w-72.5"
+          data-aos="fade-right"
+          data-aos-delay="400"
         >
-          <div className="flex items-center gap-1 underline underline-offset-3 group-hover:underline-offset-8 transition-all group-hover:text-tertiary">
-            Watch how TaskMate was developed.
-            <Video />
-          </div>
+          <Button
+            variant={"outline"}
+            classNameChildren="w-full underline underline-offset-3 group-hover:underline-offset-8 transition-all group-hover:text-orange-400"
+          >
+            <div className="flex items-center gap-1">
+              Watch how TaskMate was developed.
+              <Video className="animate-pulse" />
+            </div>
+          </Button>
         </Link>
       </div>
 

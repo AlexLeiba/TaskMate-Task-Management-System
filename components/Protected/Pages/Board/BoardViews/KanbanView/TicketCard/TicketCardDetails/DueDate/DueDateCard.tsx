@@ -1,7 +1,8 @@
 import { IconButton } from "@/components/ui/iconButton";
+import { DATE_FORMAT } from "@/lib/consts/consts";
 import { duedateStatusColors } from "@/lib/dueDateStatusColors";
 import { cn } from "@/lib/utils";
-import { differenceInDays, differenceInHours } from "date-fns";
+import { differenceInDays, differenceInHours, format } from "date-fns";
 import { Clock, X } from "lucide-react";
 
 type Props = {
@@ -19,6 +20,7 @@ export function DueDateCard({
 
   const dInDaysData = differenceInDays(new Date(date), now);
   const dInHoursData = differenceInHours(new Date(date), now);
+  const formatedDate = format(new Date(dueDate), DATE_FORMAT);
 
   return (
     <div
@@ -27,7 +29,7 @@ export function DueDateCard({
           status:
             dInDaysData < 0 && dInHoursData < 0
               ? "expired"
-              : dInDaysData === 0 //24hrs
+              : dInDaysData === 0
                 ? "today"
                 : "future",
         }),
@@ -36,7 +38,7 @@ export function DueDateCard({
     >
       <div className=" flex items-center gap-2">
         <Clock />
-        {dueDate}
+        {formatedDate}
       </div>
       <IconButton
         disabled={disabled}

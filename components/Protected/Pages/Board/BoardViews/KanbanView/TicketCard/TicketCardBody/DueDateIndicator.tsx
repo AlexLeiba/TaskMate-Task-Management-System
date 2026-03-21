@@ -26,9 +26,9 @@ export function DueDateIndicator({ data }: Props) {
   const date = new Date(dueDate);
 
   const formattedDate = format(new Date(dueDate), "MMM dd");
-
-  const dInDaysData = differenceInDays(new Date(date), new Date());
-  const dInHoursData = differenceInHours(new Date(date), new Date());
+  const now = new Date();
+  const dInDaysData = differenceInDays(new Date(date), now);
+  const dInHoursData = differenceInHours(new Date(date), now);
 
   return (
     <div

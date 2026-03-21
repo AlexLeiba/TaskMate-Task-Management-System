@@ -11,14 +11,14 @@ import Image from "next/image";
 import { FeatureCard } from "./FeatureCard";
 import { PRODUCTIVITY_DATA } from "@/lib/consts/public/body";
 
-export function Features() {
+export function OrganizationFeatures() {
   const { setSliderIndex, sliderIndex } = useSlider();
   return (
     <div className=" flex flex-col gap-8">
       <div className="lg:w-1/2 flex flex-col justify-center gap-4">
         <div className="flex flex-col gap-2">
-          <h2 className="text-4xl"> Your productivity powerhouse</h2>
-          <p className="text-lg">
+          <h2 className="text-4xl"> Your task organization tools</h2>
+          <p className="text-lg" data-aos="fade-right" data-aos-delay="500">
             Stay organized and efficient with Inbox, Boards, and Planner. Every
             to-do, idea, or responsibility—no matter how small—finds its place,
             keeping you at the top of your game.
@@ -29,13 +29,14 @@ export function Features() {
       <div className="grid md:grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-4">
         <div className="hidden lg:flex flex-col gap-4">
           {PRODUCTIVITY_DATA.map((item, index) => (
-            <FeatureCard
-              key={item.id}
-              data={item}
-              handleClick={() => setSliderIndex(index + 1)}
-              selected={index + 1 === sliderIndex}
-              index={(index + 1) as unknown as 1 | 2 | 3 | 4 | 5}
-            />
+            <div data-aos="fade-up" data-aos-delay={index * 100} key={item.id}>
+              <FeatureCard
+                data={item}
+                handleClick={() => setSliderIndex(index + 1)}
+                selected={index + 1 === sliderIndex}
+                index={(index + 1) as unknown as 1 | 2 | 3 | 4 | 5}
+              />
+            </div>
           ))}
         </div>
 
@@ -43,7 +44,7 @@ export function Features() {
           <SliderContent withNavigationButtons={false}>
             {PRODUCTIVITY_DATA.map((item) => (
               <SliderItem key={item.id}>
-                <div className="w-screen  h-75 ">
+                <div className="w-screen  h-full ">
                   <Image
                     src={item.image}
                     width={1000}

@@ -1,5 +1,6 @@
 import { FooterLanding } from "@/components/Public/Footer/FooterLanding";
 import { HeaderLanding } from "@/components/Public/Header/HeaderLanding";
+import AosInit from "@/lib/aosInit";
 import React from "react";
 
 export const metadata = {
@@ -17,7 +18,9 @@ function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col">
       <HeaderLanding />
-      <main className="flex flex-1  py-15.25  w-full">{children}</main>
+      <AosInit>
+        <main className="flex flex-1  py-15.25  w-full">{children}</main>
+      </AosInit>
       <FooterLanding />
     </div>
   );

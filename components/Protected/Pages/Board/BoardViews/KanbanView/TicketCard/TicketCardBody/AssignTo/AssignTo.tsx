@@ -75,13 +75,13 @@ export function AssignTo({
               e.stopPropagation();
             }
           }}
-          className="hover:ring hover:ring-white   rounded-sm size-7   "
+          className="hover:ring hover:ring-white   rounded-sm size-7 "
           classNameChildren=" flex justify-center items-center  cursor-pointer hover:opacity-70 rounded-sm"
         >
           {!boardId ? (
             <AssignToUserSkeleton />
           ) : assignedToEmail ? (
-            <div className="rounded-sm overflow-hidden bg-gray-400">
+            <div className="rounded-sm overflow-hidden bg-gray-400 size-7">
               <Image
                 src={assignedToAvatar || "/avatar-default.svg"}
                 alt={assignedToEmail || ""}

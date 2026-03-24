@@ -371,3 +371,14 @@ Mental model: These are default visual rules of my app.
 .scroll-container::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Edge (Chromium) */
 }
+
+.overview-card-image-animation {
+  transform: translateY(-50%);
+  animation: move-image-down 1s ease forwards;
+}
+
+@keyframes move-image-down {
+  to {
+    transform: translateY(0);
+  }
+}

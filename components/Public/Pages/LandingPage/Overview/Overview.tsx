@@ -3,7 +3,7 @@ import { Spacer } from "@/components/ui/spacer";
 import { ChevronLeft, ChevronRight, CircleCheck } from "lucide-react";
 import { OVERVIEW_DATA, OVERVIEW_OPTIONS } from "@/lib/consts/public/overview";
 import { OverviewCard } from "./OverviewCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -11,6 +11,39 @@ export function Overview() {
   const [selected, setSelected] = useState(0);
   const [page, setPage] = useState(1);
   const itemsPerPage = 4;
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        const elements = document.querySelectorAll(".overview-image");
+
+        elements.forEach((el) => {
+          el.classList.add("overview-card-image-animation");
+        });
+
+        setTimeout(() => {
+          elements.forEach((el) => {
+            el.classList.remove("overview-card-image-animation");
+          });
+        }, 5000);
+        //
+      }
+    });
+    const intersectedElement = document.querySelector(
+      ".overview-cards-container",
+    );
+
+    if (intersectedElement) {
+      observer.observe(intersectedElement);
+    }
+
+    return () => {
+      observer.disconnect();
+      document
+        .querySelector(".overview-image")
+        ?.classList.remove("overview-card-image-animation");
+    };
+  }, []);
 
   return (
     <div>
@@ -65,13 +98,14 @@ export function Overview() {
         </Button>
       </div>
       <Spacer size={2} />
-      <div className="grid lg:grid-cols-[repeat(auto-fit,minmax(400px,1fr))] grid-cols-1 gap-4">
+      <div className="grid lg:grid-cols-[repeat(auto-fit,minmax(400px,1fr))] grid-cols-1 gap-4 overview-cards-container">
         {OVERVIEW_DATA.slice(
           page === 1 ? 0 : page - 1 * itemsPerPage,
           page === 1 ? itemsPerPage : page * itemsPerPage * 2,
-        ).map((data) => {
+        ).map((data, index) => {
           return (
             <OverviewCard
+              index={index + 1}
               key={data.id}
               data={data}
               handleHover={() => setSelected(data.id)}

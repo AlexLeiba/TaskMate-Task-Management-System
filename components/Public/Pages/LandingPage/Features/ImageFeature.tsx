@@ -29,13 +29,13 @@ export function ImageFeature({
         className="cursor-zoom-in group  hover:scale-105 transition-all duration-500 relative lg:w-[calc(50vw-((100vw-1152px+48px)/2))] md:w-[calc(50vw-48px)]  w-[calc(100vw-32px)] "
         onClick={() => setSelected(true)}
       >
-        <div className="group-hover:bg-black/50 absolute inset-0 transition-all duration-500 ease-in-out bg-black/10"></div>
+        <div className="group-hover:bg-black/50 absolute inset-0 transition-all duration-500 ease-in-out "></div>
         <Image
           src={image}
           width={1000}
           height={800}
           alt="Hero-image"
-          className=" object-cover rounded-md h-full group-hover:border-none border border-cyan-600 w-full"
+          className=" object-cover rounded-md h-full group-hover:border-none border border-cyan-800 w-full"
         />
         <Expand
           className={cn(

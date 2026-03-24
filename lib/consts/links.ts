@@ -35,5 +35,5 @@ export const HEADER_TABS_LINKS: TabType[] = [
   { label: "Features", value: "features" },
   { label: "Solutions", value: "solutions" },
   { label: "About", value: "about" },
-  { label: "Plans", value: "plans" },
+  { label: "Future Plans", value: "plans" },
 ] as const;

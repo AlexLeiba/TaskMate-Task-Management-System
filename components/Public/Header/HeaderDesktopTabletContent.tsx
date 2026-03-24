@@ -1,11 +1,9 @@
 "use client";
 import { IconButton } from "@/components/ui/iconButton";
 import { ChevronDown } from "lucide-react";
-
 import { ExpandedTab } from "./ExpandedTab";
 import { Logo } from "../../Shared/Logo";
 import Links from "../AuthLinks";
-
 import { useEffect, useRef, useState } from "react";
 import { TabType } from "@/lib/types";
 import { HEADER_TABS_LINKS } from "@/lib/consts/links";
@@ -18,10 +16,11 @@ const ScrollProgressBar = dynamic(() =>
 
 export function HeaderDesktopTabletContent() {
   const tabContainerRef = useRef<HTMLDivElement>(null);
-  const scrollValue = useRef(0);
+  const scrollValue = useRef<number>(0);
   const [openedTabs, setOpenedTabs] = useState<TabType["value"]>(null);
-  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const [isHeaderVisible, setIsHeaderVisible] = useState<boolean>(true);
 
+  // CLICK OUTSIDE
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -38,14 +37,16 @@ export function HeaderDesktopTabletContent() {
     };
   }, []);
 
+  // HEADER VISIBILITY
   useEffect(() => {
     document.addEventListener("scroll", handleScroll);
 
     function handleScroll() {
       const scrollY = window.scrollY;
 
-      if (scrollValue.current < scrollY && scrollY > 100) {
+      if (scrollValue.current < scrollY && scrollY > 250) {
         setIsHeaderVisible(false);
+        setOpenedTabs(null);
         scrollValue.current = scrollY;
         return;
       }
@@ -60,7 +61,7 @@ export function HeaderDesktopTabletContent() {
   }, []);
 
   return (
-    <div ref={tabContainerRef} className="hidden md:block relative">
+    <div ref={tabContainerRef} className="hidden md:block relative ">
       <div
         style={{
           transform: isHeaderVisible ? `translateY(0)` : `translateY(-99%)`,
@@ -113,6 +114,8 @@ export function HeaderDesktopTabletContent() {
 
           {/* AUTH BUTTONS */}
           <Links />
+
+          {/* PROGRESS BAR */}
           <ScrollProgressBar />
         </div>
       </div>

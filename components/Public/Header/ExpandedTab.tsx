@@ -1,12 +1,11 @@
 "use client";
-
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { CardTabs } from "./CardTabs";
 import { SideTabsContent } from "./SideTabsContent";
-
 import { TabType } from "@/lib/types";
 import { HEADER_TABS_TITLE } from "@/lib/consts/public/header";
+import { Spacer } from "@/components/ui/spacer";
 
 type Props = {
   type: TabType["value"];
@@ -23,10 +22,11 @@ export function ExpandedTab({ type }: Props) {
       )}
     >
       <div className="max-w-7xl m-auto p-4">
+        <Spacer size={2} />
         {type && (
           <h5 className="text-xl">
-            {HEADER_TABS_TITLE[type] === "About"
-              ? "About us"
+            {HEADER_TABS_TITLE[type] === "Plans"
+              ? "Future plans"
               : HEADER_TABS_TITLE[type]}
           </h5>
         )}

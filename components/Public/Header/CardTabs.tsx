@@ -49,9 +49,9 @@ export function CardTabs({ type }: Props) {
         </p>
       )}
 
-      {type !== "about" && type !== "plans" && (
+      {type !== "about" && type !== "plans" && type !== "solutions" && (
         <Link
-          href={"/"}
+          href={"#all-features"}
           title={`see all ${type}`}
           aria-label={`see all ${type}`}
           className="flex"

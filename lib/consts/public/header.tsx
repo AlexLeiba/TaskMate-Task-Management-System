@@ -21,29 +21,11 @@ import {
 export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
   features: [
     {
-      id: "6",
-      icon: <User />,
-      title: "Workspace Management",
-      description:
-        "Admin can manage the organization: create, delete, rename, upload logo, invite or remove users and change member roles, all can be done from settings page.",
-      color: "",
-      link: "/",
-    },
-    {
       id: "1",
       icon: <Building2 />,
-      title: "Organizations",
+      title: "Organization",
       description:
-        "An organization is a private shared workspace where invited members access boards and manage tasks according to their roles, typically overseen by an admin.",
-      color: "",
-      link: "/",
-    },
-    {
-      id: "2",
-      icon: <Activity />,
-      title: "Activity",
-      description:
-        "Any action within an Organization is registered under Activity page. Activities can be seen by any member of the Organization under any Card or on the Activity page.",
+        "Organization is the main private unit of TaskMate which is accessible only to invited members.  Any Organization can be created, removed, edited (logo and name) by only Admins.",
       color: "",
       link: "/",
     },
@@ -52,7 +34,16 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       icon: <LayoutDashboard />,
       title: "Boards",
       description:
-        "Boards can be created or removed from the dashboard and customized with a variety of beautiful background images. The board title can be modified from the board page. Boards are shared with other members of the organization.",
+        "The Boards are the main workspace of any Organization. Boards allow to separate different projects and tasks within the same Organization and members. Boards can be created or removed from the dashboard only by Admin and customized with a variety of beautiful background images.",
+      color: "",
+      link: "/",
+    },
+    {
+      id: "6",
+      icon: <User />,
+      title: "Workspace Management",
+      description:
+        "Manage tasks and projects with TaskMate's role-based  management feature. Create lists and cards, set due dates, create checklists,  invite, delete, assign tasks or different roles to members and track their progress.",
       color: "",
       link: "/",
     },
@@ -61,7 +52,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       icon: <Columns3 />,
       title: "List",
       description:
-        "Lists are board columns that hold ticket Cards. They support drag-and-drop, title and status editing, and can be duplicated along with all their cards.",
+        "The lists are board columns that contain ticket cards. They can be created and duplicated along with their cards, have editable titles and statuses, support drag-and-drop, and can be filtered within the board.",
       color: "",
       link: "/",
     },
@@ -70,7 +61,17 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       icon: <TicketCheck />,
       title: "Card",
       description:
-        "Cards are tickets created within lists. They support drag-and-drop within the same list or between lists, title editing, copying, descriptions, due dates, checklists, comments, attachments, reporter and member assignment.",
+        "The cards are the tickets created within lists. They support drag-and-drop within the same list or across lists, filters within the board, title editing, card duplication, rich-text descriptions, due date time picker, checklists, comments, attachments, priority settings, reporter and member assignment.",
+      color: "",
+      link: "/",
+    },
+
+    {
+      id: "2",
+      icon: <Activity />,
+      title: "Activity",
+      description:
+        "Any action within an Organization is registered and can be seen on any ticket Card, Overview Board or on the Activity page. This helps to avoid losing track of the history of the Organization.",
       color: "",
       link: "/",
     },
@@ -153,21 +154,14 @@ Since the project was developed for personal use, learning purposes, and as part
       id: "1",
       title: "Our Future plans",
       description: `
-Permissions:
-Based on user role Admin or Member will have certain restrictions.
-User will still be able to read any data within its organization but won't be able to delete: boards, lists, cards and for Card features as: comments , attachments, checklists , due date, only assigned Members of the Card and Admin will be able to delete.
-
-Payment system with Stripe:
-Will integrate payment system with Stripe, limiting only 5 Boards per organization for free. The payment system will be only in development mode. 
+Plans with Payment system Stripe:
+-Will integrate Plans with Stripe, limiting only 5 Boards per organization for free.
+-Plans will be: Free, Basic, Premium.
+-Dedicated page for all available Plans.
+-Dedicated page for all payment history.
 
 Views:
-Table view and list view of the board
-
-Sortings:
-Cards will be sorted by assigned, unassigned, all.
-
-Visualization:
-Will have a visualization per board and per organization with Bar chart and Pie chart.
+-Table view of all boards.
 `,
       icon: <></>,
       link: "",
@@ -229,18 +223,13 @@ export const HEADER_SIDEBAR_INFO_TABS: HeaderAdditionalInfoTabsType = {
   ],
   plans: [
     {
-      title: "Permissions",
+      title: "Payment system",
       description:
-        "Users won't be able to delete: boards, lists, cards and for Card features as: comments , attachments, checklists , dueDate, only assigned Members of the Card  and Admin will be able to delete.",
+        "Will integrate payment system with Stripe, limiting only 5 Boards per organization for free.",
     },
     {
       title: "Views",
-      description: "Table view and list view of the board.",
-    },
-    {
-      title: "Payment system",
-      description:
-        "Will integrate payment system with Stripe, limiting only 5 Boards per organization for free. The payment system will be in development mode. ",
+      description: "Table view of all boards.",
     },
   ],
 };

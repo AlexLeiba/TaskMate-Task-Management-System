@@ -8,7 +8,7 @@ export function HeaderLanding() {
   const isMobile = useResponsive(BREAKPOINTS.md);
 
   return (
-    <header className="">
+    <header id="header">
       {/* DESKTOP */}
       {!isMobile && <HeaderDesktopTabletContent />}
 

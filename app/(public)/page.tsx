@@ -37,14 +37,14 @@ export default async function Home() {
         </LayoutContainer>
       </LayoutContainer>
 
-      <LayoutContainer>
+      <LayoutContainer id="organization-features">
         <SliderProvider>
           <OrganizationFeatures />
         </SliderProvider>
       </LayoutContainer>
 
       <LayoutContainer fluid className="bg-stone-900">
-        <LayoutContainer>
+        <LayoutContainer id="execution-features">
           <SliderProvider>
             <ExecutionFeatures />
           </SliderProvider>
@@ -56,7 +56,7 @@ export default async function Home() {
       </LayoutContainer>
 
       <LayoutContainer fluid className="bg-stone-900">
-        <LayoutContainer>
+        <LayoutContainer id="all-features">
           <MoreFeatures />
         </LayoutContainer>
       </LayoutContainer>

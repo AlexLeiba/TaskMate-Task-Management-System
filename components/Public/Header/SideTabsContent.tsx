@@ -27,15 +27,15 @@ export function SideTabsContent({ type }: Props) {
           </div>
         ))}
       </div>
-      {type !== "about" && (
+      {type !== "about" && type !== "plans" && (
         <Link
-          href={"/"}
+          href={"#all-features"}
           title="All use cases"
           aria-label="All use cases"
           className="flex"
         >
           <IconButton classNameChildren="flex items-center gap-2 pt-2 group">
-            <p>See all use cases </p>
+            <p>See all features </p>
 
             <ChevronRight className="text-tertiary group-hover:translate-x-2 transition-all" />
           </IconButton>

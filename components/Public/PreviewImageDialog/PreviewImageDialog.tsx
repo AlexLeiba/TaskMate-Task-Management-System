@@ -41,7 +41,7 @@ export function PreviewImageDialog({
             alt={title}
             width={1000}
             height={800}
-            className=" aspect-video  object-cover border border-cyan-800 rounded-md"
+            className=" aspect-video  object-cover border border-cyan-800 rounded-md w-full"
           />
         </div>
       </DialogContent>

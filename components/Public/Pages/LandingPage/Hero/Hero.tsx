@@ -42,7 +42,7 @@ export function Hero() {
           >
             <div className="flex items-center gap-1">
               Watch how TaskMate was developed.
-              <Video className="animate-pulse" />
+              <Video className="animate-pulse text-orange-400" />
             </div>
           </Button>
         </Link>
@@ -54,7 +54,7 @@ export function Hero() {
           alt="hero"
           width={500}
           height={368}
-          className="object-contain w-auto h-auto"
+          className="object-contain w-full h-full"
         />
       </div>
     </div>

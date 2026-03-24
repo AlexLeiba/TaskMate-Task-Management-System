@@ -1,13 +1,33 @@
-import { MoreFeatures } from "@/components/Public/Pages/LandingPage/MoreFeatures/MoreFeatures";
 import { OrganizationFeatures } from "@/components/Public/Pages/LandingPage/Features/OrganizationFeatures";
-
 import { Hero } from "@/components/Public/Pages/LandingPage/Hero/Hero";
 import { LayoutContainer } from "@/components/Public/LayoutContainer/LayoutContainer";
-import { Testimonials } from "@/components/Public/Testimonials/Testimonials";
 import { SliderProvider } from "@/components/ui/slider";
-import { ExecutionFeatures } from "@/components/Public/Pages/LandingPage/Features/ExecutionFeatures";
-import { Overview } from "@/components/Public/Pages/LandingPage/Overview/Overview";
 
+import dynamic from "next/dynamic";
+
+const ExecutionFeatures = dynamic(() =>
+  import("@/components/Public/Pages/LandingPage/Features/ExecutionFeatures").then(
+    (m) => m.ExecutionFeatures,
+  ),
+);
+
+const Overview = dynamic(() =>
+  import("@/components/Public/Pages/LandingPage/Overview/Overview").then(
+    (m) => m.Overview,
+  ),
+);
+
+const Testimonials = dynamic(() =>
+  import("@/components/Public/Testimonials/Testimonials").then(
+    (m) => m.Testimonials,
+  ),
+);
+
+const MoreFeatures = dynamic(() =>
+  import("@/components/Public/Pages/LandingPage/MoreFeatures/MoreFeatures").then(
+    (m) => m.MoreFeatures,
+  ),
+);
 export default async function Home() {
   return (
     <div className="w-full">

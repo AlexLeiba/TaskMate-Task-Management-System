@@ -17,7 +17,7 @@ export function Overview() {
       <div className="flex flex-col gap-4  w-full">
         <h2 className="text-4xl">Overview Statistics</h2>
 
-        <div className="grid lg:grid-cols-[repeat(auto-fit,minmax(400px,1fr))] grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-2 ">
+        <div className="grid lg:grid-cols-[repeat(auto-fit,minmax(400px,1fr))] grid-cols-1 gap-2 ">
           {OVERVIEW_OPTIONS.map((option, index) => (
             <div className="flex items-center gap-2 " key={option}>
               <div>
@@ -65,7 +65,7 @@ export function Overview() {
         </Button>
       </div>
       <Spacer size={2} />
-      <div className="grid lg:grid-cols-[repeat(auto-fit,minmax(400px,1fr))] grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
+      <div className="grid lg:grid-cols-[repeat(auto-fit,minmax(400px,1fr))] grid-cols-1 gap-4">
         {OVERVIEW_DATA.slice(
           page === 1 ? 0 : page - 1 * itemsPerPage,
           page === 1 ? itemsPerPage : page * itemsPerPage * 2,

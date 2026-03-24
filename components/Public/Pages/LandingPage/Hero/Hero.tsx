@@ -22,7 +22,7 @@ export function Hero() {
         <Link href={NAV_LINKS.signup.pathname} data-aos="fade-right">
           <Button
             variant={"tertiary"}
-            className="md:max-w-60 z-0 bg-linear-to-t from-tertiary-dark  to-orange-400 hover:to-orange-700 hover:text-white "
+            className="md:max-w-60 z-0 bg-linear-to-t from-orange-900  to-orange-400 hover:to-orange-700 hover:text-white "
           >
             <p className="text-base">Join for free</p>
           </Button>
@@ -54,7 +54,7 @@ export function Hero() {
           alt="hero"
           width={500}
           height={368}
-          className="object-contain w-full h-full"
+          className="object-contain w-auto h-auto"
         />
       </div>
     </div>

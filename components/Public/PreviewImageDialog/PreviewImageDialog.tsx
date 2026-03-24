@@ -35,13 +35,13 @@ export function PreviewImageDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="w-full h-full flex flex-col justify-end border border-cyan-800 rounded-md overflow-hidden">
+        <div className="w-full h-full flex flex-col justify-end  overflow-hidden">
           <Image
             src={image}
             alt={title}
             width={1000}
             height={800}
-            className=" aspect-video  object-cover  w-full h-full"
+            className=" aspect-video  object-cover border border-cyan-800 rounded-md"
           />
         </div>
       </DialogContent>

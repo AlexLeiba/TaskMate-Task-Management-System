@@ -442,3 +442,25 @@ export type AssignToCardActionProps = {
 };
 
 export type FinishedWorkFilterTabs = 7 | 30 | 90 | 180 | 365 | 1000;
+
+export type TaskOrganizationType = {
+  id: number;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  image: string;
+  previewImage: string;
+};
+
+export type MoreFeaturesCardData = {
+  id: number;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+};
+export type OverviewDataType = {
+  id: number;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+};

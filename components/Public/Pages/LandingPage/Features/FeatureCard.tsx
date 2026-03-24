@@ -1,12 +1,9 @@
+import { TaskOrganizationType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { variantsPublicCardColors } from "@/lib/variantsPublicCardColors";
 
 type Props = {
-  data: {
-    id: number;
-    title: string;
-    description: string;
-  };
+  data: TaskOrganizationType;
   index: 1 | 2 | 3 | 4 | 5;
   selected: boolean;
   handleClick: () => void;
@@ -27,7 +24,26 @@ export function FeatureCard({ data, selected, index, handleClick }: Props) {
           variantsPublicCardColors({ index }),
         )}
       />
-      <p className="text-xl">{data.title}</p>
+      {/* opacity 1 , title translate-x-30 */}
+      <div className="flex items-center gap-2  ">
+        <div
+          className={cn(
+            selected ? "opacity-100" : "opacity-0 ",
+            " absolute transition-all duration-500 ease-in-out",
+          )}
+        >
+          {data.icon}
+        </div>
+
+        <p
+          className={cn(
+            selected ? "translate-x-8.75" : " ",
+            "text-xl transition-all duration-500 ease-in-out",
+          )}
+        >
+          {data.title}
+        </p>
+      </div>
       <p className="text-base">{data.description}</p>
     </div>
   );

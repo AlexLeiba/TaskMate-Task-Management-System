@@ -1,34 +1,12 @@
-import { Building2, CalendarCog, CheckSquare } from "lucide-react";
-
-export type MoreFeaturesCardData = {
-  id: number;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-};
-export const MORE_FEATURES_CARD_DATA: MoreFeaturesCardData[] = [
-  {
-    id: 1,
-    title: "Organizations",
-    description:
-      "Organize your tasks and projects with TaskMate's organization feature. Invite collaborators and assign tasks to different teams.",
-    icon: <Building2 size={50} className="text-chart-1" />,
-  },
-  {
-    id: 2,
-    title: "Checklists",
-    description:
-      "Create checklists for your tasks and projects with TaskMate's checklist feature. Mark tasks as complete and track progress of all your card tickets.",
-    icon: <CheckSquare size={50} className="text-chart-2" />,
-  },
-  {
-    id: 3,
-    title: "DueDate",
-    description:
-      "Set due dates for your tasks and projects with TaskMate's due date feature. Keep track of deadlines and prioritize tasks accordingly.",
-    icon: <CalendarCog size={50} className="text-chart-3" />,
-  },
-];
+import { TaskOrganizationType } from "@/lib/types";
+import {
+  BookCheck,
+  CheckSquare,
+  Columns4,
+  FileUp,
+  LayoutDashboard,
+  Pencil,
+} from "lucide-react";
 
 export const TESTIMONIALS_DATA = [
   {
@@ -86,26 +64,61 @@ export const TESTIMONIALS_DATA = [
   },
 ];
 
-export const PRODUCTIVITY_DATA = [
+export const ORGANIZATION_TOOLS_DATA: TaskOrganizationType[] = [
   {
     id: 1,
     title: "Boards",
     description:
-      "Boards can be created or removed from the dashboard and customized with a variety of beautiful background images.",
-    image: "/boards.webp",
+      "The Boards are the main private organizational unit of TaskMate. Boards are visible only to invited members of the Organization. Boards can be created or removed from the dashboard only by Admin and customized with a variety of beautiful background images.",
+    image: "/test7.png",
+    previewImage: "/board.png",
+    icon: <LayoutDashboard size={30} className="text-chart-2" />,
   },
   {
     id: 2,
     title: "Lists",
     description:
-      "The lists support drag-and-drop, title and status editing, and can be duplicated along with all their cards.",
-    image: "/lists.webp",
+      "The lists are board columns that contain ticket cards. They can be created and duplicated along with their cards, have editable titles and statuses, support drag-and-drop, and can be filtered within the board. ",
+    image: "/l4.png",
+    icon: <Columns4 size={30} className="text-chart-3" />,
+    previewImage: "/list2.png",
   },
   {
     id: 3,
-    title: "Cards",
+    title: "Card Details",
     description:
-      "The Cards support drag-and-drop within the same list or between lists, title editing, copying, descriptions, due dates, checklists, comments, attachments, reporter and member assignment.",
-    image: "/card.webp",
+      "The cards are the tickets created within lists. They support drag-and-drop within the same list or across lists, filters within the board, title editing, card duplication, rich-text descriptions, due date time picker, checklists, comments, attachments, priority settings, reporter and member assignment.",
+    image: "/c1.png",
+    icon: <BookCheck size={30} className="text-chart-4" />,
+    previewImage: "/details2.png",
+  },
+];
+export const EXECUTION_TOOLS_DATA = [
+  {
+    id: 1,
+    title: "Checklist",
+    description:
+      "Create checklists for your tasks and projects with TaskMate's checklist feature. Mark tasks as complete and visualize and track progress by predefined colors and percentage completion.",
+    image: "/check10.png",
+    icon: <CheckSquare size={30} className="text-chart-2" />,
+    previewImage: "/checklist-last.png",
+  },
+  {
+    id: 2,
+    title: "Attachments",
+    description:
+      "Add attachments to your tasks and projects with TaskMate's attachment feature. Upload files and images, preview images, and download attachments as needed.",
+    image: "/upload.png",
+    icon: <FileUp size={30} className="text-chart-3" />,
+    previewImage: "/attachments-last.png",
+  },
+  {
+    id: 3,
+    title: "Rich text editor",
+    description:
+      "Create or update descriptions for your tasks and projects with TaskMate's description feature. Add more details or notes to your tasks and projects using a rich text editor, which allows to format text, add images, links, and more.",
+    image: "/desc10.png",
+    icon: <Pencil size={30} className="text-chart-4" />,
+    previewImage: "/description-last.png",
   },
 ];

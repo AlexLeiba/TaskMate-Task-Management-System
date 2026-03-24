@@ -1,16 +1,17 @@
-import { MoreFeatures } from "@/components/Public/LandingPage/MoreFeatures/MoreFeatures";
-import { OrganizationFeatures } from "@/components/Public/LandingPage/Features/OrganizationFeatures";
-import { FromMessageToAction } from "@/components/Public/LandingPage/FromMessageToAction/FromMessageToAction";
-import { Hero } from "@/components/Public/LandingPage/Hero/Hero";
+import { MoreFeatures } from "@/components/Public/Pages/LandingPage/MoreFeatures/MoreFeatures";
+import { OrganizationFeatures } from "@/components/Public/Pages/LandingPage/Features/OrganizationFeatures";
+
+import { Hero } from "@/components/Public/Pages/LandingPage/Hero/Hero";
 import { LayoutContainer } from "@/components/Public/LayoutContainer/LayoutContainer";
 import { Testimonials } from "@/components/Public/Testimonials/Testimonials";
 import { SliderProvider } from "@/components/ui/slider";
-import { ExecutionFeatures } from "@/components/Public/LandingPage/Features/ExecutionFeatures";
+import { ExecutionFeatures } from "@/components/Public/Pages/LandingPage/Features/ExecutionFeatures";
+import { Overview } from "@/components/Public/Pages/LandingPage/Overview/Overview";
 
 export default async function Home() {
   return (
     <div className="w-full">
-      <LayoutContainer fluid className="bg-tertiary/20">
+      <LayoutContainer fluid className="bg-cyan-950">
         <LayoutContainer>
           <Hero />
         </LayoutContainer>
@@ -22,7 +23,7 @@ export default async function Home() {
         </SliderProvider>
       </LayoutContainer>
 
-      <LayoutContainer fluid className="bg-tertiary/60">
+      <LayoutContainer fluid className="bg-stone-900">
         <LayoutContainer>
           <SliderProvider>
             <ExecutionFeatures />
@@ -31,12 +32,12 @@ export default async function Home() {
       </LayoutContainer>
 
       <LayoutContainer>
-        <MoreFeatures />
+        <Overview />
       </LayoutContainer>
 
-      <LayoutContainer fluid className="bg-tertiary/60">
+      <LayoutContainer fluid className="bg-stone-900">
         <LayoutContainer>
-          <FromMessageToAction />
+          <MoreFeatures />
         </LayoutContainer>
       </LayoutContainer>
 

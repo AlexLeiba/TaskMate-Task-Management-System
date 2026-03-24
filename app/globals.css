@@ -360,3 +360,14 @@ Mental model: These are default visual rules of my app.
     transform: translateY(0);
   }
 }
+
+/* Hide scrollbar but keep scrolling */
+.scroll-container {
+  overflow: auto; /* or scroll */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE + old Edge */
+}
+
+.scroll-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge (Chromium) */
+}

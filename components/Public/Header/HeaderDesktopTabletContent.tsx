@@ -66,7 +66,7 @@ export function HeaderDesktopTabletContent() {
           transform: isHeaderVisible ? `translateY(0)` : `translateY(-99%)`,
         }}
         className={cn(
-          openedTabs ? "bg-background-element" : "bg-tertiary-dark",
+          openedTabs ? "bg-background-element" : "bg-cyan-950",
           " fixed top-0 left-0 right-0   py-2 z-20 transition-all duration-500 ease-in-out",
         )}
       >

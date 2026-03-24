@@ -5,11 +5,9 @@ import {
   SliderItem,
   useSlider,
 } from "@/components/ui/slider";
-
-import Image from "next/image";
-
 import { FeatureCard } from "./FeatureCard";
-import { PRODUCTIVITY_DATA } from "@/lib/consts/public/body";
+import { ORGANIZATION_TOOLS_DATA } from "@/lib/consts/public/body";
+import { ImageFeature } from "./ImageFeature";
 
 export function OrganizationFeatures() {
   const { setSliderIndex, sliderIndex } = useSlider();
@@ -28,7 +26,7 @@ export function OrganizationFeatures() {
       {/* grid-cols-1 */}
       <div className="grid md:grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-4">
         <div className="hidden lg:flex flex-col gap-4">
-          {PRODUCTIVITY_DATA.map((item, index) => (
+          {ORGANIZATION_TOOLS_DATA.map((item, index) => (
             <div data-aos="fade-up" data-aos-delay={index * 100} key={item.id}>
               <FeatureCard
                 data={item}
@@ -42,23 +40,24 @@ export function OrganizationFeatures() {
 
         <Slider>
           <SliderContent withNavigationButtons={false}>
-            {PRODUCTIVITY_DATA.map((item) => (
+            {ORGANIZATION_TOOLS_DATA.map((item) => (
               <SliderItem key={item.id}>
-                <div className="w-screen  h-full ">
-                  <Image
-                    src={item.image}
-                    width={1000}
-                    height={800}
-                    alt="Hero-image"
-                    className="lg:w-[calc(50vw-((100vw-1152px+48px)/2))] md:w-[calc(50vw-48px)]  w-[calc(100vw-32px)]  h-full object-cover rounded-md "
+                <div className="w-screen  h-full">
+                  <ImageFeature
+                    image={item.image}
+                    previewImage={item.previewImage}
+                    description={item.description}
+                    title={item.title}
                   />
                 </div>
               </SliderItem>
             ))}
           </SliderContent>
         </Slider>
+
+        {/* TABLET - MOBILE */}
         <div className="lg:hidden flex flex-col gap-4">
-          {PRODUCTIVITY_DATA.map((item, index) => (
+          {ORGANIZATION_TOOLS_DATA.map((item, index) => (
             <FeatureCard
               index={(index + 1) as unknown as 1 | 2 | 3 | 4 | 5}
               key={item.id}

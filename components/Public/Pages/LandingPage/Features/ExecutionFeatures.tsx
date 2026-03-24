@@ -6,10 +6,9 @@ import {
   useSlider,
 } from "@/components/ui/slider";
 
-import Image from "next/image";
-
 import { FeatureCard } from "./FeatureCard";
-import { PRODUCTIVITY_DATA } from "@/lib/consts/public/body";
+import { EXECUTION_TOOLS_DATA } from "@/lib/consts/public/body";
+import { ImageFeature } from "./ImageFeature";
 
 export function ExecutionFeatures() {
   const { setSliderIndex, sliderIndex } = useSlider();
@@ -20,9 +19,7 @@ export function ExecutionFeatures() {
           <div className="flex flex-col gap-2">
             <h2 className="text-4xl">Your task management helpers</h2>
             <p className="text-lg" data-aos="fade-right" data-aos-delay="500">
-              Stay organized and efficient with Inbox, Boards, and Planner.
-              Every to-do, idea, or responsibility—no matter how small—finds its
-              place, keeping you at the top of your game.
+              Manage your tasks efficiently .
             </p>
           </div>
         </div>
@@ -31,15 +28,14 @@ export function ExecutionFeatures() {
       <div className="grid md:grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-4">
         <Slider>
           <SliderContent withNavigationButtons={false}>
-            {PRODUCTIVITY_DATA.map((item) => (
+            {EXECUTION_TOOLS_DATA.map((item) => (
               <SliderItem key={item.id}>
                 <div className="w-screen  h-full ">
-                  <Image
-                    src={item.image}
-                    width={1000}
-                    height={800}
-                    alt="Hero-image"
-                    className="lg:w-[calc(50vw-((100vw-1152px+48px)/2))] md:w-[calc(50vw-48px)]  w-[calc(100vw-32px)]  h-full object-cover rounded-md "
+                  <ImageFeature
+                    previewImage={item.previewImage}
+                    image={item.image}
+                    description={item.description}
+                    title={item.title}
                   />
                 </div>
               </SliderItem>
@@ -47,7 +43,7 @@ export function ExecutionFeatures() {
           </SliderContent>
         </Slider>
         <div className="hidden lg:flex flex-col gap-4">
-          {PRODUCTIVITY_DATA.map((item, index) => (
+          {EXECUTION_TOOLS_DATA.map((item, index) => (
             <div data-aos="fade-up" data-aos-delay={index * 100} key={item.id}>
               <FeatureCard
                 data={item}
@@ -59,7 +55,7 @@ export function ExecutionFeatures() {
           ))}
         </div>
         <div className="lg:hidden flex flex-col gap-4">
-          {PRODUCTIVITY_DATA.map((item, index) => (
+          {EXECUTION_TOOLS_DATA.map((item, index) => (
             <FeatureCard
               index={(index + 1) as unknown as 1 | 2 | 3 | 4 | 5}
               key={item.id}

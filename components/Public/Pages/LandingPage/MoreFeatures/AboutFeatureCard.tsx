@@ -1,14 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { MoreFeaturesCardData } from "@/lib/consts/public/body";
-
-import React from "react";
+import { MoreFeaturesCardData } from "@/lib/types";
 
 type Props = {
   data: MoreFeaturesCardData;
 };
 export function AboutFeatureCard({ data }: Props) {
   return (
-    <div className="rounded-md bg-background-element flex flex-col p-6 gap-4 h-full justify-between">
+    <div className="rounded-md bg-background-element flex flex-col p-6 gap-4 h-70 justify-between min-w-100 ">
       {data.icon}
 
       <div className="flex flex-col gap-2">
@@ -16,8 +13,6 @@ export function AboutFeatureCard({ data }: Props) {
 
         <p className="text-lg">{data.description}</p>
       </div>
-
-      <Button variant={"outline"}>Browse {data.title}</Button>
     </div>
   );
 }

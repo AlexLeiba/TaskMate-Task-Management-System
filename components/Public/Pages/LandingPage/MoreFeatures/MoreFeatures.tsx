@@ -1,4 +1,4 @@
-import { MORE_FEATURES_CARD_DATA } from "@/lib/consts/public/body";
+import { MORE_FEATURES_CARD_DATA } from "@/lib/consts/public/features";
 import { AboutFeatureCard } from "./AboutFeatureCard";
 import { Spacer } from "@/components/ui/spacer";
 
@@ -14,7 +14,7 @@ export function MoreFeatures() {
       </div>
 
       <Spacer size={8} />
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
+      <div className="flex items-center gap-4 overflow-x-auto scroll-container ">
         {MORE_FEATURES_CARD_DATA.map((data) => {
           return <AboutFeatureCard key={data.id} data={data} />;
         })}

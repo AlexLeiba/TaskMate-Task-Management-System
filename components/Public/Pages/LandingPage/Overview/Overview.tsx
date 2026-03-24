@@ -1,0 +1,84 @@
+"use client";
+import { Spacer } from "@/components/ui/spacer";
+import { ChevronLeft, ChevronRight, CircleCheck } from "lucide-react";
+import { OVERVIEW_DATA, OVERVIEW_OPTIONS } from "@/lib/consts/public/overview";
+import { OverviewCard } from "./OverviewCard";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+
+export function Overview() {
+  const [selected, setSelected] = useState(0);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 4;
+
+  return (
+    <div>
+      <div className="flex flex-col gap-4  w-full">
+        <h2 className="text-4xl">Overview Statistics</h2>
+
+        <div className="grid lg:grid-cols-[repeat(auto-fit,minmax(400px,1fr))] grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-2 ">
+          {OVERVIEW_OPTIONS.map((option, index) => (
+            <div className="flex items-center gap-2 " key={option}>
+              <div>
+                <CircleCheck
+                  size={20}
+                  className={cn(
+                    selected === index + 1 ? "text-green-500" : "text-gray-500",
+                  )}
+                />
+              </div>
+              <p
+                className={cn(
+                  selected === index + 1 ? "text-xl" : "text-lg",
+                  "transition-all",
+                )}
+              >
+                {option}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <Spacer size={4} />
+      <div className="flex justify-end gap-2">
+        <Button
+          onClick={() => setPage((prev) => prev - 1)}
+          disabled={page === 1}
+          size={"sm"}
+          variant={"secondary"}
+          title="next page"
+          aria-label="next page"
+        >
+          <ChevronLeft />
+        </Button>
+        <Button
+          onClick={() => setPage((prev) => prev + 1)}
+          size={"sm"}
+          variant={"secondary"}
+          disabled={page * itemsPerPage >= OVERVIEW_DATA.length}
+          title="next page"
+          aria-label="next page"
+        >
+          <ChevronRight />
+        </Button>
+      </div>
+      <Spacer size={2} />
+      <div className="grid lg:grid-cols-[repeat(auto-fit,minmax(400px,1fr))] grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
+        {OVERVIEW_DATA.slice(
+          page === 1 ? 0 : page - 1 * itemsPerPage,
+          page === 1 ? itemsPerPage : page * itemsPerPage * 2,
+        ).map((data) => {
+          return (
+            <OverviewCard
+              key={data.id}
+              data={data}
+              handleHover={() => setSelected(data.id)}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+}

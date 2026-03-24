@@ -25,7 +25,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       icon: <User />,
       title: "Workspace Management",
       description:
-        "Admin can manage the organization: create or delete it, update its name, logo, and avatar, invite or remove users and change member roles, all can be done from settings page.",
+        "Admin can manage the organization: create, delete, rename, upload logo, invite or remove users and change member roles, all can be done from settings page.",
       color: "",
       link: "/",
     },
@@ -34,7 +34,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       icon: <Building2 />,
       title: "Organizations",
       description:
-        "An organization is a shared workspace where invited members access boards and manage tasks, typically overseen by an admin.",
+        "An organization is a private shared workspace where invited members access boards and manage tasks according to their roles, typically overseen by an admin.",
       color: "",
       link: "/",
     },
@@ -43,7 +43,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       icon: <Activity />,
       title: "Activity",
       description:
-        "Any action done by a member within an Organization is registered under activity page. Activities can be seen by any member of the organization under any ticket Card or in the activity page.",
+        "Any action within an Organization is registered under Activity page. Activities can be seen by any member of the Organization under any Card or on the Activity page.",
       color: "",
       link: "/",
     },

@@ -27,7 +27,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       description:
         "Organization is the main private unit of TaskMate which is accessible only to invited members.  Any Organization can be created, removed, edited (logo and name) by only Admins.",
       color: "",
-      link: "/",
+      link: "#all-features",
     },
     {
       id: "3",
@@ -36,7 +36,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       description:
         "The Boards are the main workspace of any Organization. Boards allow to separate different projects and tasks within the same Organization and members. Boards can be created or removed from the dashboard only by Admin and customized with a variety of beautiful background images.",
       color: "",
-      link: "/",
+      link: "#all-features",
     },
     {
       id: "6",
@@ -45,7 +45,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       description:
         "Manage tasks and projects with TaskMate's role-based  management feature. Create lists and cards, set due dates, create checklists,  invite, delete, assign tasks or different roles to members and track their progress.",
       color: "",
-      link: "/",
+      link: "#all-features",
     },
     {
       id: "4",
@@ -54,7 +54,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       description:
         "The lists are board columns that contain ticket cards. They can be created and duplicated along with their cards, have editable titles and statuses, support drag-and-drop, and can be filtered within the board.",
       color: "",
-      link: "/",
+      link: "#all-features",
     },
     {
       id: "5",
@@ -63,7 +63,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       description:
         "The cards are the tickets created within lists. They support drag-and-drop within the same list or across lists, filters within the board, title editing, card duplication, rich-text descriptions, due date time picker, checklists, comments, attachments, priority settings, reporter and member assignment.",
       color: "",
-      link: "/",
+      link: "#all-features",
     },
 
     {
@@ -73,7 +73,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       description:
         "Any action within an Organization is registered and can be seen on any ticket Card, Overview Board or on the Activity page. This helps to avoid losing track of the history of the Organization.",
       color: "",
-      link: "/",
+      link: "#all-features",
     },
   ],
   solutions: [
@@ -84,7 +84,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       description:
         "Use TaskMate`s management boards and other useful features to simplify complex projects and processes.",
       color: "",
-      link: "/",
+      link: "#all-features",
     },
     {
       id: "2",
@@ -93,7 +93,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       description:
         "Whether launching a new product, campaign, or creating content, TaskMate helps marketing teams succeed.",
       color: "",
-      link: "/",
+      link: "#all-features",
     },
     {
       id: "3",
@@ -102,7 +102,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       description:
         "Ship more code, faster, and give your developers the freedom to be more agile with TaskMate.",
       color: "",
-      link: "/",
+      link: "#all-features",
     },
     {
       id: "5",
@@ -111,7 +111,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       description:
         "From hitting revenue goals to managing workflows, small businesses thrive with TaskMate.",
       color: "",
-      link: "/",
+      link: "#all-features",
     },
     {
       id: "4",
@@ -120,7 +120,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       description:
         "Empower your design teams by using TaskMate to streamline creative requests and promote more fluid cross-team collaboration.",
       color: "",
-      link: "/",
+      link: "#all-features",
     },
 
     {
@@ -130,7 +130,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
       description:
         "From hitting revenue goals to managing workflows, small businesses thrive with TaskMate.",
       color: "",
-      link: "/",
+      link: "#all-features",
     },
   ],
   about: [

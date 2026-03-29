@@ -86,8 +86,8 @@ export function Overview() {
           disabled={page === 1}
           size={"sm"}
           variant={"secondary"}
-          title="next page"
-          aria-label="next page"
+          title="previous page"
+          aria-label="previous page"
         >
           <ChevronLeft />
         </Button>

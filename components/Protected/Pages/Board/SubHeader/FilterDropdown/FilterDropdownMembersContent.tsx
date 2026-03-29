@@ -108,7 +108,7 @@ export function FilterDropdownMembersContent({
                   width={20}
                   height={20}
                   src={member?.imageUrl || "/avatar-default.svg"}
-                  className="rounded-full size-6"
+                  className="rounded-full size-6 object-cover"
                 />
                 <p>{member?.fullName}</p>
               </div>

@@ -10,6 +10,7 @@ function BillingsPage() {
         <CreditCard />
       </div>
       <Separator className="bg-gray-600 w-full my-4" />
+      <p>Coming soon.</p>
     </div>
   );
 }

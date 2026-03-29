@@ -4,7 +4,7 @@ type Props = {
 export function ListView({ boardId }: Props) {
   return (
     <div>
-      <p className="text-lg text-black">ListView</p>
+      <p className="text-lg text-black">Comming soon.</p>
     </div>
   );
 }

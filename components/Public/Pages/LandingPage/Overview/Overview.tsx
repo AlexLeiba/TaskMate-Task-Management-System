@@ -6,43 +6,48 @@ import { OverviewCard } from "./OverviewCard";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useResponsive } from "@/hooks/useResponsive";
+import { BREAKPOINTS } from "@/lib/breakpoints";
 
 export function Overview() {
   const [selected, setSelected] = useState(0);
   const [page, setPage] = useState(1);
   const itemsPerPage = 4;
+  const isTablet = useResponsive(BREAKPOINTS.lg);
 
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        const elements = document.querySelectorAll(".overview-image");
+    if (!isTablet) {
+      const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          const elements = document.querySelectorAll(".overview-image");
 
-        elements.forEach((el) => {
-          el.classList.add("overview-card-image-animation");
-        });
-
-        setTimeout(() => {
           elements.forEach((el) => {
-            el.classList.remove("overview-card-image-animation");
+            el.classList.add("overview-card-image-animation");
           });
-        }, 5000);
-        //
+
+          setTimeout(() => {
+            elements.forEach((el) => {
+              el.classList.remove("overview-card-image-animation");
+            });
+          }, 10000);
+          //
+        }
+      });
+      const intersectedElement = document.querySelector(
+        ".overview-cards-container",
+      );
+
+      if (intersectedElement) {
+        observer.observe(intersectedElement);
       }
-    });
-    const intersectedElement = document.querySelector(
-      ".overview-cards-container",
-    );
 
-    if (intersectedElement) {
-      observer.observe(intersectedElement);
+      return () => {
+        observer.disconnect();
+        document
+          .querySelector(".overview-image")
+          ?.classList.remove("overview-card-image-animation");
+      };
     }
-
-    return () => {
-      observer.disconnect();
-      document
-        .querySelector(".overview-image")
-        ?.classList.remove("overview-card-image-animation");
-    };
   }, []);
 
   return (
@@ -63,8 +68,8 @@ export function Overview() {
               </div>
               <p
                 className={cn(
-                  selected === index + 1 ? "text-xl" : "text-lg",
-                  "transition-all",
+                  selected === index + 1 ? "font-medium" : "",
+                  "transition-all text-lg",
                 )}
               >
                 {option}
@@ -108,7 +113,8 @@ export function Overview() {
               index={index + 1}
               key={data.id}
               data={data}
-              handleHover={() => setSelected(data.id)}
+              handleSelect={() => setSelected(data.id)}
+              selected={selected === data.id}
             />
           );
         })}

@@ -3,7 +3,7 @@ import React from "react";
 
 export function ChecklistSkeleton() {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 h-65">
       <div className="flex gap-4 flex-col">
         <div className="flex gap-2 items-center">
           <CheckSquare />

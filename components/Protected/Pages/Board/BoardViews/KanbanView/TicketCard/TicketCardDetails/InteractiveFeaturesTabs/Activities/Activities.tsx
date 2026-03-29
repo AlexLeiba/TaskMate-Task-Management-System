@@ -87,7 +87,7 @@ export function Activities({ cardDetailsId }: Props) {
       </div>
       <Spacer size={4} />
       {/* SCROLLABLE SECTION */}
-      <div className="flex flex-col gap-4 overflow-y-auto h-58  ">
+      <div className="flex flex-col gap-4 overflow-y-auto h-54">
         {/* ATTACHMENTS */}
         {activities?.map((activity) => (
           <ActivityCard key={activity.id} data={activity} />

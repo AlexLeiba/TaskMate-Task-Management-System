@@ -309,7 +309,7 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
           <Spacer size={2} />
         )}
       </div>
-      <div className="overflow-y-auto h-56 ">
+      <div className="overflow-y-auto h-52">
         {(role === USER_ROLES.admin || user?.email === assignedUserEmail) && (
           <AddNewInput
             buttonDirection="column"

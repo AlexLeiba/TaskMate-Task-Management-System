@@ -1,9 +1,9 @@
 import React from "react";
 
 export function ActivityCardSkeleton() {
-  const skeletonItems = Array.from({ length: 3 }, (_, index) => index + 1);
+  const skeletonItems = Array.from({ length: 2 }, (_, index) => index + 1);
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-16 h-54">
       {skeletonItems.map((item) => {
         return (
           <div className=" animate-pulse" key={item}>

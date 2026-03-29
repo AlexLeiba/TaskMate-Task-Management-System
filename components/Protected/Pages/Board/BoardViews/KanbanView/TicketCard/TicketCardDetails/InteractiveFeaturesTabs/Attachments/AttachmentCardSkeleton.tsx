@@ -3,7 +3,7 @@ import { Image } from "lucide-react";
 export function AttachmentCardSkeleton() {
   const skeletonItems = Array.from({ length: 3 }, (_, index) => index + 1);
   return (
-    <div className="max-h-45.25 flex flex-col gap-4 animate-pulse">
+    <div className=" flex flex-col gap-4 animate-pulse h-65">
       <div className="flex gap-2 items-center ">
         <Image />
         <h5 className="text-xl font-medium">Attachments</h5>
@@ -12,7 +12,7 @@ export function AttachmentCardSkeleton() {
         <div className="bg-gray-700 rounded-full size-8"></div>
         <div className="h-full w-1/2 bg-gray-700"></div>
       </div>
-      <div className="flex gap-8">
+      <div className="flex gap-8 h-56">
         {skeletonItems.map((_, index) => (
           <div
             key={index}

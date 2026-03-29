@@ -356,7 +356,7 @@ export function Attachments({ cardDetailsId }: Props) {
         </div>
       </div>
       <Spacer size={4} />
-      <div className="flex flex-col gap-4 overflow-y-auto h-58 ">
+      <div className="flex flex-col gap-4 overflow-y-auto h-54 ">
         {/* ATTACHMENTS */}
         {attachmentsData?.length > 0 ? (
           attachmentsData.map((attachment) => (

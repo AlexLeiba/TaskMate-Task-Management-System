@@ -18,7 +18,8 @@ import ReactQuill from "react-quill-new";
 import { cn } from "@/lib/utils";
 
 type Props = {
-  setIsQuillVisible: (open: boolean) => void;
+  setCloseQuill: () => void;
+  setInitialValue: (value: string) => void;
   disabled?: boolean;
   cardDetailsId: string | undefined;
   initialValue: string;
@@ -29,7 +30,8 @@ export function DescriptionDialog({
   disabled,
   cardDetailsId,
   initialValue,
-  setIsQuillVisible,
+  setCloseQuill,
+  setInitialValue,
 }: Props) {
   const quillRef = useRef<ReactQuill | null>(null);
   const boardId = useBoardId();
@@ -48,8 +50,8 @@ export function DescriptionDialog({
     onSuccess: ({ data: description }) => {
       if (description) {
         setDescriptionValue(description);
-
-        setIsQuillVisible(false);
+        setInitialValue(description);
+        setCloseQuill();
       }
       toast.dismiss(QUERY_KEYS.pages.board.cardDetails.updateDescription);
       toast.success("Description updated");
@@ -72,6 +74,7 @@ export function DescriptionDialog({
       cardDetailsId,
       boardId: boardId || "",
     });
+
     toast.loading("Updating description...", {
       id: QUERY_KEYS.pages.board.cardDetails.updateDescription,
     });
@@ -83,11 +86,11 @@ export function DescriptionDialog({
         "You have unsaved changes. Are you sure you want to close?",
       );
       if (confirmClose) {
-        setIsQuillVisible(false);
+        setCloseQuill();
       }
       return () => {};
     }
-    return setIsQuillVisible(false);
+    return setCloseQuill();
   }
 
   useEffect(() => {

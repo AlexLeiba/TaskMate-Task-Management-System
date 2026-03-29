@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IconButton } from "@/components/ui/iconButton";
 import { List, SquarePen } from "lucide-react";
 import { InitialDescriptionState } from "./InitialDescriptionState";
@@ -44,6 +44,13 @@ export function Description({
     setIsQuillVisible(true);
   }
 
+  const handleInitialValue = useCallback(
+    (value: string) => setValue(value),
+    [],
+  );
+
+  const handleCloseQuill = useCallback(() => setIsQuillVisible(false), []);
+
   return (
     <>
       <div className="flex justify-between">
@@ -85,7 +92,8 @@ export function Description({
       )}
       {isQuillVisible && (
         <DescriptionDialog
-          setIsQuillVisible={setIsQuillVisible}
+          setInitialValue={handleInitialValue}
+          setCloseQuill={handleCloseQuill}
           cardDetailsId={cardDetailsId}
           isQuillVisible={isQuillVisible}
           initialValue={value}

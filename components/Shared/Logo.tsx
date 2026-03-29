@@ -8,10 +8,10 @@ export function Logo({ visible = false }: Props) {
     <Link
       href="/"
       title="Home"
-      className={cn(visible ? "" : "md:block hidden", "w-25 ")}
+      className={cn(visible ? "" : "md:block hidden", "")}
     >
       <Image
-        src="/logo.webp"
+        src="/logo.svg"
         alt="Logo"
         width={100}
         height={32}

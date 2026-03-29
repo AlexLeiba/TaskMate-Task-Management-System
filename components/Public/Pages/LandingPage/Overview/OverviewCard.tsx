@@ -30,7 +30,7 @@ export function OverviewCard({ data, handleSelect, index, selected }: Props) {
         height={300}
         style={{
           animationDelay: `${index * 200}ms`,
-          transform: selected ? "translateY(-50%)" : "",
+          transform: isTablet && selected ? "translateY(-50%)" : "",
         }}
         className=" bg-background-element rounded-lg shadow-lg border border-gray-500 w-full h-full object-cover  absolute  left-0 right-0 group-hover:translate-y-0 translate-y-1/2 transition-all duration-500 ease-in-out overview-image "
       />

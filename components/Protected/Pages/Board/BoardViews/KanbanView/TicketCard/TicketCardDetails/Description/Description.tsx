@@ -1,25 +1,19 @@
 "use client";
 import { useEffect, useState } from "react";
 import { IconButton } from "@/components/ui/iconButton";
-import { Spacer } from "@/components/ui/spacer";
-import { Check, List, SquarePen, X } from "lucide-react";
-import dynamic from "next/dynamic";
+import { List, SquarePen } from "lucide-react";
 import { InitialDescriptionState } from "./InitialDescriptionState";
 import DOMPurify from "dompurify";
 import { DescriptionSkeleton } from "./DescriptionSkeleton";
-import { useMutation } from "@tanstack/react-query";
-import { updateDescriptionAction } from "@/app/actions/card-details";
 import toast from "react-hot-toast";
-import "react-quill-new/dist/quill.snow.css";
-import { useBoardId } from "@/hooks/useBoardId";
 import { useRole } from "@/hooks/useRole";
 import { USER_ROLES } from "@/lib/consts/consts";
-import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
+import "react-quill-new/dist/quill.snow.css";
+import dynamic from "next/dynamic";
 
-const ReactQuill = dynamic(() => import("react-quill-new"), {
-  ssr: false,
-  loading: () => <InitialDescriptionState />,
-});
+const DescriptionDialog = dynamic(() =>
+  import("./DescriptionDialog").then((m) => m.DescriptionDialog),
+);
 
 type Props = {
   description: string;
@@ -32,50 +26,15 @@ export function Description({
   isAssignedUserEmail = false,
 }: Props) {
   const role = useRole();
-  const boardId = useBoardId();
+
   const [value, setValue] = useState(description || "");
   const [isQuillVisible, setIsQuillVisible] = useState(false);
 
-  const { mutate, isPending } = useMutation({
-    mutationKey: [
-      QUERY_KEYS.pages.board.cardDetails.updateDescription,
-      cardDetailsId,
-    ],
-    mutationFn: updateDescriptionAction,
-    onSuccess: ({ data: description }) => {
-      if (description) {
-        setValue(description);
-
-        setIsQuillVisible(false);
-      }
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.updateDescription);
-      toast.success("Description updated");
-    },
-    onError: ({ message }) => {
-      toast.error(message || "Error updating description, please try again");
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.updateDescription);
-    },
-  });
-
   useEffect(() => {
     if (description) {
-      // eslint-disable-next-line
       setValue(description);
     }
   }, [description]);
-
-  function handleSaveDescription() {
-    if (!cardDetailsId || !boardId) {
-      return toast.error(
-        "Card not found, please try again or refresh the page",
-      );
-    }
-
-    mutate({ description: value, cardDetailsId, boardId: boardId || "" });
-    toast.loading("Updating description...", {
-      id: QUERY_KEYS.pages.board.cardDetails.updateDescription,
-    });
-  }
 
   function handleOpenQuill() {
     if (!isAssignedUserEmail && role === USER_ROLES.member)
@@ -86,7 +45,7 @@ export function Description({
   }
 
   return (
-    <div>
+    <>
       <div className="flex justify-between">
         <div className="flex gap-2 items-center">
           <List />
@@ -94,7 +53,7 @@ export function Description({
         </div>
         {!isQuillVisible && (
           <IconButton
-            disabled={isPending}
+            disabled={false}
             title="Edit Description"
             aria-label="Edit Description"
             onClick={handleOpenQuill}
@@ -103,42 +62,9 @@ export function Description({
             <SquarePen className="text-green-500" />
           </IconButton>
         )}
-        {isQuillVisible && (
-          <div className="flex gap-2">
-            <IconButton
-              disabled={isPending}
-              title="Close Description"
-              aria-label="Close Description"
-              onClick={() => setIsQuillVisible(false)}
-              className="px-2"
-            >
-              <X />
-            </IconButton>
-            <IconButton
-              disabled={isPending}
-              loading={isPending}
-              title="Save Description"
-              aria-label="Save Description"
-              onClick={handleSaveDescription}
-              className="px-2"
-              classNameChildren="border border-green-500 text-green-500 rounded-full"
-            >
-              <Check className="text-green-500" />
-            </IconButton>
-          </div>
-        )}
       </div>
-      <Spacer size={2} />
-      {isQuillVisible ? (
-        <div className="h-72.5">
-          <ReactQuill
-            theme="snow"
-            value={value}
-            onChange={setValue}
-            className="w-full"
-          />
-        </div>
-      ) : cardDetailsId ? (
+
+      {!isQuillVisible && cardDetailsId ? (
         <InitialDescriptionState
           onClick={handleOpenQuill}
           classNameChildren="flex flex-col justify-start items-start h-full wrap-break-word"
@@ -157,6 +83,14 @@ export function Description({
       ) : (
         <DescriptionSkeleton />
       )}
-    </div>
+      {isQuillVisible && (
+        <DescriptionDialog
+          setIsQuillVisible={setIsQuillVisible}
+          cardDetailsId={cardDetailsId}
+          isQuillVisible={isQuillVisible}
+          initialValue={value}
+        />
+      )}
+    </>
   );
 }

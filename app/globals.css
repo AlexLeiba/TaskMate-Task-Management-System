@@ -251,11 +251,6 @@ Mental model: These are default visual rules of my app.
   opacity: 0.5;
 }
 
-.quill {
-  /* background-color: var(--color-gray-800) !important; */
-  max-height: 250px !important;
-  height: 250px !important;
-}
 .quill .ql-container p,
 .html-content p {
   font-size: 16px !important;
@@ -302,9 +297,6 @@ Mental model: These are default visual rules of my app.
 }
 
 .ql-editor {
-  min-height: 200px !important;
-  max-height: 250px !important;
-
   overflow-y: auto !important;
   padding-bottom: 1rem !important; /* Add space for readability */
   overflow-y: auto; /* Add vertical scrolling if content is too long */
@@ -314,10 +306,13 @@ Mental model: These are default visual rules of my app.
   border-bottom-left-radius: 8px;
 }
 
-@media (max-width: 600px) {
+.ql-editor {
+  max-height: calc(100vh - 270px);
+}
+
+@media (( min-width: 768px) and (max-width: 1024px)) {
   .ql-editor {
-    min-height: 200px !important;
-    max-height: 230px !important;
+    max-height: calc(100vh - 335px);
   }
 }
 

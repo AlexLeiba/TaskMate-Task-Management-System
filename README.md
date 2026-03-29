@@ -37,7 +37,15 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 # Docs
 
-## Breakpoints of Grid Container
+## Breakpoints
+
+### Mobile < 48rem 768px
+
+### Tablet: > 48rem 768px
+
+### Desktop: > 64rem 1024px
+
+## Grid Container
 
 ### Content width: 72rem = 1152px , TW Utility: max-w-6xl;
 

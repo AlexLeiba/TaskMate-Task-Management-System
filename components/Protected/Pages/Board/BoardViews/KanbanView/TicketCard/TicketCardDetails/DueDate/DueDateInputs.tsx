@@ -21,7 +21,7 @@ import {
 import toast from "react-hot-toast";
 import { useBoardId } from "@/hooks/useBoardId";
 import { parseDateTimeToLocal } from "@/lib/parseDateTimeToLocal";
-import { INITIAL_TIME, USER_ROLES } from "@/lib/consts/consts";
+import { DATE_FORMAT_DUE, INITIAL_TIME, USER_ROLES } from "@/lib/consts/consts";
 import { isValidDateString } from "@/lib/isValidDateString";
 import { useRole } from "@/hooks/useRole";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
@@ -50,7 +50,8 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
     time: INITIAL_TIME,
   });
 
-  const [dueDate, setDueDate] = useState<string>("");
+  const [dueDateView, setDueDateView] = useState<string>("");
+  const [dueDateIsoString, setDueDateIsoString] = useState<string>("");
   const [addDateInput, setAddDateInput] = useState(false);
 
   const [openPicker, setOpenPicker] = useState(false);
@@ -69,7 +70,9 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
 
       const parsedDateWithTime = parseDateTimeToLocal(date, time);
 
-      setDueDate(parsedDateWithTime);
+      const formatedDate = format(parsedDateWithTime, DATE_FORMAT_DUE);
+      setDueDateView(formatedDate);
+      setDueDateIsoString(parsedDateWithTime);
       setAddDateInput(true);
     }
   }, [data]);
@@ -88,7 +91,8 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
         });
       },
       onError: ({ message }) => {
-        setDueDate("");
+        setDueDateView("");
+        setDueDateIsoString("");
         toast.dismiss(QUERY_KEYS.pages.board.cardDetails.createDueDate);
         toast.error(message || "Error creating due date, please try again");
       },
@@ -142,7 +146,8 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
     const parsedDateWithTime = parseDateTimeToLocal(dateUTC, timeInUTC);
 
     const formatedDate = format(parsedDateWithTime, "yyyy-MM-dd, HH:mm");
-    setDueDate(formatedDate);
+    setDueDateView(formatedDate);
+    setDueDateIsoString(parsedDateWithTime);
   }
 
   function handleOpenDateInput() {
@@ -153,7 +158,8 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
   }
 
   function handleDeleteDuedate() {
-    setDueDate("");
+    setDueDateView("");
+    setDueDateIsoString("");
     setAddDateInput(false);
     setDeleteDialogOpen(false);
     if (data?.[0].id) {
@@ -189,13 +195,13 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
 
       {addDateInput && (
         <>
-          {dueDate ? (
+          {dueDateView ? (
             // CREATED DUE DATE CARD
             <DueDateCard
               disabled={
                 isPendingCreate || isPendingDelete || role === USER_ROLES.member
               }
-              dueDate={dueDate}
+              dueDate={dueDateIsoString}
               handleDeleteDialogOpen={() => setDeleteDialogOpen(true)}
             />
           ) : (

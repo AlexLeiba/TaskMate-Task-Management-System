@@ -20,6 +20,7 @@ export function DueDateCard({
 
   const dInDaysData = differenceInDays(new Date(date), now);
   const dInHoursData = differenceInHours(new Date(date), now);
+
   const formatedDate = format(new Date(dueDate), DATE_FORMAT);
 
   return (

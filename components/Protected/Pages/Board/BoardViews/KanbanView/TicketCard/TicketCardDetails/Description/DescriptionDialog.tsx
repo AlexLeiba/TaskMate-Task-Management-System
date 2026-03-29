@@ -123,7 +123,7 @@ export function DescriptionDialog({
           />
         </div>
 
-        <DialogFooter className="flex ">
+        <DialogFooter className="flex flex-row-reverse gap-4">
           <DialogClose asChild>
             <Button
               disabled={isPending || disabled}

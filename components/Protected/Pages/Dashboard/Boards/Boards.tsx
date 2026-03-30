@@ -12,7 +12,6 @@ import { BoardType } from "@/lib/types";
 import { useMutation } from "@tanstack/react-query";
 import { apiDeleteFile } from "@/lib/api/apiDeleteFile";
 import { useAuth } from "@clerk/nextjs";
-import { useRole } from "@/hooks/useRole";
 import { USER_ROLES } from "@/lib/consts/consts";
 import { DeleteDialog } from "@/components/Protected/Shared-protected/DeleteDialog/DeleteDialog";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
@@ -20,10 +19,12 @@ import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 export function Boards({
   data,
 }: {
-  data: { error: { message: string }; data: BoardType[] };
+  data: {
+    error: { message: string };
+    data: { role: string; boards: BoardType[] };
+  };
 }) {
   const { orgId } = useAuth();
-  const role = useRole();
 
   const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -88,12 +89,12 @@ export function Boards({
       <Spacer size={4} />
       <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))]  md:grid-cols-[repeat(auto-fit,minmax(200px,243px))] gap-2">
         {/* CREATE NEW BOARD */}
-        {role === USER_ROLES.admin && (
+        {data.data.role === USER_ROLES.admin && (
           <CreateNewBoardCard disabled={isDeletePending} />
         )}
 
         {/* BOARDS */}
-        {data.data?.map((board) => (
+        {data.data.boards?.map((board) => (
           <BoardCard
             key={board.id}
             disabled={isDeletePending}

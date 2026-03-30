@@ -33,6 +33,7 @@ const UserButton = dynamic(
 import { useStore } from "@/store/useStore";
 import { ButtonBack } from "./ButtonBack";
 import { useRole } from "@/hooks/useRole";
+import { USER_ROLES } from "@/lib/consts/consts";
 
 type Props = {
   type?: "dashboard" | "board";
@@ -62,7 +63,7 @@ export function HeaderDashboard({ type = "dashboard" }: Props) {
           </div>
 
           <div className="flex gap-2">
-            {role === "admin" && (
+            {role === USER_ROLES.admin && (
               <>
                 <Button
                   size={"sm"}

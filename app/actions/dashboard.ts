@@ -9,7 +9,7 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
 export async function getBoardsAction(orgId: string): Promise<{
-  data: BoardType[];
+  data: { role: string; boards: BoardType[] };
   error: { message: string };
 }> {
   const { data: activeUser, error } = await verifyCurrentActiveUser(orgId);
@@ -27,11 +27,13 @@ export async function getBoardsAction(orgId: string): Promise<{
       },
     });
 
-    return { data: boards, error: { message: "" } };
-  } catch (error: any) {
-    console.log("🚀 ~ getBoardsAction ~ error:", error);
     return {
-      data: [],
+      data: { role: activeUser?.role, boards: boards },
+      error: { message: "" },
+    };
+  } catch (error: any) {
+    return {
+      data: { role: "", boards: [] },
       error: { message: error.message || "Something went wrong" },
     };
   }

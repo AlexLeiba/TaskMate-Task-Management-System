@@ -39,8 +39,6 @@ export function HeaderDesktopTabletContent() {
 
   // HEADER VISIBILITY
   useEffect(() => {
-    document.addEventListener("scroll", handleScroll);
-
     function handleScroll() {
       const scrollY = window.scrollY;
 
@@ -53,6 +51,7 @@ export function HeaderDesktopTabletContent() {
       setIsHeaderVisible(true);
       scrollValue.current = scrollY;
     }
+    document.addEventListener("scroll", handleScroll);
 
     return () => {
       document.removeEventListener("scroll", handleScroll);

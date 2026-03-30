@@ -1,5 +1,3 @@
-"use client";
-
 import { IconButton } from "@/components/ui/iconButton";
 import { HEADER_CARD_TABS_FEATURES } from "@/lib/consts/public/header";
 
@@ -27,11 +25,12 @@ export function CardTabs({ type }: Props) {
               target="_blank"
               href={card.link}
               key={card.id}
+              style={{ animationDelay: `${index * 50}ms` }}
               className={cn(
                 variantsTabCardColors({
                   index: index as unknown as 0 | 1 | 2 | 3 | 4 | 5,
                 }),
-                "rounded-md py-2 px-4 flex flex-col gap-2 cursor-pointer transition-all",
+                "rounded-md py-2 px-4 flex flex-col gap-2 cursor-pointer transition-all header-tabs",
               )}
             >
               <div className="flex gap-2 items-center">
@@ -44,7 +43,7 @@ export function CardTabs({ type }: Props) {
         })}
 
       {(type === "about" || type === "plans") && (
-        <p className="whitespace-break-spaces text-lg">
+        <p className="whitespace-break-spaces text-lg header-tabs">
           {HEADER_CARD_TABS_FEATURES[type][0].description}
         </p>
       )}
@@ -54,7 +53,7 @@ export function CardTabs({ type }: Props) {
           href={"#all-features"}
           title={`see all ${type}`}
           aria-label={`see all ${type}`}
-          className="flex"
+          className="flex header-tabs"
         >
           <IconButton classNameChildren="flex items-center gap-2 pt-2 group">
             <p>See all {type}</p>

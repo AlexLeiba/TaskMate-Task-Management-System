@@ -10,7 +10,7 @@ export function FooterLanding() {
   const date = new Date();
   return (
     <footer className="p-4 bg-background-element text-primary ">
-      <div className="max-w-6xl  mx-auto px-4">
+      <div className="max-w-6xl  mx-auto ">
         <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4">
           <div className="flex flex-col gap-2 p-2 items-start">
             <Logo visible />

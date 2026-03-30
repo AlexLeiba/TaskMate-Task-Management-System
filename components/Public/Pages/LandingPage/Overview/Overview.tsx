@@ -10,7 +10,7 @@ import { useResponsive } from "@/hooks/useResponsive";
 import { BREAKPOINTS } from "@/lib/breakpoints";
 
 export function Overview() {
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const itemsPerPage = 4;
   const isTablet = useResponsive(BREAKPOINTS.lg);
@@ -48,8 +48,11 @@ export function Overview() {
           ?.classList.remove("overview-card-image-animation");
       };
     }
-  }, []);
+  }, [isTablet]);
 
+  function handleSelect(id: number) {
+    setSelected((prev) => (prev === id ? null : id));
+  }
   return (
     <div>
       <div className="flex flex-col gap-4  w-full">
@@ -113,7 +116,7 @@ export function Overview() {
               index={index + 1}
               key={data.id}
               data={data}
-              handleSelect={() => setSelected(data.id)}
+              handleSelect={() => handleSelect(data.id)}
               selected={selected === data.id}
             />
           );

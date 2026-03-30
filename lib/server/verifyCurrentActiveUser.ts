@@ -3,11 +3,12 @@ import { User } from "../generated/prisma/client";
 import { verifyOrganizationMember } from "./verifyOrganizationMember";
 import { redirect } from "next/navigation";
 import { getCurrentActiveUserData } from "./getCurrentActiveUserData";
+import { UserRoleType } from "../types";
 
 export async function verifyCurrentActiveUser(
   currentOrgId?: string | undefined | null,
 ): Promise<{
-  data: { activeUser: User | null; role: "admin" | "member" } | null;
+  data: { activeUser: User | null; role: UserRoleType } | null;
   error: { message: string };
 }> {
   // GET CURRENT ACTIVE USER

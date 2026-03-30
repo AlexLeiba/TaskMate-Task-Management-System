@@ -464,3 +464,5 @@ export type OverviewDataType = {
   description: string;
   icon: React.ReactNode;
 };
+
+export type UserRoleType = "admin" | "member";

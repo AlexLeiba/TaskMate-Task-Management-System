@@ -1,7 +1,10 @@
 "use client";
 import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
-import { ListAndCardsAndDueDateAndChecklistType } from "@/lib/types";
+import {
+  ListAndCardsAndDueDateAndChecklistType,
+  UserRoleType,
+} from "@/lib/types";
 import dynamic from "next/dynamic";
 import { Droppable, DropResult } from "@hello-pangea/dnd";
 import { useMutation } from "@tanstack/react-query";
@@ -10,7 +13,6 @@ import {
   changeListPositionAction,
 } from "@/app/actions/drag-and-drop";
 import { USER_ROLES } from "@/lib/consts/consts";
-import { useRole } from "@/hooks/useRole";
 import { ListCardSkeleton } from "./ListCard/ListCardSkeleton";
 import { ListCard } from "./ListCard/ListCard";
 import { AddNewListCard } from "./ListCard/AddNewListCard";
@@ -25,7 +27,10 @@ const DragDropContext = dynamic(() =>
 type Props = {
   boardId: string;
   listData: {
-    data: ListAndCardsAndDueDateAndChecklistType[] | null | undefined;
+    data: {
+      data: ListAndCardsAndDueDateAndChecklistType[] | null | undefined;
+      role: UserRoleType;
+    } | null;
     error: { message: string };
   };
 };
@@ -51,8 +56,6 @@ export function ListCards({ boardId, listData }: Props) {
         state.setBoardSubHeaderMemberIdSelected,
     })),
   );
-
-  const role = useRole();
 
   const hasToastedRef = useRef(false);
 
@@ -82,7 +85,7 @@ export function ListCards({ boardId, listData }: Props) {
     setBoardSubHeaderMemberIdSelected(""); // RESET FILTER MEMBER ON FIRST MOUNT
     setBoardSubHeaderFilterSelected("all");
     //RESET FILTER ON FIRST MOUNT
-    setInitializeBoardListData(listData?.data); //SET INITIAL DATA ON FIRST MOUNT
+    setInitializeBoardListData(listData?.data?.data); //SET INITIAL DATA ON FIRST MOUNT
     // initial list column values
   }, [
     listData.data,
@@ -133,7 +136,7 @@ export function ListCards({ boardId, listData }: Props) {
             destinationListId: destination.droppableId,
             cardToMoveId: deletedCardId,
             listTitle:
-              listData.data?.find(
+              listData.data?.data?.find(
                 (list) => list.id.toString() === source.droppableId,
               )?.title || "List",
             newOrderIndex: destination.index,
@@ -156,7 +159,7 @@ export function ListCards({ boardId, listData }: Props) {
           destinationListId: destination.droppableId,
           cardToMoveId: deletedCardId,
           listTitle:
-            listData.data?.find(
+            listData.data?.data?.find(
               (list) => list.id.toString() === source.droppableId,
             )?.title || "List",
           newOrderIndex: destination.index,
@@ -192,7 +195,9 @@ export function ListCards({ boardId, listData }: Props) {
         </Droppable>
       </DragDropContext>
       {/*  ADD NEW LIST*/}
-      {role === USER_ROLES.admin && <AddNewListCard boardId={boardId} />}
+      {listData.data?.role === USER_ROLES.admin && (
+        <AddNewListCard boardId={boardId} />
+      )}
     </div>
   );
 }

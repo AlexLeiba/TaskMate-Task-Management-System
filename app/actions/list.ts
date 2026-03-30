@@ -6,6 +6,7 @@ import { verifyCurrentActiveUser } from "@/lib/server/verifyCurrentActiveUser";
 import {
   FilterStates,
   ListAndCardsAndDueDateAndChecklistType,
+  UserRoleType,
 } from "@/lib/types";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
@@ -17,10 +18,17 @@ export async function getListDataAction(
   unassignedCard?: boolean,
   filters: FilterStates = "all",
 ): Promise<{
-  data: ListAndCardsAndDueDateAndChecklistType[] | null;
+  data: {
+    data: ListAndCardsAndDueDateAndChecklistType[] | null | undefined;
+    role: UserRoleType;
+  } | null;
   error: { message: string };
 }> {
+  const { data: activeUserData } = await verifyCurrentActiveUser();
   try {
+    if (!activeUserData?.activeUser) {
+      throw new Error("User not authorized");
+    }
     const now = new Date();
     const sevenDaysAgo = new Date();
     const sevenDaysIntheFuture = new Date();
@@ -149,7 +157,7 @@ export async function getListDataAction(
     }
 
     return {
-      data: response,
+      data: { data: response, role: activeUserData.role },
       error: { message: "" },
     };
   } catch (error: any) {

@@ -1,5 +1,8 @@
 "use client";
-import { ListAndCardsAndDueDateAndChecklistType } from "@/lib/types";
+import {
+  ListAndCardsAndDueDateAndChecklistType,
+  UserRoleType,
+} from "@/lib/types";
 import { ListCards } from "./KanbanView/ListCards";
 import dynamic from "next/dynamic";
 import { useStore } from "@/store/useStore";
@@ -18,7 +21,10 @@ const BoardOverview = dynamic(() =>
 type Props = {
   boardId: string;
   listData: {
-    data: ListAndCardsAndDueDateAndChecklistType[] | null | undefined;
+    data: {
+      data: ListAndCardsAndDueDateAndChecklistType[] | null | undefined;
+      role: UserRoleType;
+    } | null;
     error: { message: string };
   };
 };

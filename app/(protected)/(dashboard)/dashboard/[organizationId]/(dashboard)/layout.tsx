@@ -1,10 +1,8 @@
+import React from "react";
 import { FooterDashboard } from "@/components/Protected/Footer/FooterDashboard";
 import { HeaderDashboard } from "@/components/Protected/Header/HeaderDashboard";
 import { Sidebar } from "@/components/Protected/Sidebar/Sidebar";
-
 import { SidebarProvider } from "@/components/ui/sidebar";
-
-import React from "react";
 
 export const metadata = {
   title: "TaskMate - Dashboard",

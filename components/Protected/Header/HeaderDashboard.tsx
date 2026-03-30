@@ -7,6 +7,10 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { UserProfileSkeleton } from "./UserProfileSkeleton";
 import { OrganizationSwitchSkeleton } from "./OrganizationSwitchSkeleton";
+import { useStore } from "@/store/useStore";
+import { ButtonBack } from "./ButtonBack";
+import { useRole } from "@/hooks/useRole";
+import { USER_ROLES } from "@/lib/consts/consts";
 
 const DialogBoardDetails = dynamic(() =>
   import("../Pages/Dashboard/Boards/CreateNewBoard/DialogBoardDetails").then(
@@ -29,11 +33,6 @@ const UserButton = dynamic(
   () => import("@clerk/nextjs").then((m) => m.UserButton),
   { ssr: false, loading: () => <UserProfileSkeleton /> },
 );
-
-import { useStore } from "@/store/useStore";
-import { ButtonBack } from "./ButtonBack";
-import { useRole } from "@/hooks/useRole";
-import { USER_ROLES } from "@/lib/consts/consts";
 
 type Props = {
   type?: "dashboard" | "board";

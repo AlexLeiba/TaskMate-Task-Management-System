@@ -1,5 +1,4 @@
 "use server";
-
 import { Board } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
@@ -9,7 +8,7 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
 export async function getBoardsAction(orgId: string): Promise<{
-  data: { role: string; boards: BoardType[] };
+  data: { role: "admin" | "member"; boards: BoardType[] };
   error: { message: string };
 }> {
   const { data: activeUser, error } = await verifyCurrentActiveUser(orgId);
@@ -33,7 +32,7 @@ export async function getBoardsAction(orgId: string): Promise<{
     };
   } catch (error: any) {
     return {
-      data: { role: "", boards: [] },
+      data: { role: "member", boards: [] },
       error: { message: error.message || "Something went wrong" },
     };
   }

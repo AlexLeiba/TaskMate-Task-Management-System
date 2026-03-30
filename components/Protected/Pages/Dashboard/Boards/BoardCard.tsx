@@ -1,6 +1,5 @@
 "use client";
 import { IconButton } from "@/components/ui/iconButton";
-import { useRole } from "@/hooks/useRole";
 import { USER_ROLES } from "@/lib/consts/consts";
 import { X } from "lucide-react";
 import Image from "next/image";
@@ -12,16 +11,17 @@ type Props = ComponentProps<"button"> & {
     cardImageUrl: string;
     id: string;
   };
+  role: "admin" | "member";
   handleModalDeleteBoard: () => void;
   handleSelectBoard: () => void;
 };
 export function BoardCard({
   data: { title, cardImageUrl },
+  role,
   handleModalDeleteBoard,
   handleSelectBoard,
   disabled = false,
 }: Props) {
-  const role = useRole();
   return (
     <>
       <div className="relative overflow-hidden  rounded-md min-h-32.5">

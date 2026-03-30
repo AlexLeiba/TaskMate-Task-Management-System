@@ -21,7 +21,7 @@ export function Boards({
 }: {
   data: {
     error: { message: string };
-    data: { role: string; boards: BoardType[] };
+    data: { role: "admin" | "member"; boards: BoardType[] };
   };
 }) {
   const { orgId } = useAuth();
@@ -96,6 +96,7 @@ export function Boards({
         {/* BOARDS */}
         {data.data.boards?.map((board) => (
           <BoardCard
+            role={data.data.role}
             key={board.id}
             disabled={isDeletePending}
             data={board}

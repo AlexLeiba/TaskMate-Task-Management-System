@@ -162,6 +162,11 @@ Plans with Payment system Stripe:
 
 Views:
 -Table view of all boards.
+
+Tests with Cypress and Jest:
+-Unit tests for all components and pages.
+-Integration tests for all features and flows.
+-End-to-end tests for all features and flows. 
 `,
       icon: <></>,
       link: "",
@@ -230,6 +235,11 @@ export const HEADER_SIDEBAR_INFO_TABS: HeaderAdditionalInfoTabsType = {
     {
       title: "Views",
       description: "Table view of all boards.",
+    },
+    {
+      title: "Tests",
+      description:
+        "Unit, integration, and end-to-end tests for all features and flows with cypress and jest.",
     },
   ],
 };

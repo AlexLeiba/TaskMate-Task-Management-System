@@ -141,7 +141,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
 
 The goal of the project was to create a simple, intuitive, and user-friendly task management platform that includes the most useful features inspired by tools like Trello, Jira, and other Kanban-based systems.
 
-The application was built using modern and reliable technologies, including Next.js, TypeScript, Tailwind CSS, Prisma, and several other supporting tools.
+The application was built using modern and reliable technologies, including React.js, Next.js, TypeScript, Tailwind CSS, Prisma, Tanstack Query, Clerk, Cypress, Stripe, Zod, React-hook-form, Recharts  and several other supporting tools.
 
 Since the project was developed for personal use, learning purposes, and as part of a professional portfolio, some elements of the design and landing page content were inspired by Trello.`,
       icon: <></>,
@@ -223,7 +223,7 @@ export const HEADER_SIDEBAR_INFO_TABS: HeaderAdditionalInfoTabsType = {
     {
       title: "Technologies used",
       description:
-        "The application was built using modern and reliable technologies, including Next.js, TypeScript, Tailwind CSS, Prisma, and several other supporting tools.",
+        "The application was built using modern and reliable technologies, including React.js, Next.js, TypeScript, Tailwind CSS, Prisma, Tanstack Query, Clerk, Cypress, Stripe, Zod, React-hook-form, Recharts and several other supporting tools.",
     },
   ],
   plans: [

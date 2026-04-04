@@ -137,7 +137,7 @@ export const HEADER_CARD_TABS_FEATURES: HeaderTabsContentType = {
     {
       id: "1",
       title: "About Taskmate project",
-      description: `Taskmate is a task management system designed and developed by Alex Leiba Lapteacru, a front-end developer with experience in back-end development.
+      description: `Taskmate is a task management system designed and developed by full stack developer Alex Leiba Lapteacru.
 
 The goal of the project was to create a simple, intuitive, and user-friendly task management platform that includes the most useful features inspired by tools like Trello, Jira, and other Kanban-based systems.
 
@@ -154,13 +154,16 @@ Since the project was developed for personal use, learning purposes, and as part
       id: "1",
       title: "Our Future plans",
       description: `
+Card ticket label:
+-label for any card as : bug, task, none      
+
 Plans with Payment system Stripe:
 -Will integrate Plans with Stripe, limiting only 5 Boards per organization for free.
 -Plans will be: Free, Basic, Premium.
 -Dedicated page for all available Plans.
 -Dedicated page for all payment history.
 
-Views:
+New board views:
 -Table view of all boards.
 
 Tests with Cypress and Jest:
@@ -212,8 +215,7 @@ export const HEADER_SIDEBAR_INFO_TABS: HeaderAdditionalInfoTabsType = {
   about: [
     {
       title: "Developers",
-      description:
-        "Alex Leiba Lapteacru - Front-end developer with experience in back-end development.",
+      description: "Alex Leiba Lapteacru - Full stack developer.",
     },
     {
       title: "The Goal",
@@ -227,6 +229,10 @@ export const HEADER_SIDEBAR_INFO_TABS: HeaderAdditionalInfoTabsType = {
     },
   ],
   plans: [
+    {
+      title: "Card ticket label",
+      description: "bug, task, none",
+    },
     {
       title: "Payment system",
       description:

@@ -116,13 +116,13 @@ export function DescriptionDialog({
           <DialogTitle className="text-2xl">Edit Description</DialogTitle>
         </DialogHeader>
 
-        <div className="h-full">
+        <div className="h-full ">
           <ReactQuill
             ref={quillRef}
             theme="snow"
             value={descriptionValue}
             onChange={setDescriptionValue}
-            className="w-full"
+            className="w-full lg:h-150 md:h-full h-full"
           />
         </div>
 

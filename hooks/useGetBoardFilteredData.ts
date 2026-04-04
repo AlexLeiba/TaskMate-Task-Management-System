@@ -36,7 +36,7 @@ export function useGetBoardFilteredData(): {
       );
 
       // UPDATE BOARD LIST DATA
-      setBoardListData(listData.data);
+      setBoardListData(listData.data?.data);
     } catch (error: any) {
       toast.error(error.message || "Something went wrong");
     } finally {

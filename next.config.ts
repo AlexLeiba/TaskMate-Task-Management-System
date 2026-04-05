@@ -9,6 +9,9 @@ const ContentSecurityPolicy = `
               connect-src 'self' https://*.clerk.com https://smooth-toucan-0.clerk.accounts.dev  https://clerk-telemetry.com/v1/event;
               frame-ancestors 'none';
                 worker-src 'self' blob:;
+                object-src 'none';
+base-uri 'self';
+form-action 'self';
             `.replace(/\n/g, "");
 
 const nextConfig: NextConfig = {

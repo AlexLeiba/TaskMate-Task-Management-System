@@ -108,7 +108,7 @@ export function DescriptionDialog({
         className={cn(
           "flex flex-col overflow-y-auto h-full",
           "md:min-w-[75%] md:max-w-180 md:max-h-180 md:min-h-100",
-          "lg:min-w-[70%]  lg:max-w-280 lg:max-h-200 lg:min-h-100",
+          "lg:min-w-[70%]  lg:max-w-280 lg:max-h-200 min-h-100 ",
         )}
         aria-describedby={`Description editor dialog`}
       >
@@ -122,7 +122,7 @@ export function DescriptionDialog({
             theme="snow"
             value={descriptionValue}
             onChange={setDescriptionValue}
-            className="w-full lg:h-150 md:h-full h-full"
+            className="w-full lg:h-150  h-full"
           />
         </div>
 

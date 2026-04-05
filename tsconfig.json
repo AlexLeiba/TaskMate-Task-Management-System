@@ -36,7 +36,8 @@
     ],
     "paths": {
       "@/*": ["./*"] //path alias for cleaner imports
-    }
+    },
+    "types": ["cypress", "node", "cypress-real-events"]
   },
   "include": [
     "next-env.d.ts", //global types next.js

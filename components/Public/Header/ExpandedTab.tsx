@@ -8,35 +8,36 @@ import { HEADER_TABS_TITLE } from "@/lib/consts/public/header";
 import { Spacer } from "@/components/ui/spacer";
 
 type Props = {
-  type: TabType["value"];
+  openedTab: TabType["value"];
 };
 
-export function ExpandedTab({ type }: Props) {
+export function ExpandedTab({ openedTab }: Props) {
   return (
     <div
+      data-test="expanded-header-tab"
       style={{
-        transform: type ? `translateY(52px) ` : `translateY(-100%)`,
+        transform: openedTab ? `translateY(52px)` : `translateY(-100%)`,
       }}
       className={cn(
-        " transition-all ease-in-out duration-500 fixed left-0 right-0 bg-background-element w-full  z-10 ",
+        "transition-all ease-in-out duration-500 fixed left-0 right-0 bg-background-element w-full  z-10 ",
       )}
     >
       <div className="max-w-7xl m-auto p-4">
         <Spacer size={2} />
-        {type && (
+        {openedTab && (
           <h5 className="text-xl">
-            {HEADER_TABS_TITLE[type] === "Plans"
+            {HEADER_TABS_TITLE[openedTab] === "Plans"
               ? "Future plans"
-              : HEADER_TABS_TITLE[type]}
+              : HEADER_TABS_TITLE[openedTab]}
           </h5>
         )}
 
         <Separator className="my-4" />
 
         <div className="grid grid-cols-[2fr_1fr] gap-4">
-          {type && (
+          {openedTab && (
             <>
-              <CardTabs type={type} /> <SideTabsContent type={type} />
+              <CardTabs type={openedTab} /> <SideTabsContent type={openedTab} />
             </>
           )}
         </div>

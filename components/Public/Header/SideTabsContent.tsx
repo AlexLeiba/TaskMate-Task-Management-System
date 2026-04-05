@@ -12,7 +12,10 @@ type Props = {
 export function SideTabsContent({ type }: Props) {
   if (type === null) return null;
   return (
-    <div className="bg-tertiary/20 w-full h-full px-4 py-2">
+    <div
+      className="bg-tertiary/20 w-full h-full px-4 py-2"
+      data-test="side-tabs-content"
+    >
       <p className="text-xl">Summary</p>
       <Separator className="my-4" />
 

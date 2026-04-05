@@ -85,6 +85,7 @@ export function HeaderDesktopTabletContent() {
               {/* TRIGGER */}
               {HEADER_TABS_LINKS.map((tab, i) => (
                 <IconButton
+                  data-test={tab.value}
                   title={`Open ${tab.label} tab`}
                   aria-label={`Open ${tab.label} tab`}
                   onClick={() => setOpenedTabs(tab.value)}
@@ -123,7 +124,7 @@ export function HeaderDesktopTabletContent() {
         </div>
       </div>
       {/* CONTENT */}
-      <ExpandedTab type={openedTabs} />
+      <ExpandedTab openedTab={openedTabs} />
     </div>
   );
 }

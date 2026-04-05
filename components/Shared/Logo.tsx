@@ -8,7 +8,9 @@ export function Logo({ visible = false }: Props) {
     <Link
       href="/"
       title="Home"
+      aria-label="Home"
       className={cn(visible ? "" : "md:block hidden", "")}
+      data-test="logo"
     >
       <Image
         src="/logo.svg"

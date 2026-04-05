@@ -14,7 +14,10 @@ type Props = {
 export function CardTabs({ type }: Props) {
   if (type === null) return null;
   return (
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-2">
+    <div
+      className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-2"
+      data-test="card-tabs-content"
+    >
       {type !== "about" &&
         type !== "plans" &&
         HEADER_CARD_TABS_FEATURES[type].map((card, index) => {

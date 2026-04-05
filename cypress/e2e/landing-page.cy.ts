@@ -1,10 +1,98 @@
+import { TabType } from "../../lib/types";
+import { HEADER_TABS_LINKS } from "../../lib/consts/links";
+import {
+  EXECUTION_TOOLS_DATA,
+  ORGANIZATION_TOOLS_DATA,
+  TESTIMONIALS_DATA,
+} from "../../lib/consts/public/body";
+import { OVERVIEW_OPTIONS } from "../../lib/consts/public/overview";
+
 describe("Landing page desktop view", () => {
   beforeEach(() => {
     cy.viewport(1280, 800);
     cy.visit("/");
   });
 
-  it.only("Header section", () => {});
+  it("Header section", () => {
+    // aliases
+    cy.get("[data-test=expanded-header-tab]").as("expandedHeaderTab");
+    cy.get("[data-test=logo]").as("logo");
+    //
+    cy.get("[data-test=header]").within(() => {
+      cy.get("[data-test=logo]").should("be.visible");
+
+      // assert default state of header tabs
+      cy.get("@expandedHeaderTab")
+        .should("have.attr", "style")
+        .and("include", "transform:translateY(-100%)");
+
+      cy.wrap(HEADER_TABS_LINKS).each((tab: TabType) => {
+        cy.wait(500);
+        // click link
+        cy.get(`[data-test=${tab.value}]`).should("be.visible").click();
+
+        // assert if expanded
+        cy.get("@expandedHeaderTab")
+          .should("be.visible")
+          .and("have.css", "transform")
+          .and("include", "52");
+
+        // assert header content
+        cy.get("[data-test=card-tabs-content]")
+          .its("length")
+          .should("be.greaterThan", 0);
+        cy.get("[data-test=side-tabs-content]")
+          .its("length")
+          .should("be.greaterThan", 0);
+      });
+    });
+    // assert click outside header
+    cy.wait(500);
+    cy.get("[data-test=organization-features] [data-test=feature-card]")
+      .eq(0)
+      .click();
+
+    cy.wait(500);
+    // assert default state of header tabs
+    cy.get("@expandedHeaderTab").should("not.be.visible");
+
+    // click on login button
+    cy.get("[data-test=auth-links]").within(() => {
+      //from home nav to sign in page
+      cy.get("[data-test=signin-link]").click();
+      cy.url().should("include", "/sign-in");
+
+      // nav back home
+      cy.get("@logo").eq(0).click();
+      cy.url().should("include", "/");
+
+      // from home nav to sign up
+      cy.get("[data-test=signup-link]").click();
+      cy.url().should("include", "/sign-up");
+
+      // nav back home
+      cy.get("@logo").eq(0).click();
+      cy.url().should("include", "/");
+
+      // from home nav to sign in
+      cy.get("[data-test=signin-link]").click();
+      cy.url().should("include", "/sign-in");
+
+      // from sign in nav to sign up
+      cy.get("[data-test=signup-link]").click();
+      cy.url().should("include", "/sign-up");
+
+      // from sign up nav to sign in
+      cy.get("[data-test=signin-link]").click();
+      cy.url().should("include", "/sign-in");
+
+      // nav back to home
+      cy.get("@logo").eq(0).click();
+      cy.url().should("include", "/");
+    });
+
+    // click on join for free button
+  });
 
   it("Hero section call to action button", () => {
     cy.get("[data-test=join-for-free-link]").click();
@@ -34,31 +122,14 @@ describe("Landing page desktop view", () => {
       );
 
       // click on the first feature card
-      cy.get("[data-test=feature-card]").eq(0).click();
+      cy.wrap(ORGANIZATION_TOOLS_DATA).each((item, index) => {
+        cy.get("[data-test=feature-card]").eq(index).click();
 
-      //check  slider 1 page selected
-      cy.get("[data-test=slider-content] [data-test=slide-page-1] div").should(
-        "have.class",
-        "bg-muted-foreground",
-      );
-
-      // click on the second feature card
-      cy.get("[data-test=feature-card]").eq(1).click();
-
-      //check  slider 2 page selected
-      cy.get("[data-test=slider-content] [data-test=slide-page-2] div").should(
-        "have.class",
-        "bg-muted-foreground",
-      );
-
-      // click on the third feature card
-      cy.get("[data-test=feature-card]").eq(2).click();
-
-      //check  slider 3 page selected
-      cy.get("[data-test=slider-content] [data-test=slide-page-3] div").should(
-        "have.class",
-        "bg-muted-foreground",
-      );
+        //check  slider 1 page selected
+        cy.get(
+          `[data-test=slider-content] [data-test=slide-page-${index + 1}] div`,
+        ).should("have.class", "bg-muted-foreground");
+      });
     });
   });
   it("Task management helpers slider section", () => {
@@ -83,32 +154,15 @@ describe("Landing page desktop view", () => {
         "bg-muted-foreground",
       );
 
-      // click on the first feature card
-      cy.get("[data-test=feature-card]").eq(0).click();
+      cy.wrap(EXECUTION_TOOLS_DATA).each((item, index) => {
+        // click on each card
+        cy.get("[data-test=feature-card]").eq(index).click();
 
-      //check  slider 1 page selected
-      cy.get("[data-test=slider-content] [data-test=slide-page-1] div").should(
-        "have.class",
-        "bg-muted-foreground",
-      );
-
-      // click on the second feature card
-      cy.get("[data-test=feature-card]").eq(1).click();
-
-      //check  slider 2 page selected
-      cy.get("[data-test=slider-content] [data-test=slide-page-2] div").should(
-        "have.class",
-        "bg-muted-foreground",
-      );
-
-      // click on the third feature card
-      cy.get("[data-test=feature-card]").eq(2).click();
-
-      //check  slider 3 page selected
-      cy.get("[data-test=slider-content] [data-test=slide-page-3] div").should(
-        "have.class",
-        "bg-muted-foreground",
-      );
+        //check  slider selected
+        cy.get(
+          `[data-test=slider-content] [data-test=slide-page-${index + 1}] div`,
+        ).should("have.class", "bg-muted-foreground");
+      });
     });
   });
 
@@ -131,27 +185,15 @@ describe("Landing page desktop view", () => {
       cy.get("@overviewImages").its("length").should("be.greaterThan", 0);
 
       // assert hover
-      cy.get("@overviewImages").eq(0).realHover();
-      cy.get("@hoveredOptionsParagraph")
-        .eq(0)
-        .should("have.class", "font-medium");
 
-      cy.get("[data-test=overview-image]").eq(1).realHover();
-      cy.get("@hoveredOptionsParagraph")
-        .eq(1)
-        .should("have.class", "font-medium");
+      cy.wrap(OVERVIEW_OPTIONS.slice(0, 4)).each((_, index) => {
+        cy.get("@overviewImages").eq(index).realHover();
+        cy.get("@hoveredOptionsParagraph")
+          .eq(index)
+          .should("have.class", "font-medium");
+      });
 
-      cy.get("[data-test=overview-image]").eq(2).realHover();
-      cy.get("@hoveredOptionsParagraph")
-        .eq(2)
-        .should("have.class", "font-medium");
-
-      cy.get("[data-test=overview-image]").eq(3).realHover();
-      cy.get("@hoveredOptionsParagraph")
-        .eq(3)
-        .should("have.class", "font-medium");
-
-      // change page
+      // CHANGE OVERVIEW PAGE
       //aliases
       cy.get("[data-test=overview-pagination] button").as("paginationButtons");
       //
@@ -166,15 +208,12 @@ describe("Landing page desktop view", () => {
       cy.get("@overviewImages").its("length").should("be.greaterThan", 0);
 
       // assert hover over cards
-      cy.get("@overviewImages").eq(0).realHover();
-      cy.get("@hoveredOptionsParagraph")
-        .eq(4)
-        .should("have.class", "font-medium");
-
-      cy.get("@overviewImages").eq(1).realHover();
-      cy.get("@hoveredOptionsParagraph")
-        .eq(5)
-        .should("have.class", "font-medium");
+      cy.wrap(OVERVIEW_OPTIONS.slice(4)).each((_, index) => {
+        cy.get("@overviewImages").eq(index).realHover();
+        cy.get("@hoveredOptionsParagraph")
+          .eq(4 + index)
+          .should("have.class", "font-medium");
+      });
 
       // paginate back
       cy.get("@paginationButtons").eq(0).click().should("be.disabled");
@@ -195,24 +234,12 @@ describe("Landing page desktop view", () => {
 
       //
 
-      // assert default active slide content
-      cy.get("[data-test=content-item-1]").should("be.visible");
-
-      // assert default active slide button
-      cy.get("[data-test=slide-page-1]").should("be.visible");
-
-      // assert click on slide pagination
-      cy.get("[data-test=slide-page-2]").click();
-      cy.get("[data-test=content-item-2]").should("be.visible");
-
-      cy.get("[data-test=slide-page-3]").click();
-      cy.get("[data-test=content-item-3]").should("be.visible");
-
-      cy.get("[data-test=slide-page-4]").click();
-      cy.get("[data-test=content-item-4]").should("be.visible");
-
-      cy.get("[data-test=slide-page-5]").click();
-      cy.get("[data-test=content-item-5]").should("be.visible");
+      cy.wrap(TESTIMONIALS_DATA).each((_, index) => {
+        cy.wait(500);
+        // assert click on slide pagination
+        cy.get(`[data-test=slide-page-${index + 1}]`).click();
+        cy.get(`[data-test=content-item-${index + 1}]`).should("be.visible");
+      });
 
       cy.get("[data-test=slide-page-1]").click();
       cy.get("[data-test=content-item-1]").should("be.visible");

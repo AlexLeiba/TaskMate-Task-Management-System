@@ -12,7 +12,7 @@ import { ImageFeature } from "./ImageFeature";
 export function OrganizationFeatures() {
   const { setSliderIndex, sliderIndex } = useSlider();
   return (
-    <div className=" flex flex-col gap-8">
+    <div className=" flex flex-col gap-8" data-test="organization-features">
       <div className="lg:w-1/2 flex flex-col justify-center gap-4">
         <div className="flex flex-col gap-2">
           <h2 className="text-4xl"> Your task organization tools</h2>
@@ -41,7 +41,7 @@ export function OrganizationFeatures() {
         <Slider>
           <SliderContent withNavigationButtons={false}>
             {ORGANIZATION_TOOLS_DATA.map((item) => (
-              <SliderItem key={item.id}>
+              <SliderItem key={item.id} data-test={`feature-image`}>
                 <div className="w-screen  h-full">
                   <ImageFeature
                     image={item.image}

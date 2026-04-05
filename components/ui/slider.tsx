@@ -74,14 +74,15 @@ export function SliderContent({
     });
   }
   return (
-    <div className=" relative flex flex-col  gap-2">
+    <div className=" relative flex flex-col  gap-2" data-test="slider-content">
       {/* PAGINATION */}
       <div className="flex justify-end gap-3 mb-4">
         {pagination.map((_, index) => {
           return (
             <IconButton
-              aria-label={`slide-${index + 1}`}
-              title={`slide-${index + 1}`}
+              data-test={`slide-page-${index + 1}`}
+              aria-label={`slide - ${index + 1}`}
+              title={`slide - ${index + 1}`}
               key={index}
               onClick={() => setSliderIndex(index + 1)}
             >
@@ -111,6 +112,7 @@ export function SliderContent({
         <>
           {/* NAV BUTTONS */}
           <IconButton
+            data-test="previous"
             title="Previous"
             aria-label="Previous"
             onClick={handleLeft}
@@ -120,6 +122,7 @@ export function SliderContent({
             <ChevronLeft />
           </IconButton>
           <IconButton
+            data-test="next"
             aria-label="Next"
             title="Next"
             className="absolute right-2 top-1/2 -translate-y-[calc(50%-24px)] "

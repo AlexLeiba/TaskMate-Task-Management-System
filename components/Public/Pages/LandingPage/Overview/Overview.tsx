@@ -54,13 +54,17 @@ export function Overview() {
     setSelected((prev) => (prev === id ? null : id));
   }
   return (
-    <div>
+    <div data-test="overview">
       <div className="flex flex-col gap-4  w-full">
         <h2 className="text-4xl">Overview Statistics</h2>
 
         <div className="grid lg:grid-cols-[repeat(auto-fit,minmax(400px,1fr))] grid-cols-1 gap-2 ">
           {OVERVIEW_OPTIONS.map((option, index) => (
-            <div className="flex items-center gap-2 " key={option}>
+            <div
+              className="flex items-center gap-2 "
+              key={option}
+              data-test="overview-hovered-option"
+            >
               <div>
                 <CircleCheck
                   size={20}
@@ -83,14 +87,15 @@ export function Overview() {
       </div>
 
       <Spacer size={4} />
-      <div className="flex justify-end gap-2">
+      <div className="flex justify-end gap-2" data-test="overview-pagination">
         <Button
           onClick={() => setPage((prev) => prev - 1)}
           disabled={page === 1}
           size={"sm"}
           variant={"secondary"}
-          title="previous page"
-          aria-label="previous page"
+          title={`page ${page - 1}`}
+          aria-label={`page ${page - 1}`}
+          data-test={`page-${page - 1}`}
         >
           <ChevronLeft />
         </Button>
@@ -99,8 +104,9 @@ export function Overview() {
           size={"sm"}
           variant={"secondary"}
           disabled={page * itemsPerPage >= OVERVIEW_DATA.length}
-          title="next page"
-          aria-label="next page"
+          title={`page ${page + 1}`}
+          aria-label={`page ${page + 1}`}
+          data-test={`page-${page + 1}`}
         >
           <ChevronRight />
         </Button>

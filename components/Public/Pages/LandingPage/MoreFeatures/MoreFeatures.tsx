@@ -4,7 +4,7 @@ import { Spacer } from "@/components/ui/spacer";
 
 export function MoreFeatures() {
   return (
-    <div>
+    <div data-test="more-features">
       <div className="flex flex-col gap-4 max-w-160 w-full">
         <h2 className="text-4xl">
           Do more with TaskMate{" "}

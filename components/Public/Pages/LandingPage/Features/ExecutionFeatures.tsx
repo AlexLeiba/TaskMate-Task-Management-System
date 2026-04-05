@@ -13,7 +13,7 @@ import { ImageFeature } from "./ImageFeature";
 export function ExecutionFeatures() {
   const { setSliderIndex, sliderIndex } = useSlider();
   return (
-    <div className=" flex flex-col gap-8 ">
+    <div className=" flex flex-col gap-8 " data-test="execution-features">
       <div className="flex justify-end">
         <div className="lg:w-1/2 flex flex-col justify-center gap-4">
           <div className="flex flex-col gap-2">

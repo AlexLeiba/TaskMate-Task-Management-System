@@ -1,13 +1,13 @@
 import { OverviewDataType } from "@/lib/types";
 
 export const OVERVIEW_OPTIONS = [
-  "Get an overview of how work is being prioritized.",
-
-  "Get a snapshot of the status of your work items",
+  "Get an overview of the finished work",
 
   "Monitor the capacity of your team",
 
-  "Get an overview of the finished work",
+  "Get an overview of how work is being prioritized.",
+
+  "Get a snapshot of the status of your work items",
 
   "View the activities of a particular board or organization",
 
@@ -16,28 +16,28 @@ export const OVERVIEW_OPTIONS = [
 
 export const OVERVIEW_DATA: OverviewDataType[] = [
   {
-    id: 4,
+    id: 1,
     title: "Finished work overview",
     description:
       "Get an overview of the finished work by each team member for a certain period of time. Filter by last number of days. By default is displayed all time finished work.",
     icon: "/finished-work.png",
   },
   {
-    id: 3,
+    id: 2,
     title: "Team workload / Assigned work",
     description:
       "Monitor the capacity of your team. Reassign work items to get the right balance. The workload is measured by unfinished work.",
     icon: "/team-workload.png",
   },
   {
-    id: 1,
+    id: 3,
     title: "Priority breakdown",
     description:
       "Get an overview of how work is being prioritized, The overview is calculated by only unfished card tickets.",
     icon: "/priority-2.png",
   },
   {
-    id: 2,
+    id: 4,
     title: "Status overview",
     description:
       "Get a snapshot of the status of your work items, View all work items grouped by status",

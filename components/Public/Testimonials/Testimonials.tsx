@@ -9,13 +9,16 @@ import { TESTIMONIALS_DATA } from "@/lib/consts/public/body";
 
 export function Testimonials() {
   return (
-    <div>
+    <div data-test="testimonials">
       <Slider>
         <SliderContent>
-          {TESTIMONIALS_DATA.map((item) => (
+          {TESTIMONIALS_DATA.map((item, index) => (
             <SliderItem key={item.id}>
               {/* <div className={cn(`   bg-black rounded-4xl z-50`)}> */}
-              <div className="w-screen  md:h-100  ">
+              <div
+                className="w-screen  md:h-100  "
+                data-test={`content-item-${index + 1}`}
+              >
                 <div className="lg:w-[calc(100vw-((100vw-1152px+32px)))]   w-[calc(100vw-32px)]    rounded-md bg-background-element  h-full">
                   <div className="flex gap-8 h-full md:flex-row flex-col">
                     <div className=" flex flex-col justify-between h-full p-8">

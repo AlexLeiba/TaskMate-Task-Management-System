@@ -11,10 +11,16 @@ type Props = {
 export function FeatureCard({ data, selected, index, handleClick }: Props) {
   return (
     <div
+      data-test={`feature-card`}
+      title={`Select - ${data.title}`}
+      aria-label={`Select - ${data.title}`}
+      tabIndex={0}
+      role="button"
       className={cn(
         selected ? "shadow-2xl  bg-muted scale-100" : "scale-90",
         "flex flex-col gap-2 cursor-pointer rounded-md py-4 px-6 relative overflow-hidden transition-all",
       )}
+      onKeyDown={handleClick}
       onClick={handleClick}
     >
       <div

@@ -7,7 +7,10 @@ import Link from "next/link";
 
 export function Hero() {
   return (
-    <div className="grid lg:grid-cols-[repeat(2,minmax(400px,1fr))] grid-cols-1 gap-4">
+    <div
+      className="grid lg:grid-cols-[repeat(2,minmax(400px,1fr))] grid-cols-1 gap-4"
+      data-test="hero"
+    >
       <div className="h-full flex flex-col justify-center gap-4">
         <div className="flex flex-col gap-2">
           <h1 className="text-5xl">
@@ -19,7 +22,11 @@ export function Hero() {
           </p>
         </div>
 
-        <Link href={NAV_LINKS.signup.pathname} data-aos="fade-right">
+        <Link
+          href={NAV_LINKS.signup.pathname}
+          data-aos="fade-right"
+          data-test="join-for-free-link"
+        >
           <Button
             variant={"tertiary"}
             className="md:max-w-60 z-0 bg-linear-to-t from-orange-900  to-orange-400 hover:to-orange-700 hover:text-white "

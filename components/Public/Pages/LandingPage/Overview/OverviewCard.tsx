@@ -13,6 +13,7 @@ export function OverviewCard({ data, handleSelect, index, selected }: Props) {
   const isTablet = useResponsive(BREAKPOINTS.lg);
   return (
     <div
+      data-test="overview-image"
       className="rounded-md bg-muted shadow-2xl flex flex-col p-6 gap-4 justify-between relative overflow-hidden h-75  group hover:outline hover:outline-cyan-800"
       onMouseEnter={!isTablet ? handleSelect : () => {}}
       onClick={isTablet ? handleSelect : () => {}}

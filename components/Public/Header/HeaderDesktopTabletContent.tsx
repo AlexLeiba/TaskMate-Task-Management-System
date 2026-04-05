@@ -60,7 +60,11 @@ export function HeaderDesktopTabletContent() {
   }, []);
 
   return (
-    <div ref={tabContainerRef} className="hidden md:block relative ">
+    <div
+      ref={tabContainerRef}
+      className="hidden md:block relative "
+      data-test="header"
+    >
       <div
         style={{
           transform: isHeaderVisible ? `translateY(0)` : `translateY(-99%)`,

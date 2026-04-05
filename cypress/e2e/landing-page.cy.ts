@@ -166,7 +166,7 @@ describe("Landing page desktop view", () => {
     });
   });
 
-  it("Chart overview section", () => {
+  it("Charts overview section", () => {
     // scroll to overview section
     cy.get("[data-test=overview]").scrollIntoView();
 
@@ -252,6 +252,4 @@ describe("Landing page desktop view", () => {
       cy.get("[data-test=content-item-1]").should("be.visible");
     });
   });
-
-  //protected pages, learn how to mock auth token, test user exp on protected routes
 });

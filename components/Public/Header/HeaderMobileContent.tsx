@@ -64,6 +64,7 @@ export function HeaderMobileContent() {
   return (
     <>
       <div
+        data-test="header-mobile"
         style={{
           transform: isHeaderVisible ? `translateY(0)` : `translateY(-100%)`,
         }}
@@ -73,6 +74,7 @@ export function HeaderMobileContent() {
           <Logo visible />
 
           <IconButton
+            data-test="toggle-menu"
             className="py-3 px-2"
             onClick={() => setIsOpened((prev) => !prev)}
           >
@@ -82,6 +84,7 @@ export function HeaderMobileContent() {
       </div>
 
       <div
+        data-test="mobile-menu"
         style={{
           transform: isOpened ? `translateY(52px)` : `translateY(-100%)`,
         }}
@@ -89,47 +92,55 @@ export function HeaderMobileContent() {
           "fixed inset-0 z-50  bg-background-element transition-all md:hidden h-full flex flex-col justify-between overflow-y-auto"
         }
       >
-        <Accordion type="single" collapsible defaultValue={""}>
-          {HEADER_CARD_TABS_TITLES.map((section) => {
-            return (
-              <AccordionItem
-                value={section.section || ""}
-                key={section.section}
-              >
-                <AccordionTrigger
-                  onClick={() => setOpenedTabs(section.section)}
-                  title={section.section}
-                  aria-label={section.section}
-                  className={cn(
-                    openedTabs === section.section
-                      ? "bg-foreground/90"
-                      : "bg-none",
-                    "p-4 hover:bg-foreground/50 cursor-pointer flex justify-between items-center",
-                    "transition-all duration-200 ease-in-out",
-                  )}
+        {isOpened && (
+          <Accordion
+            type="single"
+            collapsible
+            defaultValue={""}
+            data-test="accordion"
+          >
+            {HEADER_CARD_TABS_TITLES.map((section) => {
+              return (
+                <AccordionItem
+                  value={section.section || ""}
+                  key={section.section}
                 >
-                  <div className="flex gap-2 items-center">
-                    <p className="text-lg">{section.label}</p>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className=" pt-2 px-4 flex flex-col gap-4 ">
-                  {HEADER_CARD_TABS_FEATURES[section.section].map((item) => {
-                    return (
-                      <div key={item.id} className="flex flex-col gap-2">
-                        <div className="flex items-center gap-2">
-                          {item.icon}
-                          <p className="text-lg">{item.title}</p>
-                        </div>
+                  <AccordionTrigger
+                    data-test={`accordion-trigger`}
+                    onClick={() => setOpenedTabs(section.section)}
+                    title={section.section}
+                    aria-label={section.section}
+                    className={cn(
+                      openedTabs === section.section
+                        ? "bg-foreground/90"
+                        : "bg-none",
+                      "p-4 hover:bg-foreground/50 cursor-pointer flex justify-between items-center",
+                      "transition-all duration-200 ease-in-out",
+                    )}
+                  >
+                    <div className="flex gap-2 items-center">
+                      <p className="text-lg">{section.label}</p>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className=" pt-2 px-4 flex flex-col gap-4 ">
+                    {HEADER_CARD_TABS_FEATURES[section.section].map((item) => {
+                      return (
+                        <div key={item.id} className="flex flex-col gap-2">
+                          <div className="flex items-center gap-2">
+                            {item.icon}
+                            <p className="text-lg">{item.title}</p>
+                          </div>
 
-                        <p>{item.description}</p>
-                      </div>
-                    );
-                  })}
-                </AccordionContent>
-              </AccordionItem>
-            );
-          })}
-        </Accordion>
+                          <p>{item.description}</p>
+                        </div>
+                      );
+                    })}
+                  </AccordionContent>
+                </AccordionItem>
+              );
+            })}
+          </Accordion>
+        )}
         <div className="mx-4 pb-20 pt-4">
           <div className="flex gap-2 flex-col">
             <Button

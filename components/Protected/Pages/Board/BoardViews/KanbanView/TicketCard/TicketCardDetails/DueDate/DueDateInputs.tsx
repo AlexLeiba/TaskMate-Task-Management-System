@@ -21,10 +21,11 @@ import {
 import toast from "react-hot-toast";
 import { useBoardId } from "@/hooks/useBoardId";
 import { parseDateTimeToLocal } from "@/lib/parseDateTimeToLocal";
-import { DATE_FORMAT_DUE, INITIAL_TIME, USER_ROLES } from "@/lib/consts/consts";
+import { DATE_FORMAT_DUE, USER_ROLES } from "@/lib/consts/consts";
 import { isValidDateString } from "@/lib/isValidDateString";
 import { useRole } from "@/hooks/useRole";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
+import { parseDateToTimeString } from "@/lib/parseDateToTimeString";
 
 const Calendar = dynamic(() =>
   import("@/components/ui/calendar").then((m) => m.Calendar),
@@ -45,9 +46,11 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
   const boardId = useBoardId();
   const queryClient = useQueryClient();
   const now = new Date();
+  const defaultTime = parseDateToTimeString(now);
+
   const [date, setDate] = useState<{ date: Date; time: string }>({
     date: now,
-    time: INITIAL_TIME,
+    time: defaultTime,
   });
 
   const [dueDateView, setDueDateView] = useState<string>("");
@@ -253,7 +256,7 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
                   type="time"
                   id="time-picker"
                   step="1"
-                  defaultValue="00:00:00"
+                  defaultValue={defaultTime}
                   className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none w-full"
                 />
               </div>

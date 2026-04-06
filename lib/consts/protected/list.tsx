@@ -19,22 +19,22 @@ export const LIST_STATUSES = [
   {
     label: "In Progress",
     value: "progress",
-    icon: <Clock className="text-yellow-400" />,
+    icon: <Clock className="text-red-700" />,
   },
   {
     label: "In Review",
     value: "review",
-    icon: <Search className="text-green-200" />,
+    icon: <Search className="text-yellow-600" />,
   },
   {
     label: "Done",
     value: "done",
-    icon: <CircleCheck className="text-green-400" />,
+    icon: <CircleCheck className="text-green-600" />,
   },
   {
     label: "Backlog",
     value: "backlog",
-    icon: <Archive className="text-orange-400" />,
+    icon: <Archive className="text-orange-700" />,
   },
 ] as const;
 

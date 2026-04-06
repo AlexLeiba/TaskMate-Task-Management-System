@@ -1,13 +1,20 @@
 import { useStore } from "@/store/useStore";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { FilterStates } from "@/lib/types";
+import { FilterStates, PriorityType } from "@/lib/types";
 import { useGetBoardFilteredData } from "@/hooks/useGetBoardFilteredData";
 import { useResponsive } from "@/hooks/useResponsive";
 import { BREAKPOINTS } from "@/lib/breakpoints";
 import { FilterDropdownMembersContent } from "./FilterDropdownMembersContent";
 import { useShallow } from "zustand/shallow";
 import { FILTERS_DATA } from "@/lib/consts/protected/board";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { CARD_PRIORITIES } from "@/lib/consts/protected/card";
+import { ChevronDown, X } from "lucide-react";
 
 export function FilterDropdownContent({
   handleCloseMenu,
@@ -17,23 +24,33 @@ export function FilterDropdownContent({
   const { fetchBoardFilteredListData } = useGetBoardFilteredData();
   const isTablet = useResponsive(BREAKPOINTS.lg);
 
-  const { boardSubHeaderFilterSelected, setBoardSubHeaderFilterSelected } =
-    useStore(
-      useShallow((state) => ({
-        boardSubHeaderFilterSelected: state.boardSubHeaderFilterSelected,
-        setBoardSubHeaderFilterSelected: state.setBoardSubHeaderFilterSelected,
-      })),
+  const {
+    prioritiesSelectedFilter,
+    boardSubHeaderFilterSelected,
+    setBoardSubHeaderFilterSelected,
+  } = useStore(
+    useShallow((state) => ({
+      boardSubHeaderFilterSelected: state.boardSubHeaderFilterSelected,
+      setBoardSubHeaderFilterSelected: state.setBoardSubHeaderFilterSelected,
+      prioritiesSelectedFilter: state.prioritiesSelectedFilter,
+    })),
+  );
+
+  function handleSelectedFilter(
+    filterState: FilterStates,
+    priorityType?: PriorityType | null,
+  ) {
+    handleCloseMenu();
+    const selectedFilter = setBoardSubHeaderFilterSelected(
+      filterState,
+      priorityType?.value,
     );
 
-  function handleSelectedFilter(filterState: FilterStates) {
-    handleCloseMenu();
-    const selectedFilter = setBoardSubHeaderFilterSelected(filterState);
-
     if (selectedFilter === "theSame") {
-      fetchBoardFilteredListData("", false, "all");
+      fetchBoardFilteredListData("", false, "all", priorityType?.value);
       return;
     }
-    fetchBoardFilteredListData("", false, selectedFilter);
+    fetchBoardFilteredListData("", false, selectedFilter, priorityType?.value);
   }
 
   return (
@@ -47,6 +64,82 @@ export function FilterDropdownContent({
 
       {/* STATS FILTERS */}
       {FILTERS_DATA.map((data) => {
+        if (data.id === "priority") {
+          const selectedPriority = CARD_PRIORITIES.find(
+            (p) => p.value === prioritiesSelectedFilter,
+          );
+
+          return (
+            <>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    key={data.id}
+                    title={`Open filter by ${data?.title} options`}
+                    aria-label={`Open filter by ${data?.title} options`}
+                    variant={"ghost"}
+                    className={cn(
+                      "border w-full",
+                      boardSubHeaderFilterSelected === data?.id &&
+                        "border-text-primary ",
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "flex items-center justify-between gap-4 px-2 py-1 rounded-md",
+                      )}
+                    >
+                      <div className="flex items-center gap-2 justify-between w-full">
+                        <div className="flex items-center gap-2">
+                          {selectedPriority?.icon || data.icon}
+                          <p>{selectedPriority?.label || data?.title}</p>
+                        </div>
+                        <ChevronDown />
+                      </div>
+                    </div>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="start">
+                  <div className="flex flex-col gap-2">
+                    {CARD_PRIORITIES.map((priority) => {
+                      return (
+                        <Button
+                          key={priority.value}
+                          onClick={() => {
+                            // setBoardSubHeaderFilterSelected(data.id);
+                            handleSelectedFilter("priority", priority);
+                          }}
+                          title={`Filter by ${priority?.label}`}
+                          aria-label={`Filter by ${priority?.label}`}
+                          variant={"ghost"}
+                          className={cn(
+                            "border",
+                            selectedPriority?.value === priority.value &&
+                              "border-text-primary ",
+                          )}
+                        >
+                          <div
+                            className={cn(
+                              "flex items-center justify-between gap-4 px-2 py-1 rounded-md",
+                            )}
+                          >
+                            <div className="flex items-center gap-2">
+                              {priority.icon}
+                              <p>{priority?.label}</p>
+                            </div>
+                            {selectedPriority?.value === priority.value && (
+                              <X />
+                            )}
+                          </div>
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </>
+          );
+        }
         return (
           <Button
             onClick={() => {
@@ -72,6 +165,7 @@ export function FilterDropdownContent({
                 {data.icon}
                 <p>{data?.title}</p>
               </div>
+              {boardSubHeaderFilterSelected === data?.id && <X />}
             </div>
           </Button>
         );

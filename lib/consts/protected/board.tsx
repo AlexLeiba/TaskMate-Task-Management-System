@@ -6,6 +6,7 @@ import {
   FolderCheck,
   LayoutList,
   RefreshCcw,
+  Wifi,
 } from "lucide-react";
 import { BoardTab, FilterData } from "../../types";
 
@@ -23,6 +24,21 @@ export const BOARD_HEADER_TABS: BoardTab[] = [
 
 export const FILTERS_DATA: FilterData[] = [
   {
+    id: "dueSoon",
+    title: "Due in 7 days",
+    icon: <Calendar1 className="text-tertiary" />,
+  },
+  {
+    id: "expiredDue",
+    title: "Due expired",
+    icon: <Calendar1 className="text-red-700" />,
+  },
+  {
+    id: "priority",
+    title: "Priority",
+    icon: <Wifi className="text-orange-600" />,
+  },
+  {
     id: "completed",
     title: "Completed",
     icon: <CircleCheck className="text-green-400" />,
@@ -31,10 +47,5 @@ export const FILTERS_DATA: FilterData[] = [
     id: "created",
     title: "Recent created",
     icon: <FolderCheck className="text-yellow-400" />,
-  },
-  {
-    id: "dueSoon",
-    title: "Due soon",
-    icon: <Calendar1 className="text-tertiary" />,
   },
 ];

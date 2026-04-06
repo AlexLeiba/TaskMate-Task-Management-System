@@ -30,7 +30,8 @@ export async function getUnsplashImagesAction(): Promise<{
             regular: data.urls.regular,
             full: data.urls.full,
           },
-          title: data.user.location || "Unknown",
+          title:
+            data.location.country || data.user.location || "Unknown Location",
         };
       },
     );

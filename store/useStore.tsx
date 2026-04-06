@@ -3,6 +3,7 @@ import {
   CardDetailsTabs,
   FilterStates,
   ListAndCardsAndDueDateAndChecklistType,
+  PrioritiesType,
 } from "@/lib/types";
 import { DraggableLocation } from "@hello-pangea/dnd";
 import { create } from "zustand";
@@ -72,7 +73,11 @@ type StoreType = {
 
   // SUBHEADER BOARD  FILTERS STATISTICS
   boardSubHeaderFilterSelected: FilterStates;
-  setBoardSubHeaderFilterSelected: (selected: FilterStates) => FilterStates;
+  prioritiesSelectedFilter?: PrioritiesType;
+  setBoardSubHeaderFilterSelected: (
+    selected: FilterStates,
+    priority?: PrioritiesType | undefined,
+  ) => FilterStates;
 
   boardSubHeaderMemberIdSelected: string | null;
   setBoardSubHeaderMemberIdSelected: (selected: string | null) => string | null;
@@ -212,16 +217,21 @@ export const useStore = create<StoreType>((set, get) => ({
 
   // BOARD SUBHEADER FILTERS STATES
   boardSubHeaderFilterSelected: "all",
-  setBoardSubHeaderFilterSelected: (selected) => {
+  setBoardSubHeaderFilterSelected: (selected, priority) => {
     const prevSelectedFilter = get().boardSubHeaderFilterSelected;
+    const prevPriority = get().prioritiesSelectedFilter;
 
-    if (prevSelectedFilter === selected) {
-      set({ boardSubHeaderFilterSelected: "all" });
+    if (prevSelectedFilter === selected && prevPriority === priority) {
+      set({
+        boardSubHeaderFilterSelected: "all",
+        prioritiesSelectedFilter: undefined,
+      });
       return "theSame";
     }
     set({
       boardSubHeaderFilterSelected: selected,
       boardSubHeaderMemberIdSelected: null,
+      prioritiesSelectedFilter: priority,
     });
 
     return selected;

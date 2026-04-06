@@ -1,5 +1,10 @@
 "use server";
-import { Card, List, StatusType } from "@/lib/generated/prisma/client";
+import {
+  Card,
+  List,
+  PriorityType,
+  StatusType,
+} from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
 import { verifyCurrentActiveUser } from "@/lib/server/verifyCurrentActiveUser";
@@ -13,7 +18,7 @@ import { revalidatePath } from "next/cache";
 
 export async function getListDataAction(
   boardId: string,
-  currentOrgId: string | undefined | null,
+  priorityType?: PriorityType,
   selectedMemberEmail?: string,
   unassignedCard?: boolean,
   filters: FilterStates = "all",
@@ -32,8 +37,10 @@ export async function getListDataAction(
     const now = new Date();
     const sevenDaysAgo = new Date();
     const sevenDaysIntheFuture = new Date();
+    const oneDayInThePast = new Date();
     sevenDaysAgo.setDate(now.getDate() - 7);
     sevenDaysIntheFuture.setDate(now.getDate() + 7);
+    oneDayInThePast.setDate(now.getDate() - 1);
 
     const response = await prisma.list.findMany({
       where: {
@@ -52,6 +59,13 @@ export async function getListDataAction(
             },
           },
         }),
+        ...(filters === "priority" && {
+          cards: {
+            some: {
+              priority: priorityType,
+            },
+          },
+        }),
         ...(filters === "dueSoon" && {
           cards: {
             some: {
@@ -60,7 +74,22 @@ export async function getListDataAction(
                   some: {
                     date: {
                       lte: sevenDaysIntheFuture.toISOString(),
-                      gte: now.toISOString(),
+                      gte: oneDayInThePast.toISOString(),
+                    },
+                  },
+                },
+              },
+            },
+          },
+        }),
+        ...(filters === "expiredDue" && {
+          cards: {
+            some: {
+              details: {
+                dueDate: {
+                  some: {
+                    date: {
+                      lt: oneDayInThePast.toISOString(),
                     },
                   },
                 },
@@ -95,6 +124,11 @@ export async function getListDataAction(
               assignedToEmail: null,
             },
           }),
+          ...(filters === "priority" && {
+            where: {
+              priority: priorityType,
+            },
+          }),
           ...(filters === "created" && {
             where: {
               details: {
@@ -110,8 +144,21 @@ export async function getListDataAction(
                 dueDate: {
                   some: {
                     date: {
-                      lt: sevenDaysIntheFuture.toISOString(),
-                      gte: now.toISOString(),
+                      lte: sevenDaysIntheFuture.toISOString(),
+                      gte: oneDayInThePast.toISOString(),
+                    },
+                  },
+                },
+              },
+            },
+          }),
+          ...(filters === "expiredDue" && {
+            where: {
+              details: {
+                dueDate: {
+                  some: {
+                    date: {
+                      lt: oneDayInThePast.toISOString(),
                     },
                   },
                 },

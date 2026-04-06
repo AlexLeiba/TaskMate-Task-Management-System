@@ -3,19 +3,19 @@ import { FilterStates } from "@/lib/types";
 import { useStore } from "@/store/useStore";
 import toast from "react-hot-toast";
 import { useBoardId } from "./useBoardId";
-import { useAuth } from "@clerk/nextjs";
 import { useState } from "react";
+import { PriorityType } from "@/lib/generated/prisma/client";
 
 export function useGetBoardFilteredData(): {
   fetchBoardFilteredListData: (
     selectedMemberEmail: string,
     unassigned?: boolean,
     selectedFilter?: FilterStates,
+    priorityType?: PriorityType,
   ) => void;
   loading?: boolean;
 } {
   const boardId = useBoardId();
-  const { orgId } = useAuth();
   const setBoardListData = useStore((state) => state.setBoardListData);
   const [loading, setLoading] = useState(false);
 
@@ -23,13 +23,14 @@ export function useGetBoardFilteredData(): {
     selectedMemberEmail: string = "",
     unassigned: boolean = false,
     selectedFilter: FilterStates = "all",
+    priorityType: PriorityType | undefined = undefined,
   ) {
     toast.loading("loading...", { id: "useGetBoardFilteredData" });
     setLoading(true);
     try {
       const listData = await getListDataAction(
         boardId,
-        orgId,
+        priorityType,
         selectedMemberEmail,
         unassigned,
         selectedFilter,

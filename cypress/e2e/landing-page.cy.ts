@@ -122,7 +122,7 @@ describe("Landing page desktop view", () => {
       );
 
       // click on the first feature card
-      cy.wrap(ORGANIZATION_TOOLS_DATA).each((item, index) => {
+      cy.wrap(ORGANIZATION_TOOLS_DATA).each((_, index) => {
         cy.get("[data-test=feature-card]").eq(index).click();
 
         //check  slider 1 page selected
@@ -154,7 +154,7 @@ describe("Landing page desktop view", () => {
         "bg-muted-foreground",
       );
 
-      cy.wrap(EXECUTION_TOOLS_DATA).each((item, index) => {
+      cy.wrap(EXECUTION_TOOLS_DATA).each((_, index) => {
         // click on each card
         cy.get("[data-test=feature-card]").eq(index).click();
 

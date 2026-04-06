@@ -418,7 +418,9 @@ export type FilterStates =
   | "dueSoon"
   | "completed"
   | "all"
-  | "theSame";
+  | "theSame"
+  | "expiredDue"
+  | "priority";
 
 //
 export type OrganizationMembersType = {

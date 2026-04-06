@@ -33,8 +33,8 @@ async function ProtectedLayout({
               {boardData?.bgImageUrl && (
                 <Image
                   priority
-                  height={900}
-                  width={1200}
+                  height={1125}
+                  width={2000}
                   src={boardData.bgImageUrl}
                   className="fixed inset-0 w-full h-full object-cover -z-10"
                   alt=""

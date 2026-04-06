@@ -1,15 +1,11 @@
 import { CircleAlert, Wifi, WifiHigh, WifiLow } from "lucide-react";
 import {
   OrganizationMembersType,
-  PrioritiesType,
+  PriorityType,
   TeamWorkloadType,
 } from "../../types";
 
-export const CARD_PRIORITIES: {
-  label: string;
-  value: PrioritiesType;
-  icon?: React.ReactNode;
-}[] = [
+export const CARD_PRIORITIES: PriorityType[] = [
   {
     label: "None",
     value: "none",

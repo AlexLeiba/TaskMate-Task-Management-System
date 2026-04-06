@@ -43,7 +43,7 @@ export async function verifyCurrentActiveUser(
     if (!activeUser) {
       activeUser = await prisma.user.create({
         data: {
-          name: `${data?.user?.fullName}`,
+          name: `${data?.user?.fullName}` || "User",
           email: data?.email,
           avatar: data?.user?.imageUrl || "",
         },
@@ -58,7 +58,7 @@ export async function verifyCurrentActiveUser(
       activeUser = await prisma.user.update({
         where: { id: activeUser?.id },
         data: {
-          name: `${data?.user?.fullName}`,
+          name: `${data?.user?.fullName}` || "User",
           email: data?.email,
           avatar: data?.user?.imageUrl || "",
         },

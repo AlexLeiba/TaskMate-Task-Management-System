@@ -9,13 +9,14 @@ export async function getCurrentActiveUserData(): Promise<{
 }> {
   try {
     const user = await currentUser();
+
     const userEmail = user?.emailAddresses?.[0]?.emailAddress;
 
     return {
       data: {
         email: userEmail,
         user: {
-          fullName: user?.fullName || user?.firstName || "",
+          fullName: user?.fullName || user?.firstName || "User",
           imageUrl: user?.imageUrl || "",
         },
       },

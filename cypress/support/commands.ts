@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+import { addClerkCommands } from "@clerk/testing/cypress";
 import "cypress-real-events";
 // ***********************************************
 // This example commands.ts shows you how to
@@ -40,3 +41,7 @@ import "cypress-real-events";
 // Cypress.Commands.add("getDataTest", (selector: string) => {
 //   return cy.get(`[data-test=${selector}]`);
 // });
+
+addClerkCommands({ Cypress, cy });
+
+export {};

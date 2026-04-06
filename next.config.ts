@@ -2,16 +2,17 @@ import type { NextConfig } from "next";
 
 const ContentSecurityPolicy = `
               default-src 'self';
-              script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.com https://smooth-toucan-0.clerk.accounts.dev https://clerk-telemetry.com/v1/event;
+              script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.com https://smooth-toucan-0.clerk.accounts.dev https://clerk-telemetry.com/v1/event https://challenges.cloudflare.com/;
               style-src 'self' 'unsafe-inline' https:;
               img-src 'self' data: https://*.clerk.com https://img.clerk.com  https://picsum.photos https://images.unsplash.com https://res.cloudinary.com ;
-              font-src 'self' https: data:;
+              font-src 'self' https: data: ;
               connect-src 'self' https://*.clerk.com https://smooth-toucan-0.clerk.accounts.dev  https://clerk-telemetry.com/v1/event;
               frame-ancestors 'none';
                 worker-src 'self' blob:;
                 object-src 'none';
 base-uri 'self';
 form-action 'self';
+frame-src 'self' https://challenges.cloudflare.com/;
             `.replace(/\n/g, "");
 
 const nextConfig: NextConfig = {

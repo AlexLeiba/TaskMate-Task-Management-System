@@ -5,8 +5,8 @@ type Props = {
   boardId: string;
   orgId: string;
 };
-export async function BoardServerRender({ boardId, orgId }: Props) {
-  const listData = await getListDataAction(boardId, orgId);
+export async function BoardServerRender({ boardId }: Props) {
+  const listData = await getListDataAction(boardId);
 
   return <BoardViews boardId={boardId} listData={listData} />;
 }

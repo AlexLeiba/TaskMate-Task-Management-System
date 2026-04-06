@@ -37,6 +37,6 @@ import "cypress-real-events";
 //   }
 // }
 
-Cypress.Commands.add("getDataTest", (selector: string) => {
-  return cy.get(`[data-test=${selector}]`);
-});
+// Cypress.Commands.add("getDataTest", (selector: string) => {
+//   return cy.get(`[data-test=${selector}]`);
+// });

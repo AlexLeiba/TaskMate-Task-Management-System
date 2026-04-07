@@ -229,6 +229,26 @@ export type DeleteFileBodyType =
 
 export type ListAndCardsType = List & { cards: Card[] };
 
+export type CardWithDetailsAndDueDateAndChecklistAndReporterType = Card & {
+  details: {
+    dueDate: Pick<DueDate, "time" | "date">[];
+    checklist: Pick<Checklist, "isCompleted" | "id">[];
+  } | null;
+} & {
+  assignedTo: {
+    avatar: string | null;
+    email: string;
+    name: string;
+  } | null;
+  reporter: {
+    avatar: string | null;
+    email: string;
+    name: string;
+  } | null;
+  list: {
+    status: ListStatusType;
+  };
+};
 export type CardWithDetailsAndDueDateAndChecklistType = Card & {
   details: {
     dueDate: Pick<DueDate, "time" | "date">[];
@@ -241,6 +261,9 @@ export type CardWithDetailsAndDueDateAndChecklistType = Card & {
 };
 export type ListAndCardsAndDueDateAndChecklistType = List & {
   cards: CardWithDetailsAndDueDateAndChecklistType[];
+};
+export type CardsAndDueDateAndChecklistType = {
+  cards: CardWithDetailsAndDueDateAndChecklistAndReporterType[];
 };
 
 export type CardAndDueDateAndChecklistType = Card & {

@@ -9,6 +9,8 @@ import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
 import { verifyCurrentActiveUser } from "@/lib/server/verifyCurrentActiveUser";
 import {
+  CardWithDetailsAndDueDateAndChecklistAndReporterType,
+  CardWithDetailsAndDueDateAndChecklistType,
   FilterStates,
   ListAndCardsAndDueDateAndChecklistType,
   UserRoleType,
@@ -25,6 +27,7 @@ export async function getListDataAction(
 ): Promise<{
   data: {
     data: ListAndCardsAndDueDateAndChecklistType[] | null | undefined;
+
     role: UserRoleType;
   } | null;
   error: { message: string };
@@ -172,6 +175,7 @@ export async function getListDataAction(
                 email: true,
               },
             },
+
             details: {
               select: {
                 dueDate: {
@@ -204,7 +208,10 @@ export async function getListDataAction(
     }
 
     return {
-      data: { data: response, role: activeUserData.role },
+      data: {
+        data: response,
+        role: activeUserData.role,
+      },
       error: { message: "" },
     };
   } catch (error: any) {
@@ -215,6 +222,434 @@ export async function getListDataAction(
     };
   }
 }
+
+export async function getListDataTableViewAction(
+  boardId: string,
+  priorityType?: PriorityType,
+  selectedMemberEmail?: string,
+  unassignedCard?: boolean,
+  filters: FilterStates = "all",
+): Promise<{
+  data: {
+    data:
+      | CardWithDetailsAndDueDateAndChecklistAndReporterType[]
+      | null
+      | undefined;
+    role: UserRoleType;
+  } | null;
+  error: { message: string };
+}> {
+  const { data: activeUserData } = await verifyCurrentActiveUser();
+  try {
+    if (!activeUserData?.activeUser) {
+      throw new Error("User not authorized");
+    }
+    const now = new Date();
+    const sevenDaysAgo = new Date();
+    const sevenDaysIntheFuture = new Date();
+    const oneDayInThePast = new Date();
+    sevenDaysAgo.setDate(now.getDate() - 7);
+    sevenDaysIntheFuture.setDate(now.getDate() + 7);
+    oneDayInThePast.setDate(now.getDate() - 1);
+
+    const response = await prisma.list.findMany({
+      where: {
+        boardId,
+        ...(selectedMemberEmail && {
+          cards: {
+            some: {
+              assignedToEmail: selectedMemberEmail,
+            },
+          },
+        }),
+        ...(unassignedCard && {
+          cards: {
+            some: {
+              assignedToEmail: null,
+            },
+          },
+        }),
+        ...(filters === "priority" && {
+          cards: {
+            some: {
+              priority: priorityType,
+            },
+          },
+        }),
+        ...(filters === "dueSoon" && {
+          cards: {
+            some: {
+              details: {
+                dueDate: {
+                  some: {
+                    date: {
+                      lte: sevenDaysIntheFuture.toISOString(),
+                      gte: oneDayInThePast.toISOString(),
+                    },
+                  },
+                },
+              },
+            },
+          },
+        }),
+        ...(filters === "expiredDue" && {
+          cards: {
+            some: {
+              details: {
+                dueDate: {
+                  some: {
+                    date: {
+                      lt: oneDayInThePast.toISOString(),
+                    },
+                  },
+                },
+              },
+            },
+          },
+        }),
+        ...(filters === "created" && {
+          cards: {
+            some: {
+              details: {
+                createdAt: {
+                  gte: sevenDaysAgo.toISOString(),
+                },
+              },
+            },
+          },
+        }),
+        ...(filters === "completed" && {
+          status: StatusType.done,
+        }),
+      },
+      include: {
+        cards: {
+          ...(selectedMemberEmail && {
+            where: {
+              assignedToEmail: selectedMemberEmail,
+            },
+          }),
+          ...(unassignedCard && {
+            where: {
+              assignedToEmail: null,
+            },
+          }),
+          ...(filters === "priority" && {
+            where: {
+              priority: priorityType,
+            },
+          }),
+          ...(filters === "created" && {
+            where: {
+              details: {
+                createdAt: {
+                  gte: sevenDaysAgo.toISOString(),
+                },
+              },
+            },
+          }),
+          ...(filters === "dueSoon" && {
+            where: {
+              details: {
+                dueDate: {
+                  some: {
+                    date: {
+                      lte: sevenDaysIntheFuture.toISOString(),
+                      gte: oneDayInThePast.toISOString(),
+                    },
+                  },
+                },
+              },
+            },
+          }),
+          ...(filters === "expiredDue" && {
+            where: {
+              details: {
+                dueDate: {
+                  some: {
+                    date: {
+                      lt: oneDayInThePast.toISOString(),
+                    },
+                  },
+                },
+              },
+            },
+          }),
+          include: {
+            list: {
+              select: {
+                status: true,
+              },
+            },
+            assignedTo: {
+              select: {
+                avatar: true,
+                email: true,
+                name: true,
+              },
+            },
+            reporter: {
+              select: {
+                avatar: true,
+                email: true,
+                name: true,
+              },
+            },
+
+            details: {
+              select: {
+                dueDate: {
+                  select: {
+                    date: true,
+                    time: true,
+                  },
+                },
+                checklist: {
+                  select: {
+                    id: true,
+                    isCompleted: true,
+                  },
+                },
+              },
+            },
+          },
+          orderBy: {
+            order: "asc",
+          },
+        },
+      },
+      orderBy: {
+        order: "asc",
+      },
+    });
+
+    if (!response) {
+      throw new Error("List not found");
+    }
+
+    const allListCards: CardWithDetailsAndDueDateAndChecklistAndReporterType[] =
+      [];
+    response?.forEach((list) => {
+      if (list?.cards) {
+        allListCards.push(...list.cards);
+      }
+      return list?.cards;
+    });
+
+    return {
+      data: {
+        data: allListCards,
+        role: activeUserData.role,
+      },
+      error: { message: "" },
+    };
+  } catch (error: any) {
+    console.log("🚀 ~ getListDataAction ~ error:", error);
+    return {
+      data: null,
+      error: { message: error?.message || "Something went wrong" },
+    };
+  }
+}
+// export async function getCardsDataAction(
+//   boardId: string,
+//   priorityType?: PriorityType,
+//   selectedMemberEmail?: string,
+//   unassignedCard?: boolean,
+//   filters: FilterStates = "all",
+// ): Promise<{
+//   data: {
+//     data: CardWithDetailsAndDueDateAndChecklistType[] | null | undefined;
+//     role: UserRoleType;
+//   } | null;
+//   error: { message: string };
+// }> {
+//   const { data: activeUserData } = await verifyCurrentActiveUser();
+//   try {
+//     if (!activeUserData?.activeUser) {
+//       throw new Error("User not authorized");
+//     }
+//     const now = new Date();
+//     const sevenDaysAgo = new Date();
+//     const sevenDaysIntheFuture = new Date();
+//     const oneDayInThePast = new Date();
+//     sevenDaysAgo.setDate(now.getDate() - 7);
+//     sevenDaysIntheFuture.setDate(now.getDate() + 7);
+//     oneDayInThePast.setDate(now.getDate() - 1);
+//
+//     const response = await prisma.card.findMany({
+//       where: {
+//         list: {
+//           boardId,
+//         },
+//         ...(selectedMemberEmail && {
+//           cards: {
+//             some: {
+//               assignedToEmail: selectedMemberEmail,
+//             },
+//           },
+//         }),
+//         ...(unassignedCard && {
+//           cards: {
+//             some: {
+//               assignedToEmail: null,
+//             },
+//           },
+//         }),
+//         ...(filters === "priority" && {
+//           cards: {
+//             some: {
+//               priority: priorityType,
+//             },
+//           },
+//         }),
+//         ...(filters === "dueSoon" && {
+//           cards: {
+//             some: {
+//               details: {
+//                 dueDate: {
+//                   some: {
+//                     date: {
+//                       lte: sevenDaysIntheFuture.toISOString(),
+//                       gte: oneDayInThePast.toISOString(),
+//                     },
+//                   },
+//                 },
+//               },
+//             },
+//           },
+//         }),
+//         ...(filters === "expiredDue" && {
+//           cards: {
+//             some: {
+//               details: {
+//                 dueDate: {
+//                   some: {
+//                     date: {
+//                       lt: oneDayInThePast.toISOString(),
+//                     },
+//                   },
+//                 },
+//               },
+//             },
+//           },
+//         }),
+//         ...(filters === "created" && {
+//           cards: {
+//             some: {
+//               details: {
+//                 createdAt: {
+//                   gte: sevenDaysAgo.toISOString(),
+//                 },
+//               },
+//             },
+//           },
+//         }),
+//         ...(filters === "completed" && {
+//           status: StatusType.done,
+//         }),
+//       },
+//       include: {
+//         ...(selectedMemberEmail && {
+//           where: {
+//             assignedToEmail: selectedMemberEmail,
+//           },
+//         }),
+//         ...(unassignedCard && {
+//           where: {
+//             assignedToEmail: null,
+//           },
+//         }),
+//         ...(filters === "priority" && {
+//           where: {
+//             priority: priorityType,
+//           },
+//         }),
+//         ...(filters === "created" && {
+//           where: {
+//             details: {
+//               createdAt: {
+//                 gte: sevenDaysAgo.toISOString(),
+//               },
+//             },
+//           },
+//         }),
+//         ...(filters === "dueSoon" && {
+//           where: {
+//             details: {
+//               dueDate: {
+//                 some: {
+//                   date: {
+//                     lte: sevenDaysIntheFuture.toISOString(),
+//                     gte: oneDayInThePast.toISOString(),
+//                   },
+//                 },
+//               },
+//             },
+//           },
+//         }),
+//         ...(filters === "expiredDue" && {
+//           where: {
+//             details: {
+//               dueDate: {
+//                 some: {
+//                   date: {
+//                     lt: oneDayInThePast.toISOString(),
+//                   },
+//                 },
+//               },
+//             },
+//           },
+//         }),
+//
+//         assignedTo: {
+//           select: {
+//             avatar: true,
+//             email: true,
+//           },
+//         },
+//         details: {
+//           select: {
+//             dueDate: {
+//               select: {
+//                 date: true,
+//                 time: true,
+//               },
+//             },
+//             checklist: {
+//               select: {
+//                 id: true,
+//                 isCompleted: true,
+//               },
+//             },
+//           },
+//         },
+//
+//         orderBy: {
+//           order: "asc",
+//         },
+//       },
+//       orderBy: {
+//         order: "asc",
+//       },
+//     });
+//
+//     if (!response) {
+//       throw new Error("List not found");
+//     }
+//
+//     return {
+//       data: { data: response, role: activeUserData.role },
+//       error: { message: "" },
+//     };
+//   } catch (error: any) {
+//     console.log("🚀 ~ getListDataAction ~ error:", error);
+//     return {
+//       data: null,
+//       error: { message: error?.message || "Something went wrong" },
+//     };
+//   }
+// }
 export async function createListAction({
   boardId,
   title,

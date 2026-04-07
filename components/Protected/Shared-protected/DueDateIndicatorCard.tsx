@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 type Props = {
   data: Pick<DueDate, "date" | "time"> | undefined;
 };
-export function DueDateIndicator({ data }: Props) {
+export function DueDateIndicatorCard({ data }: Props) {
   if (!data || !data.date || !data.time) return;
 
   const isValidDate =
@@ -33,7 +33,7 @@ export function DueDateIndicator({ data }: Props) {
   return (
     <div
       className={cn(
-        "px-2 rounded-md flex items-center gap-1",
+        "px-2 py-1 rounded-md flex items-center gap-1",
         duedateStatusColors({
           status:
             dInDaysData < 0 && dInHoursData < 0

@@ -5,6 +5,34 @@ import {
   TeamWorkloadType,
 } from "../../types";
 
+export const CARD_PRIORITIES_VALUES = {
+  none: {
+    label: "None",
+    value: "none",
+    icon: <>...</>,
+  },
+  urgent: {
+    label: "Urgent",
+    value: "urgent",
+    icon: <CircleAlert className="text-red-600" />,
+  },
+  high: {
+    label: "High",
+    value: "high",
+    icon: <Wifi className="text-red-400" />,
+  },
+  medium: {
+    label: "Medium",
+    value: "medium",
+    icon: <WifiHigh className="text-yellow-400" />,
+  },
+  low: {
+    label: "Low",
+    value: "low",
+    icon: <WifiLow className="text-green-400" />,
+  },
+} as const;
+
 export const CARD_PRIORITIES: PriorityType[] = [
   {
     label: "None",

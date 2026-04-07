@@ -35,6 +35,11 @@ export function RefreshData() {
       });
       return;
     }
+    if (boardTabSections === "list") {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.pages.board.listView.getAllBoardData],
+      });
+    }
     queryClient.invalidateQueries({
       queryKey: [QUERY_KEYS.hooks.useMembers],
     });

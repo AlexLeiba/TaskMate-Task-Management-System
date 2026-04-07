@@ -1,6 +1,7 @@
 export const QUERY_KEYS = {
   pages: {
     boards: {
+      //page - dashboard with boards
       deleteBoard: "delete-board",
       createNewBoard: {
         create: "create-new-board",
@@ -9,11 +10,18 @@ export const QUERY_KEYS = {
     },
     overview: {},
     board: {
+      //page - single board
       overview: {
+        //view - dashboard overview
         boardOverview: "board-overview",
         finishedWork: "finished-work-overview",
         recentActivities: "recent-activities",
       },
+      listView: {
+        getAllBoardData: "get-all-board-data",
+        //view - list table view
+      },
+      // view - kanban default view
       lists: {
         editBoardTitle: "edit-board-title",
         dragAndDrop: {

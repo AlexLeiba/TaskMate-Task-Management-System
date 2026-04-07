@@ -47,6 +47,10 @@ export function Sidebar() {
   const { orgId: selectedOrgId } = useAuth();
   const { setActive } = useOrganizationList();
 
+  function handleExpandCollapseAccordion(item: string) {
+    setExpandedOrg((prev) => (prev === item ? null : item));
+  }
+
   const organizationsData = user?.organizationMemberships.map((org) => {
     const organizationRole = org.role?.replace("org:", "") === USER_ROLES.admin;
 
@@ -99,14 +103,15 @@ export function Sidebar() {
   }
 
   return (
-    <SidebarContainer className=" top-13  ">
-      <SidebarContent className="h-50 ">
-        <SidebarGroup className="">
+    <SidebarContainer className="top-13">
+      <SidebarContent className="h-50 " data-test="sidebar-content">
+        <SidebarGroup>
           <div className="flex justify-between mb-2 p-2">
             <SidebarGroupLabel className="text-lg">
               Organizations
             </SidebarGroupLabel>
             <Button
+              data-test="add-new-organization-button"
               variant={"secondary"}
               aria-label="Add New organization"
               title="Add New organization"
@@ -120,8 +125,9 @@ export function Sidebar() {
             <SidebarMenu>
               {organizationsData && organizationsData.length > 0 ? (
                 organizationsData?.map((item) => (
-                  <SidebarMenuItem key={item.id}>
+                  <SidebarMenuItem key={item.id} data-test="sidebar-menu-items">
                     <Accordion
+                      data-test="sidebar-accordion"
                       type="single"
                       collapsible
                       defaultValue={selectedOrgId === item.id ? item.name : ""}
@@ -133,7 +139,10 @@ export function Sidebar() {
                     >
                       <AccordionItem value={item.name}>
                         <AccordionTrigger
-                          onClick={() => setExpandedOrg(item.name)}
+                          data-test="sidebar-accordion-trigger"
+                          onClick={() =>
+                            handleExpandCollapseAccordion(item.name)
+                          }
                           title={item.name}
                           aria-label={item.name}
                           className={cn(
@@ -162,7 +171,10 @@ export function Sidebar() {
                             </div>
                           )}
                         </AccordionTrigger>
-                        <AccordionContent className=" pt-2 flex flex-col gap-1 ">
+                        <AccordionContent
+                          className=" pt-2 flex flex-col gap-1 "
+                          data-test="sidebar-accordion-content"
+                        >
                           {item.data.map((data) => {
                             const currentPathname = data?.pathname
                               .split("/")
@@ -170,6 +182,7 @@ export function Sidebar() {
 
                             return (
                               <Button
+                                data-test="sidebar-accordion-content-nav-buttons"
                                 title={`${item.name} - ${data?.title}`}
                                 aria-label={`${item.name} - ${data?.title}`}
                                 onClick={() =>

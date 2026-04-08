@@ -3,10 +3,21 @@ name: Hello bro
 on: workflow_dispatch
 
 jobs:
-  hello:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Hello bro step
-        run: |
-         echo "Welvome  to GHA"
-         echo "Ia ibal nahui"
+      - name: Build step
+        run: echo "Building..."
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test step
+        run: echo "Running step..."
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy step
+        run: echo "Deploying step"
+  
+   

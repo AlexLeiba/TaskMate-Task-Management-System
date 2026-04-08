@@ -7,4 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Hello bro step
-        run:  echo "Welvome  to GHA"
+        run: |
+         echo "Welvome  to GHA"
+         echo "Ia ibal nahui"

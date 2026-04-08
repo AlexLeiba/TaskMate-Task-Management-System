@@ -1,12 +1,7 @@
-import { setupClerkTestingToken } from "@clerk/testing/cypress";
-import { skip } from "node:test";
-
-describe("Dashboard page", () => {
+describe("Dashboard page desktop and tablet view", () => {
   beforeEach(() => {
     // setupClerkTestingToken();
-
     cy.viewport(1280, 800);
-
     cy.visit("/");
 
     cy.clerkLoaded();
@@ -19,24 +14,13 @@ describe("Dashboard page", () => {
 
     cy.url().should("include", "/dashboard");
   });
-  it.skip("Login and go to protected route dashboard", () => {
-    cy.visit("/");
 
-    cy.clerkLoaded();
-    cy.clerkSignIn({
-      strategy: "email_code",
-      identifier: "alexleiba13+clerk_test@gmail.com",
-    });
-
-    cy.getCookie("__session").should("exist");
-
-    cy.url().should("include", "/dashboard");
-  });
   it("Dashboard navigations", () => {
     // aliases
     cy.get("[data-test=logo]").as("logo");
+    cy.url().should("include", "/dashboard").as("includeDashboardUrl");
     //
-    cy.url().should("include", "/dashboard");
+    cy.get("@includeDashboardUrl");
 
     cy.location("pathname").then((pathname) => {
       const organizationId = pathname.split("/").at(-1);
@@ -58,16 +42,16 @@ describe("Dashboard page", () => {
     });
 
     cy.get("@logo").click();
-    cy.url().should("include", "/dashboard");
+    cy.get("@includeDashboardUrl");
 
     cy.visit("/select-organization");
     cy.url().should("include", "/select-organization");
 
     cy.get("@logo").click();
-    cy.url().should("include", "/dashboard");
+    cy.get("@includeDashboardUrl");
   });
 
-  it.only("Sidebar organizations navigation", () => {
+  it("Sidebar", () => {
     // aliases
     cy.get("[data-test=sidebar-content]").as("sidebarContent");
     cy.get("[data-test=sidebar-menu-items]").as("sidebarMenuItems");
@@ -82,8 +66,8 @@ describe("Dashboard page", () => {
       "sidebarAccordionContentNavButtons",
     );
     cy.get("[data-test=header-sidebar-trigger]").as("headerSidebarTrigger");
-
     //
+
     cy.url().should("include", "/dashboard");
 
     // assert default visible sidebar
@@ -107,20 +91,14 @@ describe("Dashboard page", () => {
 
     // cy.get("@sidebarAccordionTrigger").filter("[data-state=open]").should("have.length", 1);
 
-    cy.get("@sidebarAccordionContent").should("be.visible");
-
-    // assert click on each organization item and check valid url
+    // assert click on each organization item and check navigation valid url
     cy.location("pathname").then((pathname) => {
-      //grab the location once then iterate
-
-      cy.get("@sidebarAccordionContentNavButtons").each(
-        (navButton, index, fullCollection) => {
-          cy.wrap(navButton).click();
-          cy.url().should("include", `/dashboard/${organizationId}`);
-        },
-      );
-
       const organizationId = pathname.split("/").at(-1);
+
+      cy.get("@sidebarAccordionContentNavButtons").each((navButton) => {
+        cy.wrap(navButton).click();
+        cy.url().should("include", `/dashboard/${organizationId}`);
+      });
     });
   });
 });

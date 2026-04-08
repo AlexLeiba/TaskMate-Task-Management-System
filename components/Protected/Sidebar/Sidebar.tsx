@@ -100,6 +100,7 @@ export function Sidebar() {
 
   function handleAddNewOrganization() {
     router.push("/select-organization");
+    setOpenMobile(false);
   }
 
   return (

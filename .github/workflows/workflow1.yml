@@ -1,0 +1,10 @@
+name: Hello bro
+
+on: workflow_dispatch
+
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hello bro step
+        run:  echo "Welvome  to GHA"

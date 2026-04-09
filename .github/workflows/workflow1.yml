@@ -20,5 +20,5 @@ jobs:
     steps:
       - name: Use variables
         run: |
-          echo "My name: $env:MY_NAME"
-          echo "Job Type: $env:JOB_TYPE"
+          echo "My name: $MY_NAME"
+          echo "Job Type: $JOB_TYPE"

@@ -1,32 +1,24 @@
-name: Hello bro
+name: Test variables
 
 on:
   push:
     branches:
       - staging
       - workflow
-      - closed
   pull_request:
     types:
       - opened
-      - synchronize
-      - reopened
-
     branches:
       - master
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  display_variables:
+    # runs-on: ubuntu-latest
+    if: ${{ vars.JOB_TYPE == 'build' }}
+    runs-on: ${{ vars.RUNNER_UBUNTU }}
+    # environment: ${{vars.GITHUB_REPOSITORY}}
     steps:
-      - name: Build step
-        run: echo "Building..., ${{vars.MY_FIRST_SECRET_VAR}} ${{vars.ENVIRONMENT_VARIABLE_BRO}}"
-      - name: Test step
-        run: echo "Tusaneala...<<<<<<"
-
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Test it
-        run: echo "Test job bro"
+      - name: Use variables
+        run: |
+          echo "My name: $env:MY_NAME"
+          echo "Job Type: $env:JOB_TYPE"

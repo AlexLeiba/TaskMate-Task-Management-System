@@ -13,6 +13,7 @@ import { Award } from "lucide-react";
 import { FilterTabs } from "./FilterTabs";
 import { FinishedWorkFilterTabs } from "@/lib/types";
 import { SkeletonMembers } from "./SkeletonMembers";
+import { useUser } from "@clerk/nextjs";
 
 type Props = {
   type?: "board" | "organization";
@@ -20,6 +21,7 @@ type Props = {
 };
 export function FinishedWorkOverview({ type, orgId }: Props) {
   const boardId = useBoardId();
+  const { isLoaded, user } = useUser();
 
   async function fetchBoardFinishedWorkStats() {
     try {
@@ -50,10 +52,11 @@ export function FinishedWorkOverview({ type, orgId }: Props) {
 
   const { data } = useQuery({
     queryFn: fetchBoardFinishedWorkStats,
-    queryKey: [QUERY_KEYS.pages.board.overview.finishedWork],
+    queryKey: [QUERY_KEYS.pages.board.overview.finishedWork, orgId],
     staleTime: 1000, // TODO : change to 5 min.
     gcTime: 1000, // TODO : change to 5 min.
     refetchOnMount: true,
+    enabled: isLoaded && !!user && !!orgId,
   });
 
   const {

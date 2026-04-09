@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const OrganizationProfile = dynamic(
   () => import("@clerk/nextjs").then((m) => m.OrganizationProfile),
-  { ssr: false },
+  { ssr: false, loading: () => <p>Loading...</p> },
 );
 
 export function OrganizationSettings() {

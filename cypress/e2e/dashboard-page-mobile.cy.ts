@@ -16,29 +16,29 @@ describe("Dashboard page mobile view", () => {
 
   it("Dashboard Navigations", () => {
     // aliases
-    cy.get("[data-test=logo]").as("logo");
     cy.url().should("include", "/dashboard").as("includeDashboardUrl");
     //
     cy.get("@includeDashboardUrl");
 
     cy.location("pathname").then((pathname) => {
       const organizationId = pathname.split("/").at(-1);
-      cy.visit(`dashboard/${organizationId}/activity`)
+
+      cy.visit(`/dashboard/${organizationId}/activity`)
         .url()
         .should("include", "/activity");
 
-      cy.visit(`dashboard/${organizationId}/settings`)
+      cy.visit(`/dashboard/${organizationId}/settings`)
         .url()
         .should("include", "/settings");
 
-      cy.visit(`dashboard/${organizationId}/billings`)
+      cy.visit(`/dashboard/${organizationId}/billings`)
         .url()
         .should("include", "/billings");
 
-      cy.visit(`dashboard/${organizationId}/overview`)
+      cy.visit(`/dashboard/${organizationId}/overview`)
         .url()
         .should("include", "/overview");
-      cy.visit(`dashboard/${organizationId}`)
+      cy.visit(`/dashboard/${organizationId}`)
         .url()
         .should("include", "/dashboard");
     });
@@ -54,10 +54,10 @@ describe("Dashboard page mobile view", () => {
     });
   });
 
-  it.only("Sidebar", () => {
+  it("Sidebar", () => {
     // aliases
     cy.get("[data-test=header-sidebar-trigger]").as("headerSidebarTrigger");
-    cy.get("[data-test=logo]").as("logo");
+    cy.get("[data-test=footer] [data-test=logo]").eq(0).as("logo");
     //
 
     cy.url().should("include", "/dashboard");

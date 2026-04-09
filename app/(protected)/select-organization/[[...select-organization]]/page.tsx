@@ -1,4 +1,10 @@
-import { OrganizationList } from "@clerk/nextjs";
+"use client";
+import dynamic from "next/dynamic";
+
+const OrganizationList = dynamic(
+  () => import("@clerk/nextjs").then((m) => m.OrganizationList),
+  { ssr: false, loading: () => <p>Loading...</p> },
+);
 
 function SelectOrganizationPage() {
   return (

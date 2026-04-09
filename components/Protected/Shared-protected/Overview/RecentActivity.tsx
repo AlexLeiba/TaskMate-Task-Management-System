@@ -4,6 +4,7 @@ import { UserCard } from "@/components/Protected/Shared-protected/UserCard/UserC
 import { Button } from "@/components/ui/button";
 import { useBoardId } from "@/hooks/useBoardId";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
+import { useUser } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -14,6 +15,7 @@ type Props = {
 };
 export function RecentActivity({ orgId, type = "board" }: Props) {
   const boardId = useBoardId();
+  const { isLoaded, user } = useUser();
 
   async function fetchBoardSummary() {
     try {
@@ -48,6 +50,7 @@ export function RecentActivity({ orgId, type = "board" }: Props) {
     staleTime: 1000, // TODO : change to 5 min.
     gcTime: 1000, // TODO : change to 5 min.
     refetchOnMount: true,
+    enabled: isLoaded && !!orgId && !!user,
   });
   return (
     <div className="flex flex-col gap-4">

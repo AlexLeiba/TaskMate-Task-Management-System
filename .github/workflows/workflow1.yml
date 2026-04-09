@@ -1,4 +1,4 @@
-name: Test variables
+name: Clone the repo
 
 on:
   push:
@@ -12,14 +12,9 @@ on:
       - master
 
 jobs:
-  display_variables:
-    # runs-on: ubuntu-latest
-    if: ${{ vars.JOB_TYPE == 'build' }}
-    runs-on: ${{ vars.RUNNER_UBUNTU }}
-    # environment: ${{vars.GITHUB_REPOSITORY}}
+  install_build:
+    runs-on: ubuntu-latest
     steps:
-      - name: Use variables
-        run: |
-          echo "My name: ${{vars.MY_NAME}}"
-          echo "Job Type: ${{vars.JOB_TYPE}}"
-          echo "Run my secret variable: ${{secrets.MY_PASSWORD}}"
+      - name: Checkout the repo
+        uses: actions/checkout@v6 # close the repo in the environment machine on ubuntu
+

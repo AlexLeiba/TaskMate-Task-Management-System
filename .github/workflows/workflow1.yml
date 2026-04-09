@@ -1,6 +1,7 @@
 name: Hello bro
 
-on: pull_request
+on: pull_request:
+    push:
 
 jobs:
   build:
@@ -10,3 +11,9 @@ jobs:
         run: echo "Building..."
       - name: Test step
         run: echo "Tusaneala...<<<<<<"
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test it
+        run: echo "Test job bro"

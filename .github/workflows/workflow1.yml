@@ -5,13 +5,22 @@ on:
     branches:
       - staging
       - workflow
+      - closed
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+    branches:
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Build step
-        run: echo "Building..."
+        run: echo "Building..., ${{vars.MY_FIRST_SECRET_VAR}} ${{vars.ENVIRONMENT_VARIABLE_BRO}}"
       - name: Test step
         run: echo "Tusaneala...<<<<<<"
 

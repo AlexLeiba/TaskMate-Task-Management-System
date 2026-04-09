@@ -22,3 +22,4 @@ jobs:
         run: |
           echo "My name: ${{vars.MY_NAME}}"
           echo "Job Type: ${{vars.JOB_TYPE}}"
+          echo "Run my secret variable: ${{secrets.MY_PASSWORD}}"

@@ -20,5 +20,5 @@ jobs:
     steps:
       - name: Use variables
         run: |
-          echo "My name: $MY_NAME"
-          echo "Job Type: $JOB_TYPE"
+          echo "My name: ${{vars.MY_NAME}}"
+          echo "Job Type: ${{vars.JOB_TYPE}}"

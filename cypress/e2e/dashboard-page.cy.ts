@@ -17,7 +17,7 @@ describe("Dashboard page desktop and tablet view", () => {
 
   it("Dashboard navigations", () => {
     // aliases
-    cy.get("[data-test=logo]").as("logo");
+    cy.get("[data-test=logo]").eq(0).as("logo");
     cy.url().should("include", "/dashboard").as("includeDashboardUrl");
     //
     cy.get("@includeDashboardUrl");

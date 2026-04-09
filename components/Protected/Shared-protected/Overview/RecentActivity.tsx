@@ -1,3 +1,4 @@
+"use client";
 import { getRecentActivitiesAction } from "@/app/actions/overview";
 import { UserCard } from "@/components/Protected/Shared-protected/UserCard/UserCard";
 import { Button } from "@/components/ui/button";

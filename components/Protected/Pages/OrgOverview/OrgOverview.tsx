@@ -37,6 +37,7 @@ export function OrgSummary({ data: { data, error }, orgId }: Props) {
         <BoardStatsCard>
           <PriorityBreakdown data={data?.priorityBreakdownData} />
         </BoardStatsCard>
+
         <BoardStatsCard>
           <TeamWorkload
             data={data?.teamWorkLoadData}
@@ -44,9 +45,11 @@ export function OrgSummary({ data: { data, error }, orgId }: Props) {
             totalTasks={data?.totalTasks || 0}
           />
         </BoardStatsCard>
+
         <BoardStatsCard>
           <FinishedWorkOverview type="organization" orgId={orgId} />
         </BoardStatsCard>
+
         <BoardStatsCard>
           <RecentActivity orgId={orgId} type="organization" />
         </BoardStatsCard>

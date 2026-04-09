@@ -1,3 +1,4 @@
+"use client";
 import { finishedWorkOverviewAction } from "@/app/actions/overview";
 import { UserCard } from "@/components/Protected/Shared-protected/UserCard/UserCard";
 import { useBoardId } from "@/hooks/useBoardId";

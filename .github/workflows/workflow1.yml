@@ -17,4 +17,9 @@ jobs:
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v6 # close the repo in the environment machine on ubuntu
-
+      - name: Print the branch name
+        run: echo ${{ github.actor }} ${{ github.event_name }} ${{ github.ref }}
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build

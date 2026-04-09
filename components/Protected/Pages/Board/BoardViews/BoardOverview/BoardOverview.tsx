@@ -1,15 +1,15 @@
 import toast from "react-hot-toast";
 import { getOverviewStatsAction } from "@/app/actions/overview";
 import { useAuth } from "@clerk/nextjs";
-import { StatusOverview } from "../../../Shared-protected/Overview/StatusOverview";
-import { PriorityBreakdown } from "../../../Shared-protected/Overview/PriorityBreakdown";
-import { FinishedWorkOverview } from "../../../Shared-protected/Overview/FinishedWorkOverview/FinishedWorkOverview";
-import { RecentActivity } from "../../../Shared-protected/Overview/RecentActivity";
+import { StatusOverview } from "../../../../Shared-protected/Overview/StatusOverview";
+import { PriorityBreakdown } from "../../../../Shared-protected/Overview/PriorityBreakdown";
+import { FinishedWorkOverview } from "../../../../Shared-protected/Overview/FinishedWorkOverview/FinishedWorkOverview";
+import { RecentActivity } from "../../../../Shared-protected/Overview/RecentActivity";
 import { useQuery } from "@tanstack/react-query";
 import { useBoardId } from "@/hooks/useBoardId";
-import { BoardStatsCard } from "../../../Shared-protected/Overview/BoardStatsCard";
-import { TeamWorkload } from "../../../Shared-protected/Overview/TeamWorkLoad/TeamWorkload";
-import { BoardStats } from "../../../Shared-protected/Overview/BoardStats";
+import { BoardStatsCard } from "../../../../Shared-protected/Overview/BoardStatsCard";
+import { TeamWorkload } from "../../../../Shared-protected/Overview/TeamWorkLoad/TeamWorkload";
+import { BoardStats } from "../../../../Shared-protected/Overview/BoardStats";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 export function BoardOverview() {

@@ -14,7 +14,7 @@ const ListView = dynamic(() =>
   ),
 );
 const BoardOverview = dynamic(() =>
-  import("@/components/Protected/Pages/Board/BoardViews/BoardOverview").then(
+  import("@/components/Protected/Pages/Board/BoardViews/BoardOverview/BoardOverview").then(
     (m) => m.BoardOverview,
   ),
 );

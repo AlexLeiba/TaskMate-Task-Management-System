@@ -8,6 +8,9 @@ import { DATE_FORMAT } from "@/lib/consts/consts";
 import { DueDateIndicatorCard } from "@/components/Protected/Shared-protected/DueDateIndicatorCard";
 import { ChecklistIndicatorCard } from "@/components/Protected/Shared-protected/ChecklistIndicatorCard";
 import { Card } from "./Card";
+import { Button } from "@/components/ui/button";
+import { ArrowUpDown } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export const COLUMNS:
   | ColumnDef<CardWithDetailsAndDueDateAndChecklistAndReporterType>[]
@@ -15,11 +18,44 @@ export const COLUMNS:
   | undefined = [
   {
     accessorKey: "title",
-    header: "Title",
+    header: ({ column, table }) => {
+      return (
+        <div className="flex items-center gap-4">
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
+            aria-label="Select all"
+          />
+          <Button
+            variant={"ghost"}
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="w-full"
+            classNameChildren="flex items-center justify-between "
+          >
+            Title
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      );
+    },
     cell: ({ row }) => {
       return (
-        <div className="flex items-center gap-2" title={row.original.title}>
-          <p className="text-xl max-w-50 line-clamp-1">{row.original.title}</p>
+        <div className="flex items-center gap-4">
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+          />
+          <div className="flex items-center gap-2" title={row.original.title}>
+            <p className="text-xl max-w-50 line-clamp-1">
+              {row.original.title}
+            </p>
+          </div>
         </div>
       );
     },
@@ -56,7 +92,19 @@ export const COLUMNS:
   },
   {
     accessorKey: "priority",
-    header: "Priority",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant={"ghost"}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="w-full"
+          classNameChildren="flex items-center justify-between "
+        >
+          Priority
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       return (
         <Card>
@@ -68,7 +116,19 @@ export const COLUMNS:
   },
   {
     accessorKey: "list.status",
-    header: "Status",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant={"ghost"}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="w-full"
+          classNameChildren="flex items-center justify-between "
+        >
+          Status
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       return (
         <Card>
@@ -94,7 +154,19 @@ export const COLUMNS:
   },
   {
     accessorKey: "createdAt",
-    header: "Created At",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant={"ghost"}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="w-full"
+          classNameChildren="flex items-center justify-between "
+        >
+          Created At
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       return (
         <Card>
@@ -108,7 +180,19 @@ export const COLUMNS:
   },
   {
     accessorKey: "updatedAt",
-    header: "Updated At",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant={"ghost"}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="w-full"
+          classNameChildren="flex items-center justify-between "
+        >
+          Updated At
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       return (
         <Card>

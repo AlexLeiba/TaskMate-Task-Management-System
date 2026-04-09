@@ -8,6 +8,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  RowSelectionState,
   SortingState,
   useReactTable,
   VisibilityState,
@@ -31,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { TABLE_COLUMNS } from "@/lib/consts/protected/table";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -42,26 +44,28 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
-  // const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  // console.log("🚀 ~ DataTable ~ columnVisibility:", columnVisibility);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const [columnVisibility, setColumnVisibility] =
     useLocalStorage<VisibilityState>("columns-visibility", {});
+  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
-    data,
-    columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
+    onSortingChange: setSorting,
+    onRowSelectionChange: setRowSelection,
+    data,
+    columns,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
+      rowSelection,
     },
   });
 
@@ -79,6 +83,7 @@ export function DataTable<TData, TValue>({
               .getAllColumns()
               .filter((column) => column.getCanHide())
               .map((column) => {
+                console.log("🚀 ~ DataTable ~ column:", column);
                 return (
                   <DropdownMenuCheckboxItem
                     key={column.id}
@@ -88,7 +93,7 @@ export function DataTable<TData, TValue>({
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.columnDef?.header as string}
+                    {TABLE_COLUMNS[column.id as keyof typeof TABLE_COLUMNS]}
                   </DropdownMenuCheckboxItem>
                 );
               })}
@@ -96,12 +101,22 @@ export function DataTable<TData, TValue>({
         </DropdownMenu>
         <Input
           className="h-6"
-          placeholder="filter..."
+          placeholder="filter by title..."
           value={table.getColumn("title")?.getFilterValue() as string}
           onChange={(event) =>
             table.getColumn("title")?.setFilterValue(event.target.value)
           }
         />
+        <div className="flex">
+          Page:{" "}
+          <p>
+            {table.getState().pagination.pageIndex +
+              1 +
+              "/" +
+              table.getPageCount()}
+          </p>
+        </div>
+        <p>{}</p>
         <Button
           className="h-6"
           variant="secondary"

@@ -11,7 +11,7 @@ async function BoardPage({
   const orgId = (await params).organizationId;
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-[calc(100vh-200px)]">
       <SubHeaderServerRender boardId={boardId} orgId={orgId} />
 
       <BoardServerRender boardId={boardId} orgId={orgId} />

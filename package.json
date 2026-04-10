@@ -11,7 +11,7 @@
     "test": "cypress open"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.36.7",
+    "@clerk/nextjs": "^7.0.12",
     "@hello-pangea/dnd": "^18.0.1",
     "@hookform/resolvers": "^5.2.2",
     "@prisma/adapter-pg": "^7.2.0",
@@ -58,7 +58,7 @@
     "zustand": "^5.0.10"
   },
   "devDependencies": {
-    "@clerk/testing": "^2.0.8",
+    "@clerk/testing": "^2.0.12",
     "@tailwindcss/postcss": "^4",
     "@tanstack/eslint-plugin-query": "^5.91.3",
     "@types/aos": "^3.0.7",

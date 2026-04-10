@@ -8,7 +8,6 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  RowSelectionState,
   SortingState,
   useReactTable,
   VisibilityState,
@@ -33,6 +32,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { TABLE_COLUMNS } from "@/lib/consts/protected/table";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import dynamic from "next/dynamic";
+
+const TicketCardDetails = dynamic(() =>
+  import("@/components/Protected/Pages/Board/BoardViews/KanbanView/TicketCard/TicketCardDetails/TicketCardDetails").then(
+    (m) => m.TicketCardDetails,
+  ),
+);
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -43,6 +50,12 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const [isCardDetailsOpened, setIsCardDetailsOpened] = useState({
+    cardTitle: "",
+    listTitle: "",
+    cardDetailsId: "",
+    isVisible: false,
+  });
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -59,8 +72,13 @@ export function DataTable<TData, TValue>({
     onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
     onRowSelectionChange: setRowSelection,
+
     data,
     columns,
+    meta: {
+      isCardDetailsOpened,
+      setIsCardDetailsOpened,
+    },
     state: {
       sorting,
       columnFilters,
@@ -83,7 +101,6 @@ export function DataTable<TData, TValue>({
               .getAllColumns()
               .filter((column) => column.getCanHide())
               .map((column) => {
-                console.log("🚀 ~ DataTable ~ column:", column);
                 return (
                   <DropdownMenuCheckboxItem
                     key={column.id}
@@ -107,33 +124,32 @@ export function DataTable<TData, TValue>({
             table.getColumn("title")?.setFilterValue(event.target.value)
           }
         />
-        <div className="flex">
-          Page:{" "}
-          <p>
-            {table.getState().pagination.pageIndex +
-              1 +
-              "/" +
-              table.getPageCount()}
-          </p>
+        <div className="flex items-center gap-1 bg-background px-2 rounded-md">
+          Page: <p>{table.getState().pagination.pageIndex + 1}</p>/
+          <p>{table.getPageCount()}</p>
         </div>
-        <p>{}</p>
+
         <Button
+          aria-label="Previous page"
+          title="Previous page"
           className="h-6"
           variant="secondary"
           size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
-          Previous
+          <ChevronLeft />
         </Button>
         <Button
+          aria-label="Next page"
+          title="Next page"
           className="h-6"
           variant="secondary"
           size="sm"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
-          Next
+          <ChevronRight />
         </Button>
       </div>
       <div className="rounded-md h-full overflow-auto mt-4">
@@ -189,6 +205,23 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+
+      {isCardDetailsOpened && (
+        <TicketCardDetails
+          cardTitle={isCardDetailsOpened.cardTitle}
+          listTitle={isCardDetailsOpened.listTitle}
+          cardDetailsId={isCardDetailsOpened.cardDetailsId}
+          isModalOpened={isCardDetailsOpened.isVisible}
+          handleCloseModal={() =>
+            setIsCardDetailsOpened({
+              cardTitle: "",
+              listTitle: "",
+              cardDetailsId: "",
+              isVisible: false,
+            })
+          }
+        />
+      )}
     </>
   );
 }

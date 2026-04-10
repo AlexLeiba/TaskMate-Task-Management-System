@@ -11,28 +11,26 @@ const ChangeStatusDropdown = dynamic(() =>
 type Props = {
   listId: string | undefined;
   cardId: string | undefined;
-  currentStatusType: Pick<List, "id" | "status" | "title"> | undefined;
   listsData: Pick<List, "id" | "status" | "title">[];
+  type: "card" | "table";
 };
 
-export function ChangeStatus({
-  listId,
-  cardId,
-  currentStatusType,
-  listsData,
-}: Props) {
+export function Status({ listId, cardId, listsData, type = "card" }: Props) {
   return (
     <div className="flex flex-col w-full">
-      <div className="flex gap-2 items-center">
-        <CircleCheck className="text-green-500" />
-        <p className="text-xl font-medium">Change Status</p>
-      </div>
+      {type === "card" && (
+        <>
+          <div className="flex gap-2 items-center">
+            <CircleCheck className="text-green-500" />
+            <p className="text-xl font-medium">Change Status</p>
+          </div>
 
-      <Spacer size={2} />
+          <Spacer size={2} />
+        </>
+      )}
       <ChangeStatusDropdown
         listId={listId}
         cardId={cardId}
-        currentStatusType={currentStatusType}
         listsData={listsData}
       />
     </div>

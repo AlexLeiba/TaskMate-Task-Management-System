@@ -21,15 +21,9 @@ import { CHANGE_LIST_STATUS } from "@/lib/consts/protected/list";
 type Props = {
   listId: string | undefined;
   cardId: string | undefined;
-  currentStatusType: Pick<List, "id" | "status" | "title"> | undefined;
   listsData: Pick<List, "id" | "status" | "title">[];
 };
-export function ChangeStatusDropdown({
-  listId,
-  cardId,
-  currentStatusType,
-  listsData,
-}: Props) {
+export function ChangeStatusDropdown({ listId, cardId, listsData }: Props) {
   const boardId = useBoardId();
 
   const {
@@ -65,13 +59,13 @@ export function ChangeStatusDropdown({
   return (
     <Select
       onValueChange={(v) => {
-        if (!currentStatusType?.id) {
+        if (!listId) {
           return toast.error("Something went wrong, please try again");
         }
-        if (v === currentStatusType?.id) return;
+        if (v === listId) return;
         handleSelectNewStatus(v as StatusType);
       }}
-      value={updatedCardStatus || currentStatusType?.id}
+      value={updatedCardStatus || listId}
     >
       <SelectTrigger
         aria-label="Select status"

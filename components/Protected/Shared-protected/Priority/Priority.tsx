@@ -11,16 +11,21 @@ type Props = {
   priority: PriorityType | undefined;
   listId: string | undefined;
   cardDetailsId: string | undefined;
+  type: "card" | "table";
 };
-export function Priority({ priority, listId, cardDetailsId }: Props) {
+export function Priority({ priority, listId, cardDetailsId, type }: Props) {
   return (
     <div className="flex flex-col w-full">
-      <div className="flex gap-2 items-center">
-        <Wifi />
-        <p className="text-xl font-medium">Priority</p>
-      </div>
+      {type === "card" && (
+        <>
+          <div className="flex gap-2 items-center">
+            <Wifi />
+            <p className="text-xl font-medium">Priority</p>
+          </div>
 
-      <Spacer size={2} />
+          <Spacer size={2} />
+        </>
+      )}
       <PriorityDropdown
         priority={priority}
         listId={listId}

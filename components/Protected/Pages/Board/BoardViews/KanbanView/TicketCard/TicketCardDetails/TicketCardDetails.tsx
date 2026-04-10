@@ -8,8 +8,9 @@ import { MapPin } from "lucide-react";
 import { Spacer } from "@/components/ui/spacer";
 import { Description } from "./Description/Description";
 import { Reporter } from "./Reporter/Reporter";
-import { AssignTo } from "./AssignTo/AssignTo";
-import { Priority } from "./Priority/Priority";
+import { AssignTo } from "@/components/Protected/Shared-protected/AssignTo/AssignTo";
+import { Priority } from "@/components/Protected/Shared-protected/Priority/Priority";
+import { Status } from "@/components/Protected/Shared-protected/Status/Status";
 import { InteractiveFeaturesTabs } from "./InteractiveFeaturesTabs/InteractiveFeaturesTabs";
 import { getCardDetails } from "@/app/actions/card-details";
 import { ChecklistList } from "./ChecklistList";
@@ -22,7 +23,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useUserData } from "@/hooks/useUserData";
 import { USER_ROLES } from "@/lib/consts/consts";
 import { useRole } from "@/hooks/useRole";
-import { ChangeStatus } from "./ChangeStatus/ChangeStatus";
 import { useBoardId } from "@/hooks/useBoardId";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
@@ -121,6 +121,7 @@ export function TicketCardDetails({
             </div>
 
             <AssignTo
+              type="card"
               assignedTo={cardDetailsData?.card.card?.assignedToEmail || ""}
               listId={cardDetailsData?.card.card?.listId}
               cardDetailsId={cardDetailsData?.card.card.id || ""}
@@ -135,13 +136,14 @@ export function TicketCardDetails({
                 priority={cardDetailsData?.card.card?.priority}
                 listId={cardDetailsData?.card.card?.listId}
                 cardDetailsId={cardDetailsData?.card.card.id}
+                type={"card"}
               />
             </div>
-            <ChangeStatus
+            <Status
               listId={cardDetailsData?.card?.card?.listId}
               cardId={cardDetailsData?.card?.card.id}
-              currentStatusType={cardDetailsData?.card?.card?.list}
               listsData={cardDetailsData?.list || []}
+              type={"card"}
             />
             <DueDate
               data={cardDetailsData?.card.dueDate}

@@ -40,7 +40,11 @@ export function ListView() {
   return (
     <div className="overflow-y-hidden h-[calc(100vh-108px)] p-4 max-w-400 mx-auto  overflow-x-auto relative">
       {boardData?.data?.cards && COLUMNS ? (
-        <DataTable columns={COLUMNS} data={boardData.data.cards} />
+        <DataTable
+          columns={COLUMNS}
+          data={boardData.data.cards}
+          listStatuses={boardData?.data?.listStatuses}
+        />
       ) : (
         <p>Loading</p>
       )}

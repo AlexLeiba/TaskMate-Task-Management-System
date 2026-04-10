@@ -22,6 +22,12 @@ export type ListStatusType =
   | "done"
   | "backlog";
 
+export type ListStatusesType = {
+  id: string;
+  title: string;
+  status: StatusType;
+}[];
+
 export type UserType = {
   id?: string;
   name: string;
@@ -147,6 +153,13 @@ export type CardDetailsType = {
   activity?: ActivityType[];
   checklist?: ChecklistType[];
   dueDate?: DueDateType;
+};
+
+export type CardDetailsTableProps = {
+  cardTitle: string;
+  listTitle: string;
+  cardDetailsId: string;
+  isVisible: boolean;
 };
 
 export type CardDetailsTabs =

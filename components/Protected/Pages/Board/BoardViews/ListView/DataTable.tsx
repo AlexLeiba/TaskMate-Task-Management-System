@@ -8,6 +8,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  RowData,
   SortingState,
   useReactTable,
   VisibilityState,
@@ -22,7 +23,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
@@ -34,6 +35,8 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { TABLE_COLUMNS } from "@/lib/consts/protected/table";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import dynamic from "next/dynamic";
+import { List } from "@/lib/generated/prisma/client";
+import { CardDetailsTableProps } from "@/lib/types";
 
 const TicketCardDetails = dynamic(() =>
   import("@/components/Protected/Pages/Board/BoardViews/KanbanView/TicketCard/TicketCardDetails/TicketCardDetails").then(
@@ -44,24 +47,42 @@ const TicketCardDetails = dynamic(() =>
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  listStatuses: Pick<List, "id" | "status" | "title">[];
 }
+
+declare module "@tanstack/react-table" {
+  interface TableMeta<TData extends RowData> {
+    isCardDetailsOpened: CardDetailsTableProps;
+    setIsCardDetailsOpened: React.Dispatch<
+      React.SetStateAction<CardDetailsTableProps>
+    >;
+    listStatuses: Pick<List, "id" | "status" | "title">[];
+  }
+}
+
+const DEFAULT_CARD_DETAILS = {
+  cardTitle: "",
+  listTitle: "",
+  cardDetailsId: "",
+  isVisible: false,
+};
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  listStatuses,
 }: DataTableProps<TData, TValue>) {
-  const [isCardDetailsOpened, setIsCardDetailsOpened] = useState({
-    cardTitle: "",
-    listTitle: "",
-    cardDetailsId: "",
-    isVisible: false,
-  });
+  const [isCardDetailsOpened, setIsCardDetailsOpened] =
+    useState<CardDetailsTableProps>(DEFAULT_CARD_DETAILS);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [, startTransition] = useTransition();
 
   const [columnVisibility, setColumnVisibility] =
     useLocalStorage<VisibilityState>("columns-visibility", {});
   const [rowSelection, setRowSelection] = useState({});
+
+  const [searchTitle, setSearchTitle] = useState("");
 
   const table = useReactTable({
     getCoreRowModel: getCoreRowModel(),
@@ -78,6 +99,7 @@ export function DataTable<TData, TValue>({
     meta: {
       isCardDetailsOpened,
       setIsCardDetailsOpened,
+      listStatuses,
     },
     state: {
       sorting,
@@ -86,6 +108,14 @@ export function DataTable<TData, TValue>({
       rowSelection,
     },
   });
+
+  function handleSearch(event: React.ChangeEvent<HTMLInputElement>) {
+    setSearchTitle(event.target.value);
+
+    startTransition(() => {
+      table.getColumn("title")?.setFilterValue(event.target.value);
+    });
+  }
 
   return (
     <>
@@ -118,11 +148,9 @@ export function DataTable<TData, TValue>({
         </DropdownMenu>
         <Input
           className="h-6"
-          placeholder="filter by title..."
-          value={table.getColumn("title")?.getFilterValue() as string}
-          onChange={(event) =>
-            table.getColumn("title")?.setFilterValue(event.target.value)
-          }
+          placeholder="search by title..."
+          value={searchTitle}
+          onChange={handleSearch}
         />
         <div className="flex items-center gap-1 bg-background px-2 rounded-md">
           Page: <p>{table.getState().pagination.pageIndex + 1}</p>/
@@ -212,14 +240,7 @@ export function DataTable<TData, TValue>({
           listTitle={isCardDetailsOpened.listTitle}
           cardDetailsId={isCardDetailsOpened.cardDetailsId}
           isModalOpened={isCardDetailsOpened.isVisible}
-          handleCloseModal={() =>
-            setIsCardDetailsOpened({
-              cardTitle: "",
-              listTitle: "",
-              cardDetailsId: "",
-              isVisible: false,
-            })
-          }
+          handleCloseModal={() => setIsCardDetailsOpened(DEFAULT_CARD_DETAILS)}
         />
       )}
     </>

@@ -17,6 +17,7 @@ describe("Dashboard page mobile view", () => {
   it("Dashboard Navigations", () => {
     // aliases
     cy.url().should("include", "/dashboard").as("includeDashboardUrl");
+    cy.get("[data-test=footer] [data-test=logo]").eq(0).as("logo");
     //
     cy.get("@includeDashboardUrl");
 
@@ -38,20 +39,18 @@ describe("Dashboard page mobile view", () => {
       cy.visit(`/dashboard/${organizationId}/overview`)
         .url()
         .should("include", "/overview");
-      cy.visit(`/dashboard/${organizationId}`)
-        .url()
-        .should("include", "/dashboard");
     });
+    // assert the page is hydrated (mounted)
+    cy.get("[data-test=overview-page] h1").should("be.visible");
+    cy.get("@logo").click();
+    cy.get("@includeDashboardUrl");
 
     cy.visit("/select-organization");
     cy.url().should("include", "/select-organization");
 
-    cy.location("pathname").then((pathname) => {
-      const organizationId = pathname.split("/").at(-1);
-      cy.visit(`dashboard/${organizationId}`)
-        .url()
-        .should("include", "/dashboard");
-    });
+    cy.get("[data-test=select-organization-page]").should("be.visible");
+    cy.get("@logo").click();
+    cy.get("@includeDashboardUrl");
   });
 
   it("Sidebar", () => {
@@ -60,7 +59,7 @@ describe("Dashboard page mobile view", () => {
     cy.get("[data-test=footer] [data-test=logo]").eq(0).as("logo");
     //
 
-    cy.url().should("include", "/dashboard");
+    cy.get("@includeDashboardUrl");
 
     // assert default hidden sidebar
     cy.get("[data-test=sidebar-content]").should("not.exist");

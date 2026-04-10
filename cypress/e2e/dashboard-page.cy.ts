@@ -19,7 +19,7 @@ describe("Dashboard page desktop and tablet view", () => {
     // aliases
     cy.get("[data-test=logo]").eq(0).as("logo");
     cy.url().should("include", "/dashboard").as("includeDashboardUrl");
-    //
+
     cy.get("@includeDashboardUrl");
 
     cy.location("pathname").then((pathname) => {
@@ -41,12 +41,15 @@ describe("Dashboard page desktop and tablet view", () => {
         .should("include", "/overview");
     });
 
+    // assert the page is hydrated (mounted)
+    cy.get("[data-test=overview-page] h1").should("be.visible");
     cy.get("@logo").click();
     cy.get("@includeDashboardUrl");
 
     cy.visit("/select-organization");
     cy.url().should("include", "/select-organization");
 
+    cy.get("[data-test=select-organization-page]").should("be.visible");
     cy.get("@logo").click();
     cy.get("@includeDashboardUrl");
   });

@@ -14,22 +14,26 @@ on: #identifies when we want to run tests
 
 jobs:
   install_build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest #runs on a server
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v6 # clone the repo in the environment machine on ubuntu (linux) actions/ perform predefined setup tasks, built-in steps
       - name: "Install node"
-        uses: actions/setup-node@v4 # install node
+        uses: actions/setup-node@v4 # install node, comes from Github actions-> repository / setup-node
         with:
           node-version: "latest"
       - name: Print the branch name
-        run: echo ${{ github.actor }} ${{ github.event_name }} ${{ github.ref }}
+        run: |
+          echo ${{ github.actor }} ${{ github.event_name }} ${{ github.ref }}
+          echo 2 bro
+          echo 3 bro
       - name: Install dependencies
         run: npm install
       - name: Build
         run: npm run build
   welcome_job:
     runs-on: ubuntu-latest
+    needs: install_build
     steps:
       - name: Print the branch name
         run: echo Pasol nahui

@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repo
-        uses: actions/checkout@v6 # clone the repo in the environment machine on ubuntu (linux)
+        uses: actions/checkout@v6 # clone the repo in the environment machine on ubuntu (linux) actions/ perform predefined setup tasks, built-in steps
       - name: "Install node"
         uses: actions/setup-node@v4 # install node
         with:

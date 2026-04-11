@@ -1,11 +1,9 @@
 name: Clone the repo
 
 on:
-  # push:
-  #   branches:
-  #     - staging
-  #     - workflow
-  #     - master
+  push:
+    branches:
+      - workflow
   pull_request:
     types:
       - opened

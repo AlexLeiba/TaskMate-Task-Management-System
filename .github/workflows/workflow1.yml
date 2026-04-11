@@ -1,6 +1,6 @@
-name: Clone the repo
+name: Next.js CI
 
-on:
+on: #identifies when we want to run tests
   push:
     branches:
       - workflow
@@ -8,6 +8,7 @@ on:
     types:
       - opened
       - reopened
+      - closed
     branches:
       - staging
 
@@ -27,3 +28,8 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
+  welcome_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print the branch name
+        run: echo Pasol nahui

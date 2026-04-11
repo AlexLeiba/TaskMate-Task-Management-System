@@ -1,22 +1,27 @@
 name: Clone the repo
 
 on:
-  push:
-    branches:
-      - staging
-      - workflow
+  # push:
+  #   branches:
+  #     - staging
+  #     - workflow
+  #     - master
   pull_request:
     types:
       - opened
     branches:
-      - master
+      - staging
 
 jobs:
   install_build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repo
-        uses: actions/checkout@v6 # close the repo in the environment machine on ubuntu
+        uses: actions/checkout@v6 # clone the repo in the environment machine on ubuntu (linux)
+      - name: "Install node"
+        uses: actions/setup-node@v4 # install node
+        with:
+          node-version: 16
       - name: Print the branch name
         run: echo ${{ github.actor }} ${{ github.event_name }} ${{ github.ref }}
       - name: Install dependencies

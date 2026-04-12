@@ -23,8 +23,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { useState, useTransition } from "react";
-import { Input } from "@/components/ui/input";
+import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -34,15 +33,8 @@ import {
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { TABLE_COLUMNS } from "@/lib/consts/protected/table";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import dynamic from "next/dynamic";
 import { List } from "@/lib/generated/prisma/client";
-import { CardDetailsTableProps } from "@/lib/types";
-
-const TicketCardDetails = dynamic(() =>
-  import("@/components/Protected/Pages/Board/BoardViews/KanbanView/TicketCard/TicketCardDetails/TicketCardDetails").then(
-    (m) => m.TicketCardDetails,
-  ),
-);
+import { Search } from "./Search";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -52,37 +44,21 @@ interface DataTableProps<TData, TValue> {
 
 declare module "@tanstack/react-table" {
   interface TableMeta<TData extends RowData> {
-    isCardDetailsOpened: CardDetailsTableProps;
-    setIsCardDetailsOpened: React.Dispatch<
-      React.SetStateAction<CardDetailsTableProps>
-    >;
     listStatuses: Pick<List, "id" | "status" | "title">[];
   }
 }
-
-const DEFAULT_CARD_DETAILS = {
-  cardTitle: "",
-  listTitle: "",
-  cardDetailsId: "",
-  isVisible: false,
-};
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   listStatuses,
 }: DataTableProps<TData, TValue>) {
-  const [isCardDetailsOpened, setIsCardDetailsOpened] =
-    useState<CardDetailsTableProps>(DEFAULT_CARD_DETAILS);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [, startTransition] = useTransition();
 
   const [columnVisibility, setColumnVisibility] =
     useLocalStorage<VisibilityState>("columns-visibility", {});
   const [rowSelection, setRowSelection] = useState({});
-
-  const [searchTitle, setSearchTitle] = useState("");
 
   const table = useReactTable({
     getCoreRowModel: getCoreRowModel(),
@@ -97,8 +73,6 @@ export function DataTable<TData, TValue>({
     data,
     columns,
     meta: {
-      isCardDetailsOpened,
-      setIsCardDetailsOpened,
       listStatuses,
     },
     state: {
@@ -108,14 +82,6 @@ export function DataTable<TData, TValue>({
       rowSelection,
     },
   });
-
-  function handleSearch(event: React.ChangeEvent<HTMLInputElement>) {
-    setSearchTitle(event.target.value);
-
-    startTransition(() => {
-      table.getColumn("title")?.setFilterValue(event.target.value);
-    });
-  }
 
   return (
     <>
@@ -146,12 +112,7 @@ export function DataTable<TData, TValue>({
               })}
           </DropdownMenuContent>
         </DropdownMenu>
-        <Input
-          className="h-6"
-          placeholder="search by title..."
-          value={searchTitle}
-          onChange={handleSearch}
-        />
+        <Search />
         <div className="flex items-center gap-1 bg-background px-2 rounded-md">
           Page: <p>{table.getState().pagination.pageIndex + 1}</p>/
           <p>{table.getPageCount()}</p>
@@ -233,16 +194,6 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-
-      {isCardDetailsOpened && (
-        <TicketCardDetails
-          cardTitle={isCardDetailsOpened.cardTitle}
-          listTitle={isCardDetailsOpened.listTitle}
-          cardDetailsId={isCardDetailsOpened.cardDetailsId}
-          isModalOpened={isCardDetailsOpened.isVisible}
-          handleCloseModal={() => setIsCardDetailsOpened(DEFAULT_CARD_DETAILS)}
-        />
-      )}
     </>
   );
 }

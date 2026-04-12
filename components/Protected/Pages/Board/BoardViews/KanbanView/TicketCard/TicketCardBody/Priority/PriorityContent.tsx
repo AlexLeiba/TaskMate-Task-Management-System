@@ -25,13 +25,13 @@ export function PriorityContent({
 }: Props) {
   const { mutate, isPending } = useMutation({
     mutationFn: editPriorityAction,
-    mutationKey: [QUERY_KEYS.pages.board.cards.editPriority],
+    mutationKey: [QUERY_KEYS.pages.board.kanbanView.cards.editPriority],
     onSuccess: () => {
-      toast.dismiss(QUERY_KEYS.pages.board.cards.editPriority);
+      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cards.editPriority);
       toast.success("Card priority was changed");
     },
     onError: ({ message }) => {
-      toast.dismiss(QUERY_KEYS.pages.board.cards.editPriority);
+      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cards.editPriority);
       toast.error(message || "Error editing card priority, please try again");
     },
   });
@@ -39,7 +39,7 @@ export function PriorityContent({
   function handleSelectPriority(priorityValue: PriorityType) {
     handleClosePopup();
     toast.loading("Editing card priority", {
-      id: QUERY_KEYS.pages.board.cards.editPriority,
+      id: QUERY_KEYS.pages.board.kanbanView.cards.editPriority,
     });
     mutate({ priority: priorityValue.value, boardId, listId, cardId });
   }

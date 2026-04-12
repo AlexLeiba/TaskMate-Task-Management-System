@@ -43,30 +43,30 @@ export function Actions({
     mutate: deleteCardMutation,
     isPending: isPendingDeleteCardDeleteCard,
   } = useMutation({
-    mutationKey: [QUERY_KEYS.pages.board.cardDetails.deleteCard],
+    mutationKey: [QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteCard],
     mutationFn: deleteCardAction,
     onMutate: async () =>
       apiDeleteFile({ type: "card", cardDetailsId, fileType: "raw" }, boardId), // execution of the mutation will wait until this request is resolved (removing all attachments from cloud)
     onSuccess: () => {
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.deleteCard);
+      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteCard);
       toast.success("Card deleted");
     },
     onError: ({ message }) => {
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.deleteCard);
+      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteCard);
       toast.error(message || "Error deleting card, please try again");
     },
   });
   // COPY CARD
   const { mutate: copyCardMutation, isPending: isPendingCopyCard } =
     useMutation({
-      mutationKey: [QUERY_KEYS.pages.board.cardDetails.copyCard],
+      mutationKey: [QUERY_KEYS.pages.board.kanbanView.cardDetails.copyCard],
       mutationFn: copyCardAction,
       onSuccess: () => {
-        toast.dismiss(QUERY_KEYS.pages.board.cardDetails.copyCard);
+        toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.copyCard);
         toast.success("Card copied");
       },
       onError: ({ message }) => {
-        toast.dismiss(QUERY_KEYS.pages.board.cardDetails.copyCard);
+        toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.copyCard);
         toast.error(message || "Error copying card, please try again");
       },
     });
@@ -77,7 +77,7 @@ export function Actions({
     }
 
     toast.loading("Copying card...", {
-      id: QUERY_KEYS.pages.board.cardDetails.copyCard,
+      id: QUERY_KEYS.pages.board.kanbanView.cardDetails.copyCard,
     });
     copyCardMutation({ listId, boardId: boardId || "", cardId });
   }
@@ -88,7 +88,7 @@ export function Actions({
     }
 
     toast.loading("Deleting card...", {
-      id: QUERY_KEYS.pages.board.cardDetails.deleteCard,
+      id: QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteCard,
     });
     setIsDeleteModalOpened(false);
 

@@ -49,16 +49,16 @@ export function OptionsContent({
         boardId,
       ); // execution of the mutation will wait until this request is resolved (removing all attachments from cloud)
     },
-    mutationKey: [QUERY_KEYS.pages.board.cards.deleteCard],
+    mutationKey: [QUERY_KEYS.pages.board.kanbanView.cards.deleteCard],
     mutationFn: deleteCardAction,
     onSuccess: () => {
       setDeleteDialogOpen(false);
-      toast.dismiss(QUERY_KEYS.pages.board.cards.deleteCard);
+      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cards.deleteCard);
       toast.success("Card deleted");
     },
     onError: ({ message }) => {
       setDeleteDialogOpen(false);
-      toast.dismiss(QUERY_KEYS.pages.board.cards.deleteCard);
+      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cards.deleteCard);
       toast.error(message || "Error deleting card, please try again");
     },
   });
@@ -69,7 +69,7 @@ export function OptionsContent({
     }
 
     toast.loading("Deleting card...", {
-      id: QUERY_KEYS.pages.board.cards.deleteCard,
+      id: QUERY_KEYS.pages.board.kanbanView.cards.deleteCard,
     });
 
     // DELETE FILES FROM DB
@@ -79,14 +79,17 @@ export function OptionsContent({
   // EDIT TITLE
   const { mutate: editTitleCardMutation, isPending: isPendingEditTitleCard } =
     useMutation({
-      mutationKey: [QUERY_KEYS.pages.board.cards.editTitleCard, cardId],
+      mutationKey: [
+        QUERY_KEYS.pages.board.kanbanView.cards.editTitleCard,
+        cardId,
+      ],
       mutationFn: editCardTitleAction,
       onSuccess: () => {
-        toast.dismiss(QUERY_KEYS.pages.board.cards.editTitleCard);
+        toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cards.editTitleCard);
         toast.success("Card title was edited");
       },
       onError: ({ message }) => {
-        toast.dismiss(QUERY_KEYS.pages.board.cards.editTitleCard);
+        toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cards.editTitleCard);
         toast.error(message || "Error editing card title, please try again");
       },
     });
@@ -94,14 +97,14 @@ export function OptionsContent({
   // COPY CARD
   const { mutate: copyCardMutation, isPending: isPendingCopyCard } =
     useMutation({
-      mutationKey: [QUERY_KEYS.pages.board.cards.copyCard],
+      mutationKey: [QUERY_KEYS.pages.board.kanbanView.cards.copyCard],
       mutationFn: copyCardAction,
       onSuccess: () => {
-        toast.dismiss(QUERY_KEYS.pages.board.cards.copyCard);
+        toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cards.copyCard);
         toast.success("Card was copied");
       },
       onError: ({ message }) => {
-        toast.dismiss(QUERY_KEYS.pages.board.cards.copyCard);
+        toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cards.copyCard);
         toast.error(message || "Error copying card, please try again");
       },
     });
@@ -110,7 +113,7 @@ export function OptionsContent({
   function handleChangeCardTitle(title: { [inputName: string]: string }) {
     editTitleCardMutation({ title: title.title, cardId, listId, boardId });
     toast.loading("Editing card title...", {
-      id: QUERY_KEYS.pages.board.cards.editTitleCard,
+      id: QUERY_KEYS.pages.board.kanbanView.cards.editTitleCard,
     });
     setIsOpenedTitleInput(false);
     // setIsOpenedOptions(false);
@@ -126,7 +129,7 @@ export function OptionsContent({
     }
 
     toast.loading("Copying card...", {
-      id: QUERY_KEYS.pages.board.cards.copyCard,
+      id: QUERY_KEYS.pages.board.kanbanView.cards.copyCard,
     });
     copyCardMutation({ cardId, listId, boardId });
     // setIsOpenedOptions(false);

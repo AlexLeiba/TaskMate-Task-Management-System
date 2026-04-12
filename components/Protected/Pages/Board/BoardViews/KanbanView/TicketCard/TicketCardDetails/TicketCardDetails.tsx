@@ -65,7 +65,7 @@ export function TicketCardDetails({
 
   const { data: cardDetailsData } = useQuery({
     queryKey: [
-      QUERY_KEYS.pages.board.cardDetails.getCardDetails,
+      QUERY_KEYS.pages.board.kanbanView.cardDetails.getCardDetails,
       cardDetailsId,
     ],
     queryFn: getDetailsData,

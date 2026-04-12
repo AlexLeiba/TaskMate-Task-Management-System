@@ -83,20 +83,28 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
   const { isPending: isPendingCreate, mutate: mutateCreateDueDate } =
     useMutation({
       mutationFn: createDueDateAction,
-      mutationKey: [QUERY_KEYS.pages.board.cardDetails.createDueDate],
+      mutationKey: [
+        QUERY_KEYS.pages.board.kanbanView.cardDetails.createDueDate,
+      ],
       onSuccess: () => {
-        toast.dismiss(QUERY_KEYS.pages.board.cardDetails.createDueDate);
+        toast.dismiss(
+          QUERY_KEYS.pages.board.kanbanView.cardDetails.createDueDate,
+        );
         toast.success("Due date created", {
-          id: QUERY_KEYS.pages.board.cardDetails.createDueDate,
+          id: QUERY_KEYS.pages.board.kanbanView.cardDetails.createDueDate,
         });
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEYS.pages.board.cardDetails.getCardDetails],
+          queryKey: [
+            QUERY_KEYS.pages.board.kanbanView.cardDetails.getCardDetails,
+          ],
         });
       },
       onError: ({ message }) => {
         setDueDateView("");
         setDueDateIsoString("");
-        toast.dismiss(QUERY_KEYS.pages.board.cardDetails.createDueDate);
+        toast.dismiss(
+          QUERY_KEYS.pages.board.kanbanView.cardDetails.createDueDate,
+        );
         toast.error(message || "Error creating due date, please try again");
       },
     });
@@ -104,18 +112,26 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
   const { isPending: isPendingDelete, mutate: mutateDeleteDueDate } =
     useMutation({
       mutationFn: deleteDueDateAction,
-      mutationKey: [QUERY_KEYS.pages.board.cardDetails.deleteDueDate],
+      mutationKey: [
+        QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteDueDate,
+      ],
       onSuccess: () => {
-        toast.dismiss(QUERY_KEYS.pages.board.cardDetails.deleteDueDate);
+        toast.dismiss(
+          QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteDueDate,
+        );
         toast.success("Due date Deleted", {
-          id: QUERY_KEYS.pages.board.cardDetails.deleteDueDate,
+          id: QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteDueDate,
         });
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEYS.pages.board.cardDetails.getCardDetails],
+          queryKey: [
+            QUERY_KEYS.pages.board.kanbanView.cardDetails.getCardDetails,
+          ],
         });
       },
       onError: ({ message }) => {
-        toast.dismiss(QUERY_KEYS.pages.board.cardDetails.deleteDueDate);
+        toast.dismiss(
+          QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteDueDate,
+        );
         toast.error(message || "Error deleting due date, please try again");
       },
     });
@@ -143,7 +159,7 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
     });
 
     toast.loading("Creating due date...", {
-      id: QUERY_KEYS.pages.board.cardDetails.createDueDate,
+      id: QUERY_KEYS.pages.board.kanbanView.cardDetails.createDueDate,
     });
 
     const parsedDateWithTime = parseDateTimeToLocal(dateUTC, timeInUTC);

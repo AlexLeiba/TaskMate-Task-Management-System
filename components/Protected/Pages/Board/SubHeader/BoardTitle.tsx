@@ -20,7 +20,7 @@ export function BoardTitle({ boardId, boardTitle }: Props) {
   const [showTitleInput, setShowTitleInput] = useState(false);
   const { mutate: mutateEditBoardTitle, isPending: isPendingEditBoardTitle } =
     useMutation({
-      mutationKey: [QUERY_KEYS.pages.board.lists.editBoardTitle],
+      mutationKey: [QUERY_KEYS.pages.board.kanbanView.lists.editBoardTitle],
       mutationFn: editBoardTitleAction,
       onSuccess: () => {
         toast.success("Board title updated");

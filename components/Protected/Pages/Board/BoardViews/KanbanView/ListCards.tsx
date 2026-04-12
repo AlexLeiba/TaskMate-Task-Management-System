@@ -61,14 +61,18 @@ export function ListCards({ boardId, listData }: Props) {
 
   const { mutate: mutateReorderList } = useMutation({
     mutationFn: changeListPositionAction,
-    mutationKey: [QUERY_KEYS.pages.board.lists.dragAndDrop.reorderList],
+    mutationKey: [
+      QUERY_KEYS.pages.board.kanbanView.lists.dragAndDrop.reorderList,
+    ],
     onError: (error: any) => {
       toast.error(error?.message || "Something went wrong");
     },
   });
   const { mutate: mutateReorderCard } = useMutation({
     mutationFn: changeCardPositionAction,
-    mutationKey: [QUERY_KEYS.pages.board.lists.dragAndDrop.reorderCard],
+    mutationKey: [
+      QUERY_KEYS.pages.board.kanbanView.lists.dragAndDrop.reorderCard,
+    ],
     onError: (error: any) => {
       toast.error(error?.message || "Something went wrong");
     },

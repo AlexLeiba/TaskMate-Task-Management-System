@@ -26,15 +26,15 @@ export function AddTicketCard({ listId }: Props) {
       : isOpenedNewCardInput;
 
   const { mutate, isPending } = useMutation({
-    mutationKey: [QUERY_KEYS.pages.board.lists.createListCard],
+    mutationKey: [QUERY_KEYS.pages.board.kanbanView.lists.createListCard],
     mutationFn: createListCardAction,
     onSuccess: () => {
-      toast.dismiss(QUERY_KEYS.pages.board.lists.createListCard);
+      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.lists.createListCard);
       toast.success("List card changed");
       setIsOpenedNewCardInput(false);
     },
     onError: ({ message }) => {
-      toast.dismiss(QUERY_KEYS.pages.board.lists.createListCard);
+      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.lists.createListCard);
       toast.error(message || "Error creating list card, please try again");
     },
   });
@@ -42,7 +42,7 @@ export function AddTicketCard({ listId }: Props) {
   function handleAddNewCard(value: { [inputName: string]: string }) {
     mutate({ listId, title: value.title, boardId });
     toast.loading("Creating list card...", {
-      id: QUERY_KEYS.pages.board.lists.createListCard,
+      id: QUERY_KEYS.pages.board.kanbanView.lists.createListCard,
     });
   }
   return (

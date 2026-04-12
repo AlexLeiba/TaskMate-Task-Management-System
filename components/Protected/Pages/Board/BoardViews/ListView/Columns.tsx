@@ -6,12 +6,12 @@ import { DATE_FORMAT } from "@/lib/consts/consts";
 import { DueDateIndicatorCard } from "@/components/Protected/Shared-protected/DueDateIndicatorCard";
 import { ChecklistIndicatorCard } from "@/components/Protected/Shared-protected/ChecklistIndicatorCard";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AssignTo } from "../../../../Shared-protected/AssignTo/AssignTo";
 import { Priority } from "@/components/Protected/Shared-protected/Priority/Priority";
-import { IconButton } from "@/components/ui/iconButton";
 import { Status } from "@/components/Protected/Shared-protected/Status/Status";
+import { OpenTableRowButton } from "./OpenTableRowButton";
+import { SortInticator } from "./SortInticator";
 
 export const COLUMNS:
   | ColumnDef<CardWithDetailsAndDueDateAndChecklistAndReporterType>[]
@@ -48,7 +48,7 @@ export const COLUMNS:
             classNameChildren="flex items-center"
           >
             Title
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <SortInticator direction={column.getIsSorted() as "asc" | "desc"} />
           </Button>
         </div>
       );
@@ -68,26 +68,21 @@ export const COLUMNS:
                 };
               });
             }}
-            aria-label="Select row"
-            title="Select row"
+            aria-label={`Select row - ${row.original.title}`}
+            title={`Select row - ${row.original.title}`}
           />
 
-          <IconButton
-            onClick={() =>
-              table.options.meta?.setIsCardDetailsOpened({
-                cardTitle: row.original.title,
-                listTitle: row.original.listName,
-                cardDetailsId: row.original.id,
-                isVisible: true,
-              })
-            }
-            className="flex items-center gap-2 w-full p-1 text-left"
+          <OpenTableRowButton
             title={`Open - ${row.original.title}`}
+            cardTitle={row.original.title}
+            listTitle={row.original.listName}
+            cardDetailsId={row.original.id}
+            isVisible={true}
           >
             <p className="text-xl max-w-50 line-clamp-1">
               {row.original.title}
             </p>
-          </IconButton>
+          </OpenTableRowButton>
         </div>
       );
     },
@@ -136,7 +131,7 @@ export const COLUMNS:
           classNameChildren="flex items-center justify-between "
         >
           Priority
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <SortInticator direction={column.getIsSorted() as "asc" | "desc"} />
         </Button>
       );
     },
@@ -164,7 +159,7 @@ export const COLUMNS:
           classNameChildren="flex items-center justify-between "
         >
           Status
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <SortInticator direction={column.getIsSorted() as "asc" | "desc"} />
         </Button>
       );
     },
@@ -182,23 +177,16 @@ export const COLUMNS:
   {
     accessorKey: "details.dueDate",
     header: "Due Date",
-    cell: ({ row, table }) => {
+    cell: ({ row }) => {
       return (
         <>
           {
-            <Button
-              variant={"secondary"}
-              onClick={() =>
-                table.options.meta?.setIsCardDetailsOpened({
-                  cardTitle: row.original.title,
-                  listTitle: row.original.listName,
-                  cardDetailsId: row.original.id,
-                  isVisible: true,
-                })
-              }
-              className="flex items-center gap-2 w-full text-left"
+            <OpenTableRowButton
               title={`Add due date to ${row.original.title}`}
-              aria-label={`Add due date to ${row.original.title}`}
+              cardTitle={row.original.title}
+              listTitle={row.original.listName}
+              cardDetailsId={row.original.id}
+              isVisible={true}
             >
               {row?.original?.details?.dueDate?.length &&
               row?.original?.details?.dueDate?.length > 0 ? (
@@ -206,7 +194,7 @@ export const COLUMNS:
               ) : (
                 <p>Add +</p>
               )}
-            </Button>
+            </OpenTableRowButton>
           }
         </>
       );
@@ -215,23 +203,16 @@ export const COLUMNS:
   {
     accessorKey: "details.checklist",
     header: "Checklist",
-    cell: ({ row, table }) => {
+    cell: ({ row }) => {
       return (
         <>
           {
-            <Button
-              variant={"secondary"}
-              onClick={() =>
-                table.options.meta?.setIsCardDetailsOpened({
-                  cardTitle: row.original.title,
-                  listTitle: row.original.listName,
-                  cardDetailsId: row.original.id,
-                  isVisible: true,
-                })
-              }
-              className="flex items-center gap-2 w-full text-left"
+            <OpenTableRowButton
               title={`Add checklist to ${row.original.title}`}
-              aria-label={`Add checklist to ${row.original.title}`}
+              cardTitle={row.original.title}
+              listTitle={row.original.listName}
+              cardDetailsId={row.original.id}
+              isVisible={true}
             >
               {row.original.details?.checklist?.length &&
               row.original.details?.checklist?.length > 0 ? (
@@ -241,7 +222,7 @@ export const COLUMNS:
               ) : (
                 <p>Add +</p>
               )}
-            </Button>
+            </OpenTableRowButton>
           }
         </>
       );
@@ -258,7 +239,7 @@ export const COLUMNS:
           classNameChildren="flex items-center justify-between "
         >
           Created At
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <SortInticator direction={column.getIsSorted() as "asc" | "desc"} />
         </Button>
       );
     },
@@ -282,7 +263,7 @@ export const COLUMNS:
           classNameChildren="flex items-center justify-between "
         >
           Updated At
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <SortInticator direction={column.getIsSorted() as "asc" | "desc"} />
         </Button>
       );
     },

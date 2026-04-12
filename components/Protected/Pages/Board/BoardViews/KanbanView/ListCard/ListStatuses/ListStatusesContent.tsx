@@ -27,14 +27,20 @@ export function ListStatusesContent({
 
   const { mutate: mutateChangeStatus, isPending: isPendingChangeStatus } =
     useMutation({
-      mutationKey: [QUERY_KEYS.pages.board.lists.statuses.updateStatus],
+      mutationKey: [
+        QUERY_KEYS.pages.board.kanbanView.lists.statuses.updateStatus,
+      ],
       mutationFn: updateListStatusAction,
       onSuccess: () => {
-        toast.dismiss(QUERY_KEYS.pages.board.lists.statuses.updateStatus);
+        toast.dismiss(
+          QUERY_KEYS.pages.board.kanbanView.lists.statuses.updateStatus,
+        );
         toast.success("List status changed");
       },
       onError: ({ message }) => {
-        toast.dismiss(QUERY_KEYS.pages.board.lists.statuses.updateStatus);
+        toast.dismiss(
+          QUERY_KEYS.pages.board.kanbanView.lists.statuses.updateStatus,
+        );
         toast.error(message || "Error changing list status, please try again");
       },
     });
@@ -48,7 +54,7 @@ export function ListStatusesContent({
     setStatusData(status);
     mutateChangeStatus({ boardId, listId, status: status.value });
     toast.loading("Changing list status...", {
-      id: QUERY_KEYS.pages.board.lists.statuses.updateStatus,
+      id: QUERY_KEYS.pages.board.kanbanView.lists.statuses.updateStatus,
     });
   }
   return (

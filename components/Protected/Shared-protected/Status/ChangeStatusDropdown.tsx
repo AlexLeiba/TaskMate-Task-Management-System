@@ -32,13 +32,13 @@ export function ChangeStatusDropdown({ listId, cardId, listsData }: Props) {
     data,
   } = useMutation({
     mutationFn: editListStatusCardAction,
-    mutationKey: [QUERY_KEYS.pages.board.cardDetails.editStatus],
+    mutationKey: [QUERY_KEYS.pages.board.kanbanView.cardDetails.editStatus],
     onSuccess: () => {
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.editStatus);
+      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.editStatus);
       toast.success("Card card status was changed");
     },
     onError: ({ message }) => {
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.editStatus);
+      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.editStatus);
       toast.error(message || "Error editing card status, please try again");
     },
   });
@@ -47,7 +47,7 @@ export function ChangeStatusDropdown({ listId, cardId, listsData }: Props) {
 
   function handleSelectNewStatus(newListId: StatusType) {
     toast.loading("Editing card status", {
-      id: QUERY_KEYS.pages.board.cardDetails.editStatus,
+      id: QUERY_KEYS.pages.board.kanbanView.cardDetails.editStatus,
     });
 
     if (!boardId || !listId || !cardId)

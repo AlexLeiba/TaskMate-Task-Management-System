@@ -26,14 +26,14 @@ export function ListTitle({
 
   const { mutate: mutateListTitle, isPending: isPendingMutateListTitle } =
     useMutation({
-      mutationKey: [QUERY_KEYS.pages.board.lists.editListTitle],
+      mutationKey: [QUERY_KEYS.pages.board.kanbanView.lists.editListTitle],
       mutationFn: updateListTitleAction,
       onSuccess() {
-        toast.dismiss(QUERY_KEYS.pages.board.lists.editListTitle);
+        toast.dismiss(QUERY_KEYS.pages.board.kanbanView.lists.editListTitle);
         toast.success("List title updated");
       },
       onError({ message }) {
-        toast.dismiss(QUERY_KEYS.pages.board.lists.editListTitle);
+        toast.dismiss(QUERY_KEYS.pages.board.kanbanView.lists.editListTitle);
         toast.error(message || "Error updating list title, please try again");
       },
     });
@@ -46,7 +46,7 @@ export function ListTitle({
 
     mutateListTitle({ listId, title: value.title, boardId });
     toast.loading("Updating list title...", {
-      id: QUERY_KEYS.pages.board.lists.editListTitle,
+      id: QUERY_KEYS.pages.board.kanbanView.lists.editListTitle,
     });
   }
   return (

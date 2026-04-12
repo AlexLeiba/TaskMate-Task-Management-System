@@ -52,47 +52,58 @@ export function Comments({ cardDetailsId }: Props) {
   }
 
   const { data: commentsData, isLoading } = useQuery({
-    queryKey: [QUERY_KEYS.pages.board.cardDetails.getComments, cardDetailsId],
+    queryKey: [
+      QUERY_KEYS.pages.board.kanbanView.cardDetails.getComments,
+      cardDetailsId,
+    ],
     queryFn: getCommentsData,
   });
 
   // CREATE
   const { mutate: mutateCreate, isPending: isPendingCreate } = useMutation({
-    mutationKey: [QUERY_KEYS.pages.board.cardDetails.createComment],
+    mutationKey: [QUERY_KEYS.pages.board.kanbanView.cardDetails.createComment],
     mutationFn: createCommentAction,
     onSuccess: () => {
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.createComment);
+      toast.dismiss(
+        QUERY_KEYS.pages.board.kanbanView.cardDetails.createComment,
+      );
       toast.success("Comment created");
       queryClient.invalidateQueries({
         queryKey: [
-          QUERY_KEYS.pages.board.cardDetails.getComments,
+          QUERY_KEYS.pages.board.kanbanView.cardDetails.getComments,
           cardDetailsId,
         ],
       });
     },
     onError: ({ message }) => {
       toast.error(message || "Error creating comment, please try again");
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.createComment);
+      toast.dismiss(
+        QUERY_KEYS.pages.board.kanbanView.cardDetails.createComment,
+      );
     },
   });
 
   // DELETE
   const { mutate: mutateDelete, isPending: isPendingDelete } = useMutation({
-    mutationKey: [QUERY_KEYS.pages.board.cardDetails.deleteComment],
+    mutationKey: [QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteComment],
     mutationFn: deleteCommentAction,
     onSuccess: () => {
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.deleteComment);
+      toast.dismiss(
+        QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteComment,
+      );
       toast.success("Comment deleted");
       queryClient.invalidateQueries({
         queryKey: [
-          QUERY_KEYS.pages.board.cardDetails.getComments,
+          QUERY_KEYS.pages.board.kanbanView.cardDetails.getComments,
           cardDetailsId,
         ],
       });
     },
     onError: ({ message }) => {
       toast.error(message || "Error deleting comment, please try again");
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.deleteComment);
+      toast.dismiss(
+        QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteComment,
+      );
     },
   });
 
@@ -104,7 +115,7 @@ export function Comments({ cardDetailsId }: Props) {
       return toast.error("Something went wrong, please try again");
     }
     toast.loading("Deleting comment...", {
-      id: QUERY_KEYS.pages.board.cardDetails.deleteComment,
+      id: QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteComment,
     });
     setIsDeleteModalOpened(false);
 
@@ -125,7 +136,7 @@ export function Comments({ cardDetailsId }: Props) {
     }
 
     toast.loading("Creating comment...", {
-      id: QUERY_KEYS.pages.board.cardDetails.createComment,
+      id: QUERY_KEYS.pages.board.kanbanView.cardDetails.createComment,
     });
     mutateCreate({
       cardDetailsId,

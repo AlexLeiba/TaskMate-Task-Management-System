@@ -40,9 +40,9 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
 
   const { mutate: mutateAssigneTo, isPending } = useMutation({
     mutationFn: assignToCardAction,
-    mutationKey: [QUERY_KEYS.pages.board.cardDetails.assignTo],
+    mutationKey: [QUERY_KEYS.pages.board.kanbanView.cardDetails.assignTo],
     onSuccess: ({ data }) => {
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.assignTo);
+      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.assignTo);
       toast.success("Card assigned");
       const foundSelectedUser = members?.find(
         (member) => member?.email === data?.assignedToEmail,
@@ -56,7 +56,7 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
       setSelectedUser(selectedUser);
     },
     onError: ({ message }) => {
-      toast.dismiss(QUERY_KEYS.pages.board.cards.assignTo);
+      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cards.assignTo);
       toast.error(message || "Error assigning card, please try again");
     },
   });
@@ -64,14 +64,14 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
   const { mutate: unnasignMutation, isPending: isPendingUnassigne } =
     useMutation({
       mutationFn: unassigneCardAction,
-      mutationKey: [QUERY_KEYS.pages.board.cardDetails.unassign],
+      mutationKey: [QUERY_KEYS.pages.board.kanbanView.cardDetails.unassign],
       onSuccess: () => {
-        toast.dismiss(QUERY_KEYS.pages.board.cardDetails.unassign);
+        toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.unassign);
         toast.success("Card unassigned");
         setSelectedUser(FAKE_USERS[0]);
       },
       onError: ({ message }) => {
-        toast.dismiss(QUERY_KEYS.pages.board.cardDetails.unassign);
+        toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.unassign);
         toast.error(message || "Error unassigning card, please try again");
       },
     });
@@ -117,7 +117,7 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
     });
 
     toast.loading("Assigning to user...", {
-      id: QUERY_KEYS.pages.board.cards.assignTo,
+      id: QUERY_KEYS.pages.board.kanbanView.cards.assignTo,
     });
   }
 
@@ -137,7 +137,7 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
     });
 
     toast.loading("Unassigning card...", {
-      id: QUERY_KEYS.pages.board.cardDetails.unassign,
+      id: QUERY_KEYS.pages.board.kanbanView.cardDetails.unassign,
     });
   }
 

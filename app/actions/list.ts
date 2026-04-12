@@ -228,6 +228,7 @@ export async function getListDataTableViewAction(
   selectedMemberEmail?: string,
   unassignedCard?: boolean,
   filters: FilterStates = "all",
+  title?: string,
 ): Promise<{
   data: {
     data: {
@@ -272,6 +273,15 @@ export async function getListDataTableViewAction(
           cards: {
             some: {
               assignedToEmail: null,
+            },
+          },
+        }),
+        ...(filters === "title" && {
+          cards: {
+            some: {
+              title: {
+                contains: title,
+              },
             },
           },
         }),
@@ -338,6 +348,13 @@ export async function getListDataTableViewAction(
           ...(unassignedCard && {
             where: {
               assignedToEmail: null,
+            },
+          }),
+          ...(filters === "title" && {
+            where: {
+              title: {
+                contains: title,
+              },
             },
           }),
           ...(filters === "priority" && {

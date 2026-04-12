@@ -36,4 +36,4 @@ jobs:
     needs: install_build
     steps:
       - name: Print the branch name
-        run: echo Pasol nahui blea
+        run: echo Pasol nahui blea 2

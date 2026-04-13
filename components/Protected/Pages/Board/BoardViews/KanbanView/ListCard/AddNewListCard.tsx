@@ -7,7 +7,7 @@ import { IconButton } from "@/components/ui/iconButton";
 import { useMutation } from "@tanstack/react-query";
 import { createListAction } from "@/app/actions/list";
 import toast from "react-hot-toast";
-import { AddNewInput } from "../../../AddNewInput";
+import { TriggerInput } from "../../../../../Shared-protected/TriggerInput";
 
 type Props = { boardId: string };
 export function AddNewListCard({ boardId }: Props) {
@@ -32,7 +32,7 @@ export function AddNewListCard({ boardId }: Props) {
   }
   return (
     <div className="shrink-0 flex flex-col justify-between  bg-card-foreground text-text-primary w-70 rounded-sm active:bg-card hover:ring-2 hover:ring-gray-400 py-1">
-      <AddNewInput
+      <TriggerInput
         disabled={isPending}
         loading={isPending}
         handleSubmitValue={(v) => handleAddNewList(v)}
@@ -53,7 +53,7 @@ export function AddNewListCard({ boardId }: Props) {
             <Plus />
           </IconButton>
         </div>
-      </AddNewInput>
+      </TriggerInput>
     </div>
   );
 }

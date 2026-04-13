@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { IconButton } from "@/components/ui/iconButton";
 import { MessageCircle, Plus } from "lucide-react";
-import { AddNewInput } from "../../../../../../AddNewInput";
+import { TriggerInput } from "../../../../../../../../Shared-protected/TriggerInput";
 import { CommentCard } from "./CommentCard";
 import { CommentsCardSkeleton } from "./CommentsCardSkeleton";
 import { Comment, User } from "@/lib/generated/prisma/client";
@@ -173,7 +173,7 @@ export function Comments({ cardDetailsId }: Props) {
 
       {/* SCROLLABLE COMMENTS SECTION */}
       <div className="flex flex-col  overflow-y-auto h-58  ">
-        <AddNewInput
+        <TriggerInput
           disabled={isPendingDelete || isPendingCreate}
           buttonDirection="column"
           className="py-0"
@@ -196,7 +196,7 @@ export function Comments({ cardDetailsId }: Props) {
           >
             <Plus className="text-green-600" />
           </IconButton>
-        </AddNewInput>
+        </TriggerInput>
 
         {/* COMMENTS */}
         {commentsData && commentsData.length > 0

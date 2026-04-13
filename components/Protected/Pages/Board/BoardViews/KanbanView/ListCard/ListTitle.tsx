@@ -4,7 +4,7 @@ import { updateListTitleAction } from "@/app/actions/list";
 import toast from "react-hot-toast";
 import { useBoardId } from "@/hooks/useBoardId";
 
-import { AddNewInput } from "../../../AddNewInput";
+import { TriggerInput } from "../../../../../Shared-protected/TriggerInput";
 import { ListCardTicketsCounter } from "./ListCardTicketsCounter";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
@@ -51,7 +51,7 @@ export function ListTitle({
   }
   return (
     <>
-      <AddNewInput
+      <TriggerInput
         loading={isPendingMutateListTitle}
         disabled={isPendingMutateListTitle}
         handleSubmitValue={(v) => handleSubmitListTitle(v)}
@@ -72,7 +72,7 @@ export function ListTitle({
             />
           </h3>
         </>
-      </AddNewInput>
+      </TriggerInput>
     </>
   );
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ProgressBar } from "./ProgressBar";
-import { AddNewInput } from "../../../../../../AddNewInput";
+import { TriggerInput } from "../../../../../../../../Shared-protected/TriggerInput";
 import { CheckSquare, Plus } from "lucide-react";
 import { ChecklistCard } from "./ChecklistCard";
 import { Button } from "@/components/ui/button";
@@ -352,7 +352,7 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
       </div>
       <div className="overflow-y-auto h-52">
         {(role === USER_ROLES.admin || user?.email === assignedUserEmail) && (
-          <AddNewInput
+          <TriggerInput
             buttonDirection="column"
             label="Add an item"
             type="textarea"
@@ -378,7 +378,7 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
             >
               + Add an item
             </Button>
-          </AddNewInput>
+          </TriggerInput>
         )}
 
         <div className="flex flex-col gap-1">

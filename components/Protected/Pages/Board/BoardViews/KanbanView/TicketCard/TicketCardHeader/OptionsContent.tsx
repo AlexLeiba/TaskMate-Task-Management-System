@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Copy, Delete, Edit, Info, X } from "lucide-react";
-import { AddNewInput } from "../../../../AddNewInput";
+import { TriggerInput } from "../../../../../../Shared-protected/TriggerInput";
 import { Separator } from "@/components/ui/separator";
 import { IconButton } from "@/components/ui/iconButton";
 import { KEYBOARD } from "@/lib/consts/consts";
@@ -138,7 +138,7 @@ export function OptionsContent({
     <>
       <div className="flex flex-col gap-2 items-start pl-2">
         {/* EDIT CARD TITLE*/}
-        <AddNewInput
+        <TriggerInput
           disabled={isPendingEditTitleCard || isPendingCopyCard}
           type="textarea"
           handleSubmitValue={(v) => handleChangeCardTitle(v)}
@@ -159,7 +159,7 @@ export function OptionsContent({
             <Edit />
             <p>Edit card title</p>
           </IconButton>
-        </AddNewInput>
+        </TriggerInput>
 
         {/* COPY CARD */}
         <IconButton

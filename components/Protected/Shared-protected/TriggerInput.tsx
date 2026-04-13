@@ -37,10 +37,11 @@ type Props = {
   classNameContainer?: string;
   buttonDirection?: "row" | "column";
   defaultValue?: string;
+  buttonVisibility?: boolean;
   setIsOpenedTitleInput: Dispatch<SetStateAction<boolean>>;
   handleSubmitValue: (value: { [inputName: string]: string }) => void;
 } & (PropsTextarea | PropsInputText);
-export function AddNewInput({
+export function TriggerInput({
   children,
   label,
   isOpenedTitleInput,
@@ -50,6 +51,7 @@ export function AddNewInput({
   type = "text",
   buttonDirection = "row",
   defaultValue = "",
+  buttonVisibility = true,
   setIsOpenedTitleInput,
   handleSubmitValue,
 
@@ -182,7 +184,7 @@ export function AddNewInput({
                 id={inputName}
                 autoFocus
                 placeholder={props.placeholder || "Type here..."}
-                className="w-full"
+                className={cn("w-full", props.className)}
                 error={
                   errors[inputName as keyof typeof errors]?.message as string
                 }
@@ -194,47 +196,49 @@ export function AddNewInput({
                 id={inputName}
                 autoFocus
                 placeholder="Type here..."
-                className="w-full"
+                className={cn("w-full", props.className)}
                 error={
                   errors[inputName as keyof typeof errors]?.message as string
                 }
               />
             )}
-            <div
-              className={cn(
-                "flex",
-                buttonDirection === "row" ? "flex" : "flex-col",
-                "gap-1",
-              )}
-            >
-              <Button
-                type="submit"
-                size={"sm"}
-                disabled={loading || props.disabled}
-                title={`Add comment`}
-                aria-label={`Add comment`}
-                loading={loading}
-                variant={"tertiary"}
+            {buttonVisibility && (
+              <div
+                className={cn(
+                  "flex",
+                  buttonDirection === "row" ? "flex" : "flex-col",
+                  "gap-1",
+                )}
               >
-                <Plus />
-              </Button>
+                <Button
+                  type="submit"
+                  size={"sm"}
+                  disabled={loading || props.disabled}
+                  title={`Add comment`}
+                  aria-label={`Add comment`}
+                  loading={loading}
+                  variant={"tertiary"}
+                >
+                  <Plus />
+                </Button>
 
-              <Button
-                size={"sm"}
-                disabled={loading || props.disabled}
-                title={`Close ${inputName} input`}
-                aria-label={`Close ${inputName} input`}
-                variant={"ghost"}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsOpenedTitleInput(false);
-                  setOpenTitleInput({ id: "", isOpen: false });
-                  setOpenNewCardInput({ id: "", isOpen: false });
-                }}
-              >
-                <X />
-              </Button>
-            </div>
+                <Button
+                  size={"sm"}
+                  disabled={loading || props.disabled}
+                  title={`Close ${inputName} input`}
+                  aria-label={`Close ${inputName} input`}
+                  variant={"ghost"}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsOpenedTitleInput(false);
+                    setOpenTitleInput({ id: "", isOpen: false });
+                    setOpenNewCardInput({ id: "", isOpen: false });
+                  }}
+                >
+                  <X />
+                </Button>
+              </div>
+            )}
           </form>
         </div>
       ) : (

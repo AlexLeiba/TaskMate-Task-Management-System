@@ -161,6 +161,7 @@ export type CardDetailsTableProps = {
   listTitle: string;
   cardDetailsId: string;
   isVisible: boolean;
+  listId: string;
 };
 
 export type CardDetailsTabs =

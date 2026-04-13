@@ -14,9 +14,10 @@ export const QUERY_KEYS = {
         finishedWork: "finished-work-overview",
         recentActivities: "recent-activities",
       },
-      listView: {
+      tableListView: {
         getAllBoardData: "get-all-board-data",
         tableSearch: "table-search",
+        changePage: "change-page",
       },
       kanbanView: {
         lists: {

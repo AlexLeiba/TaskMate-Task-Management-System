@@ -8,7 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { createListCardAction } from "@/app/actions/list";
 import toast from "react-hot-toast";
 import { usePathname } from "next/navigation";
-import { AddNewInput } from "../../../AddNewInput";
+import { TriggerInput } from "../../../../../Shared-protected/TriggerInput";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 type Props = {
@@ -47,7 +47,7 @@ export function AddTicketCard({ listId }: Props) {
   }
   return (
     <div className="mt-2">
-      <AddNewInput
+      <TriggerInput
         disabled={isPending}
         loading={isPending}
         handleSubmitValue={(v) => handleAddNewCard(v)}
@@ -61,7 +61,7 @@ export function AddTicketCard({ listId }: Props) {
           <Plus />
           <p>Add a card</p>
         </IconButton>
-      </AddNewInput>
+      </TriggerInput>
     </div>
   );
 }

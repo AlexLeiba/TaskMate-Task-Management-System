@@ -73,11 +73,12 @@ export const COLUMNS:
           />
 
           <OpenTableRowButton
-            title={`Open - ${row.original.title}`}
+            title={row.original.title}
             cardTitle={row.original.title}
             listTitle={row.original.listName}
             cardDetailsId={row.original.id}
             isVisible={true}
+            listId={row.original.listId}
           >
             <p className="text-xl max-w-50 line-clamp-1">
               {row.original.title}
@@ -187,6 +188,7 @@ export const COLUMNS:
               listTitle={row.original.listName}
               cardDetailsId={row.original.id}
               isVisible={true}
+              listId={row.original.listId}
             >
               {row?.original?.details?.dueDate?.length &&
               row?.original?.details?.dueDate?.length > 0 ? (
@@ -213,6 +215,7 @@ export const COLUMNS:
               listTitle={row.original.listName}
               cardDetailsId={row.original.id}
               isVisible={true}
+              listId={row.original.listId}
             >
               {row.original.details?.checklist?.length &&
               row.original.details?.checklist?.length > 0 ? (

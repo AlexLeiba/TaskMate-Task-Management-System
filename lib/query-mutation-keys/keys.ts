@@ -15,7 +15,7 @@ export const QUERY_KEYS = {
         recentActivities: "recent-activities",
       },
       tableListView: {
-        getAllBoardData: "get-all-board-data",
+        getAllTableData: "get-all-table-data",
         tableSearch: "table-search",
         changePage: "change-page",
       },

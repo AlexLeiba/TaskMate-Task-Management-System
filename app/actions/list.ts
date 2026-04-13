@@ -224,7 +224,7 @@ export async function getListDataTableViewAction({
   selectedMemberEmail,
   unassignedCard,
   filters = "all",
-  title,
+  search,
 }: ListDataTableType): Promise<{
   data: {
     data: {
@@ -272,11 +272,12 @@ export async function getListDataTableViewAction({
             },
           },
         }),
-        ...(filters === "title" && {
+        ...(filters === "search" && {
           cards: {
             some: {
               title: {
-                contains: title,
+                contains: search,
+                mode: "insensitive",
               },
             },
           },
@@ -346,10 +347,11 @@ export async function getListDataTableViewAction({
               assignedToEmail: null,
             },
           }),
-          ...(filters === "title" && {
+          ...(filters === "search" && {
             where: {
               title: {
-                contains: title,
+                contains: search,
+                mode: "insensitive",
               },
             },
           }),

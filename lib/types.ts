@@ -459,7 +459,7 @@ export type FilterStates =
   | "theSame"
   | "expiredDue"
   | "priority"
-  | "title";
+  | "search";
 
 //
 export type OrganizationMembersType = {
@@ -514,7 +514,7 @@ export type ListDataTableType = {
   selectedMemberEmail?: string;
   unassignedCard?: boolean;
   filters?: FilterStates;
-  title?: string;
+  search?: string;
 };
 
 export type ListDataKanbanType = {

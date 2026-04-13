@@ -3,6 +3,7 @@ import {
   CardDetailsTabs,
   FilterStates,
   ListAndCardsAndDueDateAndChecklistType,
+  ListDataTableType,
   PrioritiesType,
 } from "@/lib/types";
 import { DraggableLocation } from "@hello-pangea/dnd";
@@ -20,6 +21,27 @@ type StoreType = {
   // UPDATE BOARD LIST DATA WITH FILTERS OPTIONS
   setBoardListData: (
     data: ListAndCardsAndDueDateAndChecklistType[] | null | undefined,
+  ) => void;
+
+  // ----------------------------------------------------------
+  // FILTER STATES
+  filterState: Pick<
+    ListDataTableType,
+    | "priorityType"
+    | "filters"
+    | "selectedMemberEmail"
+    | "unassignedCard"
+    | "search"
+  >;
+  setFilterState: (
+    state: Pick<
+      ListDataTableType,
+      | "priorityType"
+      | "filters"
+      | "selectedMemberEmail"
+      | "unassignedCard"
+      | "search"
+    >,
   ) => void;
 
   // OPTIMISTIC UPDATE OF BOARD LIST DATA WITH DRAG AND DROP-----------------------------
@@ -101,6 +123,17 @@ export const useStore = create<StoreType>((set, get) => ({
       boardListData: data,
     });
   },
+
+  // ----------------------------------------------------------------
+  // FILTER STATES
+  filterState: {
+    priorityType: undefined,
+    filters: "all",
+    selectedMemberEmail: undefined,
+    unassignedCard: undefined,
+    search: undefined,
+  },
+  setFilterState: (state) => set({ filterState: state }),
 
   // DRAG AND DROP BOARD LIST CARDS-----------------------------
   setDndSameListBoardListDataCards: (source, destination) => {

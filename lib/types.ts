@@ -7,6 +7,7 @@ import {
   DueDate,
   List,
   User,
+  PriorityType as GeneratedPriorityType,
 } from "./generated/prisma/client";
 import { FILES_MIME_TYPES, IMAGES_MIME_TYPES } from "./consts/protected/files";
 
@@ -456,7 +457,8 @@ export type FilterStates =
   | "all"
   | "theSame"
   | "expiredDue"
-  | "priority";
+  | "priority"
+  | "title";
 
 //
 export type OrganizationMembersType = {
@@ -504,3 +506,20 @@ export type OverviewDataType = {
 };
 
 export type UserRoleType = "admin" | "member";
+
+export type ListDataTableType = {
+  boardId: string;
+  priorityType?: GeneratedPriorityType;
+  selectedMemberEmail?: string;
+  unassignedCard?: boolean;
+  filters?: FilterStates;
+  title?: string;
+};
+
+export type ListDataKanbanType = {
+  boardId?: string;
+  priorityType?: GeneratedPriorityType;
+  selectedMemberEmail?: string;
+  unassignedCard?: boolean;
+  filters?: FilterStates;
+};

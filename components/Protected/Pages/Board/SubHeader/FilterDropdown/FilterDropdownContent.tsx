@@ -2,7 +2,7 @@ import { useStore } from "@/store/useStore";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { FilterStates, PriorityType } from "@/lib/types";
-import { useGetBoardFilteredData } from "@/hooks/useGetBoardFilteredData";
+import { useGetBoardData } from "@/hooks/useGetBoardData";
 import { useResponsive } from "@/hooks/useResponsive";
 import { BREAKPOINTS } from "@/lib/breakpoints";
 import { FilterDropdownMembersContent } from "./FilterDropdownMembersContent";
@@ -21,7 +21,7 @@ export function FilterDropdownContent({
 }: {
   handleCloseMenu: () => void;
 }) {
-  const { fetchBoardFilteredListData } = useGetBoardFilteredData();
+  const { fetchBoardFilteredListData } = useGetBoardData();
   const isTablet = useResponsive(BREAKPOINTS.lg);
 
   const {
@@ -47,10 +47,18 @@ export function FilterDropdownContent({
     );
 
     if (selectedFilter === "theSame") {
-      fetchBoardFilteredListData("", false, "all", priorityType?.value);
+      fetchBoardFilteredListData({
+        priorityType: priorityType?.value,
+        unassignedCard: false,
+        filters: "all",
+      });
       return;
     }
-    fetchBoardFilteredListData("", false, selectedFilter, priorityType?.value);
+    fetchBoardFilteredListData({
+      unassignedCard: false,
+      filters: selectedFilter,
+      priorityType: priorityType?.value,
+    });
   }
 
   return (

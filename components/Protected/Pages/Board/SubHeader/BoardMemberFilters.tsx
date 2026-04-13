@@ -1,5 +1,5 @@
 import { IconButton } from "@/components/ui/iconButton";
-import { useGetBoardFilteredData } from "@/hooks/useGetBoardFilteredData";
+import { useGetBoardData } from "@/hooks/useGetBoardData";
 import { useMembers } from "@/hooks/useMembers";
 import { UNASSIGNED_CARD } from "@/lib/consts/protected/card";
 
@@ -10,7 +10,7 @@ import { UserPlus } from "lucide-react";
 import Image from "next/image";
 
 export function BoardMemberFilters() {
-  const { fetchBoardFilteredListData, loading } = useGetBoardFilteredData();
+  const { fetchBoardFilteredListData, loading } = useGetBoardData();
 
   const { members, isFetching } = useMembers();
 
@@ -31,16 +31,18 @@ export function BoardMemberFilters() {
 
     if (!selectedMember) {
       // FETCH FRESH BOARD DATA WITH NO FILTERS APPLIED
-      return fetchBoardFilteredListData("");
+      return fetchBoardFilteredListData({ filters: "all" });
     }
 
     if (member?.userId === UNASSIGNED_CARD.userId) {
       // FETCH BOARD DATA WITH UNASSIGNED FILTER
-      return fetchBoardFilteredListData("", true);
+      return fetchBoardFilteredListData({ unassignedCard: true });
     }
 
     // FETCH BOARD DATA WITH MEMBER FILTER
-    fetchBoardFilteredListData(member?.email || "");
+    fetchBoardFilteredListData({
+      selectedMemberEmail: member?.email || "",
+    });
   }
 
   return (

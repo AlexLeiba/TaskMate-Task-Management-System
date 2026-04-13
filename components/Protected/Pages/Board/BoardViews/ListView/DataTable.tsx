@@ -23,18 +23,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { useMemo, useState } from "react";
+
 import { useLocalStorage } from "@/hooks/useLocalStorage";
-import { TABLE_COLUMNS } from "@/lib/consts/protected/table";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { List } from "@/lib/generated/prisma/client";
 import { Search } from "./Search";
+import FilterVisibleColumns from "./FilterVisibleColumns";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -83,35 +78,12 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const allColumns = useMemo(() => table.getAllColumns(), []);
+
   return (
     <>
       <div className="flex items-center justify-end space-x-2 absolute top-1 right-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="secondary" className="ml-auto h-6" size={"sm"}>
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {TABLE_COLUMNS[column.id as keyof typeof TABLE_COLUMNS]}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <FilterVisibleColumns columns={allColumns} />
         <Search />
         <div className="flex items-center gap-1 bg-background px-2 rounded-md">
           Page: <p>{table.getState().pagination.pageIndex + 1}</p>/

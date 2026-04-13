@@ -12,6 +12,8 @@ import { Priority } from "@/components/Protected/Shared-protected/Priority/Prior
 import { Status } from "@/components/Protected/Shared-protected/Status/Status";
 import { OpenTableRowButton } from "./OpenTableRowButton";
 import { SortInticator } from "./SortInticator";
+import { CheckRow } from "./CheckRow";
+import { CheckedState } from "@radix-ui/react-checkbox";
 
 export const COLUMNS:
   | ColumnDef<CardWithDetailsAndDueDateAndChecklistAndReporterType>[]
@@ -56,11 +58,9 @@ export const COLUMNS:
     cell: ({ row, table }) => {
       return (
         <div className="flex items-center gap-4">
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(value) => {
+          <CheckRow
+            handleRowSelection={(value: CheckedState) => {
               row.toggleSelected(!!value);
-
               table.setRowSelection((prev) => {
                 return {
                   ...prev,
@@ -68,8 +68,8 @@ export const COLUMNS:
                 };
               });
             }}
-            aria-label={`Select row - ${row.original.title}`}
-            title={`Select row - ${row.original.title}`}
+            isSelected={row.getIsSelected()}
+            rowId={row.original.id}
           />
 
           <OpenTableRowButton

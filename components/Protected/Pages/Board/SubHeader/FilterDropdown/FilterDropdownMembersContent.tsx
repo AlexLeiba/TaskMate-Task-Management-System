@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useGetBoardFilteredData } from "@/hooks/useGetBoardFilteredData";
+import { useGetBoardData } from "@/hooks/useGetBoardData";
 import { useMembers } from "@/hooks/useMembers";
 import { UNASSIGNED_CARD } from "@/lib/consts/protected/card";
 
@@ -16,7 +16,7 @@ export function FilterDropdownMembersContent({
   handleCloseMenu: () => void;
 }) {
   const { members, isFetching } = useMembers();
-  const { fetchBoardFilteredListData } = useGetBoardFilteredData();
+  const { fetchBoardFilteredListData } = useGetBoardData();
   const {
     boardSubHeaderMemberIdSelected,
     setBoardSubHeaderFilterSelected,
@@ -42,18 +42,18 @@ export function FilterDropdownMembersContent({
 
     if (!selectedMember) {
       //  FETCH FRESH BOARD DATA WITH NO FILTERS APPLIED
-      fetchBoardFilteredListData("");
+      fetchBoardFilteredListData({ filters: "all" });
       return;
     }
 
     if (member?.userId === UNASSIGNED_CARD.userId) {
       // FETCH BOARD DATA WITH UNASSIGNED FILTER
-      fetchBoardFilteredListData("", true);
+      fetchBoardFilteredListData({ unassignedCard: true });
       return;
     }
 
     // FETCH BOARD DATA WITH MEMBER FILTER APPLIED
-    fetchBoardFilteredListData(member?.email || "");
+    fetchBoardFilteredListData({ selectedMemberEmail: member?.email });
   }
   return (
     <>

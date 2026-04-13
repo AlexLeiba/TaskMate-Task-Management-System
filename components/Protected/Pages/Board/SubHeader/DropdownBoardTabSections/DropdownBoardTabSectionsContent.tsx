@@ -1,5 +1,5 @@
 import { IconButton } from "@/components/ui/iconButton";
-import { useGetBoardFilteredData } from "@/hooks/useGetBoardFilteredData";
+import { useGetBoardData } from "@/hooks/useGetBoardData";
 import { BOARD_HEADER_TABS } from "@/lib/consts/protected/board";
 
 import { BoardTabSectionType } from "@/lib/types";
@@ -18,7 +18,7 @@ export function DropdownBoardTabSectionsContent({
       setBoardTabSections: state.setBoardTabSections,
     })),
   );
-  const { fetchBoardFilteredListData, loading } = useGetBoardFilteredData();
+  const { fetchBoardFilteredListData, loading } = useGetBoardData();
 
   function handleSelectTabSection(tab: BoardTabSectionType) {
     handleCloseMenu();
@@ -26,7 +26,7 @@ export function DropdownBoardTabSectionsContent({
     setBoardTabSections(tab);
 
     if (tab === "refresh") {
-      fetchBoardFilteredListData("");
+      fetchBoardFilteredListData({ filters: "all" });
     }
   }
   return (

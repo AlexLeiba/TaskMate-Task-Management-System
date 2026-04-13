@@ -1,5 +1,5 @@
 import { IconButton } from "@/components/ui/iconButton";
-import { useGetBoardFilteredData } from "@/hooks/useGetBoardFilteredData";
+import { useGetBoardData } from "@/hooks/useGetBoardData";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { useStore } from "@/store/useStore";
 import { useIsFetching, useQueryClient } from "@tanstack/react-query";
@@ -8,7 +8,7 @@ import { RefreshCcw } from "lucide-react";
 export function RefreshData() {
   const { boardTabSections } = useStore((state) => state);
 
-  const { fetchBoardFilteredListData, loading } = useGetBoardFilteredData();
+  const { fetchBoardFilteredListData, loading } = useGetBoardData();
   const setBoardTabSections = useStore((state) => state.setBoardTabSections);
   const queryClient = useQueryClient();
 
@@ -43,7 +43,7 @@ export function RefreshData() {
     queryClient.invalidateQueries({
       queryKey: [QUERY_KEYS.hooks.useMembers],
     });
-    fetchBoardFilteredListData("");
+    fetchBoardFilteredListData({ filters: "all" });
   }
   return (
     <IconButton

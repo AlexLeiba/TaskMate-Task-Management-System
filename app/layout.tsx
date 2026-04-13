@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import { Toaster } from "react-hot-toast";
-import { ClientProviders } from "@/lib/ClientProviders";
+import { ClientProviders } from "@/lib/providers/ClientProviders";
 
 // for non layouts shifts font loading
 // fonts load once, applied to the entire app

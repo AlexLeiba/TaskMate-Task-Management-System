@@ -1,29 +1,25 @@
 "use server";
-import {
-  Card,
-  List,
-  PriorityType,
-  StatusType,
-} from "@/lib/generated/prisma/client";
+import { Card, List, StatusType } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
 import { verifyCurrentActiveUser } from "@/lib/server/verifyCurrentActiveUser";
 import {
   CardWithDetailsAndDueDateAndChecklistAndReporterType,
-  FilterStates,
   ListAndCardsAndDueDateAndChecklistType,
+  ListDataKanbanType,
+  ListDataTableType,
   UserRoleType,
 } from "@/lib/types";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
-export async function getListDataAction(
-  boardId: string,
-  priorityType?: PriorityType,
-  selectedMemberEmail?: string,
-  unassignedCard?: boolean,
-  filters: FilterStates = "all",
-): Promise<{
+export async function getListDataAction({
+  boardId,
+  priorityType,
+  selectedMemberEmail,
+  unassignedCard,
+  filters = "all",
+}: ListDataKanbanType): Promise<{
   data: {
     data: ListAndCardsAndDueDateAndChecklistType[] | null | undefined;
 
@@ -222,14 +218,14 @@ export async function getListDataAction(
   }
 }
 
-export async function getListDataTableViewAction(
-  boardId: string,
-  priorityType?: PriorityType,
-  selectedMemberEmail?: string,
-  unassignedCard?: boolean,
-  filters: FilterStates = "all",
-  title?: string,
-): Promise<{
+export async function getListDataTableViewAction({
+  boardId,
+  priorityType,
+  selectedMemberEmail,
+  unassignedCard,
+  filters = "all",
+  title,
+}: ListDataTableType): Promise<{
   data: {
     data: {
       cards:

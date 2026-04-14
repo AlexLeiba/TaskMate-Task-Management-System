@@ -459,7 +459,9 @@ export type FilterStates =
   | "theSame"
   | "expiredDue"
   | "priority"
-  | "search";
+  | "search"
+  | "selectedMemberEmail"
+  | "unassignedCard";
 
 //
 export type OrganizationMembersType = {

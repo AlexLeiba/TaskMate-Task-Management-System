@@ -6,7 +6,7 @@ import { UNASSIGNED_CARD } from "@/lib/consts/protected/card";
 import { OrganizationMembersType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/store/useStore";
-import { UserPlus } from "lucide-react";
+import { UserPlus, X } from "lucide-react";
 import Image from "next/image";
 import { useShallow } from "zustand/shallow";
 
@@ -21,12 +21,14 @@ export function FilterDropdownMembersContent({
     boardSubHeaderMemberIdSelected,
     setBoardSubHeaderFilterSelected,
     setBoardSubHeaderMemberIdSelected,
+    setFilterState,
   } = useStore(
     useShallow((state) => ({
       boardSubHeaderMemberIdSelected: state.boardSubHeaderMemberIdSelected,
       setBoardSubHeaderFilterSelected: state.setBoardSubHeaderFilterSelected,
       setBoardSubHeaderMemberIdSelected:
         state.setBoardSubHeaderMemberIdSelected,
+      setFilterState: state.setFilterState,
     })),
   );
 
@@ -34,6 +36,13 @@ export function FilterDropdownMembersContent({
     member: OrganizationMembersType | undefined | null,
   ) {
     handleCloseMenu();
+    // SET FILTER STATE BASED ON SELECTED MEMBER, THIS WILL TRIGGER useTableData TO FETCH FILTERED DATA
+    setFilterState({
+      filters: "selectedMemberEmail",
+      selectedMemberEmail: member?.email || "",
+    });
+
+    // TODO change to setFilterState
     const selectedMember = setBoardSubHeaderMemberIdSelected(
       member?.userId || "",
     );
@@ -112,6 +121,7 @@ export function FilterDropdownMembersContent({
                 />
                 <p>{member?.fullName}</p>
               </div>
+              {boardSubHeaderMemberIdSelected === member?.userId && <X />}
             </div>
           </Button>
         );

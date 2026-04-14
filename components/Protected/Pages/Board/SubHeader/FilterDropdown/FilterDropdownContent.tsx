@@ -28,11 +28,14 @@ export function FilterDropdownContent({
     prioritiesSelectedFilter,
     boardSubHeaderFilterSelected,
     setBoardSubHeaderFilterSelected,
+    setFilterState,
   } = useStore(
     useShallow((state) => ({
       boardSubHeaderFilterSelected: state.boardSubHeaderFilterSelected,
       setBoardSubHeaderFilterSelected: state.setBoardSubHeaderFilterSelected,
       prioritiesSelectedFilter: state.prioritiesSelectedFilter,
+      setFilterState: state.setFilterState,
+      boardTabSections: state.boardTabSections,
     })),
   );
 
@@ -41,6 +44,15 @@ export function FilterDropdownContent({
     priorityType?: PriorityType | null,
   ) {
     handleCloseMenu();
+
+    // SET FILTER STATE BASED ON SELECTED MEMBER, THIS WILL TRIGGER useTableData TO FETCH FILTERED DATA
+    setFilterState({
+      filters: filterState,
+      priorityType: priorityType?.value,
+    });
+
+    // TODO change to setFilterState
+    // FIRST CREATE A HOOK WHICH WILL LISTEN TO STORE AND CHANGE response value based on filters props
     const selectedFilter = setBoardSubHeaderFilterSelected(
       filterState,
       priorityType?.value,

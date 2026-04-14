@@ -22,9 +22,18 @@ export function BoardMemberFilters() {
     (state) => state.boardSubHeaderMemberIdSelected,
   );
 
+  const setFilterState = useStore((state) => state.setFilterState);
+
   async function handleSelectedMember(
     member: OrganizationMembersType | undefined | null,
   ) {
+    // SET FILTER STATE BASED ON SELECTED MEMBER, THIS WILL TRIGGER useTableData TO FETCH FILTERED DATA
+    setFilterState({
+      filters: "selectedMemberEmail",
+      selectedMemberEmail: member?.email,
+    });
+
+    // TODO CHANGE TO setFilterState
     const selectedMember = setBoardSubHeaderMemberIdSelected(
       member?.userId || "",
     );

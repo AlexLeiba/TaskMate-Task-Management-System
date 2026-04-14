@@ -4,13 +4,21 @@ import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { useStore } from "@/store/useStore";
 import { useIsFetching, useQueryClient } from "@tanstack/react-query";
 import { RefreshCcw } from "lucide-react";
+import { useShallow } from "zustand/shallow";
 
 export function RefreshData() {
-  const { boardTabSections } = useStore((state) => state);
+  const queryClient = useQueryClient();
 
   const { fetchBoardFilteredListData, loading } = useGetBoardData();
-  const setBoardTabSections = useStore((state) => state.setBoardTabSections);
-  const queryClient = useQueryClient();
+
+  // const { boardTabSections } = useStore((state) => state);
+  const { setBoardTabSections, boardTabSections, setFilterState } = useStore(
+    useShallow((state) => ({
+      setBoardTabSections: state.setBoardTabSections,
+      boardTabSections: state.boardTabSections,
+      setFilterState: state.setFilterState,
+    })),
+  );
 
   const isFetchingBoardOverview =
     useIsFetching({
@@ -36,8 +44,9 @@ export function RefreshData() {
       return;
     }
     if (boardTabSections === "list") {
+      setFilterState({ filters: "all" });
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.pages.board.listView.getAllBoardData],
+        queryKey: [QUERY_KEYS.pages.board.tableListView.getAllTableData],
       });
     }
     queryClient.invalidateQueries({

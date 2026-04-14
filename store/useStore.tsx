@@ -1,3 +1,5 @@
+import { INITIAL_FILTERS_STATE } from "@/lib/consts/protected/board";
+import { UNASSIGNED_CARD } from "@/lib/consts/protected/card";
 import {
   BoardTabSectionType,
   CardDetailsTabs,
@@ -25,24 +27,8 @@ type StoreType = {
 
   // ----------------------------------------------------------
   // FILTER STATES
-  filterState: Pick<
-    ListDataTableType,
-    | "priorityType"
-    | "filters"
-    | "selectedMemberEmail"
-    | "unassignedCard"
-    | "search"
-  >;
-  setFilterState: (
-    state: Pick<
-      ListDataTableType,
-      | "priorityType"
-      | "filters"
-      | "selectedMemberEmail"
-      | "unassignedCard"
-      | "search"
-    >,
-  ) => void;
+  filterState: Omit<ListDataTableType, "boardId">;
+  setFilterState: (state: Omit<ListDataTableType, "boardId">) => void;
 
   // OPTIMISTIC UPDATE OF BOARD LIST DATA WITH DRAG AND DROP-----------------------------
   setDndSameListBoardListDataCards: (
@@ -125,15 +111,85 @@ export const useStore = create<StoreType>((set, get) => ({
   },
 
   // ----------------------------------------------------------------
-  // FILTER STATES
-  filterState: {
-    priorityType: undefined,
-    filters: "all",
-    selectedMemberEmail: undefined,
-    unassignedCard: undefined,
-    search: undefined,
+  // FILTER STATE
+  filterState: INITIAL_FILTERS_STATE,
+  setFilterState: (state) => {
+    // MEMBERS
+    if (state.filters === "selectedMemberEmail") {
+      const prevSelectedMemberEmail = get().filterState.selectedMemberEmail;
+      if (
+        prevSelectedMemberEmail !== state.selectedMemberEmail &&
+        state.selectedMemberEmail !== UNASSIGNED_CARD.email
+      ) {
+        set({
+          filterState: {
+            ...INITIAL_FILTERS_STATE,
+            selectedMemberEmail: state.selectedMemberEmail,
+            filters: "selectedMemberEmail",
+          },
+        });
+        return;
+      }
+      if (prevSelectedMemberEmail === state.selectedMemberEmail) {
+        set({
+          filterState: INITIAL_FILTERS_STATE,
+        });
+        return;
+      }
+      if (state.selectedMemberEmail === UNASSIGNED_CARD.email) {
+        set({
+          filterState: {
+            ...INITIAL_FILTERS_STATE,
+            selectedMemberEmail: UNASSIGNED_CARD.email,
+            filters: "unassignedCard",
+            unassignedCard: true,
+          },
+        });
+        return;
+      }
+    }
+    // PRIORITY
+    if (state.filters === "priority") {
+      const prevSelectedPriority = get().filterState.priorityType;
+      if (prevSelectedPriority !== state.priorityType && state.priorityType) {
+        set({
+          filterState: {
+            ...INITIAL_FILTERS_STATE,
+            priorityType: state.priorityType,
+            filters: "priority",
+          },
+        });
+        return;
+      }
+      if (prevSelectedPriority === state.priorityType) {
+        set({
+          filterState: INITIAL_FILTERS_STATE,
+        });
+        return;
+      }
+    }
+
+    // OTHER FILTERS
+
+    const prevSelectedFilters = get().filterState.filters;
+    if (prevSelectedFilters !== state.filters) {
+      set({
+        filterState: {
+          ...INITIAL_FILTERS_STATE,
+          filters: state.filters,
+        },
+      });
+      return;
+    }
+    if (prevSelectedFilters === state.filters) {
+      set({
+        filterState: INITIAL_FILTERS_STATE,
+      });
+      return;
+    }
+
+    set({ filterState: state });
   },
-  setFilterState: (state) => set({ filterState: state }),
 
   // DRAG AND DROP BOARD LIST CARDS-----------------------------
   setDndSameListBoardListDataCards: (source, destination) => {

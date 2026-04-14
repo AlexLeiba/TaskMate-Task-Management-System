@@ -3,7 +3,12 @@ describe("Dashboard page mobile view", () => {
     cy.viewport(375, 800);
     cy.visit("/");
 
-    cy.clerkLoaded();
+    cy.window().its("Clerk", { timeout: 15000 }).should("exist"); //check if clerk exists
+
+    cy.window()
+      .its("Clerk.loaded", { timeout: 15000 })
+      .should("eq", true, { timeout: 15000 }); //this command (should) will retry until the assertion is true or timeout occurs 4s, until then the next line wont be reached.
+
     cy.clerkSignIn({
       strategy: "email_code",
       identifier: Cypress.env("testUser"),
@@ -16,10 +21,10 @@ describe("Dashboard page mobile view", () => {
 
   it("Dashboard Navigations", () => {
     // aliases
-    cy.url().should("include", "/dashboard").as("includeDashboardUrl");
+    cy.url().as("currentUrl");
     cy.get("[data-test=footer] [data-test=logo]").eq(0).as("logo");
     //
-    cy.get("@includeDashboardUrl");
+    cy.get("@currentUrl").should("include", "/dashboard");
 
     cy.location("pathname").then((pathname) => {
       const organizationId = pathname.split("/").at(-1);
@@ -43,23 +48,24 @@ describe("Dashboard page mobile view", () => {
     // assert the page is hydrated (mounted)
     cy.get("[data-test=overview-page] h1").should("be.visible");
     cy.get("@logo").click();
-    cy.get("@includeDashboardUrl");
+    cy.get("@currentUrl").should("include", "/dashboard");
 
     cy.visit("/select-organization");
     cy.url().should("include", "/select-organization");
 
     cy.get("[data-test=select-organization-page]").should("be.visible");
     cy.get("@logo").click();
-    cy.get("@includeDashboardUrl");
+    cy.get("@currentUrl").should("include", "/dashboard");
   });
 
   it("Sidebar", () => {
     // aliases
     cy.get("[data-test=header-sidebar-trigger]").as("headerSidebarTrigger");
     cy.get("[data-test=footer] [data-test=logo]").eq(0).as("logo");
+    cy.url().as("currentUrl");
     //
 
-    cy.get("@includeDashboardUrl");
+    cy.get("@currentUrl").should("include", "/dashboard");
 
     // assert default hidden sidebar
     cy.get("[data-test=sidebar-content]").should("not.exist");
@@ -115,6 +121,6 @@ describe("Dashboard page mobile view", () => {
     cy.get("[data-test=sidebar-content]").should("not.exist");
 
     cy.get("@logo").click();
-    cy.url({ timeout: 10000 }).should("include", "/dashboard");
+    cy.get("@currentUrl").should("include", "/dashboard");
   });
 });

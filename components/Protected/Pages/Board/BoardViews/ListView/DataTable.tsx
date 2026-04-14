@@ -35,6 +35,7 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[] | [];
   data: TData[] | [];
   listStatuses: Pick<List, "id" | "status" | "title">[] | [];
+  isLoading?: boolean;
 }
 
 declare module "@tanstack/react-table" {
@@ -47,6 +48,7 @@ export function DataTable<TData, TValue>({
   columns,
   data = [],
   listStatuses = [],
+  isLoading = false,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -108,36 +110,32 @@ export function DataTable<TData, TValue>({
         />
       </div>
       <div className="rounded-md h-full overflow-auto mt-4">
-        {data?.length === 0 ? (
-          <div className="h-24 flex items-center justify-center">
-            No data found.
-          </div>
-        ) : (
-          <Table className="bg-card-foreground/95 w-full h-full border-collapse">
-            <TableHeader className="bg-accent">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead
-                        key={header.id}
-                        className="text-white bg-card border  sticky top-0 z-10"
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody className="table-body">
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
+        <Table className="bg-card-foreground/95 w-full h-full border-collapse">
+          <TableHeader className="bg-accent">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead
+                      key={header.id}
+                      className="text-white bg-card border  sticky top-0 z-10"
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody className="table-body">
+            {table.getRowModel().rows?.length > 0 ? (
+              table.getRowModel().rows.map((row) => {
+                return (
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
@@ -151,20 +149,29 @@ export function DataTable<TData, TValue>({
                       </TableCell>
                     ))}
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
-                    No results.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        )}
+                );
+              })
+            ) : isLoading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center animate-pulse"
+                >
+                  Loading...
+                </TableCell>
+              </TableRow>
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </div>
     </>
   );

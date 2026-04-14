@@ -7,13 +7,13 @@ import { DueDateIndicatorCard } from "@/components/Protected/Shared-protected/Du
 import { ChecklistIndicatorCard } from "@/components/Protected/Shared-protected/ChecklistIndicatorCard";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { AssignTo } from "../../../../Shared-protected/AssignTo/AssignTo";
+import { AssignTo } from "../../../../../Shared-protected/AssignTo/AssignTo";
 import { Priority } from "@/components/Protected/Shared-protected/Priority/Priority";
 import { Status } from "@/components/Protected/Shared-protected/Status/Status";
-import { OpenTableRowButton } from "./OpenTableRowButton";
+import { EditTitleAndOpenRowButton } from "./EditTitleAndOpenRowButton";
 import { SortInticator } from "./SortInticator";
-import { CheckRow } from "./CheckRow";
 import { CheckedState } from "@radix-ui/react-checkbox";
+import { CheckRow } from "./CheckRow";
 
 export const COLUMNS:
   | ColumnDef<CardWithDetailsAndDueDateAndChecklistAndReporterType>[]
@@ -72,8 +72,8 @@ export const COLUMNS:
             rowId={row.original.id}
           />
 
-          <OpenTableRowButton
-            title={row.original.title}
+          <EditTitleAndOpenRowButton
+            type="title-and-button"
             cardTitle={row.original.title}
             listTitle={row.original.listName}
             cardDetailsId={row.original.id}
@@ -83,7 +83,7 @@ export const COLUMNS:
             <p className="text-xl max-w-50 line-clamp-1">
               {row.original.title}
             </p>
-          </OpenTableRowButton>
+          </EditTitleAndOpenRowButton>
         </div>
       );
     },
@@ -182,8 +182,8 @@ export const COLUMNS:
       return (
         <>
           {
-            <OpenTableRowButton
-              title={`Add due date to ${row.original.title}`}
+            <EditTitleAndOpenRowButton
+              type="only-button"
               cardTitle={row.original.title}
               listTitle={row.original.listName}
               cardDetailsId={row.original.id}
@@ -194,9 +194,9 @@ export const COLUMNS:
               row?.original?.details?.dueDate?.length > 0 ? (
                 <DueDateIndicatorCard data={row.original.details?.dueDate[0]} />
               ) : (
-                <p>Add +</p>
+                <p className="p-1">Add +</p>
               )}
-            </OpenTableRowButton>
+            </EditTitleAndOpenRowButton>
           }
         </>
       );
@@ -209,8 +209,8 @@ export const COLUMNS:
       return (
         <>
           {
-            <OpenTableRowButton
-              title={`Add checklist to ${row.original.title}`}
+            <EditTitleAndOpenRowButton
+              type="only-button"
               cardTitle={row.original.title}
               listTitle={row.original.listName}
               cardDetailsId={row.original.id}
@@ -223,9 +223,9 @@ export const COLUMNS:
                   data={row.original.details?.checklist}
                 />
               ) : (
-                <p>Add +</p>
+                <p className="p-1">Add +</p>
               )}
-            </OpenTableRowButton>
+            </EditTitleAndOpenRowButton>
           }
         </>
       );

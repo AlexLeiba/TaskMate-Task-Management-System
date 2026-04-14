@@ -1,6 +1,6 @@
 import { useAuth } from "@clerk/nextjs";
 import { useBoardId } from "@/hooks/useBoardId";
-import { COLUMNS } from "./Columns";
+import { COLUMNS } from "./Columns/Columns";
 import { DataTable } from "./DataTable";
 import { useMemo } from "react";
 import { useTableData } from "@/hooks/useTableData";
@@ -17,11 +17,12 @@ export function ListView() {
 
   const filters = useStore((state) => state.filterState);
 
-  const { data: boardData } = useTableData(filters);
+  const { data: boardData, isLoading } = useTableData(filters);
 
   return (
     <div className="overflow-y-hidden h-[calc(100vh-108px)] p-4 max-w-400 mx-auto  overflow-x-auto relative">
       <DataTable
+        isLoading={isLoading}
         columns={columnsData || []}
         data={boardData?.data?.cards || []}
         listStatuses={boardData?.data?.listStatuses || []}

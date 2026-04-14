@@ -15,7 +15,7 @@ export function Search() {
   }
   return (
     <InputSearch
-      className="h-6"
+      className="h-6 bg-background! text-sm"
       placeholder="Search by title..."
       value={searchTitleLocal}
       onChange={handleSearch}

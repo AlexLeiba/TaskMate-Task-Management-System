@@ -30,6 +30,13 @@ import FilterVisibleColumns from "./FilterVisibleColumns";
 import toast from "react-hot-toast";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { Pagination } from "./Pagination";
+import dynamic from "next/dynamic";
+
+const DeleteSelectedRowsButton = dynamic(() =>
+  import("./DeleteSelectedRowsButton").then(
+    (mod) => mod.DeleteSelectedRowsButton,
+  ),
+);
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[] | [];
@@ -96,20 +103,32 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
-      <div className="flex items-center justify-end space-x-2 absolute top-1 right-4">
-        <FilterVisibleColumns columns={allColumns} />
+      <div className="flex items-center justify-between">
+        <div className="flex gap-2 items-center">
+          <FilterVisibleColumns columns={allColumns} />
 
-        <Search />
+          <Search />
 
-        <Pagination
-          disabledPrevious={!table.getCanPreviousPage()}
-          disabledNext={!table.getCanNextPage()}
-          pageCount={table.getPageCount()}
-          pageIndex={table.getState().pagination.pageIndex + 1}
-          onChangePage={handleChangePage}
-        />
+          <Pagination
+            disabledPrevious={!table.getCanPreviousPage()}
+            disabledNext={!table.getCanNextPage()}
+            pageCount={table.getPageCount()}
+            pageIndex={table.getState().pagination.pageIndex + 1}
+            onChangePage={handleChangePage}
+          />
+        </div>
+        {rowSelection && Object.values(rowSelection).some(Boolean) && (
+          <DeleteSelectedRowsButton
+            selectedRowIds={Object.entries(rowSelection)
+              .filter(([key, value]) => {
+                if (value && key.length > 20) return true;
+                return false;
+              })
+              .map(([key]) => key)}
+          />
+        )}
       </div>
-      <div className="rounded-md h-full overflow-auto mt-4">
+      <div className="rounded-md h-full overflow-auto ">
         <Table className="bg-card-foreground/95 w-full h-full border-collapse">
           <TableHeader className="bg-accent">
             {table.getHeaderGroups().map((headerGroup) => (

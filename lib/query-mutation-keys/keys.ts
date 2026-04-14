@@ -18,6 +18,7 @@ export const QUERY_KEYS = {
         getAllTableData: "get-all-table-data",
         tableSearch: "table-search",
         changePage: "change-page",
+        deleteMultipleCards: "delete-multiple-cards",
       },
       kanbanView: {
         lists: {

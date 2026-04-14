@@ -17,7 +17,7 @@ export function Pagination({
 }: Props) {
   return (
     <>
-      <div className="flex items-center gap-1 bg-background px-2 rounded-md">
+      <div className="text-sm flex items-center gap-1 bg-background h-6 px-2 rounded-md">
         Page: <p>{pageIndex}</p>/<p>{pageCount}</p>
       </div>
 

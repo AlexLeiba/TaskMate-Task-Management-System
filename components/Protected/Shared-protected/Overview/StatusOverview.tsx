@@ -8,7 +8,10 @@ type Props = {
 };
 export function StatusOverview({ data }: Props) {
   return (
-    <div className="flex flex-col gap-2 justify-between h-full">
+    <div
+      className="flex flex-col gap-2 justify-between h-full"
+      data-test="status-overview"
+    >
       <div>
         <h5 className="text-2xl font-medium">Status overview</h5>
         <p>

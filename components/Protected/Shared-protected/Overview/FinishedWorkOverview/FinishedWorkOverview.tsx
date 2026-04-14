@@ -92,7 +92,7 @@ export function FinishedWorkOverview({ type, orgId }: Props) {
   const finishedWorkData = filteredData || data;
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2" data-test="finished-work-overview">
       <div>
         <h5 className="text-2xl font-medium">
           Finished work overview

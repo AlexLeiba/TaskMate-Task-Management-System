@@ -34,6 +34,7 @@ export function CreateNewBoardCard({ disabled = false }: Props) {
     <>
       {/* CREATE CARD */}
       <IconButton
+        data-test="create-new-board-card"
         disabled={disabled}
         classNameChildren="group flex flex-col w-full justify-center items-center "
         onClick={() => setNewBoardDialogOpen(true)}

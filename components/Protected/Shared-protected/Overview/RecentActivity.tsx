@@ -53,7 +53,7 @@ export function RecentActivity({ orgId, type = "board" }: Props) {
     enabled: isLoaded && !!orgId && !!user,
   });
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4" data-test="recent-activity">
       <div className="flex justify-between ">
         <div className="flex flex-col">
           <h5 className="text-2xl font-medium">Recent activity</h5>

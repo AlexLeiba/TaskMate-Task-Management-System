@@ -1,34 +1,41 @@
 import { IconButton } from "@/components/ui/iconButton";
+import { useDebounce } from "@/hooks/useDebounce";
 import { useGetBoardData } from "@/hooks/useGetBoardData";
 import { useMembers } from "@/hooks/useMembers";
 import { UNASSIGNED_CARD } from "@/lib/consts/protected/card";
-
 import { OrganizationMembersType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/store/useStore";
 import { UserPlus } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
+import { useShallow } from "zustand/shallow";
 
 export function BoardMemberFilters() {
+  const [selectedLocalMember, setSelectedLocalMember] = useState<string>("");
   const { fetchBoardFilteredListData, loading } = useGetBoardData();
 
   const { members, isFetching } = useMembers();
 
   const setBoardSubHeaderMemberIdSelected = useStore(
-    (state) => state.setBoardSubHeaderMemberIdSelected,
-  );
-
-  const boardSubHeaderMemberIdSelected = useStore(
-    (state) => state.boardSubHeaderMemberIdSelected,
+    useShallow((state) => state.setBoardSubHeaderMemberIdSelected),
   );
 
   const setFilterState = useStore((state) => state.setFilterState);
+  const delayedSetFilterState = useDebounce(setFilterState, 100);
 
   async function handleSelectedMember(
     member: OrganizationMembersType | undefined | null,
   ) {
+    setSelectedLocalMember((prev) => {
+      if (prev === member?.email) {
+        return "";
+      }
+      return member?.email || "";
+    });
+
     // SET FILTER STATE BASED ON SELECTED MEMBER, THIS WILL TRIGGER useTableData TO FETCH FILTERED DATA
-    setFilterState({
+    delayedSetFilterState({
       filters: "selectedMemberEmail",
       selectedMemberEmail: member?.email,
     });
@@ -63,7 +70,7 @@ export function BoardMemberFilters() {
           title="Filter by unassigned"
           aria-label="Filter by unassigned"
           className={cn(
-            boardSubHeaderMemberIdSelected === "unassigned"
+            selectedLocalMember === "unassigned"
               ? "z-10 outline-offset-3 outline-2 outline-white "
               : "outline-1 outline-gray-300",
             "bg-accent-foreground flex items-center  hover:z-10 hover:outline-2 hover:opacity-100 rounded-full cursor-pointer p-1",
@@ -79,7 +86,7 @@ export function BoardMemberFilters() {
               title={`Filter by ${member?.fullName}`}
               style={{ transform: `translateX(-${index * 5}px)` }}
               className={cn(
-                boardSubHeaderMemberIdSelected === member?.userId
+                selectedLocalMember === member?.email
                   ? "z-10 outline-offset-3 outline-2 outline-white"
                   : "outline-1 outline-gray-300",
                 "bg-accent-foreground -translate-x-1.25 flex items-center hover:z-10 hover:outline-2 hover:opacity-100  rounded-full cursor-pointer",

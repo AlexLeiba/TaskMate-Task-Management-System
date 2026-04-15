@@ -169,6 +169,18 @@ export const useStore = create<StoreType>((set, get) => ({
       }
     }
 
+    if (state.filters === "search") {
+      set({
+        filterState: {
+          ...INITIAL_FILTERS_STATE,
+          search: state.search,
+          filters: "search",
+        },
+      });
+
+      return;
+    }
+
     // OTHER FILTERS
 
     const prevSelectedFilters = get().filterState.filters;

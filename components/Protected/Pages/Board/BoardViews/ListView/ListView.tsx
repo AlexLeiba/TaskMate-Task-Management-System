@@ -1,36 +1,27 @@
-import { useAuth } from "@clerk/nextjs";
-import { useBoardId } from "@/hooks/useBoardId";
 import { COLUMNS } from "./Columns/Columns";
 import { DataTable } from "./DataTable";
 import { useMemo } from "react";
 import { useTableData } from "@/hooks/useTableData";
 import { useStore } from "@/store/useStore";
 
-export function ListView() {
-  const boardId = useBoardId();
-  const { orgId } = useAuth();
+const EMPTY_DATA: any[] = [];
 
+export function ListView() {
   const filters = useStore((state) => state.filterState);
 
-  const { data, isLoading } = useTableData(filters);
+  const { data: boardData, isLoading } = useTableData(filters);
 
-  const columnsData = useMemo(() => {
-    if (!boardId || !orgId) return [];
+  const stableColumns = useMemo(() => {
     return COLUMNS;
-  }, [boardId, orgId]);
-
-  const boardData = useMemo(() => {
-    if (!boardId || !orgId) return null;
-    return data;
-  }, [boardId, orgId, data]);
+  }, []);
 
   return (
     <div className="overflow-y-hidden h-[calc(100vh-108px)] p-4 max-w-400 mx-auto  overflow-x-auto relative">
       <DataTable
         isLoading={isLoading}
-        columns={columnsData || []}
-        data={(boardData && boardData?.data?.cards) || []}
-        listStatuses={boardData?.data?.listStatuses || []}
+        columns={stableColumns || EMPTY_DATA}
+        data={(boardData && boardData?.data?.cards) || EMPTY_DATA}
+        listStatuses={boardData?.data?.listStatuses || EMPTY_DATA}
       />
     </div>
   );

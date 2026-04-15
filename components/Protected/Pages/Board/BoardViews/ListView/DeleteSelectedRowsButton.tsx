@@ -7,17 +7,21 @@ import toast from "react-hot-toast";
 
 type Props = {
   selectedRowIds: string[];
+  resetRowSelection: () => void;
 };
-export function DeleteSelectedRowsButton({ selectedRowIds }: Props) {
+export function DeleteSelectedRowsButton({
+  selectedRowIds,
+  resetRowSelection,
+}: Props) {
   const boardId = useBoardId();
   const queryClient = useQueryClient();
-
   const { mutate } = useMutation({
     mutationFn: deleteMultipleCardsAction,
     onSuccess: () => {
       toast.success("Deleted successfully", {
         id: QUERY_KEYS.pages.board.tableListView.deleteMultipleCards,
       });
+      resetRowSelection();
 
       queryClient.invalidateQueries({
         queryKey: [

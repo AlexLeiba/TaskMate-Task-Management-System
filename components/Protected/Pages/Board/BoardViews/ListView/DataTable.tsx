@@ -119,6 +119,7 @@ export function DataTable<TData, TValue>({
         </div>
         {rowSelection && Object.values(rowSelection).some(Boolean) && (
           <DeleteSelectedRowsButton
+            resetRowSelection={() => setRowSelection({})}
             selectedRowIds={Object.entries(rowSelection)
               .filter(([key, value]) => {
                 if (value && key.length > 20) return true;

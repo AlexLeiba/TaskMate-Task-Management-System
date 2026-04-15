@@ -2,7 +2,7 @@ import { deleteMultipleCardsAction } from "@/app/actions/card";
 import { Button } from "@/components/ui/button";
 import { useBoardId } from "@/hooks/useBoardId";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 type Props = {
@@ -10,12 +10,20 @@ type Props = {
 };
 export function DeleteSelectedRowsButton({ selectedRowIds }: Props) {
   const boardId = useBoardId();
+  const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
     mutationFn: deleteMultipleCardsAction,
     onSuccess: () => {
-      toast.success("Cards deleted successfully", {
+      toast.success("Deleted successfully", {
         id: QUERY_KEYS.pages.board.tableListView.deleteMultipleCards,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [
+          QUERY_KEYS.pages.board.tableListView.getAllTableData,
+          boardId,
+        ],
       });
     },
     onError: (error) => {
@@ -25,7 +33,7 @@ export function DeleteSelectedRowsButton({ selectedRowIds }: Props) {
   });
 
   function handleDeleteSelectedCards() {
-    toast.loading("Deleting cards...", {
+    toast.loading("Deleting ...", {
       id: QUERY_KEYS.pages.board.tableListView.deleteMultipleCards,
     });
     mutate({

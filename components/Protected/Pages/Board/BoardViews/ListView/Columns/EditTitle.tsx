@@ -1,4 +1,4 @@
-import { Dispatch, memo } from "react";
+import { Dispatch } from "react";
 import { editCardTitleAction } from "@/app/actions/card";
 import { TriggerInput } from "@/components/Protected/Shared-protected/TriggerInput";
 import { IconButton } from "@/components/ui/iconButton";
@@ -6,7 +6,7 @@ import { useBoardId } from "@/hooks/useBoardId";
 import { useRole } from "@/hooks/useRole";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { cn } from "@/lib/utils";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Edit } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -26,6 +26,7 @@ export function EditTitle({
 }: Props) {
   const role = useRole();
   const boardId = useBoardId();
+  const queryClient = useQueryClient();
 
   // EDIT TITLE
   const { mutate: editTitleCardMutation, isPending: isPendingEditTitleCard } =
@@ -36,8 +37,13 @@ export function EditTitle({
       ],
       mutationFn: editCardTitleAction,
       onSuccess: () => {
-        toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cards.editTitleCard);
-        toast.success("Card title was edited");
+        toast.success("Card title was edited", {
+          id: QUERY_KEYS.pages.board.kanbanView.cards.editTitleCard,
+        });
+
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.pages.board.tableListView.getAllTableData],
+        });
       },
       onError: ({ message }) => {
         toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cards.editTitleCard);

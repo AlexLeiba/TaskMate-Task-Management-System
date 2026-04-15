@@ -101,7 +101,10 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
   }
 
   return (
-    <div className="flex flex-col md:gap-12 gap:4">
+    <div
+      className="flex flex-col md:gap-12 gap:4"
+      data-test="dialog-board-details"
+    >
       <div className="grid md:grid-cols-[repeat(auto-fit,minmax(140px,1fr))] grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-2">
         {isFetching ? (
           <DialogBoardCardSkeleton />
@@ -111,7 +114,10 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
               <DialogBoardCard
                 key={image.id}
                 data={image}
-                onClick={() => setSelectedImage(image)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedImage(image);
+                }}
                 selected={selectedImage?.id === image.id}
               />
             );
@@ -139,6 +145,7 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
           </label>
           <Spacer size={1} />
           <Input
+            data-test="dialog-board-details-title-input"
             error={errors.title?.message}
             disabled={isFetching}
             id="title"
@@ -147,6 +154,7 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
           />
         </div>
         <Button
+          data-test="dialog-board-details-submit-button"
           disabled={isFetching || isPendingCreateNewBoard}
           loading={isPendingCreateNewBoard}
           onClick={handleSubmit(onSubmitNewBoard)}

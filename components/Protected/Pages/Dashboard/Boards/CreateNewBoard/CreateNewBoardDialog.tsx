@@ -18,6 +18,7 @@ export function CreateNewBoardDialog({
   return (
     <Dialog open={newBoardDialogOpen} onOpenChange={setNewBoardDialogOpen}>
       <DialogContent
+        data-test="create-new-board-dialog"
         className="lg:min-w-200!  sm:h-auto h-full flex flex-col"
         aria-describedby="The dialog is used to create new board"
       >

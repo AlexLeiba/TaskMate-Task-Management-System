@@ -24,7 +24,10 @@ export function BoardCard({
 }: Props) {
   return (
     <>
-      <div className="relative overflow-hidden  rounded-md min-h-32.5">
+      <div
+        className="relative overflow-hidden  rounded-md min-h-32.5"
+        data-test="dashboard-card"
+      >
         <Image
           src={cardImageUrl}
           alt={title}

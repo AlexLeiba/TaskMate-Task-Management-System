@@ -69,5 +69,7 @@ export const QUERY_KEYS = {
   },
   hooks: {
     useMembers: "organization-members",
+    useBoardListData: "get-all-list-data",
+    useTableData: "get-all-table-data",
   },
 } as const;

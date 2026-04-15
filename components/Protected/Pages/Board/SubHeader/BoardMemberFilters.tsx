@@ -1,28 +1,32 @@
 import { IconButton } from "@/components/ui/iconButton";
 import { useDebounce } from "@/hooks/useDebounce";
-import { useGetBoardData } from "@/hooks/useGetBoardData";
 import { useMembers } from "@/hooks/useMembers";
 import { UNASSIGNED_CARD } from "@/lib/consts/protected/card";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { OrganizationMembersType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/store/useStore";
+import { useIsFetching } from "@tanstack/react-query";
 import { UserPlus } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import { useShallow } from "zustand/shallow";
 
 export function BoardMemberFilters() {
   const [selectedLocalMember, setSelectedLocalMember] = useState<string>("");
-  const { fetchBoardFilteredListData, loading } = useGetBoardData();
 
   const { members, isFetching } = useMembers();
 
-  const setBoardSubHeaderMemberIdSelected = useStore(
-    useShallow((state) => state.setBoardSubHeaderMemberIdSelected),
-  );
-
   const setFilterState = useStore((state) => state.setFilterState);
   const delayedSetFilterState = useDebounce(setFilterState, 100);
+
+  const isFetchingKanbanListData =
+    useIsFetching({
+      queryKey: [QUERY_KEYS.hooks.useBoardListData],
+    }) > 0;
+  const isFetchingTableData =
+    useIsFetching({
+      queryKey: [QUERY_KEYS.hooks.useTableData],
+    }) > 0;
 
   async function handleSelectedMember(
     member: OrganizationMembersType | undefined | null,
@@ -39,33 +43,16 @@ export function BoardMemberFilters() {
       filters: "selectedMemberEmail",
       selectedMemberEmail: member?.email,
     });
-
-    // TODO CHANGE TO setFilterState
-    const selectedMember = setBoardSubHeaderMemberIdSelected(
-      member?.userId || "",
-    );
-
-    if (!selectedMember) {
-      // FETCH FRESH BOARD DATA WITH NO FILTERS APPLIED
-      return fetchBoardFilteredListData({ filters: "all" });
-    }
-
-    if (member?.userId === UNASSIGNED_CARD.userId) {
-      // FETCH BOARD DATA WITH UNASSIGNED FILTER
-      return fetchBoardFilteredListData({ unassignedCard: true });
-    }
-
-    // FETCH BOARD DATA WITH MEMBER FILTER
-    fetchBoardFilteredListData({
-      selectedMemberEmail: member?.email || "",
-    });
   }
+
+  const isLoading =
+    isFetchingKanbanListData || isFetchingTableData || isFetching;
 
   return (
     <div className="p-2 hidden lg:block">
       <div className="flex items-center relative">
         <IconButton
-          disabled={loading || isFetching}
+          disabled={isLoading}
           onClick={() => handleSelectedMember(UNASSIGNED_CARD)}
           title="Filter by unassigned"
           aria-label="Filter by unassigned"
@@ -81,7 +68,7 @@ export function BoardMemberFilters() {
         {members?.map((member, index) => {
           return (
             <IconButton
-              disabled={loading || isFetching}
+              disabled={isLoading}
               onClick={() => handleSelectedMember(member)}
               title={`Filter by ${member?.fullName}`}
               style={{ transform: `translateX(-${index * 5}px)` }}

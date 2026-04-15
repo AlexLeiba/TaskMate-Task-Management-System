@@ -1,10 +1,6 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import toast from "react-hot-toast";
-import {
-  ListAndCardsAndDueDateAndChecklistType,
-  UserRoleType,
-} from "@/lib/types";
 import dynamic from "next/dynamic";
 import { Droppable, DropResult } from "@hello-pangea/dnd";
 import { useMutation } from "@tanstack/react-query";
@@ -19,6 +15,7 @@ import { AddNewListCard } from "./ListCard/AddNewListCard";
 import { useStore } from "@/store/useStore";
 import { useShallow } from "zustand/shallow";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
+import { useBoardListData } from "@/hooks/useBoardListData";
 
 const DragDropContext = dynamic(() =>
   import("@hello-pangea/dnd").then((m) => m.DragDropContext),
@@ -26,15 +23,10 @@ const DragDropContext = dynamic(() =>
 
 type Props = {
   boardId: string;
-  listData: {
-    data: {
-      data: ListAndCardsAndDueDateAndChecklistType[] | null | undefined;
-      role: UserRoleType;
-    } | null;
-    error: { message: string };
-  };
 };
-export function ListCards({ boardId, listData }: Props) {
+export function ListCards({ boardId }: Props) {
+  const filters = useStore((state) => state.filterState);
+  const { data: listData } = useBoardListData(filters);
   const {
     boardListData,
     setInitializeBoardListData,
@@ -57,8 +49,6 @@ export function ListCards({ boardId, listData }: Props) {
     })),
   );
 
-  const hasToastedRef = useRef(false);
-
   const { mutate: mutateReorderList } = useMutation({
     mutationFn: changeListPositionAction,
     mutationKey: [
@@ -79,21 +69,15 @@ export function ListCards({ boardId, listData }: Props) {
   });
 
   useEffect(() => {
-    if (listData?.error?.message && hasToastedRef.current === false) {
-      // CATCH ERRORS
-      toast.error(listData.error.message);
-      hasToastedRef.current = true; //to avoid duplicate toasts
-      return;
-    }
+    if (!listData) return;
 
     setBoardSubHeaderMemberIdSelected(""); // RESET FILTER MEMBER ON FIRST MOUNT
     setBoardSubHeaderFilterSelected("all");
     //RESET FILTER ON FIRST MOUNT
-    setInitializeBoardListData(listData?.data?.data); //SET INITIAL DATA ON FIRST MOUNT
+    setInitializeBoardListData(listData?.data); //SET INITIAL DATA ON FIRST MOUNT
     // initial list column values
   }, [
-    listData.data,
-    listData.error.message,
+    listData,
     setInitializeBoardListData,
     setBoardSubHeaderMemberIdSelected,
     setBoardSubHeaderFilterSelected,
@@ -140,7 +124,7 @@ export function ListCards({ boardId, listData }: Props) {
             destinationListId: destination.droppableId,
             cardToMoveId: deletedCardId,
             listTitle:
-              listData.data?.data?.find(
+              listData?.data?.find(
                 (list) => list.id.toString() === source.droppableId,
               )?.title || "List",
             newOrderIndex: destination.index,
@@ -163,7 +147,7 @@ export function ListCards({ boardId, listData }: Props) {
           destinationListId: destination.droppableId,
           cardToMoveId: deletedCardId,
           listTitle:
-            listData.data?.data?.find(
+            listData?.data?.find(
               (list) => list.id.toString() === source.droppableId,
             )?.title || "List",
           newOrderIndex: destination.index,
@@ -175,7 +159,7 @@ export function ListCards({ boardId, listData }: Props) {
     }
   }
   return (
-    <div className="max-w-400 mx-auto p-4 overflow-x-auto  w-full flex gap-4 items-start overflow-y-hidden  h-[calc(100vh+200)]">
+    <div className="max-w-400 mx-auto p-4 overflow-x-auto  w-full flex gap-4 items-start overflow-y-hidden  h-[calc(100vh+200)] min-h-[calc(100vh-108px)]">
       <DragDropContext onDragEnd={handleDragEnd}>
         <Droppable
           droppableId="list-container"
@@ -199,7 +183,7 @@ export function ListCards({ boardId, listData }: Props) {
         </Droppable>
       </DragDropContext>
       {/*  ADD NEW LIST*/}
-      {listData.data?.role === USER_ROLES.admin && (
+      {listData?.role === USER_ROLES.admin && (
         <AddNewListCard boardId={boardId} />
       )}
     </div>

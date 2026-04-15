@@ -4,7 +4,6 @@ import { ListDataTableType } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useBoardId } from "./useBoardId";
-import { useAuth } from "@clerk/nextjs";
 
 export function useTableData(
   filters?:
@@ -19,15 +18,14 @@ export function useTableData(
     | undefined,
 ) {
   const boardId = useBoardId();
-  const { orgId } = useAuth();
   async function fetchTableData() {
-    if (!boardId || !orgId) {
-      throw new Error("Table data not found, please try again");
-    }
     toast.loading("Loading...", {
-      id: QUERY_KEYS.pages.board.tableListView.getAllTableData,
+      id: QUERY_KEYS.hooks.useTableData,
     });
     try {
+      if (!boardId) {
+        throw new Error("Table data not found, please try again");
+      }
       const response = await getListDataTableViewAction({
         boardId,
         ...filters,
@@ -41,16 +39,12 @@ export function useTableData(
 
       return null;
     } finally {
-      toast.dismiss(QUERY_KEYS.pages.board.tableListView.getAllTableData);
+      toast.dismiss(QUERY_KEYS.hooks.useTableData);
     }
   }
   return useQuery({
     queryFn: fetchTableData,
-    queryKey: [
-      QUERY_KEYS.pages.board.tableListView.getAllTableData,
-      boardId,
-      filters,
-    ],
+    queryKey: [QUERY_KEYS.hooks.useTableData, boardId, filters],
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 5,
     refetchOnMount: true,

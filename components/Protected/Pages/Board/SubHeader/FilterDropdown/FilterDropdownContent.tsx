@@ -2,7 +2,6 @@ import { useStore } from "@/store/useStore";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { FilterStates, PriorityType } from "@/lib/types";
-import { useGetBoardData } from "@/hooks/useGetBoardData";
 import { useResponsive } from "@/hooks/useResponsive";
 import { BREAKPOINTS } from "@/lib/breakpoints";
 import { FilterDropdownMembersContent } from "./FilterDropdownMembersContent";
@@ -21,20 +20,14 @@ export function FilterDropdownContent({
 }: {
   handleCloseMenu: () => void;
 }) {
-  const { fetchBoardFilteredListData } = useGetBoardData();
   const isTablet = useResponsive(BREAKPOINTS.lg);
 
-  const {
-    prioritiesSelectedFilter,
-    boardSubHeaderFilterSelected,
-    setBoardSubHeaderFilterSelected,
-    setFilterState,
-  } = useStore(
+  const { setFilterState, filterState } = useStore(
     useShallow((state) => ({
       boardSubHeaderFilterSelected: state.boardSubHeaderFilterSelected,
-      setBoardSubHeaderFilterSelected: state.setBoardSubHeaderFilterSelected,
       prioritiesSelectedFilter: state.prioritiesSelectedFilter,
       setFilterState: state.setFilterState,
+      filterState: state.filterState,
       boardTabSections: state.boardTabSections,
     })),
   );
@@ -45,37 +38,16 @@ export function FilterDropdownContent({
   ) {
     handleCloseMenu();
 
-    // SET FILTER STATE BASED ON SELECTED MEMBER, THIS WILL TRIGGER useTableData TO FETCH FILTERED DATA
+    // SET FILTER STATE BASED ON SELECTED MEMBER, THIS WILL TRIGGER useTableData and useBoardListData passing filter prop TO FETCH FILTERED DATA
     setFilterState({
       filters: filterState,
-      priorityType: priorityType?.value,
-    });
-
-    // TODO change to setFilterState
-    // FIRST CREATE A HOOK WHICH WILL LISTEN TO STORE AND CHANGE response value based on filters props
-    const selectedFilter = setBoardSubHeaderFilterSelected(
-      filterState,
-      priorityType?.value,
-    );
-
-    if (selectedFilter === "theSame") {
-      fetchBoardFilteredListData({
-        priorityType: priorityType?.value,
-        unassignedCard: false,
-        filters: "all",
-      });
-      return;
-    }
-    fetchBoardFilteredListData({
-      unassignedCard: false,
-      filters: selectedFilter,
       priorityType: priorityType?.value,
     });
   }
 
   return (
     <>
-      {/* MEMBER FILTERS */}
+      {/* MEMBER FILTERS ON MOBILE AND TABLET */}
       {isTablet && (
         <FilterDropdownMembersContent
           handleCloseMenu={() => handleCloseMenu()}
@@ -86,7 +58,7 @@ export function FilterDropdownContent({
       {FILTERS_DATA.map((data) => {
         if (data.id === "priority") {
           const selectedPriority = CARD_PRIORITIES.find(
-            (p) => p.value === prioritiesSelectedFilter,
+            (p) => p.value === filterState.priorityType,
           );
 
           return (
@@ -100,7 +72,7 @@ export function FilterDropdownContent({
                     variant={"ghost"}
                     className={cn(
                       "border w-full",
-                      boardSubHeaderFilterSelected === data?.id &&
+                      filterState.filters === data?.id &&
                         "border-text-primary ",
                     )}
                   >
@@ -172,8 +144,7 @@ export function FilterDropdownContent({
             variant={"ghost"}
             className={cn(
               "border",
-              boardSubHeaderFilterSelected === data?.id &&
-                "border-text-primary ",
+              filterState.filters === data?.id && "border-text-primary ",
             )}
           >
             <div
@@ -185,7 +156,7 @@ export function FilterDropdownContent({
                 {data.icon}
                 <p>{data?.title}</p>
               </div>
-              {boardSubHeaderFilterSelected === data?.id && <X />}
+              {filterState.filters === data?.id && <X />}
             </div>
           </Button>
         );

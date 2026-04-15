@@ -1,6 +1,5 @@
 import { IconButton } from "@/components/ui/iconButton";
 import { useDebounce } from "@/hooks/useDebounce";
-import { useGetBoardData } from "@/hooks/useGetBoardData";
 import { BOARD_HEADER_TABS } from "@/lib/consts/protected/board";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { BoardTabSectionType } from "@/lib/types";
@@ -30,27 +29,30 @@ export function DropdownBoardTabSectionsContent({
 
   const delayedSetTabSection = useDebounce(setBoardTabSections, 100);
 
-  const { fetchBoardFilteredListData, loading } = useGetBoardData();
-
   function handleSelectTabSection(tab: BoardTabSectionType) {
-    setSelectedTabLocal(tab);
-    delayedSetTabSection(tab);
     handleCloseMenu();
+    if (tab !== "refresh") {
+      setSelectedTabLocal(tab);
+      delayedSetTabSection(tab);
+    }
 
     if (tab === "refresh") {
-      // change only when table view is selected
+      // list table view
       if (boardTabSections === "list") {
-        setFilterState({
-          filters: "all",
-        });
+        setFilterState({ filters: "all" });
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEYS.pages.board.tableListView.getAllTableData],
+          queryKey: [QUERY_KEYS.hooks.useTableData],
         });
       }
-      // TODO change to setFilterState
-      fetchBoardFilteredListData({ filters: "all" });
+
+      // kanban board view
+      if (boardTabSections === "board") {
+        setFilterState({ filters: "all" });
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.hooks.useBoardListData],
+        });
+      }
     }
-    fetchBoardFilteredListData({ filters: "all" });
   }
 
   return (
@@ -58,7 +60,6 @@ export function DropdownBoardTabSectionsContent({
       {BOARD_HEADER_TABS.map((tab) => {
         return (
           <IconButton
-            disabled={loading}
             title={`Open ${tab.label} view`}
             onClick={() => handleSelectTabSection(tab.value)}
             className={cn(

@@ -1,5 +1,5 @@
 export const revalidate = 30;
-import { BoardServerRender } from "@/components/Protected/Pages/Board/BoardServerRender";
+import { BoardViews } from "@/components/Protected/Pages/Board/BoardViews/BoardViews";
 import { SubHeaderServerRender } from "@/components/Protected/Pages/Board/SubHeaderServerRender";
 
 async function BoardPage({
@@ -14,7 +14,7 @@ async function BoardPage({
     <div className="w-full h-[calc(100vh-200px)]">
       <SubHeaderServerRender boardId={boardId} orgId={orgId} />
 
-      <BoardServerRender boardId={boardId} orgId={orgId} />
+      <BoardViews boardId={boardId} />
     </div>
   );
 }

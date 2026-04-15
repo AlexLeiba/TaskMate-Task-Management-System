@@ -1,5 +1,4 @@
 import { IconButton } from "@/components/ui/iconButton";
-import { useGetBoardData } from "@/hooks/useGetBoardData";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { useStore } from "@/store/useStore";
 import { useIsFetching, useQueryClient } from "@tanstack/react-query";
@@ -9,9 +8,6 @@ import { useShallow } from "zustand/shallow";
 export function RefreshData() {
   const queryClient = useQueryClient();
 
-  const { fetchBoardFilteredListData, loading } = useGetBoardData();
-
-  // const { boardTabSections } = useStore((state) => state);
   const { setBoardTabSections, boardTabSections, setFilterState } = useStore(
     useShallow((state) => ({
       setBoardTabSections: state.setBoardTabSections,
@@ -22,10 +18,23 @@ export function RefreshData() {
 
   const isFetchingBoardOverview =
     useIsFetching({
-      queryKey: [QUERY_KEYS.pages.board.overview.boardOverview],
+      queryKey: [
+        QUERY_KEYS.pages.board.overview.boardOverview,
+        QUERY_KEYS.hooks.useBoardListData,
+        QUERY_KEYS.hooks.useTableData,
+      ],
+    }) > 0;
+  const isFetchingKanbanList =
+    useIsFetching({
+      queryKey: [QUERY_KEYS.hooks.useBoardListData],
+    }) > 0;
+  const isFetchingTable =
+    useIsFetching({
+      queryKey: [QUERY_KEYS.hooks.useTableData],
     }) > 0;
 
-  const isRefreshing = isFetchingBoardOverview || loading;
+  const isRefreshing =
+    isFetchingBoardOverview || isFetchingKanbanList || isFetchingTable;
 
   function handleRefreshData() {
     setBoardTabSections("refresh");
@@ -43,16 +52,27 @@ export function RefreshData() {
       });
       return;
     }
+
+    // list table view
     if (boardTabSections === "list") {
       setFilterState({ filters: "all" });
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.pages.board.tableListView.getAllTableData],
+        queryKey: [QUERY_KEYS.hooks.useTableData],
       });
     }
+
+    // kanban board view
+    if (boardTabSections === "board") {
+      setFilterState({ filters: "all" });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
+    }
+
+    // invalidate members
     queryClient.invalidateQueries({
       queryKey: [QUERY_KEYS.hooks.useMembers],
     });
-    fetchBoardFilteredListData({ filters: "all" });
   }
   return (
     <IconButton

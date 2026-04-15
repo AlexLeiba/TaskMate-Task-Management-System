@@ -1,8 +1,5 @@
 "use client";
-import {
-  ListAndCardsAndDueDateAndChecklistType,
-  UserRoleType,
-} from "@/lib/types";
+
 import { ListCards } from "./KanbanView/ListCards";
 import dynamic from "next/dynamic";
 import { useStore } from "@/store/useStore";
@@ -20,13 +17,6 @@ const BoardOverview = dynamic(() =>
 );
 type Props = {
   boardId: string;
-  listData: {
-    data: {
-      data: ListAndCardsAndDueDateAndChecklistType[] | null | undefined;
-      role: UserRoleType;
-    } | null;
-    error: { message: string };
-  };
 };
 
 const BOARD_VIEW_SECTION: { [key: string]: React.FC<Props> | ComponentClass } =
@@ -35,14 +25,14 @@ const BOARD_VIEW_SECTION: { [key: string]: React.FC<Props> | ComponentClass } =
     list: ListView,
     overview: BoardOverview,
   };
-export function BoardViews({ boardId, listData }: Props) {
+export function BoardViews({ boardId }: Props) {
   const boardTabSections = useStore((state) => state.boardTabSections);
 
   const BoardView = BOARD_VIEW_SECTION[boardTabSections];
 
   return (
     <div className="h-full">
-      <BoardView boardId={boardId} listData={listData} />
+      <BoardView boardId={boardId} />
     </div>
   );
 }

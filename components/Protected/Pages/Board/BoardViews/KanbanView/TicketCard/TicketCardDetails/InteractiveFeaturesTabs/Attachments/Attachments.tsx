@@ -166,12 +166,15 @@ export function Attachments({ cardDetailsId }: Props) {
     mutationFn: uploadFile,
     onSuccess: (data) => {
       setAttachmentsData(data);
-      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.uploadFile);
-      toast.success("Uploaded");
+
+      toast.success("Uploaded", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.uploadFile,
+      });
     },
     onError: ({ message }) => {
-      toast.error(message || "Error uploading file, please try again");
-      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.uploadFile);
+      toast.error(message || "Error uploading file, please try again", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.uploadFile,
+      });
     },
   });
 
@@ -179,11 +182,14 @@ export function Attachments({ cardDetailsId }: Props) {
   const { mutate: mutateDelete, isPending: isPendingDelete } = useMutation({
     mutationFn: deleteFile,
     onSuccess: () => {
-      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteFile);
+      toast.success("Deleted", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteFile,
+      });
     },
     onError: ({ message }) => {
-      toast.error(message || "Error deleting file, please try again");
-      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteFile);
+      toast.error(message || "Error deleting file, please try again", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteFile,
+      });
     },
   });
 

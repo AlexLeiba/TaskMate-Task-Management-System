@@ -18,11 +18,7 @@ export function RefreshData() {
 
   const isFetchingBoardOverview =
     useIsFetching({
-      queryKey: [
-        QUERY_KEYS.pages.board.overview.boardOverview,
-        QUERY_KEYS.hooks.useBoardListData,
-        QUERY_KEYS.hooks.useTableData,
-      ],
+      queryKey: [QUERY_KEYS.pages.board.overview.boardOverview],
     }) > 0;
   const isFetchingKanbanList =
     useIsFetching({

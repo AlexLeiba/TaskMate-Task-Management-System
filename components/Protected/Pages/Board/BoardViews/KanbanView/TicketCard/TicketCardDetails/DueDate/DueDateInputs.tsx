@@ -87,9 +87,6 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
         QUERY_KEYS.pages.board.kanbanView.cardDetails.createDueDate,
       ],
       onSuccess: () => {
-        toast.dismiss(
-          QUERY_KEYS.pages.board.kanbanView.cardDetails.createDueDate,
-        );
         toast.success("Due date created", {
           id: QUERY_KEYS.pages.board.kanbanView.cardDetails.createDueDate,
         });
@@ -98,14 +95,18 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
             QUERY_KEYS.pages.board.kanbanView.cardDetails.getCardDetails,
           ],
         });
+
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.hooks.useBoardListData],
+        });
       },
       onError: ({ message }) => {
         setDueDateView("");
         setDueDateIsoString("");
-        toast.dismiss(
-          QUERY_KEYS.pages.board.kanbanView.cardDetails.createDueDate,
-        );
-        toast.error(message || "Error creating due date, please try again");
+
+        toast.error(message || "Error creating due date, please try again", {
+          id: QUERY_KEYS.pages.board.kanbanView.cardDetails.createDueDate,
+        });
       },
     });
 
@@ -116,9 +117,6 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
         QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteDueDate,
       ],
       onSuccess: () => {
-        toast.dismiss(
-          QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteDueDate,
-        );
         toast.success("Due date Deleted", {
           id: QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteDueDate,
         });
@@ -127,12 +125,15 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
             QUERY_KEYS.pages.board.kanbanView.cardDetails.getCardDetails,
           ],
         });
+
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.hooks.useBoardListData],
+        });
       },
       onError: ({ message }) => {
-        toast.dismiss(
-          QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteDueDate,
-        );
-        toast.error(message || "Error deleting due date, please try again");
+        toast.error(message || "Error deleting due date, please try again", {
+          id: QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteDueDate,
+        });
       },
     });
 

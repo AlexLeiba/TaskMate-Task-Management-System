@@ -4,7 +4,7 @@ import { Check } from "lucide-react";
 import { StatusType } from "@/lib/types";
 import { IconButton } from "@/components/ui/iconButton";
 import toast from "react-hot-toast";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateListStatusAction } from "@/app/actions/list";
 import { useBoardId } from "@/hooks/useBoardId";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
@@ -20,6 +20,7 @@ export function ListStatusesContent({
   listId,
   handleChangeSelectStatus,
 }: Props) {
+  const queryClient = useQueryClient();
   const boardId = useBoardId();
   const [statusData, setStatusData] = useState<StatusType>(
     LIST_STATUSES.find((s) => s.value === selectedStatus)!,
@@ -32,10 +33,12 @@ export function ListStatusesContent({
       ],
       mutationFn: updateListStatusAction,
       onSuccess: () => {
-        toast.dismiss(
-          QUERY_KEYS.pages.board.kanbanView.lists.statuses.updateStatus,
-        );
-        toast.success("List status changed");
+        toast.success("List status changed", {
+          id: QUERY_KEYS.pages.board.kanbanView.lists.statuses.updateStatus,
+        });
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.hooks.useBoardListData],
+        });
       },
       onError: ({ message }) => {
         toast.dismiss(

@@ -4,7 +4,7 @@ import { TriggerInput } from "../../../../../../Shared-protected/TriggerInput";
 import { Separator } from "@/components/ui/separator";
 import { IconButton } from "@/components/ui/iconButton";
 import { KEYBOARD } from "@/lib/consts/consts";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   copyCardAction,
   deleteCardAction,
@@ -34,6 +34,7 @@ export function OptionsContent({
   defaultTitle,
   cardDetailsId,
 }: Props) {
+  const queryClient = useQueryClient();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isOpenedTitleInput, setIsOpenedTitleInput] = useState(false);
 
@@ -53,13 +54,21 @@ export function OptionsContent({
     mutationFn: deleteCardAction,
     onSuccess: () => {
       setDeleteDialogOpen(false);
-      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cards.deleteCard);
-      toast.success("Card deleted");
+
+      toast.success("Card deleted", {
+        id: QUERY_KEYS.pages.board.kanbanView.cards.deleteCard,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
     },
     onError: ({ message }) => {
       setDeleteDialogOpen(false);
-      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cards.deleteCard);
-      toast.error(message || "Error deleting card, please try again");
+
+      toast.error(message || "Error deleting card, please try again", {
+        id: QUERY_KEYS.pages.board.kanbanView.cards.deleteCard,
+      });
     },
   });
 
@@ -85,12 +94,18 @@ export function OptionsContent({
       ],
       mutationFn: editCardTitleAction,
       onSuccess: () => {
-        toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cards.editTitleCard);
-        toast.success("Card title was edited");
+        toast.success("Card title was edited", {
+          id: QUERY_KEYS.pages.board.kanbanView.cards.editTitleCard,
+        });
+
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.hooks.useBoardListData],
+        });
       },
       onError: ({ message }) => {
-        toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cards.editTitleCard);
-        toast.error(message || "Error editing card title, please try again");
+        toast.error(message || "Error editing card title, please try again", {
+          id: QUERY_KEYS.pages.board.kanbanView.cards.editTitleCard,
+        });
       },
     });
 
@@ -100,12 +115,18 @@ export function OptionsContent({
       mutationKey: [QUERY_KEYS.pages.board.kanbanView.cards.copyCard],
       mutationFn: copyCardAction,
       onSuccess: () => {
-        toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cards.copyCard);
-        toast.success("Card was copied");
+        toast.success("Card was copied", {
+          id: QUERY_KEYS.pages.board.kanbanView.cards.copyCard,
+        });
+
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.hooks.useBoardListData],
+        });
       },
       onError: ({ message }) => {
-        toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cards.copyCard);
-        toast.error(message || "Error copying card, please try again");
+        toast.error(message || "Error copying card, please try again", {
+          id: QUERY_KEYS.pages.board.kanbanView.cards.copyCard,
+        });
       },
     });
 
@@ -116,7 +137,6 @@ export function OptionsContent({
       id: QUERY_KEYS.pages.board.kanbanView.cards.editTitleCard,
     });
     setIsOpenedTitleInput(false);
-    // setIsOpenedOptions(false);
   }
 
   function handleOpenModalDeleteCard() {
@@ -132,7 +152,6 @@ export function OptionsContent({
       id: QUERY_KEYS.pages.board.kanbanView.cards.copyCard,
     });
     copyCardMutation({ cardId, listId, boardId });
-    // setIsOpenedOptions(false);
   }
   return (
     <>

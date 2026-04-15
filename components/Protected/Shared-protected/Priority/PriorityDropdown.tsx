@@ -11,7 +11,7 @@ import {
 import { USER_ROLES } from "@/lib/consts/consts";
 import { PrioritySkeleton } from "./PrioritySkeleton";
 import { PriorityType } from "@/lib/generated/prisma/enums";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { editPriorityAction } from "@/app/actions/card";
 import { useBoardId } from "@/hooks/useBoardId";
@@ -25,6 +25,7 @@ type Props = {
   cardId: string | undefined;
 };
 export function PriorityDropdown({ priority = "none", listId, cardId }: Props) {
+  const queryClient = useQueryClient();
   const boardId = useBoardId();
   const role = useRole();
 
@@ -32,12 +33,18 @@ export function PriorityDropdown({ priority = "none", listId, cardId }: Props) {
     mutationFn: editPriorityAction,
     mutationKey: [QUERY_KEYS.pages.board.kanbanView.cardDetails.editPriority],
     onSuccess: () => {
-      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.editPriority);
-      toast.success("Card priority was changed");
+      toast.success("Card priority was changed", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.editPriority,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
     },
     onError: ({ message }) => {
-      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.editPriority);
-      toast.error(message || "Error editing card priority, please try again");
+      toast.error(message || "Error editing card priority, please try again", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.editPriority,
+      });
     },
   });
 

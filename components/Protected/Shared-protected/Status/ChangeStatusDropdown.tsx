@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { editListStatusCardAction } from "@/app/actions/card";
 import { useBoardId } from "@/hooks/useBoardId";
@@ -24,6 +24,7 @@ type Props = {
   listsData: Pick<List, "id" | "status" | "title">[];
 };
 export function ChangeStatusDropdown({ listId, cardId, listsData }: Props) {
+  const queryClient = useQueryClient();
   const boardId = useBoardId();
 
   const {
@@ -34,12 +35,19 @@ export function ChangeStatusDropdown({ listId, cardId, listsData }: Props) {
     mutationFn: editListStatusCardAction,
     mutationKey: [QUERY_KEYS.pages.board.kanbanView.cardDetails.editStatus],
     onSuccess: () => {
-      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.editStatus);
-      toast.success("Card card status was changed");
+      toast.success("Status list was changed", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.editStatus,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
     },
     onError: ({ message }) => {
       toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.editStatus);
-      toast.error(message || "Error editing card status, please try again");
+      toast.error(message || "Error editing list status, please try again", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.editStatus,
+      });
     },
   });
 

@@ -3,7 +3,7 @@ import { Spacer } from "@/components/ui/spacer";
 import { Check, Copy, Delete, Info, X } from "lucide-react";
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { copyCardAction, deleteCardAction } from "@/app/actions/card";
 
@@ -35,6 +35,7 @@ export function Actions({
   cardId,
   handleCloseModal,
 }: Props) {
+  const queryClient = useQueryClient();
   const boardId = useBoardId();
   const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
 
@@ -48,12 +49,18 @@ export function Actions({
     onMutate: async () =>
       apiDeleteFile({ type: "card", cardDetailsId, fileType: "raw" }, boardId), // execution of the mutation will wait until this request is resolved (removing all attachments from cloud)
     onSuccess: () => {
-      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteCard);
-      toast.success("Card deleted");
+      toast.success("Card deleted", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteCard,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
     },
     onError: ({ message }) => {
-      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteCard);
-      toast.error(message || "Error deleting card, please try again");
+      toast.error(message || "Error deleting card, please try again", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteCard,
+      });
     },
   });
   // COPY CARD
@@ -62,12 +69,18 @@ export function Actions({
       mutationKey: [QUERY_KEYS.pages.board.kanbanView.cardDetails.copyCard],
       mutationFn: copyCardAction,
       onSuccess: () => {
-        toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.copyCard);
-        toast.success("Card copied");
+        toast.success("Card copied", {
+          id: QUERY_KEYS.pages.board.kanbanView.cardDetails.copyCard,
+        });
+
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.hooks.useBoardListData],
+        });
       },
       onError: ({ message }) => {
-        toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.copyCard);
-        toast.error(message || "Error copying card, please try again");
+        toast.error(message || "Error copying card, please try again", {
+          id: QUERY_KEYS.pages.board.kanbanView.cardDetails.copyCard,
+        });
       },
     });
 

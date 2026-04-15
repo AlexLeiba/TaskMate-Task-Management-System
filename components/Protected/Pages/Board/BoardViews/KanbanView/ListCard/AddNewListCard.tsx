@@ -4,31 +4,42 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 
 import { IconButton } from "@/components/ui/iconButton";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createListAction } from "@/app/actions/list";
 import toast from "react-hot-toast";
 import { TriggerInput } from "../../../../../Shared-protected/TriggerInput";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 type Props = { boardId: string };
 export function AddNewListCard({ boardId }: Props) {
+  const queryClient = useQueryClient();
+  const [isOpen, setIsOpen] = useState(false);
+
   const { mutate, isPending } = useMutation({
-    mutationKey: ["create-list"],
+    mutationKey: [QUERY_KEYS.pages.board.kanbanView.lists.createListCard],
     mutationFn: createListAction,
     onSuccess: () => {
-      toast.dismiss("create-list");
-      toast.success("List created");
+      toast.success("List created", {
+        id: QUERY_KEYS.pages.board.kanbanView.lists.createListCard,
+      });
       setIsOpen(false);
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
     },
     onError: ({ message }) => {
-      toast.dismiss("create-list");
-      toast.error(message || "Error creating list, please try again");
+      toast.error(message || "Error creating list, please try again", {
+        id: QUERY_KEYS.pages.board.kanbanView.lists.createListCard,
+      });
     },
   });
-  const [isOpen, setIsOpen] = useState(false);
 
   async function handleAddNewList(value: { [inputName: string]: string }) {
     mutate({ boardId, title: value.title });
-    toast.loading("Creating list...", { id: "create-list" });
+    toast.loading("Creating list...", {
+      id: QUERY_KEYS.pages.board.kanbanView.lists.createListCard,
+    });
   }
   return (
     <div className="shrink-0 flex flex-col justify-between  bg-card-foreground text-text-primary w-70 rounded-sm active:bg-card hover:ring-2 hover:ring-gray-400 py-1">

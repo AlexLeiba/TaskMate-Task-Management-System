@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateListTitleAction } from "@/app/actions/list";
 import toast from "react-hot-toast";
 import { useBoardId } from "@/hooks/useBoardId";
@@ -23,14 +23,19 @@ export function ListTitle({
   isInputOpened,
 }: Props) {
   const boardId = useBoardId();
+  const queryClient = useQueryClient();
 
   const { mutate: mutateListTitle, isPending: isPendingMutateListTitle } =
     useMutation({
       mutationKey: [QUERY_KEYS.pages.board.kanbanView.lists.editListTitle],
       mutationFn: updateListTitleAction,
       onSuccess() {
-        toast.dismiss(QUERY_KEYS.pages.board.kanbanView.lists.editListTitle);
-        toast.success("List title updated");
+        toast.success("List title updated", {
+          id: QUERY_KEYS.pages.board.kanbanView.lists.editListTitle,
+        });
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.hooks.useBoardListData],
+        });
       },
       onError({ message }) {
         toast.dismiss(QUERY_KEYS.pages.board.kanbanView.lists.editListTitle);

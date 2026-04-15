@@ -105,10 +105,13 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
       return { previousChecklist };
     },
     onSuccess: () => {
-      toast.dismiss(
-        QUERY_KEYS.pages.board.kanbanView.cardDetails.createChecklist,
-      );
-      toast.success("Checklist created");
+      toast.success("Checklist item created", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.createChecklist,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
     },
     onError: (err, _, context) => {
       queryClient.setQueryData(
@@ -175,11 +178,14 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
       return { previousChecklist };
     },
     onSuccess: () => {
-      toast.dismiss(
-        QUERY_KEYS.pages.board.kanbanView.cardDetails.updateChecklist,
-      );
-      toast.success("Checklist updated");
+      toast.success("Checklist updated", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.updateChecklist,
+      });
       setIsOpenedTitleInput(false);
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
     },
     onError: ({ message }, _, context) => {
       queryClient.setQueryData(
@@ -189,7 +195,9 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
         ],
         context?.previousChecklist,
       );
-      toast.error(message || "Something went wrong");
+      toast.error(message || "Something went wrong", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.updateChecklist,
+      });
     },
     onSettled: () => {
       queryClient.invalidateQueries({
@@ -239,10 +247,13 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
       return { previousChecklist };
     },
     onSuccess: () => {
-      toast.dismiss(
-        QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteChecklist,
-      );
-      toast.success("Checklist deleted");
+      toast.success("Checklist item deleted", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteChecklist,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
     },
     onError: ({ message }, _, context) => {
       queryClient.setQueryData(
@@ -252,10 +263,10 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
         ],
         context?.previousChecklist,
       );
-      toast.dismiss(
-        QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteChecklist,
-      );
-      toast.error(message || "Something went wrong");
+
+      toast.error(message || "Something went wrong", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteChecklist,
+      });
     },
 
     onSettled: () => {
@@ -271,44 +282,34 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
   });
 
   function handleCheckItem(id: string) {
-    if (!cardDetailsId) {
-      return toast.error("Card Id not found, please try again");
-    }
-
-    if (!boardId) {
+    if (!cardDetailsId || !boardId) {
       return toast.error("Something went wrong, please try again");
     }
 
-    toast.loading("Updating checklist...", {
+    toast.loading("Updating checklist item...", {
       id: QUERY_KEYS.pages.board.kanbanView.cardDetails.updateChecklist,
     });
     updateMutation({ cardDetailsId, checklistId: id, boardId });
   }
 
   function handleDeleteChecklist(id: string) {
-    if (!cardDetailsId) {
-      return toast.error("Card Id not found, please try again");
-    }
-    if (!boardId) {
+    if (!cardDetailsId || !boardId) {
       return toast.error("Something went wrong, please try again");
     }
 
-    toast.loading("Deleting checklist...", {
+    toast.loading("Deleting checklist item...", {
       id: QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteChecklist,
     });
     mutateDelete({ cardDetailsId, checklistId: id, boardId });
   }
 
   function handleAddChecklist(value: { [inputName: string]: string }) {
-    if (!cardDetailsId) {
-      return toast.error("Card Id not found , please try again");
-    }
-    if (!boardId) {
+    if (!cardDetailsId || !boardId) {
       return toast.error("Something went wrong, please try again");
     }
 
     setIsOpenedTitleInput(false);
-    toast.loading("Creating checklist...", {
+    toast.loading("Creating checklist item...", {
       id: QUERY_KEYS.pages.board.kanbanView.cardDetails.createChecklist,
     });
     createMutation({

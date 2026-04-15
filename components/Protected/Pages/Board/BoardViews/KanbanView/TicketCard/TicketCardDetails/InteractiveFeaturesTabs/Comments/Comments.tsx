@@ -67,7 +67,9 @@ export function Comments({ cardDetailsId }: Props) {
       toast.dismiss(
         QUERY_KEYS.pages.board.kanbanView.cardDetails.createComment,
       );
-      toast.success("Comment created");
+      toast.success("Comment created", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.createComment,
+      });
       queryClient.invalidateQueries({
         queryKey: [
           QUERY_KEYS.pages.board.kanbanView.cardDetails.getComments,
@@ -76,10 +78,9 @@ export function Comments({ cardDetailsId }: Props) {
       });
     },
     onError: ({ message }) => {
-      toast.error(message || "Error creating comment, please try again");
-      toast.dismiss(
-        QUERY_KEYS.pages.board.kanbanView.cardDetails.createComment,
-      );
+      toast.error(message || "Error creating comment, please try again", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.createComment,
+      });
     },
   });
 
@@ -88,10 +89,9 @@ export function Comments({ cardDetailsId }: Props) {
     mutationKey: [QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteComment],
     mutationFn: deleteCommentAction,
     onSuccess: () => {
-      toast.dismiss(
-        QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteComment,
-      );
-      toast.success("Comment deleted");
+      toast.success("Comment deleted", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteComment,
+      });
       queryClient.invalidateQueries({
         queryKey: [
           QUERY_KEYS.pages.board.kanbanView.cardDetails.getComments,
@@ -100,10 +100,9 @@ export function Comments({ cardDetailsId }: Props) {
       });
     },
     onError: ({ message }) => {
-      toast.error(message || "Error deleting comment, please try again");
-      toast.dismiss(
-        QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteComment,
-      );
+      toast.error(message || "Error deleting comment, please try again", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteComment,
+      });
     },
   });
 

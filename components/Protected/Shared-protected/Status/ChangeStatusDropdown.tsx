@@ -42,6 +42,9 @@ export function ChangeStatusDropdown({ listId, cardId, listsData }: Props) {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.hooks.useBoardListData],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useTableData],
+      });
     },
     onError: ({ message }) => {
       toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cardDetails.editStatus);

@@ -99,6 +99,10 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
         queryClient.invalidateQueries({
           queryKey: [QUERY_KEYS.hooks.useBoardListData],
         });
+
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.hooks.useTableData],
+        });
       },
       onError: ({ message }) => {
         setDueDateView("");
@@ -128,6 +132,10 @@ export function DueDateInputs({ data, cardDetailsId }: Props) {
 
         queryClient.invalidateQueries({
           queryKey: [QUERY_KEYS.hooks.useBoardListData],
+        });
+
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.hooks.useTableData],
         });
       },
       onError: ({ message }) => {

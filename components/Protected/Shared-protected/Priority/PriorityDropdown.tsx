@@ -40,6 +40,9 @@ export function PriorityDropdown({ priority = "none", listId, cardId }: Props) {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.hooks.useBoardListData],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useTableData],
+      });
     },
     onError: ({ message }) => {
       toast.error(message || "Error editing card priority, please try again", {

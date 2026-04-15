@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { updateDescriptionAction } from "@/app/actions/card-details";
 import toast from "react-hot-toast";
 import "react-quill-new/dist/quill.snow.css";
@@ -33,7 +33,6 @@ export function DescriptionDialog({
   setCloseQuill,
   setInitialValue,
 }: Props) {
-  const queryClient = useQueryClient();
   const quillRef = useRef<ReactQuill | null>(null);
   const boardId = useBoardId();
   const [descriptionValue, setDescriptionValue] = useState(initialValue);
@@ -57,9 +56,6 @@ export function DescriptionDialog({
 
       toast.success("Description updated", {
         id: QUERY_KEYS.pages.board.kanbanView.cardDetails.updateDescription,
-      });
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.hooks.useBoardListData],
       });
     },
     onError: ({ message }) => {

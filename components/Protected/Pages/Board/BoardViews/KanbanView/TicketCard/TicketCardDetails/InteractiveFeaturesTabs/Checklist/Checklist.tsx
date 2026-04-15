@@ -112,6 +112,9 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.hooks.useBoardListData],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useTableData],
+      });
     },
     onError: (err, _, context) => {
       queryClient.setQueryData(
@@ -186,6 +189,10 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.hooks.useBoardListData],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useTableData],
+      });
     },
     onError: ({ message }, _, context) => {
       queryClient.setQueryData(
@@ -253,6 +260,10 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
 
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useTableData],
       });
     },
     onError: ({ message }, _, context) => {

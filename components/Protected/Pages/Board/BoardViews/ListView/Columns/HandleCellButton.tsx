@@ -24,7 +24,7 @@ const DEFAULT_CARD_DETAILS = {
   isVisible: false,
   listId: "",
 };
-export function EditTitleAndOpenRowButton({
+export function HandleCellButton({
   children,
   cardDetailsId,
   cardTitle,
@@ -59,27 +59,23 @@ export function EditTitleAndOpenRowButton({
 
   return (
     <>
-      <div
-        className={cn(
-          isOpenedTitleInput ? "p-0" : "p-2",
-          "flex items-center gap-2 w-full text-left  group relative ",
-        )}
-      >
+      <div className={cn("p-2", "gap-2 w-full text-left  group relative ")}>
         {type === "title-and-button" && (
           <>
             {children}
             <div
+              title={cardTitle}
               className={cn(
                 isOpenedTitleInput
                   ? "flex"
-                  : "hidden group-hover:flex bg-black/50 absolute inset-0 rounded-md",
+                  : "hidden group-hover:flex bg-black/70 absolute left-0 right-4 top-0 bottom-0 rounded-md",
               )}
             />
             <div
               className={cn(
                 isOpenedTitleInput
                   ? "flex"
-                  : " absolute top-1/2 right-2  -translate-y-1/2 gap-1 hidden group-hover:flex items-center h-full ",
+                  : " absolute top-1/2 right-6  -translate-y-1/2 gap-1 hidden group-hover:flex items-center h-full ",
               )}
             >
               <EditTitle
@@ -90,16 +86,23 @@ export function EditTitleAndOpenRowButton({
                 cardTitle={cardTitle}
               />
 
-              <IconButton
-                className="p-2"
-                onClick={() =>
-                  handleClickRow(cardDetailsId, cardTitle, listTitle, isVisible)
-                }
-                title={`Open card details - ${cardTitle}`}
-                aria-label={`Open card details - ${cardTitle}`}
-              >
-                <Eye />
-              </IconButton>
+              {!isOpenedTitleInput && (
+                <IconButton
+                  className="p-2"
+                  onClick={() =>
+                    handleClickRow(
+                      cardDetailsId,
+                      cardTitle,
+                      listTitle,
+                      isVisible,
+                    )
+                  }
+                  title={`Open card details - ${cardTitle}`}
+                  aria-label={`Open card details - ${cardTitle}`}
+                >
+                  <Eye />
+                </IconButton>
+              )}
             </div>
           </>
         )}

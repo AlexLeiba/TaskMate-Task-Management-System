@@ -10,21 +10,26 @@ export function ListView() {
   const boardId = useBoardId();
   const { orgId } = useAuth();
 
+  const filters = useStore((state) => state.filterState);
+
+  const { data, isLoading } = useTableData(filters);
+
   const columnsData = useMemo(() => {
     if (!boardId || !orgId) return [];
     return COLUMNS;
   }, [boardId, orgId]);
 
-  const filters = useStore((state) => state.filterState);
-
-  const { data: boardData, isLoading } = useTableData(filters);
+  const boardData = useMemo(() => {
+    if (!boardId || !orgId) return null;
+    return data;
+  }, [boardId, orgId, data]);
 
   return (
     <div className="overflow-y-hidden h-[calc(100vh-108px)] p-4 max-w-400 mx-auto  overflow-x-auto relative">
       <DataTable
         isLoading={isLoading}
         columns={columnsData || []}
-        data={boardData?.data?.cards || []}
+        data={(boardData && boardData?.data?.cards) || []}
         listStatuses={boardData?.data?.listStatuses || []}
       />
     </div>

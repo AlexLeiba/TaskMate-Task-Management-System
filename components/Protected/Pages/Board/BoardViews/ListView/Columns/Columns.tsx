@@ -10,10 +10,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { AssignTo } from "../../../../../Shared-protected/AssignTo/AssignTo";
 import { Priority } from "@/components/Protected/Shared-protected/Priority/Priority";
 import { Status } from "@/components/Protected/Shared-protected/Status/Status";
-import { EditTitleAndOpenRowButton } from "./EditTitleAndOpenRowButton";
 import { SortInticator } from "./SortInticator";
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { CheckRow } from "./CheckRow";
+import { HandleCellButton } from "./HandleCellButton";
 
 export const COLUMNS:
   | ColumnDef<CardWithDetailsAndDueDateAndChecklistAndReporterType>[]
@@ -72,7 +72,7 @@ export const COLUMNS:
             rowId={row.original.id}
           />
 
-          <EditTitleAndOpenRowButton
+          <HandleCellButton
             type="title-and-button"
             cardTitle={row.original.title}
             listTitle={row.original.listName}
@@ -83,7 +83,7 @@ export const COLUMNS:
             <p className="text-xl max-w-50 line-clamp-1">
               {row.original.title}
             </p>
-          </EditTitleAndOpenRowButton>
+          </HandleCellButton>
         </div>
       );
     },
@@ -182,7 +182,7 @@ export const COLUMNS:
       return (
         <>
           {
-            <EditTitleAndOpenRowButton
+            <HandleCellButton
               type="only-button"
               cardTitle={row.original.title}
               listTitle={row.original.listName}
@@ -196,7 +196,7 @@ export const COLUMNS:
               ) : (
                 <p className="p-1">Add +</p>
               )}
-            </EditTitleAndOpenRowButton>
+            </HandleCellButton>
           }
         </>
       );
@@ -209,7 +209,7 @@ export const COLUMNS:
       return (
         <>
           {
-            <EditTitleAndOpenRowButton
+            <HandleCellButton
               type="only-button"
               cardTitle={row.original.title}
               listTitle={row.original.listName}
@@ -225,7 +225,7 @@ export const COLUMNS:
               ) : (
                 <p className="p-1">Add +</p>
               )}
-            </EditTitleAndOpenRowButton>
+            </HandleCellButton>
           }
         </>
       );

@@ -76,7 +76,7 @@ export function EditTitle({
       isOpenedTitleInput={isOpenedTitleInput}
       classNameContainer={cn(
         isOpenedTitleInput
-          ? " absolute top-0 left-0 w-full  z-10 bg-foreground rounded-md"
+          ? " absolute top-0 left-0 z-10 bg-foreground rounded-md"
           : " w-full",
       )}
       buttonDirection="column"

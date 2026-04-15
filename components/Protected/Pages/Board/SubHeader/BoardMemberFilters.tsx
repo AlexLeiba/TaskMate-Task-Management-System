@@ -9,14 +9,25 @@ import { useStore } from "@/store/useStore";
 import { useIsFetching } from "@tanstack/react-query";
 import { UserPlus } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useShallow } from "zustand/shallow";
 
 export function BoardMemberFilters() {
   const [selectedLocalMember, setSelectedLocalMember] = useState<string>("");
 
   const { members, isFetching } = useMembers();
 
-  const setFilterState = useStore((state) => state.setFilterState);
+  const { filterState, setFilterState } = useStore(
+    useShallow((state) => ({
+      filterState: state.filterState,
+      setFilterState: state.setFilterState,
+    })),
+  );
+
+  useEffect(() => {
+    setSelectedLocalMember(filterState?.selectedMemberEmail || "");
+  }, []);
+
   const delayedSetFilterState = useDebounce(setFilterState, 100);
 
   const isFetchingKanbanListData =

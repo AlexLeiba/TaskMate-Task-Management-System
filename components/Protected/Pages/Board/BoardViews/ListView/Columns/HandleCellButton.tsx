@@ -7,7 +7,7 @@ import React, { Dispatch, useCallback, useState } from "react";
 import { EditTitle } from "./EditTitle";
 
 const TicketCardDetails = dynamic(() =>
-  import("@/components/Protected/Pages/Board/BoardViews/KanbanView/TicketCard/TicketCardDetails/TicketCardDetails").then(
+  import("@/components/Protected/Shared-protected/TicketCardDetails").then(
     (m) => m.TicketCardDetails,
   ),
 );

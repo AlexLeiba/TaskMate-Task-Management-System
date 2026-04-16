@@ -11,7 +11,7 @@ import { Draggable } from "@hello-pangea/dnd";
 import { useRole } from "@/hooks/useRole";
 
 const TicketCardDetails = dynamic(() =>
-  import("./TicketCardDetails/TicketCardDetails").then(
+  import("@/components/Protected/Shared-protected/TicketCardDetails").then(
     (m) => m.TicketCardDetails,
   ),
 );

@@ -6,17 +6,10 @@ import {
 } from "@/components/ui/dialog";
 import { MapPin } from "lucide-react";
 import { Spacer } from "@/components/ui/spacer";
-import { Description } from "./Description/Description";
-import { Reporter } from "./Reporter/Reporter";
 import { AssignTo } from "@/components/Protected/Shared-protected/AssignTo/AssignTo";
 import { Priority } from "@/components/Protected/Shared-protected/Priority/Priority";
 import { Status } from "@/components/Protected/Shared-protected/Status/Status";
-import { InteractiveFeaturesTabs } from "./InteractiveFeaturesTabs/InteractiveFeaturesTabs";
 import { getCardDetails } from "@/app/actions/card-details";
-import { ChecklistList } from "./ChecklistList";
-import { DueDate } from "./DueDate/DueDate";
-import { Actions } from "./Actions/Actions";
-import { DateTime } from "./DateTime";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
@@ -25,6 +18,13 @@ import { USER_ROLES } from "@/lib/consts/consts";
 import { useRole } from "@/hooks/useRole";
 import { useBoardId } from "@/hooks/useBoardId";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
+import { Description } from "../Pages/Board/BoardViews/KanbanView/TicketCard/TicketCardDetails/Description/Description";
+import { InteractiveFeaturesTabs } from "../Pages/Board/BoardViews/KanbanView/TicketCard/TicketCardDetails/InteractiveFeaturesTabs/InteractiveFeaturesTabs";
+import { Reporter } from "../Pages/Board/BoardViews/KanbanView/TicketCard/TicketCardDetails/Reporter/Reporter";
+import { ChecklistList } from "../Pages/Board/BoardViews/KanbanView/TicketCard/TicketCardDetails/ChecklistList";
+import { DueDate } from "../Pages/Board/BoardViews/KanbanView/TicketCard/TicketCardDetails/DueDate/DueDate";
+import { Actions } from "../Pages/Board/BoardViews/KanbanView/TicketCard/TicketCardDetails/Actions/Actions";
+import { DateTime } from "../Pages/Board/BoardViews/KanbanView/TicketCard/TicketCardDetails/DateTime";
 
 type Props = {
   handleCloseModal: () => void;

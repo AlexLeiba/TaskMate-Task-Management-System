@@ -21,6 +21,7 @@ export async function getListDataAction({
   filters = "all",
 }: ListDataKanbanType): Promise<{
   data: {
+    unfilteredData: (Pick<List, "id"> & { cards: Pick<Card, "id">[] })[];
     data: ListAndCardsAndDueDateAndChecklistType[] | null | undefined;
 
     role: UserRoleType;
@@ -198,12 +199,27 @@ export async function getListDataAction({
       },
     });
 
-    if (!response) {
+    const unfilteredListDataResponse = await prisma.list.findMany({
+      where: {
+        boardId,
+      },
+      select: {
+        id: true,
+        cards: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+
+    if (!response || !unfilteredListDataResponse) {
       throw new Error("List not found");
     }
 
     return {
       data: {
+        unfilteredData: unfilteredListDataResponse,
         data: response,
         role: activeUserData.role,
       },

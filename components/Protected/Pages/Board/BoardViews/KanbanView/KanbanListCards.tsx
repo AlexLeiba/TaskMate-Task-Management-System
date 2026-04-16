@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import toast from "react-hot-toast";
 import dynamic from "next/dynamic";
 import { Droppable, DropResult } from "@hello-pangea/dnd";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   changeCardPositionAction,
   changeListPositionAction,
@@ -24,40 +24,52 @@ const DragDropContext = dynamic(() =>
 type Props = {
   boardId: string;
 };
-export function ListCards({ boardId }: Props) {
+export function KanbanListCards({ boardId }: Props) {
+  const queryClient = useQueryClient();
   const filters = useStore((state) => state.filterState);
+
+  // FETCH CACHED DATA
   const { data: listData } = useBoardListData(filters);
+
+  // DND optimistic update methods.
   const {
     boardListData,
-    setInitializeBoardListData,
+    setBoardListData,
     setDndBoardListData,
     setDndSameListBoardListDataCards,
     setDndDifferentListBoardListDataCards,
-    setBoardSubHeaderFilterSelected,
-    setBoardSubHeaderMemberIdSelected,
   } = useStore(
     useShallow((state) => ({
       boardListData: state.boardListData,
-      setInitializeBoardListData: state.setInitializeBoardListData,
+      setBoardListData: state.setBoardListData,
       setDndBoardListData: state.setDndBoardListData,
       setDndSameListBoardListDataCards: state.setDndSameListBoardListDataCards,
       setDndDifferentListBoardListDataCards:
         state.setDndDifferentListBoardListDataCards,
-      setBoardSubHeaderFilterSelected: state.setBoardSubHeaderFilterSelected,
-      setBoardSubHeaderMemberIdSelected:
-        state.setBoardSubHeaderMemberIdSelected,
     })),
   );
+
+  useEffect(() => {
+    // SUBSCRIBE TO LIST FILTER TRIGGERS OF BOARD LIST CACHED DATA.
+    if (listData?.data) {
+      setBoardListData(listData.data);
+    }
+  }, [listData, setBoardListData]);
 
   const { mutate: mutateReorderList } = useMutation({
     mutationFn: changeListPositionAction,
     mutationKey: [
       QUERY_KEYS.pages.board.kanbanView.lists.dragAndDrop.reorderList,
     ],
+
     onError: (error: any) => {
       toast.error(error?.message || "Something went wrong");
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
     },
   });
+
   const { mutate: mutateReorderCard } = useMutation({
     mutationFn: changeCardPositionAction,
     mutationKey: [
@@ -65,24 +77,14 @@ export function ListCards({ boardId }: Props) {
     ],
     onError: (error: any) => {
       toast.error(error?.message || "Something went wrong");
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
     },
   });
 
-  useEffect(() => {
-    if (!listData) return;
-
-    setBoardSubHeaderMemberIdSelected(""); // RESET FILTER MEMBER ON FIRST MOUNT
-    setBoardSubHeaderFilterSelected("all");
-    //RESET FILTER ON FIRST MOUNT
-    setInitializeBoardListData(listData?.data); //SET INITIAL DATA ON FIRST MOUNT
-    // initial list column values
-  }, [
-    listData,
-    setInitializeBoardListData,
-    setBoardSubHeaderMemberIdSelected,
-    setBoardSubHeaderFilterSelected,
-  ]);
-
+  // SKELETON
   if (!boardId || !boardListData) return <ListCardSkeleton />;
 
   // DND RESPONSER

@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useBoardId } from "./useBoardId";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
+import { useShallow } from "zustand/shallow";
 
 export function useBoardListData(
   filters?:
@@ -20,7 +21,12 @@ export function useBoardListData(
 ) {
   const boardId = useBoardId();
 
-  const setBoardListData = useStore((state) => state.setBoardListData);
+  const { setBoardListData, setUnfilteredBoardListData } = useStore(
+    useShallow((state) => ({
+      setBoardListData: state.setBoardListData,
+      setUnfilteredBoardListData: state.setUnfilteredBoardListData,
+    })),
+  );
 
   async function fetchBoardFilteredListData() {
     toast.loading("loading...", { id: QUERY_KEYS.hooks.useBoardListData });
@@ -28,17 +34,20 @@ export function useBoardListData(
       if (!boardId) {
         throw new Error("Table data not found, please try again");
       }
-      const listData = await getListDataAction({
+      const { data } = await getListDataAction({
         boardId,
         ...filters,
       });
 
-      // UPDATE BOARD LIST STORE is used for Drag and Drop
-      setBoardListData(listData.data?.data);
+      // INITIALIZE BOARD LIST DATA GLOBAL STORE used for optimistic Drag and Drop
+      setBoardListData(data?.data);
+
+      // INITIALIZE UNFILTERED BOARD LIST DATA GLOBAL STORE used for diplaying independent data of active filters
+      setUnfilteredBoardListData(data?.unfilteredData);
 
       return {
-        data: listData.data?.data || null,
-        role: listData.data?.role || null,
+        data: data?.data || null,
+        role: data?.role || null,
       };
     } catch (error: any) {
       toast.error(error.message || "Something went wrong", {

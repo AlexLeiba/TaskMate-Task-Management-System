@@ -1,9 +1,9 @@
 "use client";
 
-import { ListCards } from "./KanbanView/ListCards";
+import { KanbanListCards } from "./KanbanView/KanbanListCards";
 import dynamic from "next/dynamic";
 import { useStore } from "@/store/useStore";
-import React, { ComponentClass } from "react";
+import React, { type ComponentClass } from "react";
 
 const ListView = dynamic(() =>
   import("@/components/Protected/Pages/Board/BoardViews/ListView/ListView").then(
@@ -19,20 +19,19 @@ type Props = {
   boardId: string;
 };
 
-const BOARD_VIEW_SECTION: { [key: string]: React.FC<Props> | ComponentClass } =
-  {
-    board: ListCards,
-    list: ListView,
-    overview: BoardOverview,
-  };
+const VIEW_SECTION: { [key: string]: React.FC<Props> | ComponentClass } = {
+  board: KanbanListCards,
+  list: ListView,
+  overview: BoardOverview,
+};
 export function BoardViews({ boardId }: Props) {
-  const boardTabSections = useStore((state) => state.boardTabSections);
+  const selectedTabSection = useStore((state) => state.boardTabSections);
 
-  const BoardView = BOARD_VIEW_SECTION[boardTabSections];
+  const CurrentSectionView = VIEW_SECTION[selectedTabSection];
 
   return (
     <div className="h-full">
-      <BoardView boardId={boardId} />
+      <CurrentSectionView boardId={boardId} />
     </div>
   );
 }

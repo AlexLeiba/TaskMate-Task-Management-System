@@ -1,5 +1,6 @@
 import { INITIAL_FILTERS_STATE } from "@/lib/consts/protected/board";
 import { UNASSIGNED_CARD } from "@/lib/consts/protected/card";
+import { Card, List } from "@/lib/generated/prisma/client";
 import {
   BoardTabSectionType,
   CardDetailsTabs,
@@ -12,15 +13,16 @@ import { DraggableLocation } from "@hello-pangea/dnd";
 import { create } from "zustand";
 
 type StoreType = {
-  // INITIALIZE BOARD LIST CARDS DATA
-  boardListData: ListAndCardsAndDueDateAndChecklistType[] | null | undefined;
-  initialBoardListData: { id: string; cards: number }[] | null | undefined;
-
-  setInitializeBoardListData: (
-    data: ListAndCardsAndDueDateAndChecklistType[] | null | undefined,
+  // INITIALIZE UNFILTERED BOARD LIST CARDS DATA
+  unfilteredBoardListData:
+    | (Pick<List, "id"> & { cards: Pick<Card, "id">[] })[]
+    | undefined;
+  setUnfilteredBoardListData: (
+    data: (Pick<List, "id"> & { cards: Pick<Card, "id">[] })[] | undefined,
   ) => void;
 
-  // UPDATE BOARD LIST DATA WITH FILTERS OPTIONS
+  // INITIALIZE BOARD LIST CARDS DATA FOR DND
+  boardListData: ListAndCardsAndDueDateAndChecklistType[] | null | undefined;
   setBoardListData: (
     data: ListAndCardsAndDueDateAndChecklistType[] | null | undefined,
   ) => void;
@@ -94,14 +96,11 @@ type StoreType = {
 export const useStore = create<StoreType>((set, get) => ({
   // INITIALIZE BOARD LIST CARDS DATA
   boardListData: null,
-  initialBoardListData: null,
+  unfilteredBoardListData: [],
 
-  setInitializeBoardListData: (data) => {
+  setUnfilteredBoardListData: (data) => {
     set({
-      boardListData: data,
-      initialBoardListData:
-        data?.map((list) => ({ id: list?.id, cards: list?.cards.length })) ||
-        null,
+      unfilteredBoardListData: data,
     });
   },
   setBoardListData: (data) => {

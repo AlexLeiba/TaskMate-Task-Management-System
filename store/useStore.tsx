@@ -4,10 +4,8 @@ import { Card, List } from "@/lib/generated/prisma/client";
 import {
   BoardTabSectionType,
   CardDetailsTabs,
-  FilterStates,
   ListAndCardsAndDueDateAndChecklistType,
   ListDataTableType,
-  PrioritiesType,
 } from "@/lib/types";
 import { DraggableLocation } from "@hello-pangea/dnd";
 import { create } from "zustand";
@@ -80,17 +78,6 @@ type StoreType = {
   //SUBHEADER BOARD HEADER TABS SECTIONS
   boardTabSections: BoardTabSectionType;
   setBoardTabSections: (sections: BoardTabSectionType) => void;
-
-  // SUBHEADER BOARD  FILTERS STATISTICS
-  boardSubHeaderFilterSelected: FilterStates;
-  prioritiesSelectedFilter?: PrioritiesType;
-  setBoardSubHeaderFilterSelected: (
-    selected: FilterStates,
-    priority?: PrioritiesType | undefined,
-  ) => FilterStates;
-
-  boardSubHeaderMemberIdSelected: string | null;
-  setBoardSubHeaderMemberIdSelected: (selected: string | null) => string | null;
 };
 
 export const useStore = create<StoreType>((set, get) => ({
@@ -306,50 +293,8 @@ export const useStore = create<StoreType>((set, get) => ({
   boardTabSections: "board",
   setBoardTabSections: (sections) => {
     if (sections === "refresh") {
-      set({
-        boardSubHeaderFilterSelected: "all",
-        boardSubHeaderMemberIdSelected: null,
-      });
       return;
     }
     set({ boardTabSections: sections });
-  },
-
-  // BOARD SUBHEADER FILTERS STATES
-  boardSubHeaderFilterSelected: "all",
-  setBoardSubHeaderFilterSelected: (selected, priority) => {
-    const prevSelectedFilter = get().boardSubHeaderFilterSelected;
-    const prevPriority = get().prioritiesSelectedFilter;
-
-    if (prevSelectedFilter === selected && prevPriority === priority) {
-      set({
-        boardSubHeaderFilterSelected: "all",
-        prioritiesSelectedFilter: undefined,
-      });
-      return "theSame";
-    }
-    set({
-      boardSubHeaderFilterSelected: selected,
-      boardSubHeaderMemberIdSelected: null,
-      prioritiesSelectedFilter: priority,
-    });
-
-    return selected;
-  },
-
-  boardSubHeaderMemberIdSelected: null,
-  setBoardSubHeaderMemberIdSelected: (selected) => {
-    const prevSelectedFilter = get().boardSubHeaderMemberIdSelected;
-
-    if (prevSelectedFilter === selected) {
-      set({ boardSubHeaderMemberIdSelected: null });
-      return null;
-    }
-    set({
-      boardSubHeaderMemberIdSelected: selected,
-      boardSubHeaderFilterSelected: "all",
-    });
-
-    return selected;
   },
 }));

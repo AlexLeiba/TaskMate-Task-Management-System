@@ -15,9 +15,7 @@ const FilterDropdownContent = dynamic(() =>
 
 export function FiltersDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const boardSubHeaderMemberIdSelected = useStore(
-    (state) => state.boardSubHeaderMemberIdSelected,
-  );
+
   const filterState = useStore((state) => state.filterState);
 
   const handleClosePopup = useCallback(() => setIsOpen(false), []);
@@ -38,10 +36,6 @@ export function FiltersDropdown() {
             <>
               {filterState.filters !== "all" && (
                 <div className="md:block hidden size-3 rounded-full bg-red-600 absolute top-0 right-0" />
-              )}
-              {(boardSubHeaderMemberIdSelected ||
-                (filterState.filters && filterState.filters !== "all")) && (
-                <div className="lg:hidden size-3 rounded-full bg-red-600 absolute top-0 right-0" />
               )}
             </>
           )}

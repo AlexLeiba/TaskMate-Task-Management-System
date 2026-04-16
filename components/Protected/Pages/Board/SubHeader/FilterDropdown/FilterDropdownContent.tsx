@@ -24,8 +24,6 @@ export function FilterDropdownContent({
 
   const { setFilterState, filterState } = useStore(
     useShallow((state) => ({
-      boardSubHeaderFilterSelected: state.boardSubHeaderFilterSelected,
-      prioritiesSelectedFilter: state.prioritiesSelectedFilter,
       setFilterState: state.setFilterState,
       filterState: state.filterState,
       boardTabSections: state.boardTabSections,
@@ -98,7 +96,6 @@ export function FilterDropdownContent({
                         <Button
                           key={priority.value}
                           onClick={() => {
-                            // setBoardSubHeaderFilterSelected(data.id);
                             handleSelectedFilter("priority", priority);
                           }}
                           title={`Filter by ${priority?.label}`}
@@ -135,7 +132,6 @@ export function FilterDropdownContent({
         return (
           <Button
             onClick={() => {
-              // setBoardSubHeaderFilterSelected(data.id);
               handleSelectedFilter(data.id);
             }}
             title={`Filter by ${data?.title}`}

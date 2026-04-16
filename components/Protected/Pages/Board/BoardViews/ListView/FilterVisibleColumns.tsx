@@ -8,6 +8,7 @@ import {
 import { useDebounce } from "@/hooks/useDebounce";
 import { TABLE_COLUMNS } from "@/lib/consts/protected/table";
 import { Column } from "@tanstack/react-table";
+import { Columns } from "lucide-react";
 import { memo, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -46,7 +47,8 @@ const FilterVisibleColumns = ({ columns }: Props) => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="secondary" className="ml-auto h-6" size={"sm"}>
-          Columns
+          <p className="hidden md:flex lg:flex">Columns</p>
+          <Columns className="flex md:hidden lg:hidden" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

@@ -26,7 +26,7 @@ export function BoardCard({
     <>
       <div
         className="relative overflow-hidden  rounded-md min-h-32.5"
-        data-test="dashboard-card"
+        data-test="dashboard-board-card"
       >
         <Image
           src={cardImageUrl}
@@ -52,6 +52,7 @@ export function BoardCard({
         </IconButton>
         {role === USER_ROLES.admin && (
           <IconButton
+            data-test="delete-board-button"
             title={`Delete board - ${title}`}
             aria-label={`Delete board - ${title}`}
             onClick={handleModalDeleteBoard}

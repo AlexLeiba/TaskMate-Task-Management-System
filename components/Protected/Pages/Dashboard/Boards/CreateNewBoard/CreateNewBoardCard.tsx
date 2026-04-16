@@ -66,10 +66,11 @@ export function CreateNewBoardCard({ disabled = false }: Props) {
 
       {/* DIALOG CREATE NEW BOARD */}
       <CreateNewBoardDialog
+        type="dashboard"
         newBoardDialogOpen={newBoardDialogOpen}
         setNewBoardDialogOpen={setNewBoardDialogOpen}
       >
-        <DialogBoardDetails />
+        <DialogBoardDetails type="dashboard" />
       </CreateNewBoardDialog>
       {/* CREATE CARD FORM */}
     </>

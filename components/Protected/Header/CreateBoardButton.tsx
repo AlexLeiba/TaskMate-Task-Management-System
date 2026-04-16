@@ -25,6 +25,7 @@ export function CreateBoardButton() {
     role === USER_ROLES.admin && (
       <>
         <Button
+          data-test="create-new-board-button"
           size={"sm"}
           title="Create new board"
           variant={"secondary"}
@@ -34,10 +35,11 @@ export function CreateBoardButton() {
         </Button>
         {newBoardDialogOpen && (
           <CreateNewBoardDialog
+            type="header"
             newBoardDialogOpen={newBoardDialogOpen}
             setNewBoardDialogOpen={setNewBoardDialogOpen}
           >
-            <DialogBoardDetails type="board" />
+            <DialogBoardDetails type="header" />
           </CreateNewBoardDialog>
         )}
       </>

@@ -13,7 +13,7 @@ export function DialogBoardCard({ data, selected, ...props }: Props) {
     <IconButton
       data-selected={selected}
       {...props}
-      data-test="dialog-board-card"
+      data-test="dialog-board-image-card"
       className={cn(
         selected ? "ring-2" : "",
         "max-h-24 min-h-24 w-full overflow-hidden rounded-md bg-gray-700 relative cursor-pointer hover:ring transition-all  group",

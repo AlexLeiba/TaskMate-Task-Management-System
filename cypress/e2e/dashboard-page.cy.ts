@@ -146,56 +146,66 @@ describe("Dashboard page desktop and tablet view", () => {
   });
 
   it.only("Create new board card", () => {
-    //aliases
     cy.url().should("include", "/dashboard", { timeout: 15000 });
+
+    //aliases
     cy.get("[data-test=create-new-board-card]").as("createNewBoardCard");
     //
 
-    // assert dialog not visible
-    cy.get("[data-test=create-new-board-dialog]").should("not.exist");
+    // assert new board dialog not exists in the dom
+    cy.get("[data-test=create-new-board-dialog-dashboard]").should("not.exist");
 
     // assert create new board card visible
     cy.get("@createNewBoardCard").should("be.visible", {
       timeout: 15000,
     });
 
-    // click on create new board card
+    // event click on create new board card
     cy.get("@createNewBoardCard").click();
 
-    // assert all dialog contents to be loaded and visible
+    // assert create new board dialog visible
     cy.get('[role="dialog"]', { timeout: 15000 })
       .should("be.visible")
       .and("have.attr", "data-state", "open");
 
-    cy.get("[data-test=create-new-board-dialog]").should("be.visible", {
-      timeout: 15000,
-    });
-
-    cy.get("[data-test=dialog-board-details]").should("be.visible", {
-      timeout: 15000,
-    });
-
-    // intersept create board request
-
+    // intercept loading background images
     cy.location("pathname").then((pathname) => {
       const organizationId = pathname.split("/").at(-1);
-      cy.intercept("POST", `/dashboard/${organizationId}`).as("createBoard");
-      cy.wait("@createBoard");
+      cy.intercept("POST", `/dashboard/${organizationId}`).as("loadImages");
+      cy.wait("@loadImages"); //wait for loading images request
     });
 
-    cy.get("[data-test=dialog-board-card]", { timeout: 15000 })
+    // assert all dialog contents to be loaded and visible
+    cy.get("[data-test=create-new-board-dialog-dashboard]", {
+      timeout: 15000,
+    }).should("be.visible", {
+      timeout: 15000,
+    });
+    // dialog body
+    cy.get("[data-test=dialog-board-details-dashboard-container]").should(
+      "be.visible",
+      {
+        timeout: 15000,
+      },
+    );
+
+    // assert dialog background images cards are loaded
+    cy.get("[data-test=dialog-board-image-card]", { timeout: 15000 })
       .should("be.visible")
       .should("have.length.greaterThan", 0);
 
+    // assert dialog submit button visible
     cy.get("[data-test=dialog-board-details-submit-button]").should(
       "be.visible",
     );
+
+    // assert dialog title input visible
     cy.get("[data-test=dialog-board-details-title-input]").should("be.visible");
 
-    // click on first card
-    cy.get("[data-test=dialog-board-card]").eq(0).realClick();
+    // click on first image card
+    cy.get("[data-test=dialog-board-image-card]").eq(0).realClick();
 
-    // click on submit button with no input data
+    // click on submit button with no title input data
     cy.get("[data-test=dialog-board-details-submit-button]").eq(0).realClick();
 
     // assert error is required title
@@ -209,30 +219,123 @@ describe("Dashboard page desktop and tablet view", () => {
       .eq(0)
       .realType("Test Board");
 
+    // intercept create board request
+    cy.location("pathname").then((pathname) => {
+      const organizationId = pathname.split("/").at(-1);
+      cy.intercept("POST", `/dashboard/${organizationId}`).as("createBoard");
+    });
+
     // click on submit button
     cy.get("[data-test=dialog-board-details-submit-button]").eq(0).realClick();
-
-    // intersept create board request
-    cy.intercept("POST", "/dashboard").as("createBoard");
 
     // assert create board response 200
     cy.wait("@createBoard", { timeout: 15000 })
       .its("response.statusCode")
       .should("eq", 200, { timeout: 15000 });
 
-    // assert modal has closed
-    cy.get("[data-test=create-new-board-dialog]").should("not.exist");
+    // assert create board modal has closed after successfull creation of new board
+    cy.get("[data-test=create-new-board-dialog-dashboard]").should("not.exist");
 
     //assert there are more than 0 boards on dashboard page
-    cy.get("[data-test=dashboard-card]", { timeout: 15000 }).should(
+    cy.get("[data-test=dashboard-board-card]", { timeout: 15000 }).should(
       "have.length.greaterThan",
       0,
     );
 
-    // assert delete board
+    // aliases
+    cy.get("[data-test=dashboard-board-card] [data-test=delete-board-button]")
+      .eq(0)
+      .as("deleteBoardButton");
+    //
 
-    // assert create board from header
+    // click on delete board button of first board card
+    cy.get("@deleteBoardButton").eq(0).realClick();
 
-    // assert redirect to board page after creation
+    // assert open delete modal
+    cy.get("[data-test=delete-dialog]", { timeout: 15000 }).should(
+      "be.visible",
+    );
+
+    // click on delete modal cancel button
+    cy.get("[data-test=delete-dialog-cancel-button]").eq(0).realClick();
+
+    // assert delete modal has closed
+    cy.get("[data-test=delete-dialog]", { timeout: 15000 }).should("not.exist");
+
+    // click again on delete board button of first board card
+    cy.get("@deleteBoardButton").eq(0).realClick();
+
+    // assert open delete modal visible
+    cy.get("[data-test=delete-dialog]", { timeout: 15000 }).should(
+      "be.visible",
+    );
+
+    // intercept deleteting board card api request
+    cy.location("pathname").then((pathname) => {
+      const organizationId = pathname.split("/").at(-1);
+      cy.intercept("POST", `/dashboard/${organizationId}`).as("deleteBoard");
+      cy.intercept("DELETE", "/api/fileupload").as("deleteFile");
+    });
+
+    // click on delete button of the delete modal
+    cy.get("[data-test=delete-dialog-delete-button]").eq(0).realClick();
+
+    // assert delete board response 200
+    cy.wait("@deleteFile", { timeout: 15000 })
+      .its("response.statusCode")
+      .should("eq", 200, { timeout: 15000 });
+    cy.wait("@deleteBoard", { timeout: 15000 })
+      .its("response.statusCode")
+      .should("eq", 200, { timeout: 15000 });
+
+    // assert delete modal closed
+    cy.get("[data-test=delete-dialog]", { timeout: 15000 }).should("not.exist");
+
+    //HEADER CREATE NEW BOARD WORKFLOW
+
+    // assert header create new board modal not exists in dom
+    cy.get("[data-test=create-new-board-dialog-dashboard]").should("not.exist");
+
+    // assert create board button visible
+    cy.get("[data-test=create-new-board-button]").should("be.visible");
+
+    // intercept loading background images before click on create button
+    cy.location("pathname").then((pathname) => {
+      const organizationId = pathname.split("/").at(-1);
+      cy.intercept("POST", `/dashboard/${organizationId}`).as("loadImages");
+    });
+
+    // click on create board button
+    cy.get("[data-test=create-new-board-button]").eq(0).realClick();
+
+    // assert create new board dialog visible
+    cy.get('[role="dialog"]', { timeout: 15000 })
+      .should("be.visible")
+      .and("have.attr", "data-state", "open");
+
+    cy.wait("@loadImages"); //wait for loading images request
+
+    // assert header create new board modal visible
+    cy.get("[data-test=create-new-board-dialog-dashboard]", {
+      timeout: 15000,
+    }).should("be.visible");
+
+    // assert all dialog contents to be loaded and visible
+    cy.get("[data-test=create-new-board-dialog-dashboard]", {
+      timeout: 15000,
+    }).should("be.visible", {
+      timeout: 15000,
+    });
+
+    // assert dialog submit button visible
+    cy.get("[data-test=dialog-board-details-submit-button]").should(
+      "be.visible",
+    );
+
+    // assert dialog title input visible
+    cy.get("[data-test=dialog-board-details-title-input]").should("be.visible");
+
+    // close create new board dialog
+    cy.get("[data-test=dialog-board-details-close-button]").eq(0).realClick();
   });
 });

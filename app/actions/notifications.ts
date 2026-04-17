@@ -48,7 +48,7 @@ export async function getNotificationsAction({
       paginationCount: paginationCount,
       unreadCount: unreadCount,
       error: { message: "" },
-      isAdmin: activeUser.activeUser.email === process.env.USER_ADMIN,
+      isAdmin: activeUser.activeUser.email === process.env.USER_UBER_ADMIN,
     };
   } catch (error) {
     console.log("🚀 ~ getNotificationsAction ~ error:", error);

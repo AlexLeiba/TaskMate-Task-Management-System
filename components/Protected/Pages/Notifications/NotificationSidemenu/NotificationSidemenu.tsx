@@ -22,7 +22,7 @@ export function NotificationSidemenu({ data }: Props) {
     data.find((notification) => notification.id === selectedNotification) ||
     data.at(0);
   return (
-    <div className="grid md:grid-cols-[1fr_3fr] lg:grid-cols-[1fr_3fr] h-full gap-4">
+    <div className="grid  h-full gap-4 md:grid-cols-[1fr_3fr] lg:grid-cols-[1fr_3fr]">
       <div className="flex-col border-r h-full p-2 md:flex lg:flex hidden">
         {data.map((notification) => {
           return (
@@ -75,18 +75,20 @@ export function NotificationSidemenu({ data }: Props) {
         </PopoverContent>
       </Popover>
 
-      <div>
+      <div className="w-full">
         <h2 className="text-2xl mb-4">
           {notificationData?.notification.title}
         </h2>
-
-        <div
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(
-              notificationData?.notification.messageRichText || "",
-            ),
-          }}
-        ></div>
+        <div>
+          <div
+            className=" html-content "
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(
+                notificationData?.notification.messageRichText || "",
+              ),
+            }}
+          ></div>
+        </div>
       </div>
     </div>
   );

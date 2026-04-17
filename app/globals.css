@@ -251,6 +251,10 @@ Mental model: These are default visual rules of my app.
   opacity: 0.5;
 }
 
+.html-content {
+  word-break: break-all;
+}
+
 .quill .ql-container p,
 .html-content p {
   font-size: 16px !important;

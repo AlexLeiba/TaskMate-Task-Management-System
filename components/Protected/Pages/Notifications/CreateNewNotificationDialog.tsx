@@ -79,13 +79,13 @@ export function CreateNewNotificationDialog({
     setCloseQuill();
   }
 
-  function onSubmit(formData: NewNotificationSchemaType) {
-    const isRichTextEmptyRegex = /<p>.*<\/p>/g.test(descriptionValue);
+  const isRichTextEmpty = /^<p>\s*<\/p>$/.test(descriptionValue);
 
+  function onSubmit(formData: NewNotificationSchemaType) {
     mutate({
       message: formData.message,
       title: formData.title,
-      messageRichText: isRichTextEmptyRegex
+      messageRichText: isRichTextEmpty
         ? `<p>${formData.message}</p>`
         : descriptionValue,
     });

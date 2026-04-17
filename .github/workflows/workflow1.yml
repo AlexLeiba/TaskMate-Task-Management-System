@@ -7,4 +7,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build step
-        run: echo "Building..."
+        run: echo "Building test..."

@@ -393,3 +393,46 @@ Mental model: These are default visual rules of my app.
     transform: translateY(0);
   }
 }
+
+/* CLERK UI */
+.cl-signIn-start .cl-header .cl-headerTitle,
+.cl-signIn-start .cl-header .cl-headerSubtitle,
+.cl-signUp-start .cl-header .cl-headerTitle,
+.cl-signUp-start .cl-header .cl-headerSubtitle {
+  color: var(--primary) !important;
+}
+
+.cl-signIn-start .cl-lastAuthenticationStrategyBadge {
+  color: var(--primary);
+  border: var(--muted-foreground) 1px solid;
+}
+
+.cl-formFieldLabel {
+  color: var(--primary);
+}
+
+.cl-footerActionText {
+  color: var(--primary);
+  font-weight: 500 !important;
+  font-size: 16px !important;
+  line-height: 24px !important;
+}
+
+.cl-organizationProfile-root .cl-userPreviewMainIdentifierText,
+.cl-organizationProfile-root .cl-userPreviewSecondaryIdentifier,
+.cl-organizationProfile-root .cl-headerTitle {
+  color: var(--muted);
+}
+
+.cl-formContainer .cl-formFieldLabel {
+  color: var(--muted);
+}
+
+.cl-userButtonPopoverMain,
+.cl-userPreviewSecondaryIdentifier {
+  color: var(--primary);
+}
+
+.cl-userProfile-root .cl-headerTitle {
+  color: var(--muted);
+}

@@ -175,8 +175,6 @@ export function Comments({ cardDetailsId }: Props) {
         <TriggerInput
           disabled={isPendingDelete || isPendingCreate}
           buttonDirection="column"
-          className="py-0"
-          classNameContainer=""
           type="textarea"
           inputName="comment"
           placeholder="Type your comment here..."

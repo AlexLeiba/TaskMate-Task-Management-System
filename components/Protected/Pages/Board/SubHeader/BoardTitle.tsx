@@ -54,8 +54,6 @@ export function BoardTitle({ boardId, boardTitle }: Props) {
             : setShowTitleInput
         }
         isOpenedTitleInput={showTitleInput}
-        className="px-0"
-        classNameContainer="px-0"
       >
         <div className="flex  items-center">
           <p

@@ -374,8 +374,6 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
             inputName="title"
             isOpenedTitleInput={isOpenedTitleInput}
             setIsOpenedTitleInput={setIsOpenedTitleInput}
-            classNameContainer="p-2"
-            className="pl-0"
             placeholder="type checklist item here..."
           >
             <Button

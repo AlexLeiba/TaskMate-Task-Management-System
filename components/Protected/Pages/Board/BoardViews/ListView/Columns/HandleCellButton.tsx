@@ -68,14 +68,14 @@ export function HandleCellButton({
               className={cn(
                 isOpenedTitleInput
                   ? "flex"
-                  : "hidden group-hover:flex bg-black/70 absolute left-0 right-4 top-0 bottom-0 rounded-md",
+                  : "md:hidden lg:hidden group-hover:flex bg-black/70 absolute left-0 right-4 top-0 bottom-0 rounded-md",
               )}
             />
             <div
               className={cn(
                 isOpenedTitleInput
                   ? "flex"
-                  : " absolute top-1/2 right-6  -translate-y-1/2 gap-1 hidden group-hover:flex items-center h-full ",
+                  : " absolute top-1/2 right-6  -translate-y-1/2 gap-1 md:hidden lg:hidden md:group-hover:flex lg:group-hover:flex flex items-center h-full ",
               )}
             >
               <EditTitle

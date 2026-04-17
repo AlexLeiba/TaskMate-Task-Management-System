@@ -13,12 +13,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { InputTitleSchema, InputTitleSchemaType } from "@/lib/schemas";
 import { UnsplashImagesType } from "@/lib/types";
 import toast from "react-hot-toast";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { createNewBoardAction } from "@/app/actions/dashboard";
 import { useStore } from "@/store/useStore";
 import { type Board } from "@/lib/generated/prisma/client";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { UNSPLASH_DEFAULT_IMAGES } from "@/lib/consts/protected/files";
+import { useAuth } from "@clerk/nextjs";
 
 type Props = {
   type?: "dashboard" | "board";
@@ -30,12 +31,8 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
     (state) => state.setNewBoardDialogOpen,
   );
   const queryClient = useQueryClient();
-  const pathname = usePathname();
 
-  const organizationId =
-    type === "dashboard"
-      ? pathname.split("/").at(-1)
-      : pathname.split("/").at(-3);
+  const { orgId } = useAuth();
 
   const { data, isFetching } = useQuery({
     queryFn: getUnsplashImagesAction,
@@ -55,7 +52,7 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
         toast.success("Board created successfully");
 
         if (type === "board") {
-          navigate.push(`/dashboard/${organizationId}/board/${data?.id}`);
+          navigate.push(`/dashboard/${orgId}/board/${data?.id}`);
         }
       },
       onError: ({ message }) => toast.error(message || "Error creating board"),
@@ -83,7 +80,7 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
       setError("title", { message: "Please select an image" });
       return toast.error("Please select an image");
     }
-    if (!organizationId) {
+    if (!orgId) {
       return toast.error("Please select an organization");
     }
 
@@ -95,7 +92,7 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
       cardImageUrl:
         selectedImage?.urls.small || selectedImage?.urls.regular || "",
       bgImageUrl: selectedImage?.urls.full || selectedImage?.urls.regular || "",
-      orgId: organizationId,
+      orgId: orgId,
     };
     mutateCreateNewBoard(newBoardData);
   }

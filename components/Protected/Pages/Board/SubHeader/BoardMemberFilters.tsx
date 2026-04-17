@@ -34,10 +34,10 @@ export function BoardMemberFilters() {
     useIsFetching({
       queryKey: [QUERY_KEYS.hooks.useBoardListData],
     }) > 0;
-  const isFetchingTableData =
-    useIsFetching({
-      queryKey: [QUERY_KEYS.hooks.useTableData],
-    }) > 0;
+  // const isFetchingTableData =
+  //   useIsFetching({
+  //     queryKey: [QUERY_KEYS.hooks.useTableData, boardId, filterState],
+  //   }) > 0;
 
   async function handleSelectedMember(
     member: OrganizationMembersType | undefined | null,
@@ -56,8 +56,7 @@ export function BoardMemberFilters() {
     });
   }
 
-  const isLoading =
-    isFetchingKanbanListData || isFetchingTableData || isFetching;
+  const isLoading = isFetchingKanbanListData || isFetching;
 
   return (
     <div className="p-2 hidden lg:block">

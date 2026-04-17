@@ -42,11 +42,21 @@ export function useTableData(
       toast.dismiss(QUERY_KEYS.hooks.useTableData);
     }
   }
-  return useQuery({
+  const { data, isLoading } = useQuery({
     queryFn: fetchTableData,
-    queryKey: [QUERY_KEYS.hooks.useTableData, boardId, filters],
+    queryKey: [
+      QUERY_KEYS.hooks.useTableData,
+      boardId,
+      filters?.filters,
+      filters?.search,
+      filters?.unassignedCard,
+      filters?.selectedMemberEmail,
+      filters?.priorityType,
+    ],
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 5,
     refetchOnMount: true,
   });
+
+  return { data, isLoading };
 }

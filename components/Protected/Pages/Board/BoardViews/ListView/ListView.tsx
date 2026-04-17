@@ -3,11 +3,12 @@ import { DataTable } from "./DataTable";
 import { useMemo } from "react";
 import { useTableData } from "@/hooks/useTableData";
 import { useStore } from "@/store/useStore";
+import { useShallow } from "zustand/shallow";
 
 const EMPTY_DATA: any[] = [];
 
 export function ListView() {
-  const filters = useStore((state) => state.filterState);
+  const filters = useStore(useShallow((state) => state.filterState));
 
   const { data: boardData, isLoading } = useTableData(filters);
 
@@ -20,7 +21,7 @@ export function ListView() {
       <DataTable
         isLoading={isLoading}
         columns={stableColumns || EMPTY_DATA}
-        data={(boardData && boardData?.data?.cards) || EMPTY_DATA}
+        data={boardData?.data?.cards || EMPTY_DATA}
         listStatuses={boardData?.data?.listStatuses || EMPTY_DATA}
       />
     </div>

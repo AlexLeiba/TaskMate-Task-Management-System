@@ -23,14 +23,15 @@ export function RefreshData() {
   const isFetchingKanbanList =
     useIsFetching({
       queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      exact: true,
     }) > 0;
-  const isFetchingTable =
-    useIsFetching({
-      queryKey: [QUERY_KEYS.hooks.useTableData],
-    }) > 0;
+  // const isFetchingTable =
+  //   useIsFetching({
+  //     queryKey: [QUERY_KEYS.hooks.useTableData, boardId, filterState],
+  //     exact: true,
+  //   }) > 0;
 
-  const isRefreshing =
-    isFetchingBoardOverview || isFetchingKanbanList || isFetchingTable;
+  const isRefreshing = isFetchingBoardOverview || isFetchingKanbanList;
 
   function handleRefreshData() {
     setBoardTabSections("refresh");

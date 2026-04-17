@@ -2,7 +2,7 @@
 import { Edit } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { AddNewInput } from "../AddNewInput";
+import { TriggerInput } from "../../../Shared-protected/TriggerInput";
 import { useMutation } from "@tanstack/react-query";
 import { editBoardTitleAction } from "@/app/actions/board";
 import toast from "react-hot-toast";
@@ -20,7 +20,7 @@ export function BoardTitle({ boardId, boardTitle }: Props) {
   const [showTitleInput, setShowTitleInput] = useState(false);
   const { mutate: mutateEditBoardTitle, isPending: isPendingEditBoardTitle } =
     useMutation({
-      mutationKey: [QUERY_KEYS.pages.board.lists.editBoardTitle],
+      mutationKey: [QUERY_KEYS.pages.board.kanbanView.lists.editBoardTitle],
       mutationFn: editBoardTitleAction,
       onSuccess: () => {
         toast.success("Board title updated");
@@ -40,7 +40,7 @@ export function BoardTitle({ boardId, boardTitle }: Props) {
   }
   return (
     <div className="flex items-center  w-90 ">
-      <AddNewInput
+      <TriggerInput
         title={boardTitle}
         defaultValue={boardTitle}
         loading={isPendingEditBoardTitle}
@@ -85,7 +85,7 @@ export function BoardTitle({ boardId, boardTitle }: Props) {
             />
           </Button>
         </div>
-      </AddNewInput>
+      </TriggerInput>
     </div>
   );
 }

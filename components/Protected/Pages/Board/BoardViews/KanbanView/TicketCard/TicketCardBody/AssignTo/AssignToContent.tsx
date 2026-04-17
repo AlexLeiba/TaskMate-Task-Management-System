@@ -3,7 +3,7 @@ import { Check, UserPlus } from "lucide-react";
 import { AssignedToType, AssignToCardActionProps } from "@/lib/types";
 import { IconButton } from "@/components/ui/iconButton";
 import { UserCard } from "../../../../../../../Shared-protected/UserCard/UserCard";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { assignToCardAction, unassigneCardAction } from "@/app/actions/card";
 import toast from "react-hot-toast";
 import { useMembers } from "@/hooks/useMembers";
@@ -24,30 +24,41 @@ export function AssignToContent({
   handleClosePopup,
 }: Props) {
   const { members, isFetching } = useMembers();
-
+  const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
     mutationFn: assignToCardAction,
-    mutationKey: [QUERY_KEYS.pages.board.cards.assignTo],
+    mutationKey: [QUERY_KEYS.pages.board.kanbanView.cards.assignTo],
     onSuccess: () => {
-      toast.dismiss(QUERY_KEYS.pages.board.cards.assignTo);
-      toast.success("Card assigned");
+      toast.success("Card assigned", {
+        id: QUERY_KEYS.pages.board.kanbanView.cards.assignTo,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
     },
     onError: ({ message }) => {
-      toast.dismiss(QUERY_KEYS.pages.board.cards.assignTo);
-      toast.error(message || "Error assigning card, please try again");
+      toast.error(message || "Error assigning card, please try again", {
+        id: QUERY_KEYS.pages.board.kanbanView.cards.assignTo,
+      });
     },
   });
 
   const { mutate: unnasignMutation, isPending: isPendingUnassigne } =
     useMutation({
       mutationFn: unassigneCardAction,
-      mutationKey: [QUERY_KEYS.pages.board.cards.unassign],
+      mutationKey: [QUERY_KEYS.pages.board.kanbanView.cards.unassign],
       onSuccess: () => {
-        toast.dismiss(QUERY_KEYS.pages.board.cards.unassign);
-        toast.success("Card unassigned");
+        toast.success("Card unassigned", {
+          id: QUERY_KEYS.pages.board.kanbanView.cards.unassign,
+        });
+
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.hooks.useBoardListData],
+        });
       },
       onError: ({ message }) => {
-        toast.dismiss(QUERY_KEYS.pages.board.cards.unassign);
+        toast.dismiss(QUERY_KEYS.pages.board.kanbanView.cards.unassign);
         toast.error(message || "Error unassigning card, please try again");
       },
     });
@@ -62,7 +73,7 @@ export function AssignToContent({
   >) {
     handleClosePopup();
     toast.loading("Assigning card...", {
-      id: QUERY_KEYS.pages.board.cards.assignTo,
+      id: QUERY_KEYS.pages.board.kanbanView.cards.assignTo,
     });
     mutate({
       assignedUserData: {
@@ -88,7 +99,7 @@ export function AssignToContent({
       cardId,
     });
     toast.loading("Unassigning card...", {
-      id: QUERY_KEYS.pages.board.cards.unassign,
+      id: QUERY_KEYS.pages.board.kanbanView.cards.unassign,
     });
   }
   return (

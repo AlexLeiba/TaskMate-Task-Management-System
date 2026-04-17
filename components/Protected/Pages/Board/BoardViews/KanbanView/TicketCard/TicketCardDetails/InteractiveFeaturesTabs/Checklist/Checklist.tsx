@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ProgressBar } from "./ProgressBar";
-import { AddNewInput } from "../../../../../../AddNewInput";
+import { TriggerInput } from "../../../../../../../../Shared-protected/TriggerInput";
 import { CheckSquare, Plus } from "lucide-react";
 import { ChecklistCard } from "./ChecklistCard";
 import { Button } from "@/components/ui/button";
@@ -59,7 +59,10 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
     isLoading,
   } = useQuery({
     queryFn: getChecklistData,
-    queryKey: [QUERY_KEYS.pages.board.cardDetails.getChecklist, cardDetailsId],
+    queryKey: [
+      QUERY_KEYS.pages.board.kanbanView.cardDetails.getChecklist,
+      cardDetailsId,
+    ],
   });
 
   useEffect(() => {
@@ -70,24 +73,29 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
 
   const { mutate: createMutation, isPending: isPendingCreate } = useMutation({
     mutationFn: createChecklistAction,
-    mutationKey: [QUERY_KEYS.pages.board.cardDetails.createChecklist],
+    mutationKey: [
+      QUERY_KEYS.pages.board.kanbanView.cardDetails.createChecklist,
+    ],
 
     onMutate: async (newItem: CreateChecklistProps) => {
       await queryClient.cancelQueries({
         queryKey: [
-          QUERY_KEYS.pages.board.cardDetails.getChecklist,
+          QUERY_KEYS.pages.board.kanbanView.cardDetails.getChecklist,
           cardDetailsId,
         ],
       });
 
       const previousChecklist = queryClient.getQueryData([
-        QUERY_KEYS.pages.board.cardDetails.getChecklist,
+        QUERY_KEYS.pages.board.kanbanView.cardDetails.getChecklist,
         cardDetailsId,
       ]);
 
       // FOR UPDATING UI INSTANTLY (OPTIMISTIC UPDATES)
       queryClient.setQueryData(
-        [QUERY_KEYS.pages.board.cardDetails.getChecklist, cardDetailsId],
+        [
+          QUERY_KEYS.pages.board.kanbanView.cardDetails.getChecklist,
+          cardDetailsId,
+        ],
         (oldData: Checklist[]) => {
           const newData = [{ ...newItem, id: Date.now() }, ...oldData];
           return newData;
@@ -97,12 +105,23 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
       return { previousChecklist };
     },
     onSuccess: () => {
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.createChecklist);
-      toast.success("Checklist created");
+      toast.success("Checklist item created", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.createChecklist,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useTableData],
+      });
     },
     onError: (err, _, context) => {
       queryClient.setQueryData(
-        [QUERY_KEYS.pages.board.cardDetails.getChecklist, cardDetailsId],
+        [
+          QUERY_KEYS.pages.board.kanbanView.cardDetails.getChecklist,
+          cardDetailsId,
+        ],
         context?.previousChecklist,
       );
       toast.error(err?.message || "Something went wrong");
@@ -110,34 +129,41 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
 
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.pages.board.cardDetails.getChecklist],
+        queryKey: [QUERY_KEYS.pages.board.kanbanView.cardDetails.getChecklist],
       });
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.pages.board.cardDetails.getCardDetails],
+        queryKey: [
+          QUERY_KEYS.pages.board.kanbanView.cardDetails.getCardDetails,
+        ],
       });
     },
   });
 
   const { mutate: updateMutation, isPending: isPendingUpdate } = useMutation({
     mutationFn: updateChecklistAction,
-    mutationKey: [QUERY_KEYS.pages.board.cardDetails.updateChecklist],
+    mutationKey: [
+      QUERY_KEYS.pages.board.kanbanView.cardDetails.updateChecklist,
+    ],
 
     onMutate: async (newItem: UpdateChecklistProps) => {
       await queryClient.cancelQueries({
         queryKey: [
-          QUERY_KEYS.pages.board.cardDetails.getChecklist,
+          QUERY_KEYS.pages.board.kanbanView.cardDetails.getChecklist,
           cardDetailsId,
         ],
       });
 
       const previousChecklist = queryClient.getQueryData([
-        QUERY_KEYS.pages.board.cardDetails.getChecklist,
+        QUERY_KEYS.pages.board.kanbanView.cardDetails.getChecklist,
         cardDetailsId,
       ]);
 
       // FOR UPDATING UI INSTANTLY (OPTIMISTIC UPDATES)
       queryClient.setQueryData(
-        [QUERY_KEYS.pages.board.cardDetails.getChecklist, cardDetailsId],
+        [
+          QUERY_KEYS.pages.board.kanbanView.cardDetails.getChecklist,
+          cardDetailsId,
+        ],
         (oldData: Checklist[]) => {
           const newData = oldData.map((item) => {
             if (item.id === newItem.checklistId) {
@@ -155,47 +181,68 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
       return { previousChecklist };
     },
     onSuccess: () => {
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.updateChecklist);
-      toast.success("Checklist updated");
+      toast.success("Checklist updated", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.updateChecklist,
+      });
       setIsOpenedTitleInput(false);
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useTableData],
+      });
     },
     onError: ({ message }, _, context) => {
       queryClient.setQueryData(
-        [QUERY_KEYS.pages.board.cardDetails.getChecklist, cardDetailsId],
+        [
+          QUERY_KEYS.pages.board.kanbanView.cardDetails.getChecklist,
+          cardDetailsId,
+        ],
         context?.previousChecklist,
       );
-      toast.error(message || "Something went wrong");
+      toast.error(message || "Something went wrong", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.updateChecklist,
+      });
     },
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.pages.board.cardDetails.getChecklist],
+        queryKey: [QUERY_KEYS.pages.board.kanbanView.cardDetails.getChecklist],
       });
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.pages.board.cardDetails.getCardDetails],
+        queryKey: [
+          QUERY_KEYS.pages.board.kanbanView.cardDetails.getCardDetails,
+        ],
       });
     },
   });
 
   const { isPending: isPendingDelete, mutate: mutateDelete } = useMutation({
     mutationFn: deleteChecklistAction,
-    mutationKey: [QUERY_KEYS.pages.board.cardDetails.deleteChecklist],
+    mutationKey: [
+      QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteChecklist,
+    ],
 
     onMutate: async (deletedItem: DeleteChecklistProps) => {
       await queryClient.cancelQueries({
         queryKey: [
-          QUERY_KEYS.pages.board.cardDetails.getChecklist,
+          QUERY_KEYS.pages.board.kanbanView.cardDetails.getChecklist,
           cardDetailsId,
         ],
       });
 
       const previousChecklist = queryClient.getQueryData([
-        QUERY_KEYS.pages.board.cardDetails.getChecklist,
+        QUERY_KEYS.pages.board.kanbanView.cardDetails.getChecklist,
         cardDetailsId,
       ]);
 
       // FOR UPDATING UI INSTANTLY (OPTIMISTIC UPDATES)
       queryClient.setQueryData(
-        [QUERY_KEYS.pages.board.cardDetails.getChecklist, cardDetailsId],
+        [
+          QUERY_KEYS.pages.board.kanbanView.cardDetails.getChecklist,
+          cardDetailsId,
+        ],
         (oldData: Checklist[]) => {
           const newData = oldData.filter(
             (item) => item.id !== deletedItem.checklistId,
@@ -207,68 +254,74 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
       return { previousChecklist };
     },
     onSuccess: () => {
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.deleteChecklist);
-      toast.success("Checklist deleted");
+      toast.success("Checklist item deleted", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteChecklist,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useTableData],
+      });
     },
     onError: ({ message }, _, context) => {
       queryClient.setQueryData(
-        [QUERY_KEYS.pages.board.cardDetails.getChecklist, cardDetailsId],
+        [
+          QUERY_KEYS.pages.board.kanbanView.cardDetails.getChecklist,
+          cardDetailsId,
+        ],
         context?.previousChecklist,
       );
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.deleteChecklist);
-      toast.error(message || "Something went wrong");
+
+      toast.error(message || "Something went wrong", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteChecklist,
+      });
     },
 
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.pages.board.cardDetails.getCardDetails],
+        queryKey: [
+          QUERY_KEYS.pages.board.kanbanView.cardDetails.getCardDetails,
+        ],
       });
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.pages.board.cardDetails.getChecklist],
+        queryKey: [QUERY_KEYS.pages.board.kanbanView.cardDetails.getChecklist],
       });
     },
   });
 
   function handleCheckItem(id: string) {
-    if (!cardDetailsId) {
-      return toast.error("Card Id not found, please try again");
-    }
-
-    if (!boardId) {
+    if (!cardDetailsId || !boardId) {
       return toast.error("Something went wrong, please try again");
     }
 
-    toast.loading("Updating checklist...", {
-      id: QUERY_KEYS.pages.board.cardDetails.updateChecklist,
+    toast.loading("Updating checklist item...", {
+      id: QUERY_KEYS.pages.board.kanbanView.cardDetails.updateChecklist,
     });
     updateMutation({ cardDetailsId, checklistId: id, boardId });
   }
 
   function handleDeleteChecklist(id: string) {
-    if (!cardDetailsId) {
-      return toast.error("Card Id not found, please try again");
-    }
-    if (!boardId) {
+    if (!cardDetailsId || !boardId) {
       return toast.error("Something went wrong, please try again");
     }
 
-    toast.loading("Deleting checklist...", {
-      id: QUERY_KEYS.pages.board.cardDetails.deleteChecklist,
+    toast.loading("Deleting checklist item...", {
+      id: QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteChecklist,
     });
     mutateDelete({ cardDetailsId, checklistId: id, boardId });
   }
 
   function handleAddChecklist(value: { [inputName: string]: string }) {
-    if (!cardDetailsId) {
-      return toast.error("Card Id not found , please try again");
-    }
-    if (!boardId) {
+    if (!cardDetailsId || !boardId) {
       return toast.error("Something went wrong, please try again");
     }
 
     setIsOpenedTitleInput(false);
-    toast.loading("Creating checklist...", {
-      id: QUERY_KEYS.pages.board.cardDetails.createChecklist,
+    toast.loading("Creating checklist item...", {
+      id: QUERY_KEYS.pages.board.kanbanView.cardDetails.createChecklist,
     });
     createMutation({
       cardDetailsId,
@@ -311,7 +364,7 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
       </div>
       <div className="overflow-y-auto h-52">
         {(role === USER_ROLES.admin || user?.email === assignedUserEmail) && (
-          <AddNewInput
+          <TriggerInput
             buttonDirection="column"
             label="Add an item"
             type="textarea"
@@ -337,7 +390,7 @@ export function Checklist({ cardDetailsId, assignedUserEmail }: Props) {
             >
               + Add an item
             </Button>
-          </AddNewInput>
+          </TriggerInput>
         )}
 
         <div className="flex flex-col gap-1">

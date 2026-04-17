@@ -37,8 +37,12 @@ model User {
   updatedAt DateTime? @updatedAt
 
 
-  reportedCards Card[] @relation("Reported")//inverse relation/ wont be included in req , unless using property include
-  assignedCards Card[] @relation("Assigned")//inverse relation/ wont be included in req , unless using property include
+  reportedCards Card[] @relation("Reported")//inverse relation/ wont be included in req , unless using property include with prisma
+  assignedCards Card[] @relation("Assigned")//inverse relation/ wont be included in req , unless using property include with prisma
+
+
+  createdNotifications Notification[] @relation("NotificationAuthor")
+  receivedNotifications UserNotification[]
 }
 
 model Board {
@@ -74,6 +78,7 @@ cards Card[] //when create a card will end up here
 board Board @relation(fields: [boardId], references:[id],onDelete: Cascade)
 createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
+  allAssociatedCards Int @default(0)
 }
 
 
@@ -81,10 +86,10 @@ createdAt DateTime? @default(now())
 model Card {
 id String @id @default(uuid())
 title String
-assignedToEmail String?  //
-listId String  //to reference in which list is located
+assignedToEmail String?  // email of user assigned to card
+listId String  //to reference in which list card is located
 listName String
-reporterId String//who has created the card/is mandatory
+reporterId String//who has created the card
 order Int @default(1)
 
 priority PriorityType @default(none)
@@ -131,7 +136,7 @@ model UploadedFile {
   updatedAt DateTime? @updatedAt
 }
 
-// when create an attachment: set cardId / based on that id we will know which card belongs to the attach
+// when create an attachment: set cardId / based on that id we will know which attachment belongs to the card
 model Attachments {
   id String @id @default(uuid())
   cardId String
@@ -183,6 +188,7 @@ model Activity {
   updatedAt DateTime? @updatedAt
 }
 
+
 // register all activities to see who checked something
 model Checklist {
   id String @id @default(uuid())
@@ -218,4 +224,32 @@ model UserDoneCardTickets {
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
   doneTasks Int @default(0)
+}
+
+
+model Notification {
+  id String @id @default(uuid())
+  title String
+  message String
+  messageRichText String
+  authorId String
+  orgId String? //if true then notification will be sent to specific org
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  author User @relation("NotificationAuthor",fields:[authorId],references: [id])
+  users UserNotification[]
+
+}
+
+model UserNotification {
+  id                String         @id @default(cuid())
+  userId            String
+  notificationId    String
+  read              Boolean        @default(false)
+  readAt            DateTime?
+  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notification      Notification   @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  createdAt         DateTime       @default(now())
+  @@unique([userId, notificationId])
 }

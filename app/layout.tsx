@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
 
 import { Toaster } from "react-hot-toast";
-import { TanstackQueryProvider } from "@/lib/tanstackQueryProvider";
+import { ClientProviders } from "@/lib/providers/ClientProviders";
 
 // for non layouts shifts font loading
 // fonts load once, applied to the entire app
@@ -31,14 +30,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-          // variables will become available to wntire app
-          // css variables cascade
-          // everything inside body can access them
-        >
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        // variables will become available to wntire app
+        // css variables cascade
+        // everything inside body can access them
+      >
+        <ClientProviders>
           <Toaster
             position="top-center"
             reverseOrder={false}
@@ -47,9 +46,9 @@ export default function RootLayout({
             containerStyle={{}}
             toasterId="default"
           />
-          <TanstackQueryProvider>{children}</TanstackQueryProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+          {children}
+        </ClientProviders>
+      </body>
+    </html>
   );
 }

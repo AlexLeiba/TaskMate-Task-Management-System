@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { IconButton } from "@/components/ui/iconButton";
 import { MessageCircle, Plus } from "lucide-react";
-import { AddNewInput } from "../../../../../../AddNewInput";
+import { TriggerInput } from "../../../../../../../../Shared-protected/TriggerInput";
 import { CommentCard } from "./CommentCard";
 import { CommentsCardSkeleton } from "./CommentsCardSkeleton";
 import { Comment, User } from "@/lib/generated/prisma/client";
@@ -52,47 +52,57 @@ export function Comments({ cardDetailsId }: Props) {
   }
 
   const { data: commentsData, isLoading } = useQuery({
-    queryKey: [QUERY_KEYS.pages.board.cardDetails.getComments, cardDetailsId],
+    queryKey: [
+      QUERY_KEYS.pages.board.kanbanView.cardDetails.getComments,
+      cardDetailsId,
+    ],
     queryFn: getCommentsData,
   });
 
   // CREATE
   const { mutate: mutateCreate, isPending: isPendingCreate } = useMutation({
-    mutationKey: [QUERY_KEYS.pages.board.cardDetails.createComment],
+    mutationKey: [QUERY_KEYS.pages.board.kanbanView.cardDetails.createComment],
     mutationFn: createCommentAction,
     onSuccess: () => {
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.createComment);
-      toast.success("Comment created");
+      toast.dismiss(
+        QUERY_KEYS.pages.board.kanbanView.cardDetails.createComment,
+      );
+      toast.success("Comment created", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.createComment,
+      });
       queryClient.invalidateQueries({
         queryKey: [
-          QUERY_KEYS.pages.board.cardDetails.getComments,
+          QUERY_KEYS.pages.board.kanbanView.cardDetails.getComments,
           cardDetailsId,
         ],
       });
     },
     onError: ({ message }) => {
-      toast.error(message || "Error creating comment, please try again");
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.createComment);
+      toast.error(message || "Error creating comment, please try again", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.createComment,
+      });
     },
   });
 
   // DELETE
   const { mutate: mutateDelete, isPending: isPendingDelete } = useMutation({
-    mutationKey: [QUERY_KEYS.pages.board.cardDetails.deleteComment],
+    mutationKey: [QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteComment],
     mutationFn: deleteCommentAction,
     onSuccess: () => {
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.deleteComment);
-      toast.success("Comment deleted");
+      toast.success("Comment deleted", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteComment,
+      });
       queryClient.invalidateQueries({
         queryKey: [
-          QUERY_KEYS.pages.board.cardDetails.getComments,
+          QUERY_KEYS.pages.board.kanbanView.cardDetails.getComments,
           cardDetailsId,
         ],
       });
     },
     onError: ({ message }) => {
-      toast.error(message || "Error deleting comment, please try again");
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.deleteComment);
+      toast.error(message || "Error deleting comment, please try again", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteComment,
+      });
     },
   });
 
@@ -104,7 +114,7 @@ export function Comments({ cardDetailsId }: Props) {
       return toast.error("Something went wrong, please try again");
     }
     toast.loading("Deleting comment...", {
-      id: QUERY_KEYS.pages.board.cardDetails.deleteComment,
+      id: QUERY_KEYS.pages.board.kanbanView.cardDetails.deleteComment,
     });
     setIsDeleteModalOpened(false);
 
@@ -125,7 +135,7 @@ export function Comments({ cardDetailsId }: Props) {
     }
 
     toast.loading("Creating comment...", {
-      id: QUERY_KEYS.pages.board.cardDetails.createComment,
+      id: QUERY_KEYS.pages.board.kanbanView.cardDetails.createComment,
     });
     mutateCreate({
       cardDetailsId,
@@ -162,7 +172,7 @@ export function Comments({ cardDetailsId }: Props) {
 
       {/* SCROLLABLE COMMENTS SECTION */}
       <div className="flex flex-col  overflow-y-auto h-58  ">
-        <AddNewInput
+        <TriggerInput
           disabled={isPendingDelete || isPendingCreate}
           buttonDirection="column"
           className="py-0"
@@ -185,7 +195,7 @@ export function Comments({ cardDetailsId }: Props) {
           >
             <Plus className="text-green-600" />
           </IconButton>
-        </AddNewInput>
+        </TriggerInput>
 
         {/* COMMENTS */}
         {commentsData && commentsData.length > 0

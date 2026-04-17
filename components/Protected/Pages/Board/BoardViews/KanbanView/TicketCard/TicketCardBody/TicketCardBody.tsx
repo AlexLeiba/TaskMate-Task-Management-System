@@ -4,12 +4,16 @@ import { CardWithDetailsAndDueDateAndChecklistType } from "@/lib/types";
 import { AssignTo } from "./AssignTo/AssignTo";
 import { Priority } from "./Priority/Priority";
 
-const DueDateIndicator = dynamic(() =>
-  import("./DueDateIndicator").then((m) => m.DueDateIndicator),
+const DueDateIndicatorCard = dynamic(() =>
+  import("@/components/Protected/Shared-protected/DueDateIndicatorCard").then(
+    (m) => m.DueDateIndicatorCard,
+  ),
 );
 
-const ChecklistIndicator = dynamic(() =>
-  import("./ChecklistIndicator").then((m) => m.ChecklistIndicator),
+const ChecklistIndicatorCard = dynamic(() =>
+  import("@/components/Protected/Shared-protected/ChecklistIndicatorCard").then(
+    (m) => m.ChecklistIndicatorCard,
+  ),
 );
 
 type Props = {
@@ -31,9 +35,11 @@ export function TicketCardBody({
       />
 
       {details?.dueDate?.[0] && (
-        <DueDateIndicator data={details?.dueDate?.[0]} />
+        <DueDateIndicatorCard data={details?.dueDate?.[0]} />
       )}
-      {details?.checklist && <ChecklistIndicator data={details?.checklist} />}
+      {details?.checklist && (
+        <ChecklistIndicatorCard data={details?.checklist} />
+      )}
 
       {/* ASSIGN  */}
 

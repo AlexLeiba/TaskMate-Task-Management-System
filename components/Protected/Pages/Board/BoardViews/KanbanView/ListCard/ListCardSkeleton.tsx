@@ -2,7 +2,7 @@ export function ListCardSkeleton() {
   const skeletonArray = [1, 2, 3, 4];
 
   return (
-    <div className="max-w-400 mx-auto p-4 overflow-x-auto  w-full flex gap-4 items-start   h-full">
+    <div className="max-w-400 mx-auto p-4 overflow-x-auto  w-full flex gap-4 items-start  h-[calc(100vh+200)] min-h-[calc(100vh-108px)]">
       <div className="flex gap-4 w-full">
         {skeletonArray.map((item) => (
           <div

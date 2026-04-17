@@ -15,12 +15,8 @@ const FilterDropdownContent = dynamic(() =>
 
 export function FiltersDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const boardSubHeaderMemberIdSelected = useStore(
-    (state) => state.boardSubHeaderMemberIdSelected,
-  );
-  const boardSubHeaderFilterSelected = useStore(
-    (state) => state.boardSubHeaderFilterSelected,
-  );
+
+  const filterState = useStore((state) => state.filterState);
 
   const handleClosePopup = useCallback(() => setIsOpen(false), []);
 
@@ -34,17 +30,14 @@ export function FiltersDropdown() {
           aria-label="Open filters"
         >
           <Filter />
-          {isOpen && (
+          {isOpen ? (
             <div className="size-3 rounded-full bg-green-400 absolute top-0 right-0" />
-          )}
-          {!isOpen && boardSubHeaderFilterSelected !== "all" && (
-            <div className="md:block hidden size-3 rounded-full bg-red-600 absolute top-0 right-0" />
-          )}
-          {((!isOpen && boardSubHeaderMemberIdSelected) ||
-            (!isOpen &&
-              boardSubHeaderFilterSelected &&
-              boardSubHeaderFilterSelected !== "all")) && (
-            <div className="lg:hidden size-3 rounded-full bg-red-600 absolute top-0 right-0" />
+          ) : (
+            <>
+              {filterState.filters !== "all" && (
+                <div className="md:block hidden size-3 rounded-full bg-red-600 absolute top-0 right-0" />
+              )}
+            </>
           )}
         </IconButton>
       </PopoverTrigger>

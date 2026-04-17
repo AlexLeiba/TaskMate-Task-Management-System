@@ -39,13 +39,13 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
 
   const { data, isFetching } = useQuery({
     queryFn: getUnsplashImagesAction,
-    queryKey: [QUERY_KEYS.pages.boards.createNewBoard.getImages],
+    queryKey: [QUERY_KEYS.pages.dashboard.createNewBoard.getImages],
     staleTime: 1000 * 60 * 60,
   });
 
   const { mutate: mutateCreateNewBoard, isPending: isPendingCreateNewBoard } =
     useMutation({
-      mutationKey: [QUERY_KEYS.pages.boards.createNewBoard.create],
+      mutationKey: [QUERY_KEYS.pages.dashboard.createNewBoard.create],
       mutationFn: createNewBoardAction,
       onSuccess: ({ data }) => {
         setValue("title", "");
@@ -74,7 +74,7 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
 
   function handleGetNewImages() {
     queryClient.invalidateQueries({
-      queryKey: [QUERY_KEYS.pages.boards.createNewBoard.getImages],
+      queryKey: [QUERY_KEYS.pages.dashboard.createNewBoard.getImages],
     });
   }
 

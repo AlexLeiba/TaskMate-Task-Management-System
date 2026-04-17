@@ -7,6 +7,7 @@ import {
   DueDate,
   List,
   User,
+  PriorityType as GeneratedPriorityType,
 } from "./generated/prisma/client";
 import { FILES_MIME_TYPES, IMAGES_MIME_TYPES } from "./consts/protected/files";
 
@@ -21,6 +22,12 @@ export type ListStatusType =
   | "review"
   | "done"
   | "backlog";
+
+export type ListStatusesType = {
+  id: string;
+  title: string;
+  status: StatusType;
+}[];
 
 export type UserType = {
   id?: string;
@@ -149,6 +156,14 @@ export type CardDetailsType = {
   dueDate?: DueDateType;
 };
 
+export type CardDetailsTableProps = {
+  cardTitle: string;
+  listTitle: string;
+  cardDetailsId: string;
+  isVisible: boolean;
+  listId: string;
+};
+
 export type CardDetailsTabs =
   | "checklist"
   | "comments"
@@ -229,6 +244,26 @@ export type DeleteFileBodyType =
 
 export type ListAndCardsType = List & { cards: Card[] };
 
+export type CardWithDetailsAndDueDateAndChecklistAndReporterType = Card & {
+  details: {
+    dueDate: Pick<DueDate, "time" | "date">[];
+    checklist: Pick<Checklist, "isCompleted" | "id">[];
+  } | null;
+} & {
+  assignedTo: {
+    avatar: string | null;
+    email: string;
+    name: string;
+  } | null;
+  reporter: {
+    avatar: string | null;
+    email: string;
+    name: string;
+  } | null;
+  list: {
+    status: ListStatusType;
+  };
+};
 export type CardWithDetailsAndDueDateAndChecklistType = Card & {
   details: {
     dueDate: Pick<DueDate, "time" | "date">[];
@@ -241,6 +276,9 @@ export type CardWithDetailsAndDueDateAndChecklistType = Card & {
 };
 export type ListAndCardsAndDueDateAndChecklistType = List & {
   cards: CardWithDetailsAndDueDateAndChecklistType[];
+};
+export type CardsAndDueDateAndChecklistType = {
+  cards: CardWithDetailsAndDueDateAndChecklistAndReporterType[];
 };
 
 export type CardAndDueDateAndChecklistType = Card & {
@@ -420,7 +458,10 @@ export type FilterStates =
   | "all"
   | "theSame"
   | "expiredDue"
-  | "priority";
+  | "priority"
+  | "search"
+  | "selectedMemberEmail"
+  | "unassignedCard";
 
 //
 export type OrganizationMembersType = {
@@ -468,3 +509,20 @@ export type OverviewDataType = {
 };
 
 export type UserRoleType = "admin" | "member";
+
+export type ListDataTableType = {
+  boardId: string;
+  priorityType?: GeneratedPriorityType;
+  selectedMemberEmail?: string;
+  unassignedCard?: boolean;
+  filters?: FilterStates;
+  search?: string;
+};
+
+export type ListDataKanbanType = {
+  boardId?: string;
+  priorityType?: GeneratedPriorityType;
+  selectedMemberEmail?: string;
+  unassignedCard?: boolean;
+  filters?: FilterStates;
+};

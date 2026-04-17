@@ -4,7 +4,7 @@ import { KEYBOARD } from "@/lib/consts/consts";
 import { CARD_PRIORITIES } from "@/lib/consts/protected/card";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { PrioritiesType, PriorityType } from "@/lib/types";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -23,23 +23,30 @@ export function PriorityContent({
   priority,
   handleClosePopup,
 }: Props) {
+  const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
     mutationFn: editPriorityAction,
-    mutationKey: [QUERY_KEYS.pages.board.cards.editPriority],
+    mutationKey: [QUERY_KEYS.pages.board.kanbanView.cards.editPriority],
     onSuccess: () => {
-      toast.dismiss(QUERY_KEYS.pages.board.cards.editPriority);
-      toast.success("Card priority was changed");
+      toast.success("Card priority was changed", {
+        id: QUERY_KEYS.pages.board.kanbanView.cards.editPriority,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
     },
     onError: ({ message }) => {
-      toast.dismiss(QUERY_KEYS.pages.board.cards.editPriority);
-      toast.error(message || "Error editing card priority, please try again");
+      toast.error(message || "Error editing card priority, please try again", {
+        id: QUERY_KEYS.pages.board.kanbanView.cards.editPriority,
+      });
     },
   });
 
   function handleSelectPriority(priorityValue: PriorityType) {
     handleClosePopup();
     toast.loading("Editing card priority", {
-      id: QUERY_KEYS.pages.board.cards.editPriority,
+      id: QUERY_KEYS.pages.board.kanbanView.cards.editPriority,
     });
     mutate({ priority: priorityValue.value, boardId, listId, cardId });
   }

@@ -1,6 +1,6 @@
 import { getActivitiesAction } from "@/app/actions/activity";
-import { PaginationButton } from "./PaginationButton";
 import { ActivityData } from "./ActivityData";
+import { PaginationButton } from "../../Shared-protected/PaginationButton";
 
 type Props = {
   page: string | undefined;

@@ -7,7 +7,14 @@ export const QUERY_KEYS = {
         getImages: "get-images",
       },
     },
+
     overview: {},
+    notifications: {
+      getNotification: "get-all-notifications",
+      createNotification: "create-notification",
+      getUnreadNotifications: "get-unread-notifications",
+      markAllAsReadNotification: "mark-all-as-read-notifications",
+    },
     board: {
       overview: {
         boardOverview: "board-overview",

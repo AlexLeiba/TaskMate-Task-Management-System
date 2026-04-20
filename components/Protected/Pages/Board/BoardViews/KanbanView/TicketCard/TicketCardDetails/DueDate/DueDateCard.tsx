@@ -1,6 +1,6 @@
 import { IconButton } from "@/components/ui/iconButton";
 import { DATE_FORMAT } from "@/lib/consts/consts";
-import { duedateStatusColors } from "@/lib/dueDateStatusColors";
+import { duedateStatusColors } from "@/lib/color-variants/dueDateStatusColors";
 import { cn } from "@/lib/utils";
 import { differenceInDays, differenceInHours, format } from "date-fns";
 import { Clock, X } from "lucide-react";

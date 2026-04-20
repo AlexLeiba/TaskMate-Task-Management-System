@@ -1,6 +1,6 @@
 import { TaskOrganizationType } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { variantsPublicCardColors } from "@/lib/variantsPublicCardColors";
+import { variantsPublicCardColors } from "@/lib/color-variants/variantsPublicCardColors";
 
 type Props = {
   data: TaskOrganizationType;

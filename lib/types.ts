@@ -11,7 +11,6 @@ import {
 } from "./generated/prisma/client";
 import { FILES_MIME_TYPES, IMAGES_MIME_TYPES } from "./consts/protected/files";
 
-// REUSABLE TYPES
 export type ActivityActionType = "created" | "deleted" | "updated";
 
 export type PrioritiesType = "low" | "medium" | "high" | "urgent" | "none";
@@ -46,8 +45,6 @@ export type UploadedFileType = {
   name?: string;
   url: string;
 };
-
-/////////////////////////////////////////////////
 
 export type ActivityType = {
   orgId: string;

@@ -4,7 +4,7 @@ import { ProgressBar } from "./InteractiveFeaturesTabs/Checklist/ProgressBar";
 import { cn } from "@/lib/utils";
 import { ChecklistType } from "@/lib/types";
 import { CompletedStats } from "./InteractiveFeaturesTabs/Checklist/CompletedStats";
-import { checklistStatusColors } from "@/lib/checklistStatusColors";
+import { checklistStatusColors } from "@/lib/color-variants/checklistStatusColors";
 
 type Props = {
   cardDetailsId: string | undefined;

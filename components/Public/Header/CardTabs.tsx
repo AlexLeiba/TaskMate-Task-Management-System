@@ -3,7 +3,7 @@ import { HEADER_CARD_TABS_FEATURES } from "@/lib/consts/public/header";
 
 import { TabType } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { variantsTabCardColors } from "@/lib/variantsTabsCardsColors";
+import { variantsTabCardColors } from "@/lib/color-variants/variantsTabsCardsColors";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 

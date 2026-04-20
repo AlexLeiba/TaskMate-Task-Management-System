@@ -47,12 +47,12 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
       onSuccess: ({ data }) => {
         setValue("title", "");
         setSelectedImage(undefined);
-        setNewBoardDialogOpen(false);
+        setNewBoardDialogOpen(false, "dashboard");
 
         toast.success("Board created successfully");
 
-        if (type === "header") {
-          navigate.push(`/dashboard/${orgId}/board/${data?.id}`);
+        if (type === "header" && data?.id) {
+          navigate.push(`/dashboard/${orgId}/board/${data.id}`);
         }
       },
       onError: ({ message }) => toast.error(message || "Error creating board"),

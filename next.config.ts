@@ -8,11 +8,11 @@ const ContentSecurityPolicy = `
               font-src 'self' https: data: ;
               connect-src 'self' https://*.clerk.com https://smooth-toucan-0.clerk.accounts.dev  https://clerk-telemetry.com/v1/event;
               frame-ancestors 'none';
-                worker-src 'self' blob:;
-                object-src 'none';
-base-uri 'self';
-form-action 'self';
-frame-src 'self' https://challenges.cloudflare.com/;
+              worker-src 'self' blob:;
+              object-src 'none';
+              base-uri 'self';
+              form-action 'self';
+              frame-src 'self' https://challenges.cloudflare.com/;
             `.replace(/\n/g, "");
 
 const nextConfig: NextConfig = {
@@ -42,7 +42,6 @@ const nextConfig: NextConfig = {
           {
             key: "Content-Security-Policy",
             value: ContentSecurityPolicy,
-            //iframes none / api calls: https only / fonts: my site or https only / images: my site or https / js: my site + https / css: my site + inline style/ connect-src : where api calls can connect / 'unsafe-inline' - inline scripts are blocked
           },
           {
             key: "X-Frame-Options",

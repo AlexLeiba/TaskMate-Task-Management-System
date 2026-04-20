@@ -1,13 +1,14 @@
+import { setupClerkTestingToken } from "@clerk/testing/cypress";
+
 describe("Dashboard page mobile view", () => {
   beforeEach(() => {
+    setupClerkTestingToken();
     cy.viewport(375, 800);
     cy.visit("/");
 
-    cy.window().its("Clerk", { timeout: 15000 }).should("exist"); //check if clerk exists
+    cy.window().its("Clerk").should("exist"); //check if clerk exists
 
-    cy.window()
-      .its("Clerk.loaded", { timeout: 15000 })
-      .should("eq", true, { timeout: 15000 }); //this command (should) will retry until the assertion is true or timeout occurs 4s, until then the next line wont be reached.
+    cy.window().its("Clerk.loaded").should("eq", true); //this command (should) will retry until the assertion is true or timeout occurs 4s, until then the next line wont be reached.
 
     cy.clerkSignIn({
       strategy: "email_code",

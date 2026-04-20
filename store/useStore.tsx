@@ -72,8 +72,11 @@ type StoreType = {
   setSelectTab: (value: CardDetailsTabs) => void;
 
   // CREATE NEW BOARD DIALOG FROM HEADER BUTTON
-  newBoardDialogOpen: boolean;
-  setNewBoardDialogOpen: (open: boolean) => void;
+  newBoardDialogOpen: { header: boolean; dashboard: boolean };
+  setNewBoardDialogOpen: (
+    dialogState: boolean,
+    type?: "dashboard" | "header",
+  ) => void;
 
   //SUBHEADER BOARD HEADER TABS SECTIONS
   boardTabSections: BoardTabSectionType;
@@ -286,8 +289,20 @@ export const useStore = create<StoreType>((set, get) => ({
   selectedTab: "comments",
   setSelectTab: (value) => set({ selectedTab: value }),
 
-  newBoardDialogOpen: false,
-  setNewBoardDialogOpen: (open) => set({ newBoardDialogOpen: open }),
+  newBoardDialogOpen: {
+    header: false,
+    dashboard: false,
+  },
+  setNewBoardDialogOpen: (dialogState, type) => {
+    const boardDialogState =
+      type === "dashboard"
+        ? { dashboard: dialogState, header: false }
+        : { header: dialogState, dashboard: false };
+
+    set({
+      newBoardDialogOpen: boardDialogState,
+    });
+  },
 
   // BOARD HEADER TABS SECTIONS
   boardTabSections: "board",

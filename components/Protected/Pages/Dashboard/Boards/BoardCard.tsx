@@ -24,10 +24,7 @@ export function BoardCard({
 }: Props) {
   return (
     <>
-      <div
-        className="relative overflow-hidden  rounded-md min-h-32.5"
-        data-test="dashboard-board-card"
-      >
+      <div className="relative overflow-hidden  rounded-md min-h-32.5">
         <Image
           src={cardImageUrl}
           alt={title}
@@ -37,6 +34,7 @@ export function BoardCard({
           className="absolute inset-0 w-full h-full object-cover"
         />
         <IconButton
+          data-test="dashboard-board-card"
           disabled={disabled}
           aria-label={`Open board - ${title}`}
           title={`Open board - ${title}`}

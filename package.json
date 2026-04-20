@@ -1,6 +1,6 @@
 {
   "name": "taskmate",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -42,6 +42,7 @@
     "lucide-react": "^0.562.0",
     "next": "16.1.1",
     "pg": "^8.17.2",
+    "radix-ui": "^1.4.3",
     "react": "19.2.3",
     "react-day-picker": "^9.13.0",
     "react-dom": "19.2.3",

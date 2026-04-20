@@ -1,5 +1,5 @@
 "use client";
-import { duedateStatusColors } from "@/lib/dueDateStatusColors";
+import { duedateStatusColors } from "@/lib/color-variants/dueDateStatusColors";
 import { DueDate } from "@/lib/generated/prisma/client";
 import { isValidDateString } from "@/lib/isValidDateString";
 import { parseDateTimeToLocal } from "@/lib/parseDateTimeToLocal";

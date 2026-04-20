@@ -48,18 +48,18 @@ export function SubHeader({
           <RefreshData />
           {boardTabSections !== "overview" && (
             <>
-              {/* FILTER BY MEMBER ON DESKTOP*/}
+              {/*DESKTOP FILTER BY MEMBER */}
               {!isTablet && <BoardMemberFilters />}
 
-              {/* FILTERS DROPDOWN ON TABLET AND MOBILE */}
+              {/*FILTERS DROPDOWN  */}
               <FiltersDropdown />
             </>
           )}
 
-          {/* TABS SECTIONS DROPDOWN ON MOBILE */}
+          {/*MOBILE TABS SECTIONS DROPDOWN*/}
           {isTablet && <DropdownBoardTabSections />}
 
-          {/* TABS SECTIONS ON DESKTOP AND TABLET */}
+          {/*DESKTOP/TABLET TABS SECTIONS*/}
           <BoardTabSections />
 
           {/* CLOSE BOARD BUTTON */}

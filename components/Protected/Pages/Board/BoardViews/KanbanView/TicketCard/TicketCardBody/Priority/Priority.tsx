@@ -31,7 +31,7 @@ export function Priority({ priority, boardId, listId, cardId }: Props) {
 
   const pendingMutations = useMutationState({
     filters: {
-      mutationKey: [QUERY_KEYS.pages.board.cards.editPriority],
+      mutationKey: [QUERY_KEYS.pages.board.kanbanView.cards.editPriority],
       status: "pending",
     },
   });

@@ -20,6 +20,7 @@ export async function verifyCurrentActiveUser(
   const { data: memberData, error: memberError } =
     await verifyOrganizationMember(currentOrgId);
 
+  // REDIRECT TO DASHBOARD IF USER IS NOT A MEMBER
   if (!memberData?.isMember || memberError?.message) {
     redirect("/dashboard");
   }
@@ -39,7 +40,7 @@ export async function verifyCurrentActiveUser(
       where: { email: data?.email },
     });
 
-    // IF USER NOT EXISTS IN DB BUT IS AUTHENTICATED AND AUTHORIZED, CREATE ONE WITH DATA PROVIDED FROM CLERK AUTH
+    // IF USER NOT EXISTS IN DB BUT IS AUTHENTICATED AND AUTHORIZED, CREATE ONE IN DB WITH DATA PROVIDED FROM CLERK AUTH
     if (!activeUser) {
       activeUser = await prisma.user.create({
         data: {

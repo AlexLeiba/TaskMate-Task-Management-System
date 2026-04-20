@@ -1,26 +1,34 @@
+import { INITIAL_FILTERS_STATE } from "@/lib/consts/protected/board";
+import { UNASSIGNED_CARD } from "@/lib/consts/protected/card";
+import { Card, List } from "@/lib/generated/prisma/client";
 import {
   BoardTabSectionType,
   CardDetailsTabs,
-  FilterStates,
   ListAndCardsAndDueDateAndChecklistType,
-  PrioritiesType,
+  ListDataTableType,
 } from "@/lib/types";
 import { DraggableLocation } from "@hello-pangea/dnd";
 import { create } from "zustand";
 
 type StoreType = {
-  // INITIALIZE BOARD LIST CARDS DATA
-  boardListData: ListAndCardsAndDueDateAndChecklistType[] | null | undefined;
-  initialBoardListData: { id: string; cards: number }[] | null | undefined;
-
-  setInitializeBoardListData: (
-    data: ListAndCardsAndDueDateAndChecklistType[] | null | undefined,
+  // INITIALIZE UNFILTERED BOARD LIST CARDS DATA
+  unfilteredBoardListData:
+    | (Pick<List, "id"> & { cards: Pick<Card, "id">[] })[]
+    | undefined;
+  setUnfilteredBoardListData: (
+    data: (Pick<List, "id"> & { cards: Pick<Card, "id">[] })[] | undefined,
   ) => void;
 
-  // UPDATE BOARD LIST DATA WITH FILTERS OPTIONS
+  // INITIALIZE BOARD LIST CARDS DATA FOR DND
+  boardListData: ListAndCardsAndDueDateAndChecklistType[] | null | undefined;
   setBoardListData: (
     data: ListAndCardsAndDueDateAndChecklistType[] | null | undefined,
   ) => void;
+
+  // ----------------------------------------------------------
+  // FILTER STATES
+  filterState: Omit<ListDataTableType, "boardId">;
+  setFilterState: (state: Omit<ListDataTableType, "boardId">) => void;
 
   // OPTIMISTIC UPDATE OF BOARD LIST DATA WITH DRAG AND DROP-----------------------------
   setDndSameListBoardListDataCards: (
@@ -70,36 +78,115 @@ type StoreType = {
   //SUBHEADER BOARD HEADER TABS SECTIONS
   boardTabSections: BoardTabSectionType;
   setBoardTabSections: (sections: BoardTabSectionType) => void;
-
-  // SUBHEADER BOARD  FILTERS STATISTICS
-  boardSubHeaderFilterSelected: FilterStates;
-  prioritiesSelectedFilter?: PrioritiesType;
-  setBoardSubHeaderFilterSelected: (
-    selected: FilterStates,
-    priority?: PrioritiesType | undefined,
-  ) => FilterStates;
-
-  boardSubHeaderMemberIdSelected: string | null;
-  setBoardSubHeaderMemberIdSelected: (selected: string | null) => string | null;
 };
 
 export const useStore = create<StoreType>((set, get) => ({
   // INITIALIZE BOARD LIST CARDS DATA
   boardListData: null,
-  initialBoardListData: null,
+  unfilteredBoardListData: [],
 
-  setInitializeBoardListData: (data) => {
+  setUnfilteredBoardListData: (data) => {
     set({
-      boardListData: data,
-      initialBoardListData:
-        data?.map((list) => ({ id: list?.id, cards: list?.cards.length })) ||
-        null,
+      unfilteredBoardListData: data,
     });
   },
   setBoardListData: (data) => {
     set({
       boardListData: data,
     });
+  },
+
+  // ----------------------------------------------------------------
+  // FILTER STATE
+  filterState: INITIAL_FILTERS_STATE,
+  setFilterState: (state) => {
+    // MEMBERS
+    if (state.filters === "selectedMemberEmail") {
+      const prevSelectedMemberEmail = get().filterState.selectedMemberEmail;
+      if (
+        prevSelectedMemberEmail !== state.selectedMemberEmail &&
+        state.selectedMemberEmail !== UNASSIGNED_CARD.email
+      ) {
+        set({
+          filterState: {
+            ...INITIAL_FILTERS_STATE,
+            selectedMemberEmail: state.selectedMemberEmail,
+            filters: "selectedMemberEmail",
+          },
+        });
+        return;
+      }
+      if (prevSelectedMemberEmail === state.selectedMemberEmail) {
+        set({
+          filterState: INITIAL_FILTERS_STATE,
+        });
+        return;
+      }
+      if (state.selectedMemberEmail === UNASSIGNED_CARD.email) {
+        set({
+          filterState: {
+            ...INITIAL_FILTERS_STATE,
+            selectedMemberEmail: UNASSIGNED_CARD.email,
+            filters: "unassignedCard",
+            unassignedCard: true,
+          },
+        });
+        return;
+      }
+    }
+    // PRIORITY
+    if (state.filters === "priority") {
+      const prevSelectedPriority = get().filterState.priorityType;
+      if (prevSelectedPriority !== state.priorityType && state.priorityType) {
+        set({
+          filterState: {
+            ...INITIAL_FILTERS_STATE,
+            priorityType: state.priorityType,
+            filters: "priority",
+          },
+        });
+        return;
+      }
+      if (prevSelectedPriority === state.priorityType) {
+        set({
+          filterState: INITIAL_FILTERS_STATE,
+        });
+        return;
+      }
+    }
+
+    if (state.filters === "search") {
+      set({
+        filterState: {
+          ...INITIAL_FILTERS_STATE,
+          search: state.search,
+          filters: "search",
+        },
+      });
+
+      return;
+    }
+
+    // OTHER FILTERS
+
+    const prevSelectedFilters = get().filterState.filters;
+    if (prevSelectedFilters !== state.filters) {
+      set({
+        filterState: {
+          ...INITIAL_FILTERS_STATE,
+          filters: state.filters,
+        },
+      });
+      return;
+    }
+    if (prevSelectedFilters === state.filters) {
+      set({
+        filterState: INITIAL_FILTERS_STATE,
+      });
+      return;
+    }
+
+    set({ filterState: state });
   },
 
   // DRAG AND DROP BOARD LIST CARDS-----------------------------
@@ -206,50 +293,8 @@ export const useStore = create<StoreType>((set, get) => ({
   boardTabSections: "board",
   setBoardTabSections: (sections) => {
     if (sections === "refresh") {
-      set({
-        boardSubHeaderFilterSelected: "all",
-        boardSubHeaderMemberIdSelected: null,
-      });
       return;
     }
     set({ boardTabSections: sections });
-  },
-
-  // BOARD SUBHEADER FILTERS STATES
-  boardSubHeaderFilterSelected: "all",
-  setBoardSubHeaderFilterSelected: (selected, priority) => {
-    const prevSelectedFilter = get().boardSubHeaderFilterSelected;
-    const prevPriority = get().prioritiesSelectedFilter;
-
-    if (prevSelectedFilter === selected && prevPriority === priority) {
-      set({
-        boardSubHeaderFilterSelected: "all",
-        prioritiesSelectedFilter: undefined,
-      });
-      return "theSame";
-    }
-    set({
-      boardSubHeaderFilterSelected: selected,
-      boardSubHeaderMemberIdSelected: null,
-      prioritiesSelectedFilter: priority,
-    });
-
-    return selected;
-  },
-
-  boardSubHeaderMemberIdSelected: null,
-  setBoardSubHeaderMemberIdSelected: (selected) => {
-    const prevSelectedFilter = get().boardSubHeaderMemberIdSelected;
-
-    if (prevSelectedFilter === selected) {
-      set({ boardSubHeaderMemberIdSelected: null });
-      return null;
-    }
-    set({
-      boardSubHeaderMemberIdSelected: selected,
-      boardSubHeaderFilterSelected: "all",
-    });
-
-    return selected;
   },
 }));

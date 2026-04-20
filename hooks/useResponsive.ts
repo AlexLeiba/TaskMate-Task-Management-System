@@ -1,12 +1,12 @@
+import { useEffect, useState } from "react";
 import { BREAKPOINTS } from "@/lib/breakpoints";
-import * as React from "react";
 
 export function useResponsive(breakpoint: number = BREAKPOINTS.sm): boolean {
-  const [isWidthSize, setIsWidthSize] = React.useState<boolean | undefined>(
+  const [isWidthSize, setIsWidthSize] = useState<boolean | undefined>(
     undefined,
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     const mql = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
     const onChange = () => {
       setIsWidthSize(window.innerWidth < breakpoint);

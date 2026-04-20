@@ -35,9 +35,9 @@ export function TicketCardHeader({
   const pendingMutations = useMutationState({
     filters: {
       mutationKey: [
-        QUERY_KEYS.pages.board.cards.copyCard,
-        QUERY_KEYS.pages.board.cards.editTitleCard,
-        QUERY_KEYS.pages.board.cards.deleteCard,
+        QUERY_KEYS.pages.board.kanbanView.cards.copyCard,
+        QUERY_KEYS.pages.board.kanbanView.cards.editTitleCard,
+        QUERY_KEYS.pages.board.kanbanView.cards.deleteCard,
       ],
       status: "pending",
     },

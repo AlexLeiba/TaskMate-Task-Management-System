@@ -42,7 +42,7 @@ export function AssignTo({
 
   const pendingMutations = useMutationState({
     filters: {
-      mutationKey: [QUERY_KEYS.pages.board.cards.assignTo],
+      mutationKey: [QUERY_KEYS.pages.board.kanbanView.cards.assignTo],
       status: "pending",
     },
   });

@@ -1,58 +1,73 @@
 import { IconButton } from "@/components/ui/iconButton";
-import { useGetBoardFilteredData } from "@/hooks/useGetBoardFilteredData";
+import { useDebounce } from "@/hooks/useDebounce";
 import { useMembers } from "@/hooks/useMembers";
 import { UNASSIGNED_CARD } from "@/lib/consts/protected/card";
-
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { OrganizationMembersType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/store/useStore";
+import { useIsFetching } from "@tanstack/react-query";
 import { UserPlus } from "lucide-react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useShallow } from "zustand/shallow";
 
 export function BoardMemberFilters() {
-  const { fetchBoardFilteredListData, loading } = useGetBoardFilteredData();
+  const [selectedLocalMember, setSelectedLocalMember] = useState<string>("");
 
   const { members, isFetching } = useMembers();
 
-  const setBoardSubHeaderMemberIdSelected = useStore(
-    (state) => state.setBoardSubHeaderMemberIdSelected,
+  const { filterState, setFilterState } = useStore(
+    useShallow((state) => ({
+      filterState: state.filterState,
+      setFilterState: state.setFilterState,
+    })),
   );
 
-  const boardSubHeaderMemberIdSelected = useStore(
-    (state) => state.boardSubHeaderMemberIdSelected,
-  );
+  useEffect(() => {
+    setSelectedLocalMember(filterState?.selectedMemberEmail || "");
+  }, []);
+
+  const delayedSetFilterState = useDebounce(setFilterState, 100);
+
+  const isFetchingKanbanListData =
+    useIsFetching({
+      queryKey: [QUERY_KEYS.hooks.useBoardListData],
+    }) > 0;
+  // const isFetchingTableData =
+  //   useIsFetching({
+  //     queryKey: [QUERY_KEYS.hooks.useTableData, boardId, filterState],
+  //   }) > 0;
 
   async function handleSelectedMember(
     member: OrganizationMembersType | undefined | null,
   ) {
-    const selectedMember = setBoardSubHeaderMemberIdSelected(
-      member?.userId || "",
-    );
+    setSelectedLocalMember((prev) => {
+      if (prev === member?.email) {
+        return "";
+      }
+      return member?.email || "";
+    });
 
-    if (!selectedMember) {
-      // FETCH FRESH BOARD DATA WITH NO FILTERS APPLIED
-      return fetchBoardFilteredListData("");
-    }
-
-    if (member?.userId === UNASSIGNED_CARD.userId) {
-      // FETCH BOARD DATA WITH UNASSIGNED FILTER
-      return fetchBoardFilteredListData("", true);
-    }
-
-    // FETCH BOARD DATA WITH MEMBER FILTER
-    fetchBoardFilteredListData(member?.email || "");
+    // SET FILTER STATE BASED ON SELECTED MEMBER, THIS WILL TRIGGER useTableData TO FETCH FILTERED DATA
+    delayedSetFilterState({
+      filters: "selectedMemberEmail",
+      selectedMemberEmail: member?.email,
+    });
   }
+
+  const isLoading = isFetchingKanbanListData || isFetching;
 
   return (
     <div className="p-2 hidden lg:block">
       <div className="flex items-center relative">
         <IconButton
-          disabled={loading || isFetching}
+          disabled={isLoading}
           onClick={() => handleSelectedMember(UNASSIGNED_CARD)}
           title="Filter by unassigned"
           aria-label="Filter by unassigned"
           className={cn(
-            boardSubHeaderMemberIdSelected === "unassigned"
+            selectedLocalMember === "unassigned"
               ? "z-10 outline-offset-3 outline-2 outline-white "
               : "outline-1 outline-gray-300",
             "bg-accent-foreground flex items-center  hover:z-10 hover:outline-2 hover:opacity-100 rounded-full cursor-pointer p-1",
@@ -63,12 +78,12 @@ export function BoardMemberFilters() {
         {members?.map((member, index) => {
           return (
             <IconButton
-              disabled={loading || isFetching}
+              disabled={isLoading}
               onClick={() => handleSelectedMember(member)}
               title={`Filter by ${member?.fullName}`}
               style={{ transform: `translateX(-${index * 5}px)` }}
               className={cn(
-                boardSubHeaderMemberIdSelected === member?.userId
+                selectedLocalMember === member?.email
                   ? "z-10 outline-offset-3 outline-2 outline-white"
                   : "outline-1 outline-gray-300",
                 "bg-accent-foreground -translate-x-1.25 flex items-center hover:z-10 hover:outline-2 hover:opacity-100  rounded-full cursor-pointer",

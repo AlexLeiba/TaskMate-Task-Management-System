@@ -1,13 +1,9 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import toast from "react-hot-toast";
-import {
-  ListAndCardsAndDueDateAndChecklistType,
-  UserRoleType,
-} from "@/lib/types";
 import dynamic from "next/dynamic";
 import { Droppable, DropResult } from "@hello-pangea/dnd";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   changeCardPositionAction,
   changeListPositionAction,
@@ -19,6 +15,7 @@ import { AddNewListCard } from "./ListCard/AddNewListCard";
 import { useStore } from "@/store/useStore";
 import { useShallow } from "zustand/shallow";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
+import { useBoardListData } from "@/hooks/useBoardListData";
 
 const DragDropContext = dynamic(() =>
   import("@hello-pangea/dnd").then((m) => m.DragDropContext),
@@ -26,75 +23,68 @@ const DragDropContext = dynamic(() =>
 
 type Props = {
   boardId: string;
-  listData: {
-    data: {
-      data: ListAndCardsAndDueDateAndChecklistType[] | null | undefined;
-      role: UserRoleType;
-    } | null;
-    error: { message: string };
-  };
 };
-export function ListCards({ boardId, listData }: Props) {
+export function KanbanListCards({ boardId }: Props) {
+  const queryClient = useQueryClient();
+  const filters = useStore((state) => state.filterState);
+
+  // FETCH CACHED DATA
+  const { data: listData } = useBoardListData(filters);
+
+  // DND optimistic update methods.
   const {
     boardListData,
-    setInitializeBoardListData,
+    setBoardListData,
     setDndBoardListData,
     setDndSameListBoardListDataCards,
     setDndDifferentListBoardListDataCards,
-    setBoardSubHeaderFilterSelected,
-    setBoardSubHeaderMemberIdSelected,
   } = useStore(
     useShallow((state) => ({
       boardListData: state.boardListData,
-      setInitializeBoardListData: state.setInitializeBoardListData,
+      setBoardListData: state.setBoardListData,
       setDndBoardListData: state.setDndBoardListData,
       setDndSameListBoardListDataCards: state.setDndSameListBoardListDataCards,
       setDndDifferentListBoardListDataCards:
         state.setDndDifferentListBoardListDataCards,
-      setBoardSubHeaderFilterSelected: state.setBoardSubHeaderFilterSelected,
-      setBoardSubHeaderMemberIdSelected:
-        state.setBoardSubHeaderMemberIdSelected,
     })),
   );
 
-  const hasToastedRef = useRef(false);
+  useEffect(() => {
+    // SUBSCRIBE TO LIST FILTER TRIGGERS OF BOARD LIST CACHED DATA.
+    if (listData?.data) {
+      setBoardListData(listData.data);
+    }
+  }, [listData, setBoardListData]);
 
   const { mutate: mutateReorderList } = useMutation({
     mutationFn: changeListPositionAction,
-    mutationKey: [QUERY_KEYS.pages.board.lists.dragAndDrop.reorderList],
+    mutationKey: [
+      QUERY_KEYS.pages.board.kanbanView.lists.dragAndDrop.reorderList,
+    ],
+
     onError: (error: any) => {
       toast.error(error?.message || "Something went wrong");
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
     },
   });
+
   const { mutate: mutateReorderCard } = useMutation({
     mutationFn: changeCardPositionAction,
-    mutationKey: [QUERY_KEYS.pages.board.lists.dragAndDrop.reorderCard],
+    mutationKey: [
+      QUERY_KEYS.pages.board.kanbanView.lists.dragAndDrop.reorderCard,
+    ],
     onError: (error: any) => {
       toast.error(error?.message || "Something went wrong");
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
     },
   });
 
-  useEffect(() => {
-    if (listData?.error?.message && hasToastedRef.current === false) {
-      // CATCH ERRORS
-      toast.error(listData.error.message);
-      hasToastedRef.current = true; //to avoid duplicate toasts
-      return;
-    }
-
-    setBoardSubHeaderMemberIdSelected(""); // RESET FILTER MEMBER ON FIRST MOUNT
-    setBoardSubHeaderFilterSelected("all");
-    //RESET FILTER ON FIRST MOUNT
-    setInitializeBoardListData(listData?.data?.data); //SET INITIAL DATA ON FIRST MOUNT
-    // initial list column values
-  }, [
-    listData.data,
-    listData.error.message,
-    setInitializeBoardListData,
-    setBoardSubHeaderMemberIdSelected,
-    setBoardSubHeaderFilterSelected,
-  ]);
-
+  // SKELETON
   if (!boardId || !boardListData) return <ListCardSkeleton />;
 
   // DND RESPONSER
@@ -136,7 +126,7 @@ export function ListCards({ boardId, listData }: Props) {
             destinationListId: destination.droppableId,
             cardToMoveId: deletedCardId,
             listTitle:
-              listData.data?.data?.find(
+              listData?.data?.find(
                 (list) => list.id.toString() === source.droppableId,
               )?.title || "List",
             newOrderIndex: destination.index,
@@ -159,7 +149,7 @@ export function ListCards({ boardId, listData }: Props) {
           destinationListId: destination.droppableId,
           cardToMoveId: deletedCardId,
           listTitle:
-            listData.data?.data?.find(
+            listData?.data?.find(
               (list) => list.id.toString() === source.droppableId,
             )?.title || "List",
           newOrderIndex: destination.index,
@@ -171,7 +161,7 @@ export function ListCards({ boardId, listData }: Props) {
     }
   }
   return (
-    <div className="max-w-400 mx-auto p-4 overflow-x-auto  w-full flex gap-4 items-start   h-full">
+    <div className="max-w-400 mx-auto p-4 overflow-x-auto  w-full flex gap-4 items-start overflow-y-hidden  h-[calc(100vh+200)] min-h-[calc(100vh-108px)]">
       <DragDropContext onDragEnd={handleDragEnd}>
         <Droppable
           droppableId="list-container"
@@ -195,7 +185,7 @@ export function ListCards({ boardId, listData }: Props) {
         </Droppable>
       </DragDropContext>
       {/*  ADD NEW LIST*/}
-      {listData.data?.role === USER_ROLES.admin && (
+      {listData?.role === USER_ROLES.admin && (
         <AddNewListCard boardId={boardId} />
       )}
     </div>

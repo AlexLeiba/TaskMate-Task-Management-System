@@ -12,7 +12,7 @@ import {
 
 import { AssignToSkeleton } from "./AssignToSkeleton";
 import { useEffect, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UserCard } from "@/components/Protected/Shared-protected/UserCard/UserCard";
 
 import { assignToCardAction, unassigneCardAction } from "@/app/actions/card";
@@ -30,6 +30,7 @@ type Props = {
   cardDetailsId: string;
 };
 export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
+  const queryClient = useQueryClient();
   const boardId = useBoardId();
 
   const [selectedUser, setSelectedUser] = useState<UserType>(FAKE_USERS[0]);
@@ -40,10 +41,11 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
 
   const { mutate: mutateAssigneTo, isPending } = useMutation({
     mutationFn: assignToCardAction,
-    mutationKey: [QUERY_KEYS.pages.board.cardDetails.assignTo],
+    mutationKey: [QUERY_KEYS.pages.board.kanbanView.cardDetails.assignTo],
     onSuccess: ({ data }) => {
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.assignTo);
-      toast.success("Card assigned");
+      toast.success("Card assigned", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.assignTo,
+      });
       const foundSelectedUser = members?.find(
         (member) => member?.email === data?.assignedToEmail,
       );
@@ -54,25 +56,36 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
       };
 
       setSelectedUser(selectedUser);
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
     },
     onError: ({ message }) => {
-      toast.dismiss(QUERY_KEYS.pages.board.cards.assignTo);
-      toast.error(message || "Error assigning card, please try again");
+      toast.error(message || "Error assigning card, please try again", {
+        id: QUERY_KEYS.pages.board.kanbanView.cards.assignTo,
+      });
     },
   });
 
   const { mutate: unnasignMutation, isPending: isPendingUnassigne } =
     useMutation({
       mutationFn: unassigneCardAction,
-      mutationKey: [QUERY_KEYS.pages.board.cardDetails.unassign],
+      mutationKey: [QUERY_KEYS.pages.board.kanbanView.cardDetails.unassign],
       onSuccess: () => {
-        toast.dismiss(QUERY_KEYS.pages.board.cardDetails.unassign);
-        toast.success("Card unassigned");
+        toast.success("Card unassigned", {
+          id: QUERY_KEYS.pages.board.kanbanView.cardDetails.unassign,
+        });
         setSelectedUser(FAKE_USERS[0]);
+
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.hooks.useBoardListData],
+        });
       },
       onError: ({ message }) => {
-        toast.dismiss(QUERY_KEYS.pages.board.cardDetails.unassign);
-        toast.error(message || "Error unassigning card, please try again");
+        toast.error(message || "Error unassigning card, please try again", {
+          id: QUERY_KEYS.pages.board.kanbanView.cardDetails.unassign,
+        });
       },
     });
 
@@ -117,7 +130,7 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
     });
 
     toast.loading("Assigning to user...", {
-      id: QUERY_KEYS.pages.board.cards.assignTo,
+      id: QUERY_KEYS.pages.board.kanbanView.cards.assignTo,
     });
   }
 
@@ -137,7 +150,7 @@ export function AssignToDropdown({ assignedTo, listId, cardDetailsId }: Props) {
     });
 
     toast.loading("Unassigning card...", {
-      id: QUERY_KEYS.pages.board.cardDetails.unassign,
+      id: QUERY_KEYS.pages.board.kanbanView.cardDetails.unassign,
     });
   }
 

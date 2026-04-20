@@ -6,25 +6,25 @@ import {
 } from "@/components/ui/dialog";
 import { MapPin } from "lucide-react";
 import { Spacer } from "@/components/ui/spacer";
-import { Description } from "./Description/Description";
-import { Reporter } from "./Reporter/Reporter";
-import { AssignTo } from "./AssignTo/AssignTo";
-import { Priority } from "./Priority/Priority";
-import { InteractiveFeaturesTabs } from "./InteractiveFeaturesTabs/InteractiveFeaturesTabs";
+import { AssignTo } from "@/components/Protected/Shared-protected/AssignTo/AssignTo";
+import { Priority } from "@/components/Protected/Shared-protected/Priority/Priority";
+import { Status } from "@/components/Protected/Shared-protected/Status/Status";
 import { getCardDetails } from "@/app/actions/card-details";
-import { ChecklistList } from "./ChecklistList";
-import { DueDate } from "./DueDate/DueDate";
-import { Actions } from "./Actions/Actions";
-import { DateTime } from "./DateTime";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import { useUserData } from "@/hooks/useUserData";
 import { USER_ROLES } from "@/lib/consts/consts";
 import { useRole } from "@/hooks/useRole";
-import { ChangeStatus } from "./ChangeStatus/ChangeStatus";
 import { useBoardId } from "@/hooks/useBoardId";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
+import { Description } from "../Pages/Board/BoardViews/KanbanView/TicketCard/TicketCardDetails/Description/Description";
+import { InteractiveFeaturesTabs } from "../Pages/Board/BoardViews/KanbanView/TicketCard/TicketCardDetails/InteractiveFeaturesTabs/InteractiveFeaturesTabs";
+import { Reporter } from "../Pages/Board/BoardViews/KanbanView/TicketCard/TicketCardDetails/Reporter/Reporter";
+import { ChecklistList } from "../Pages/Board/BoardViews/KanbanView/TicketCard/TicketCardDetails/ChecklistList";
+import { DueDate } from "../Pages/Board/BoardViews/KanbanView/TicketCard/TicketCardDetails/DueDate/DueDate";
+import { Actions } from "../Pages/Board/BoardViews/KanbanView/TicketCard/TicketCardDetails/Actions/Actions";
+import { DateTime } from "../Pages/Board/BoardViews/KanbanView/TicketCard/TicketCardDetails/DateTime";
 
 type Props = {
   handleCloseModal: () => void;
@@ -65,7 +65,7 @@ export function TicketCardDetails({
 
   const { data: cardDetailsData } = useQuery({
     queryKey: [
-      QUERY_KEYS.pages.board.cardDetails.getCardDetails,
+      QUERY_KEYS.pages.board.kanbanView.cardDetails.getCardDetails,
       cardDetailsId,
     ],
     queryFn: getDetailsData,
@@ -121,6 +121,7 @@ export function TicketCardDetails({
             </div>
 
             <AssignTo
+              type="card"
               assignedTo={cardDetailsData?.card.card?.assignedToEmail || ""}
               listId={cardDetailsData?.card.card?.listId}
               cardDetailsId={cardDetailsData?.card.card.id || ""}
@@ -135,13 +136,14 @@ export function TicketCardDetails({
                 priority={cardDetailsData?.card.card?.priority}
                 listId={cardDetailsData?.card.card?.listId}
                 cardDetailsId={cardDetailsData?.card.card.id}
+                type={"card"}
               />
             </div>
-            <ChangeStatus
+            <Status
               listId={cardDetailsData?.card?.card?.listId}
               cardId={cardDetailsData?.card?.card.id}
-              currentStatusType={cardDetailsData?.card?.card?.list}
               listsData={cardDetailsData?.list || []}
+              type={"card"}
             />
             <DueDate
               data={cardDetailsData?.card.dueDate}

@@ -139,6 +139,7 @@ export function ListOptionsContent({ listId }: Props) {
                   onClick={() => handleSelectOption(option.value)}
                   className="p-2 w-full"
                   classNameChildren="flex gap-2 items-center"
+                  data-test="list-options-delete-button"
                 >
                   {option.icon}
                   <p key={option.label}>{option.label}</p>

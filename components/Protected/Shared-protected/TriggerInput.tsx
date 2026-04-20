@@ -38,9 +38,12 @@ type Props = {
   buttonDirection?: "row" | "column";
   defaultValue?: string;
   buttonVisibility?: boolean;
+  dataTest?: string;
   setIsOpenedTitleInput: Dispatch<SetStateAction<boolean>>;
   handleSubmitValue: (value: { [inputName: string]: string }) => void;
 } & (PropsTextarea | PropsInputText);
+
+// TODO , add component testing
 export function TriggerInput({
   children,
   label,
@@ -157,6 +160,7 @@ export function TriggerInput({
       title={label}
       aria-label={label}
       className={cn("p-2", classNameContainer)}
+      data-test={props.dataTest + "-trigger"}
     >
       {isOpenedTitleInput ? (
         <div className="flex gap-2 flex-col items-start ">
@@ -188,6 +192,7 @@ export function TriggerInput({
                 error={
                   errors[inputName as keyof typeof errors]?.message as string
                 }
+                data-test={props.dataTest + "-textarea"}
               />
             ) : (
               <Input
@@ -200,6 +205,7 @@ export function TriggerInput({
                 error={
                   errors[inputName as keyof typeof errors]?.message as string
                 }
+                data-test={props.dataTest + "-input"}
               />
             )}
             {buttonVisibility && (
@@ -218,6 +224,7 @@ export function TriggerInput({
                   aria-label={`Add comment`}
                   loading={loading}
                   variant={"tertiary"}
+                  data-test={props.dataTest + "-submit"}
                 >
                   <Plus />
                 </Button>
@@ -234,6 +241,7 @@ export function TriggerInput({
                     setOpenTitleInput({ id: "", isOpen: false });
                     setOpenNewCardInput({ id: "", isOpen: false });
                   }}
+                  data-test={props.dataTest + "-cancel"}
                 >
                   <X />
                 </Button>

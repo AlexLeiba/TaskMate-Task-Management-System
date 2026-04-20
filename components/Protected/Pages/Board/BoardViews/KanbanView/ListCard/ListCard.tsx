@@ -23,7 +23,8 @@ export function ListCard({ listData, index }: Props) {
         <li
           {...provided.draggableProps}
           ref={provided.innerRef}
-          className=" shrink-0   p-2 bg-card/80 text-text-primary w-72 rounded-md "
+          className=" shrink-0 p-2 bg-card/80 text-text-primary w-72 rounded-md "
+          data-test="list"
         >
           <div {...provided.dragHandleProps}>
             {/* HEADER */}

@@ -226,6 +226,7 @@ export function OptionsContent({
           }}
           classNameChildren="flex  gap-2 items-center "
           className="w-full"
+          data-test="delete-card-button-option"
         >
           <Delete /> Delete
         </IconButton>

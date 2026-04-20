@@ -64,6 +64,7 @@ export function TicketCardHeader({
                 e.stopPropagation();
               }
             }}
+            data-test="card-options-trigger"
           >
             <Ellipsis />
           </IconButton>
@@ -86,6 +87,7 @@ export function TicketCardHeader({
                   }}
                   title="Close card options"
                   aria-label="Close card options"
+                  data-test="card-close-options-button"
                 >
                   <X />
                 </IconButton>

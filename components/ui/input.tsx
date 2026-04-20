@@ -21,7 +21,11 @@ function Input({
         )}
         {...props}
       />
-      {error && <p className="text-destructive text-xs">{error}</p>}
+      {error && (
+        <p data-test="error-message" className="text-destructive text-xs">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

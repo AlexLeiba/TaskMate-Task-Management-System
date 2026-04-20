@@ -34,6 +34,7 @@ export function BoardCard({
           className="absolute inset-0 w-full h-full object-cover"
         />
         <IconButton
+          data-test="dashboard-board-card"
           disabled={disabled}
           aria-label={`Open board - ${title}`}
           title={`Open board - ${title}`}
@@ -49,6 +50,7 @@ export function BoardCard({
         </IconButton>
         {role === USER_ROLES.admin && (
           <IconButton
+            data-test="delete-board-button"
             title={`Delete board - ${title}`}
             aria-label={`Delete board - ${title}`}
             onClick={handleModalDeleteBoard}

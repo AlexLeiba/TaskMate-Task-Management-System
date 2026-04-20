@@ -81,7 +81,7 @@ export function Boards({
   }
 
   return (
-    <div>
+    <div data-test="dashboard-boards">
       <div className="flex gap-2 items-center">
         <LayoutDashboard />
         <p className="text-xl font-medium">Boards</p>

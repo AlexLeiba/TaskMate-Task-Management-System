@@ -21,7 +21,7 @@ export function TeamWorkload({
   totalTasks = 0,
 }: Props) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2" data-test="team-workload">
       <div>
         <h5 className="text-2xl font-medium"> Team workload / Assigned work</h5>
         <p className="text-wrap">

@@ -1,9 +1,15 @@
+import { setupClerkTestingToken } from "@clerk/testing/cypress";
+
 describe("Dashboard page mobile view", () => {
   beforeEach(() => {
+    setupClerkTestingToken();
     cy.viewport(375, 800);
     cy.visit("/");
 
-    cy.clerkLoaded();
+    cy.window().its("Clerk").should("exist"); //check if clerk exists
+
+    cy.window().its("Clerk.loaded").should("eq", true); //this command (should) will retry until the assertion is true or timeout occurs 4s, until then the next line wont be reached.
+
     cy.clerkSignIn({
       strategy: "email_code",
       identifier: Cypress.env("testUser"),
@@ -16,50 +22,87 @@ describe("Dashboard page mobile view", () => {
 
   it("Dashboard Navigations", () => {
     // aliases
-    cy.url().should("include", "/dashboard").as("includeDashboardUrl");
+    cy.url().as("currentUrl");
     cy.get("[data-test=footer] [data-test=logo]").eq(0).as("logo");
     //
-    cy.get("@includeDashboardUrl");
+
+    // assert dashboard board
+    cy.get("@currentUrl").should("include", "/dashboard");
+    cy.get("[data-test=create-new-board-card]").should("be.visible", {
+      timeout: 15000,
+    });
 
     cy.location("pathname").then((pathname) => {
       const organizationId = pathname.split("/").at(-1);
 
+      // assert activity data
       cy.visit(`/dashboard/${organizationId}/activity`)
         .url()
         .should("include", "/activity");
+      cy.get("h1").should("be.visible", { timeout: 15000 });
 
+      // assert settings data
       cy.visit(`/dashboard/${organizationId}/settings`)
         .url()
         .should("include", "/settings");
+      cy.get("h1").should("be.visible", { timeout: 15000 });
+      cy.get("[data-clerk-component=OrganizationProfile]").should(
+        "be.visible",
+        {
+          timeout: 15000,
+        },
+      );
 
+      // assert billing data
       cy.visit(`/dashboard/${organizationId}/billings`)
         .url()
         .should("include", "/billings");
+      cy.get("h1").should("be.visible", { timeout: 15000 });
 
+      //  assert overview data
       cy.visit(`/dashboard/${organizationId}/overview`)
         .url()
         .should("include", "/overview");
+      cy.get("h1").should("be.visible", { timeout: 15000 });
+      cy.get("[data-test=status-overview]").should("be.visible", {
+        timeout: 15000,
+      });
+      cy.get("[data-test=priority-breakdown]").should("be.visible", {
+        timeout: 15000,
+      });
+      cy.get("[data-test=team-workload]").should("be.visible", {
+        timeout: 15000,
+      });
+      cy.get("[data-test=finished-work-overview]").should("be.visible", {
+        timeout: 15000,
+      });
+      cy.get("[data-test=recent-activity]").should("be.visible", {
+        timeout: 15000,
+      });
     });
-    // assert the page is hydrated (mounted)
-    cy.get("[data-test=overview-page] h1").should("be.visible");
-    cy.get("@logo").click();
-    cy.get("@includeDashboardUrl");
 
+    cy.get("@logo").click();
+    cy.get("@currentUrl").should("include", "/dashboard");
+
+    // assert organization data
     cy.visit("/select-organization");
-    cy.url().should("include", "/select-organization");
+    cy.url().should("include", "/select-organization", { timeout: 15000 });
+    cy.get("[data-clerk-component=OrganizationList]").should("be.visible", {
+      timeout: 15000,
+    });
 
-    cy.get("[data-test=select-organization-page]").should("be.visible");
     cy.get("@logo").click();
-    cy.get("@includeDashboardUrl");
+    cy.get("@currentUrl").should("include", "/dashboard");
   });
 
   it("Sidebar", () => {
     // aliases
     cy.get("[data-test=header-sidebar-trigger]").as("headerSidebarTrigger");
     cy.get("[data-test=footer] [data-test=logo]").eq(0).as("logo");
+    cy.url().as("currentUrl");
     //
 
-    cy.get("@includeDashboardUrl");
+    cy.get("@currentUrl").should("include", "/dashboard");
 
     // assert default hidden sidebar
     cy.get("[data-test=sidebar-content]").should("not.exist");
@@ -80,7 +123,7 @@ describe("Dashboard page mobile view", () => {
 
     // cy.get("@sidebarAccordionTrigger").filter("[data-state=open]").should("have.length", 1);
 
-    // assert click on each sodebar item and check navigation valid url
+    // assert click and navigate with valid url on each sodebar item
     cy.location("pathname").then((pathname) => {
       const organizationId = pathname.split("/").at(-1);
 
@@ -115,6 +158,6 @@ describe("Dashboard page mobile view", () => {
     cy.get("[data-test=sidebar-content]").should("not.exist");
 
     cy.get("@logo").click();
-    cy.url({ timeout: 10000 }).should("include", "/dashboard");
+    cy.get("@currentUrl").should("include", "/dashboard");
   });
 });

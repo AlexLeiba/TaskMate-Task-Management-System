@@ -523,3 +523,9 @@ export type ListDataKanbanType = {
   unassignedCard?: boolean;
   filters?: FilterStates;
 };
+
+export type ListStatusesOptionType = {
+  label: string;
+  value: ListStatusType;
+  icon: React.ReactNode;
+};

@@ -1,3 +1,4 @@
+import { ListStatusesOptionType } from "@/lib/types";
 import {
   Archive,
   Circle,
@@ -38,7 +39,7 @@ export const LIST_STATUSES_VALUES = {
   },
 } as const;
 
-export const LIST_STATUSES = [
+export const LIST_STATUSES: ListStatusesOptionType[] = [
   {
     label: "Todo",
     value: "todo",

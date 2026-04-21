@@ -40,6 +40,7 @@ export function TicketCard({ data, boardId, index }: Prop) {
         {(provided) => (
           <>
             <li
+              role="button"
               {...provided.draggableProps}
               {...provided.dragHandleProps}
               ref={provided.innerRef}
@@ -61,7 +62,6 @@ export function TicketCard({ data, boardId, index }: Prop) {
                   handleOpenDetails();
                 }
               }}
-              role="button"
               title={`open - ${data.title}`}
               aria-label={`open - ${data.title}`}
               tabIndex={0}
@@ -71,6 +71,7 @@ export function TicketCard({ data, boardId, index }: Prop) {
                 "p-2 w-full cursor-pointer  rounded-sm",
                 "flex flex-col justify-start items-start gap-2 active:bg-card group",
               )}
+              data-test="ticket-card"
             >
               {/* TICKET CARD HEADER */}
               <div className="flex justify-between w-full relative">

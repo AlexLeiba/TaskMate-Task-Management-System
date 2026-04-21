@@ -67,6 +67,7 @@ export function ListTitle({
         isOpenedTitleInput={isInputOpened}
         classNameContainer="py-0 py-0 w-full "
         defaultValue={defaultTitle}
+        dataTest="edit-list-title"
       >
         <>
           <h3 className="text-lg font-medium line-clamp-3">

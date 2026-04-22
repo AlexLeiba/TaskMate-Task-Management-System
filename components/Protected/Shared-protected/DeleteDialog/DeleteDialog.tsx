@@ -31,6 +31,7 @@ export function DeleteDialog({
       onOpenChange={loading ? () => {} : setDeleteDialogOpen}
     >
       <DialogContent
+        data-test="delete-dialog"
         className="px-8"
         aria-describedby={`The dialog is used to delete ${title}`}
       >
@@ -49,6 +50,7 @@ export function DeleteDialog({
         <DialogFooter className="flex ">
           <DialogClose asChild>
             <Button
+              data-test="delete-dialog-cancel-button"
               disabled={loading || disabled}
               size={"lg"}
               type="button"
@@ -60,6 +62,7 @@ export function DeleteDialog({
             </Button>
           </DialogClose>
           <Button
+            data-test="delete-dialog-delete-button"
             title="Delete"
             aria-label="Delete"
             loading={loading}

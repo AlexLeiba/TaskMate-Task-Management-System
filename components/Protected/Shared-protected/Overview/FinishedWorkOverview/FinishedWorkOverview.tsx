@@ -1,3 +1,4 @@
+"use client";
 import { finishedWorkOverviewAction } from "@/app/actions/overview";
 import { UserCard } from "@/components/Protected/Shared-protected/UserCard/UserCard";
 import { useBoardId } from "@/hooks/useBoardId";
@@ -12,6 +13,7 @@ import { Award } from "lucide-react";
 import { FilterTabs } from "./FilterTabs";
 import { FinishedWorkFilterTabs } from "@/lib/types";
 import { SkeletonMembers } from "./SkeletonMembers";
+import { useUser } from "@clerk/nextjs";
 
 type Props = {
   type?: "board" | "organization";
@@ -19,6 +21,7 @@ type Props = {
 };
 export function FinishedWorkOverview({ type, orgId }: Props) {
   const boardId = useBoardId();
+  const { isLoaded, user } = useUser();
 
   async function fetchBoardFinishedWorkStats() {
     try {
@@ -49,10 +52,11 @@ export function FinishedWorkOverview({ type, orgId }: Props) {
 
   const { data } = useQuery({
     queryFn: fetchBoardFinishedWorkStats,
-    queryKey: [QUERY_KEYS.pages.board.overview.finishedWork],
+    queryKey: [QUERY_KEYS.pages.board.overview.finishedWork, orgId],
     staleTime: 1000, // TODO : change to 5 min.
     gcTime: 1000, // TODO : change to 5 min.
     refetchOnMount: true,
+    enabled: isLoaded && !!user && !!orgId,
   });
 
   const {
@@ -88,7 +92,7 @@ export function FinishedWorkOverview({ type, orgId }: Props) {
   const finishedWorkData = filteredData || data;
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2" data-test="finished-work-overview">
       <div>
         <h5 className="text-2xl font-medium">
           Finished work overview

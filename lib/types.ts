@@ -7,10 +7,10 @@ import {
   DueDate,
   List,
   User,
+  PriorityType as GeneratedPriorityType,
 } from "./generated/prisma/client";
 import { FILES_MIME_TYPES, IMAGES_MIME_TYPES } from "./consts/protected/files";
 
-// REUSABLE TYPES
 export type ActivityActionType = "created" | "deleted" | "updated";
 
 export type PrioritiesType = "low" | "medium" | "high" | "urgent" | "none";
@@ -21,6 +21,12 @@ export type ListStatusType =
   | "review"
   | "done"
   | "backlog";
+
+export type ListStatusesType = {
+  id: string;
+  title: string;
+  status: StatusType;
+}[];
 
 export type UserType = {
   id?: string;
@@ -39,8 +45,6 @@ export type UploadedFileType = {
   name?: string;
   url: string;
 };
-
-/////////////////////////////////////////////////
 
 export type ActivityType = {
   orgId: string;
@@ -147,6 +151,14 @@ export type CardDetailsType = {
   activity?: ActivityType[];
   checklist?: ChecklistType[];
   dueDate?: DueDateType;
+};
+
+export type CardDetailsTableProps = {
+  cardTitle: string;
+  listTitle: string;
+  cardDetailsId: string;
+  isVisible: boolean;
+  listId: string;
 };
 
 export type CardDetailsTabs =
@@ -443,7 +455,10 @@ export type FilterStates =
   | "all"
   | "theSame"
   | "expiredDue"
-  | "priority";
+  | "priority"
+  | "search"
+  | "selectedMemberEmail"
+  | "unassignedCard";
 
 //
 export type OrganizationMembersType = {
@@ -491,3 +506,20 @@ export type OverviewDataType = {
 };
 
 export type UserRoleType = "admin" | "member";
+
+export type ListDataTableType = {
+  boardId: string;
+  priorityType?: GeneratedPriorityType;
+  selectedMemberEmail?: string;
+  unassignedCard?: boolean;
+  filters?: FilterStates;
+  search?: string;
+};
+
+export type ListDataKanbanType = {
+  boardId?: string;
+  priorityType?: GeneratedPriorityType;
+  selectedMemberEmail?: string;
+  unassignedCard?: boolean;
+  filters?: FilterStates;
+};

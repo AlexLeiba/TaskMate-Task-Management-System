@@ -6,7 +6,7 @@ type Props = {
 };
 export function PriorityBreakdown({ data }: Props) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2" data-test="priority-breakdown">
       <div>
         <h5 className="text-2xl font-medium">Priority breakdown</h5>
         <p>Get an overview of how work is being prioritized.</p>

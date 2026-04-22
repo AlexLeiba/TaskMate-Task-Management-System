@@ -7,7 +7,17 @@ export const InputTitleSchema = zod.object({
   title: zod
     .string()
     .min(1, "Is required")
-    .max(50, "Title must be less than 50 characters"),
+    .max(100, "Title must be less than 100 characters"),
 });
 
 export type InputTitleSchemaType = zod.infer<typeof InputTitleSchema>;
+
+export const NewNotificationSchema = zod.object({
+  title: zod
+    .string()
+    .min(1, "Is required")
+    .max(100, "Title must be less than 100 characters"),
+  message: zod.string().min(1, "Is required"),
+});
+
+export type NewNotificationSchemaType = zod.infer<typeof NewNotificationSchema>;

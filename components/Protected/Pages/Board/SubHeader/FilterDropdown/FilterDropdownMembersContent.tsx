@@ -1,12 +1,12 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useGetBoardFilteredData } from "@/hooks/useGetBoardFilteredData";
 import { useMembers } from "@/hooks/useMembers";
 import { UNASSIGNED_CARD } from "@/lib/consts/protected/card";
 
 import { OrganizationMembersType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/store/useStore";
-import { UserPlus } from "lucide-react";
+import { UserPlus, X } from "lucide-react";
 import Image from "next/image";
 import { useShallow } from "zustand/shallow";
 
@@ -15,54 +15,40 @@ export function FilterDropdownMembersContent({
 }: {
   handleCloseMenu: () => void;
 }) {
+  const [selectedLocalMember, setSelectedLocalMember] = useState<string>("");
   const { members, isFetching } = useMembers();
-  const { fetchBoardFilteredListData } = useGetBoardFilteredData();
-  const {
-    boardSubHeaderMemberIdSelected,
-    setBoardSubHeaderFilterSelected,
-    setBoardSubHeaderMemberIdSelected,
-  } = useStore(
+  const { setFilterState, filterState } = useStore(
     useShallow((state) => ({
-      boardSubHeaderMemberIdSelected: state.boardSubHeaderMemberIdSelected,
-      setBoardSubHeaderFilterSelected: state.setBoardSubHeaderFilterSelected,
-      setBoardSubHeaderMemberIdSelected:
-        state.setBoardSubHeaderMemberIdSelected,
+      setFilterState: state.setFilterState,
+      filterState: state.filterState,
     })),
   );
 
   async function handleSelectedMember(
     member: OrganizationMembersType | undefined | null,
   ) {
+    setSelectedLocalMember((prev) => {
+      if (prev === member?.email) {
+        return "";
+      }
+      return member?.email || "";
+    });
     handleCloseMenu();
-    const selectedMember = setBoardSubHeaderMemberIdSelected(
-      member?.userId || "",
-    );
-
-    setBoardSubHeaderFilterSelected("all");
-
-    if (!selectedMember) {
-      //  FETCH FRESH BOARD DATA WITH NO FILTERS APPLIED
-      fetchBoardFilteredListData("");
-      return;
-    }
-
-    if (member?.userId === UNASSIGNED_CARD.userId) {
-      // FETCH BOARD DATA WITH UNASSIGNED FILTER
-      fetchBoardFilteredListData("", true);
-      return;
-    }
-
-    // FETCH BOARD DATA WITH MEMBER FILTER APPLIED
-    fetchBoardFilteredListData(member?.email || "");
+    // SET FILTER STATE BASED ON SELECTED MEMBER, THIS WILL TRIGGER useTableData and useBoardListData by passing filter prop TO FETCH FILTERED DATA
+    setFilterState({
+      filters: "selectedMemberEmail",
+      selectedMemberEmail: member?.email || "",
+    });
   }
+
+  const selectedMember = selectedLocalMember || filterState.selectedMemberEmail;
   return (
     <>
       <Button
         disabled={isFetching}
         className={cn(
           "lg:hidden border",
-          boardSubHeaderMemberIdSelected === UNASSIGNED_CARD.userId &&
-            "border-text-primary ",
+          selectedMember === UNASSIGNED_CARD.email && "border-text-primary ",
         )}
         variant={"ghost"}
         onClick={() => handleSelectedMember(UNASSIGNED_CARD)}
@@ -93,8 +79,7 @@ export function FilterDropdownMembersContent({
             variant={"ghost"}
             className={cn(
               "lg:hidden border",
-              boardSubHeaderMemberIdSelected === member?.userId &&
-                "border-text-primary ",
+              selectedMember === member?.email && "border-text-primary ",
             )}
           >
             <div
@@ -112,6 +97,7 @@ export function FilterDropdownMembersContent({
                 />
                 <p>{member?.fullName}</p>
               </div>
+              {selectedMember === member?.email && <X />}
             </div>
           </Button>
         );

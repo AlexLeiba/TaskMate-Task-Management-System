@@ -1,31 +1,27 @@
 "use server";
-import {
-  Card,
-  List,
-  PriorityType,
-  StatusType,
-} from "@/lib/generated/prisma/client";
+import { Card, List, StatusType } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
 import { verifyCurrentActiveUser } from "@/lib/server/verifyCurrentActiveUser";
 import {
   CardWithDetailsAndDueDateAndChecklistAndReporterType,
-  CardWithDetailsAndDueDateAndChecklistType,
-  FilterStates,
   ListAndCardsAndDueDateAndChecklistType,
+  ListDataKanbanType,
+  ListDataTableType,
   UserRoleType,
 } from "@/lib/types";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
-export async function getListDataAction(
-  boardId: string,
-  priorityType?: PriorityType,
-  selectedMemberEmail?: string,
-  unassignedCard?: boolean,
-  filters: FilterStates = "all",
-): Promise<{
+export async function getListDataAction({
+  boardId,
+  priorityType,
+  selectedMemberEmail,
+  unassignedCard,
+  filters = "all",
+}: ListDataKanbanType): Promise<{
   data: {
+    unfilteredData: (Pick<List, "id"> & { cards: Pick<Card, "id">[] })[];
     data: ListAndCardsAndDueDateAndChecklistType[] | null | undefined;
 
     role: UserRoleType;
@@ -39,10 +35,10 @@ export async function getListDataAction(
     }
     const now = new Date();
     const sevenDaysAgo = new Date();
-    const sevenDaysIntheFuture = new Date();
+    const nextSevenDays = new Date();
     const oneDayInThePast = new Date();
     sevenDaysAgo.setDate(now.getDate() - 7);
-    sevenDaysIntheFuture.setDate(now.getDate() + 7);
+    nextSevenDays.setDate(now.getDate() + 7);
     oneDayInThePast.setDate(now.getDate() - 1);
 
     const response = await prisma.list.findMany({
@@ -76,7 +72,7 @@ export async function getListDataAction(
                 dueDate: {
                   some: {
                     date: {
-                      lte: sevenDaysIntheFuture.toISOString(),
+                      lte: nextSevenDays.toISOString(),
                       gte: oneDayInThePast.toISOString(),
                     },
                   },
@@ -147,7 +143,7 @@ export async function getListDataAction(
                 dueDate: {
                   some: {
                     date: {
-                      lte: sevenDaysIntheFuture.toISOString(),
+                      lte: nextSevenDays.toISOString(),
                       gte: oneDayInThePast.toISOString(),
                     },
                   },
@@ -203,12 +199,27 @@ export async function getListDataAction(
       },
     });
 
-    if (!response) {
+    const unfilteredListDataResponse = await prisma.list.findMany({
+      where: {
+        boardId,
+      },
+      select: {
+        id: true,
+        cards: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+
+    if (!response || !unfilteredListDataResponse) {
       throw new Error("List not found");
     }
 
     return {
       data: {
+        unfilteredData: unfilteredListDataResponse,
         data: response,
         role: activeUserData.role,
       },
@@ -223,18 +234,26 @@ export async function getListDataAction(
   }
 }
 
-export async function getListDataTableViewAction(
-  boardId: string,
-  priorityType?: PriorityType,
-  selectedMemberEmail?: string,
-  unassignedCard?: boolean,
-  filters: FilterStates = "all",
-): Promise<{
+export async function getListDataTableViewAction({
+  boardId,
+  priorityType,
+  selectedMemberEmail,
+  unassignedCard,
+  filters = "all",
+  search,
+}: ListDataTableType): Promise<{
   data: {
-    data:
-      | CardWithDetailsAndDueDateAndChecklistAndReporterType[]
-      | null
-      | undefined;
+    data: {
+      cards:
+        | CardWithDetailsAndDueDateAndChecklistAndReporterType[]
+        | null
+        | undefined;
+      listStatuses: {
+        id: string;
+        title: string;
+        status: StatusType;
+      }[];
+    };
     role: UserRoleType;
   } | null;
   error: { message: string };
@@ -246,10 +265,10 @@ export async function getListDataTableViewAction(
     }
     const now = new Date();
     const sevenDaysAgo = new Date();
-    const sevenDaysIntheFuture = new Date();
+    const nextSevenDays = new Date();
     const oneDayInThePast = new Date();
     sevenDaysAgo.setDate(now.getDate() - 7);
-    sevenDaysIntheFuture.setDate(now.getDate() + 7);
+    nextSevenDays.setDate(now.getDate() + 7);
     oneDayInThePast.setDate(now.getDate() - 1);
 
     const response = await prisma.list.findMany({
@@ -269,6 +288,16 @@ export async function getListDataTableViewAction(
             },
           },
         }),
+        ...(filters === "search" && {
+          cards: {
+            some: {
+              title: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+          },
+        }),
         ...(filters === "priority" && {
           cards: {
             some: {
@@ -283,7 +312,7 @@ export async function getListDataTableViewAction(
                 dueDate: {
                   some: {
                     date: {
-                      lte: sevenDaysIntheFuture.toISOString(),
+                      lte: nextSevenDays.toISOString(),
                       gte: oneDayInThePast.toISOString(),
                     },
                   },
@@ -334,6 +363,14 @@ export async function getListDataTableViewAction(
               assignedToEmail: null,
             },
           }),
+          ...(filters === "search" && {
+            where: {
+              title: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+          }),
           ...(filters === "priority" && {
             where: {
               priority: priorityType,
@@ -354,7 +391,7 @@ export async function getListDataTableViewAction(
                 dueDate: {
                   some: {
                     date: {
-                      lte: sevenDaysIntheFuture.toISOString(),
+                      lte: nextSevenDays.toISOString(),
                       gte: oneDayInThePast.toISOString(),
                     },
                   },
@@ -423,8 +460,19 @@ export async function getListDataTableViewAction(
       },
     });
 
-    if (!response) {
-      throw new Error("List not found");
+    const listStatusesResponse = await prisma.list.findMany({
+      where: {
+        boardId,
+      },
+      select: {
+        id: true,
+        status: true,
+        title: true,
+      },
+    });
+
+    if (!response || !listStatusesResponse) {
+      throw new Error("List not found, please try again");
     }
 
     const allListCards: CardWithDetailsAndDueDateAndChecklistAndReporterType[] =
@@ -438,7 +486,7 @@ export async function getListDataTableViewAction(
 
     return {
       data: {
-        data: allListCards,
+        data: { cards: allListCards, listStatuses: listStatusesResponse },
         role: activeUserData.role,
       },
       error: { message: "" },
@@ -451,205 +499,7 @@ export async function getListDataTableViewAction(
     };
   }
 }
-// export async function getCardsDataAction(
-//   boardId: string,
-//   priorityType?: PriorityType,
-//   selectedMemberEmail?: string,
-//   unassignedCard?: boolean,
-//   filters: FilterStates = "all",
-// ): Promise<{
-//   data: {
-//     data: CardWithDetailsAndDueDateAndChecklistType[] | null | undefined;
-//     role: UserRoleType;
-//   } | null;
-//   error: { message: string };
-// }> {
-//   const { data: activeUserData } = await verifyCurrentActiveUser();
-//   try {
-//     if (!activeUserData?.activeUser) {
-//       throw new Error("User not authorized");
-//     }
-//     const now = new Date();
-//     const sevenDaysAgo = new Date();
-//     const sevenDaysIntheFuture = new Date();
-//     const oneDayInThePast = new Date();
-//     sevenDaysAgo.setDate(now.getDate() - 7);
-//     sevenDaysIntheFuture.setDate(now.getDate() + 7);
-//     oneDayInThePast.setDate(now.getDate() - 1);
-//
-//     const response = await prisma.card.findMany({
-//       where: {
-//         list: {
-//           boardId,
-//         },
-//         ...(selectedMemberEmail && {
-//           cards: {
-//             some: {
-//               assignedToEmail: selectedMemberEmail,
-//             },
-//           },
-//         }),
-//         ...(unassignedCard && {
-//           cards: {
-//             some: {
-//               assignedToEmail: null,
-//             },
-//           },
-//         }),
-//         ...(filters === "priority" && {
-//           cards: {
-//             some: {
-//               priority: priorityType,
-//             },
-//           },
-//         }),
-//         ...(filters === "dueSoon" && {
-//           cards: {
-//             some: {
-//               details: {
-//                 dueDate: {
-//                   some: {
-//                     date: {
-//                       lte: sevenDaysIntheFuture.toISOString(),
-//                       gte: oneDayInThePast.toISOString(),
-//                     },
-//                   },
-//                 },
-//               },
-//             },
-//           },
-//         }),
-//         ...(filters === "expiredDue" && {
-//           cards: {
-//             some: {
-//               details: {
-//                 dueDate: {
-//                   some: {
-//                     date: {
-//                       lt: oneDayInThePast.toISOString(),
-//                     },
-//                   },
-//                 },
-//               },
-//             },
-//           },
-//         }),
-//         ...(filters === "created" && {
-//           cards: {
-//             some: {
-//               details: {
-//                 createdAt: {
-//                   gte: sevenDaysAgo.toISOString(),
-//                 },
-//               },
-//             },
-//           },
-//         }),
-//         ...(filters === "completed" && {
-//           status: StatusType.done,
-//         }),
-//       },
-//       include: {
-//         ...(selectedMemberEmail && {
-//           where: {
-//             assignedToEmail: selectedMemberEmail,
-//           },
-//         }),
-//         ...(unassignedCard && {
-//           where: {
-//             assignedToEmail: null,
-//           },
-//         }),
-//         ...(filters === "priority" && {
-//           where: {
-//             priority: priorityType,
-//           },
-//         }),
-//         ...(filters === "created" && {
-//           where: {
-//             details: {
-//               createdAt: {
-//                 gte: sevenDaysAgo.toISOString(),
-//               },
-//             },
-//           },
-//         }),
-//         ...(filters === "dueSoon" && {
-//           where: {
-//             details: {
-//               dueDate: {
-//                 some: {
-//                   date: {
-//                     lte: sevenDaysIntheFuture.toISOString(),
-//                     gte: oneDayInThePast.toISOString(),
-//                   },
-//                 },
-//               },
-//             },
-//           },
-//         }),
-//         ...(filters === "expiredDue" && {
-//           where: {
-//             details: {
-//               dueDate: {
-//                 some: {
-//                   date: {
-//                     lt: oneDayInThePast.toISOString(),
-//                   },
-//                 },
-//               },
-//             },
-//           },
-//         }),
-//
-//         assignedTo: {
-//           select: {
-//             avatar: true,
-//             email: true,
-//           },
-//         },
-//         details: {
-//           select: {
-//             dueDate: {
-//               select: {
-//                 date: true,
-//                 time: true,
-//               },
-//             },
-//             checklist: {
-//               select: {
-//                 id: true,
-//                 isCompleted: true,
-//               },
-//             },
-//           },
-//         },
-//
-//         orderBy: {
-//           order: "asc",
-//         },
-//       },
-//       orderBy: {
-//         order: "asc",
-//       },
-//     });
-//
-//     if (!response) {
-//       throw new Error("List not found");
-//     }
-//
-//     return {
-//       data: { data: response, role: activeUserData.role },
-//       error: { message: "" },
-//     };
-//   } catch (error: any) {
-//     console.log("🚀 ~ getListDataAction ~ error:", error);
-//     return {
-//       data: null,
-//       error: { message: error?.message || "Something went wrong" },
-//     };
-//   }
-// }
+
 export async function createListAction({
   boardId,
   title,

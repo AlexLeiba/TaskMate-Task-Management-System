@@ -230,6 +230,79 @@ export async function deleteCardAction({
   }
 }
 
+// DELETE MULTIPLE CARDS
+
+type DeleteMultipleCardsProps = {
+  cardIds: string[];
+  boardId: string;
+};
+export async function deleteMultipleCardsAction({
+  cardIds,
+  boardId,
+}: DeleteMultipleCardsProps): Promise<{
+  data: Card;
+  error: { message: string };
+}> {
+  const { data: activeUserData } = await verifyCurrentActiveUser();
+  try {
+    const { orgId } = await auth();
+
+    if (!activeUserData?.activeUser) {
+      throw new Error("User not authorized");
+    }
+
+    const cards = await prisma.card.findMany({
+      where: {
+        id: { in: cardIds },
+      },
+    });
+
+    if (!cards) {
+      throw new Error("Cards not found");
+    }
+
+    await prisma.card.deleteMany({
+      where: {
+        id: { in: cardIds },
+      },
+    });
+
+    const remainedCards = await prisma.card.findMany({
+      where: {
+        listId: cards[0].listId,
+      },
+    });
+
+    // RESET ORDER OF THE CARDS IN THE LIST, AFTER DELETION
+    const startOrderFrom = 1;
+
+    await prisma.$transaction(
+      remainedCards.map((card, index) => {
+        return prisma.card.update({
+          where: {
+            id: card.id,
+          },
+          data: {
+            order: startOrderFrom + index,
+          },
+        });
+      }),
+    );
+
+    await createNewActivity({
+      boardId: boardId,
+      authorId: activeUserData?.activeUser.id,
+      activity: `Deleted card: "${cardIds.length > 1 ? "Multiple cards" : cards[0].title}" from :"${cardIds.length > 1 ? "Multiple lists" : cards[0].listName}"`,
+      type: "deleted",
+    });
+
+    revalidatePath(`/dashboard/${orgId}/board/${boardId}`);
+    return { data: cards[0], error: { message: "" } };
+  } catch (error: any) {
+    throw error?.message || "Something went wrong";
+  }
+}
+
 type EditPriorityActionProps = {
   cardId: string;
   listId: string;

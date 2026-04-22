@@ -3,7 +3,7 @@ import { Separator } from "@radix-ui/react-separator";
 import { useStore } from "@/store/useStore";
 import { IconButton } from "@/components/ui/iconButton";
 import React, { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { copyListAction, deleteListAction } from "@/app/actions/list";
 import toast from "react-hot-toast";
 import { apiDeleteFile } from "@/lib/api/apiDeleteFile";
@@ -28,6 +28,7 @@ type Props = {
   listId: string;
 };
 export function ListOptionsContent({ listId }: Props) {
+  const queryClient = useQueryClient();
   const boardId = useBoardId();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -40,7 +41,7 @@ export function ListOptionsContent({ listId }: Props) {
 
   const { mutate: mutateDeleteList, isPending: isPendingDeleteList } =
     useMutation({
-      mutationKey: [QUERY_KEYS.pages.board.lists.deleteList],
+      mutationKey: [QUERY_KEYS.pages.board.kanbanView.lists.deleteList],
       mutationFn: deleteListAction,
       onMutate: async () => {
         await apiDeleteFile(
@@ -49,25 +50,35 @@ export function ListOptionsContent({ listId }: Props) {
         ); // execution of the mutation will wait until this request is resolved (removing all attachments from cloud)
       },
       onSuccess: () => {
-        toast.dismiss(QUERY_KEYS.pages.board.lists.deleteList);
-        toast.success("List deleted");
+        toast.success("List deleted", {
+          id: QUERY_KEYS.pages.board.kanbanView.lists.deleteList,
+        });
         setDeleteDialogOpen(false);
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.hooks.useBoardListData],
+        });
       },
       onError: () => {
-        toast.dismiss(QUERY_KEYS.pages.board.lists.deleteList);
-        toast.error("Error deleting list, please try again");
+        toast.error("Error deleting list, please try again", {
+          id: QUERY_KEYS.pages.board.kanbanView.lists.deleteList,
+        });
       },
     });
 
   const { mutate: mutateCopyList, isPending: isPendingCopyList } = useMutation({
     mutationFn: copyListAction,
     onSuccess: () => {
-      toast.dismiss(QUERY_KEYS.pages.board.lists.copyList);
-      toast.success("List copied");
+      toast.success("List copied", {
+        id: QUERY_KEYS.pages.board.kanbanView.lists.copyList,
+      });
       setDeleteDialogOpen(false);
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.hooks.useBoardListData],
+      });
     },
     onError: () => {
-      toast.dismiss(QUERY_KEYS.pages.board.lists.copyList);
+      toast.dismiss(QUERY_KEYS.pages.board.kanbanView.lists.copyList);
       toast.error("Error copying list, please try again");
     },
   });
@@ -75,7 +86,7 @@ export function ListOptionsContent({ listId }: Props) {
   function handleCopyList() {
     mutateCopyList({ listId, boardId });
     toast.loading("Copying list...", {
-      id: QUERY_KEYS.pages.board.lists.copyList,
+      id: QUERY_KEYS.pages.board.kanbanView.lists.copyList,
     });
   }
 
@@ -107,14 +118,16 @@ export function ListOptionsContent({ listId }: Props) {
   async function handleDeleteList(listId: string) {
     mutateDeleteList({ listId, boardId });
     toast.loading("Deleting list...", {
-      id: QUERY_KEYS.pages.board.lists.deleteList,
+      id: QUERY_KEYS.pages.board.kanbanView.lists.deleteList,
     });
   }
   return (
     <>
       <div className="flex flex-col items-start ">
         {LIST_OPTIONS.map((option) => {
-          if (option.value === QUERY_KEYS.pages.board.lists.deleteList) {
+          if (
+            option.value === QUERY_KEYS.pages.board.kanbanView.lists.deleteList
+          ) {
             // DELETE BUTTON
             return (
               <React.Fragment key={option.value}>

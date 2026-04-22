@@ -1,4 +1,4 @@
-import { checklistStatusColors } from "@/lib/checklistStatusColors";
+import { checklistStatusColors } from "@/lib/color-variants/checklistStatusColors";
 import { Checklist } from "@/lib/generated/prisma/client";
 import { cn } from "@/lib/utils";
 import { CheckSquare } from "lucide-react";

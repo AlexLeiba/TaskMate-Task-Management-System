@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build step
+<<<<<<< HEAD
         run: echo "Building..."
       - name: Test step
         run: echo "Tusaneala...<<<<<<"
@@ -21,3 +22,6 @@ jobs:
     steps:
       - name: Test it
         run: echo "Test job bro"
+=======
+        run: echo "Building test..."
+>>>>>>> origin/master

@@ -38,7 +38,7 @@ export function Hero() {
         <Link
           target="_blank"
           title="Watch how TaskMate was developed"
-          href={"/"}
+          href={"https://www.youtube.com/watch?v=0UAlb4zqEiM"}
           className="group max-w-72.5"
           data-aos="fade-right"
           data-aos-delay="400"

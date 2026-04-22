@@ -51,7 +51,9 @@ export function TicketCardHeader({
           <IconButton
             className={cn(
               "absolute top-0 right-0",
-              isOpenedOptions ? "block" : "lg:hidden md:group-hover:block",
+              isOpenedOptions
+                ? "block"
+                : "lg:hidden lg:group-hover:block lg:group-focus-within:block",
             )}
             disabled={isLoading}
             title="Card options"

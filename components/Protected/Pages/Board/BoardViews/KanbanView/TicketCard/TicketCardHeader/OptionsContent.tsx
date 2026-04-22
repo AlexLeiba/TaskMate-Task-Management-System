@@ -169,6 +169,7 @@ export function OptionsContent({
           classNameContainer="p-0 mt-4 mb-2 w-full"
           buttonDirection="column"
           defaultValue={defaultTitle}
+          dataTest="card-title"
         >
           <IconButton
             aria-label="Edit"
@@ -197,6 +198,7 @@ export function OptionsContent({
           title="Copy"
           classNameChildren="flex  justify-between items-center"
           className="w-full py-2"
+          data-test="copy-card-button-option"
         >
           <div className="flex gap-2 items-center">
             <Copy size={20} /> Copy

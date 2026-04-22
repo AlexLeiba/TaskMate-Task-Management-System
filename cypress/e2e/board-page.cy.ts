@@ -7,15 +7,17 @@ describe("Board page", () => {
     cy.viewport(1280, 800);
     cy.visit("/");
 
-    cy.window().its("Clerk").should("exist"); //check if clerk exists
+    cy.window().its("Clerk").should("exist"); //check if clerk exists in the global object window
 
     cy.window().its("Clerk.loaded").should("eq", true); //this command (should) will retry until the assertion is true or timeout occurs 4s, until then the next line won't be reached.
 
+    // sign in with Clerk
     cy.clerkSignIn({
       strategy: "email_code",
       identifier: Cypress.env("testUser"),
     });
 
+    //assert the session cookie present in the browser after sign in
     cy.getCookie("__session").should("exist");
 
     cy.url().should("include", "/dashboard");
@@ -319,7 +321,7 @@ describe("Board page", () => {
     );
   });
 
-  it("Card: create, delete, copy", () => {
+  it.only("Card: create, delete, copy, edit title", () => {
     // NAVIGATE TO BOARD PAGE//
 
     // assert board exists on Dashboard page
@@ -346,40 +348,115 @@ describe("Board page", () => {
     // click on Add a card button
     cy.get("@addNewCardTrigger").eq(0).realClick();
 
-    // assert after click Add a card button element with input and buttons are visible
-    cy.get("[data-test=add-new-card-input]").should("be.visible");
-    cy.get("[data-test=add-new-card-submit]").should("be.visible");
-    cy.get("[data-test=add-new-card-cancel]").should("be.visible");
+    // assert after click on Add a card button element the input and buttons are visible
+    // assert only elements within the ticket card container
+    cy.get("@addNewCardTrigger")
+      .eq(0)
+      .within(() => {
+        cy.get("[data-test=add-new-card-input]").should("be.visible");
+        cy.get("[data-test=add-new-card-submit]").should("be.visible");
+        cy.get("[data-test=add-new-card-cancel]").should("be.visible");
 
-    //click on cancel button
-    cy.get("[data-test=add-new-card-cancel]").realClick();
+        //click on cancel button
+        cy.get("[data-test=add-new-card-cancel]").realClick();
 
-    // assert after click cancel button element with input and buttons are not visible
-    cy.get("[data-test=add-new-card-input]").should("not.exist");
-    cy.get("[data-test=add-new-card-submit]").should("not.exist");
-    cy.get("[data-test=add-new-card-cancel]").should("not.exist");
+        // assert after click cancel button element with input and buttons are not visible
+        cy.get("[data-test=add-new-card-input]").should("not.exist");
+        cy.get("[data-test=add-new-card-submit]").should("not.exist");
+        cy.get("[data-test=add-new-card-cancel]").should("not.exist");
 
-    //click again on Add a card button
+        //click again on Add a card button
+        cy.get("@addNewCardTrigger").eq(0).realClick();
+
+        // click on submit with no title value
+        cy.get("[data-test=add-new-card-submit]").realClick();
+
+        // assert error message is required title within the Add a card button
+        cy.contains(/Is required/i).should("be.visible");
+
+        //type in title value
+        cy.get("[data-test=add-new-card-input]").realType("Test Card");
+
+        //intercept create new card alias
+        cy.location("pathname").then((pathname) => {
+          cy.intercept({
+            method: "POST",
+            pathname: pathname,
+          }).as("createNewCard");
+        });
+
+        // click on submit button
+        cy.get("[data-test=add-new-card-submit]").realClick();
+
+        //wait for card to be created
+        cy.wait("@createNewCard").its("response.statusCode").should("eq", 200);
+      });
+
+    // assert card was created
+    cy.get("[data-test=ticket-card]").should("be.visible");
+
+    ////// TEST CARD DELETION//////
+
+    // focus card
+    cy.get("[data-test=ticket-card]").eq(0).focus();
+
+    // assert card options trigger visible
+    cy.get("[data-test=card-options-trigger]").should("be.visible");
+
+    // click on card options trigger
+    cy.get("[data-test=card-options-trigger]").eq(0).focus().realClick();
+
+    // assert delete button is visible
+    cy.get("[data-test=delete-card-button-option]").should("be.visible");
+
+    // click on delete button
+    cy.get("[data-test=delete-card-button-option]").eq(0).realClick();
+
+    // assert open delete modal
+    cy.get("[data-test=delete-dialog]").should("be.visible");
+
+    // click on cancel button
+    cy.get("[data-test=delete-dialog-cancel-button]").eq(0).realClick();
+
+    // assert delete modal has closed
+    cy.get("[data-test=delete-dialog]").should("not.exist");
+
+    // click again on delete button
+    cy.get("[data-test=delete-card-button-option]").eq(0).realClick();
+
+    // assert open delete modal
+    cy.get("[data-test=delete-dialog]").should("be.visible");
+
+    // alias intercept delete files from card
+
+    cy.intercept("DELETE", "/api/fileupload").as("deleteFiles");
+    //alias intercept delete card
+    cy.location("pathname")
+      .then((pathname) => {
+        cy.intercept({
+          method: "POST",
+          pathname: pathname,
+        });
+      })
+      .as("deleteCard");
+
+    // click on delete button
+    cy.get("[data-test=delete-dialog-delete-button]").eq(0).realClick();
+
+    // assert delete card and files response 200
+    cy.wait("@deleteFiles").its("response.statusCode").should("eq", 200);
+    cy.wait("@deleteCard").its("response.statusCode").should("eq", 200);
+
+    // assert card was deleted
+    // cy.get("[data-test=ticket-card]").should("not.exist");
+
+    ///// TEST CARD COPYING//////
+
+    //create new card
     cy.get("@addNewCardTrigger").eq(0).realClick();
-
-    // click on submit with no title value
-    cy.get("[data-test=add-new-card-submit]").realClick();
-
-    // assert error message is required title within the Add a card button
-    cy.get("@addNewCardTrigger").within(() => {
-      cy.contains(/Is required/i).should("be.visible");
-    });
 
     //type in title value
     cy.get("[data-test=add-new-card-input]").realType("Test Card");
-
-    //intercept create new card alias
-    cy.location("pathname").then((pathname) => {
-      cy.intercept({
-        method: "POST",
-        pathname: pathname,
-      }).as("createNewCard");
-    });
 
     // click on submit button
     cy.get("[data-test=add-new-card-submit]").realClick();
@@ -387,12 +464,109 @@ describe("Board page", () => {
     //wait for card to be created
     cy.wait("@createNewCard").its("response.statusCode").should("eq", 200);
 
-    // assert card was created
-    cy.get("[data-test=ticket-card]").should("be.visible");
+    // focus card
+    cy.get("[data-test=ticket-card]").eq(0).focus();
 
-    ////// TEST CARD DELETION//////
+    // assert card options trigger visible
+    cy.get("[data-test=card-options-trigger]").should("be.visible");
 
-    ///// TEST CARD COPYING//////
+    // click on card options trigger
+    cy.get("[data-test=card-options-trigger]").eq(0).focus().realClick();
+
+    // assert copy button is visible
+    cy.get("[data-test=copy-card-button-option]").should("be.visible");
+
+    // click on copy button
+    cy.get("[data-test=copy-card-button-option]").eq(0).realClick();
+
+    //wait for copied card to be created
+    cy.wait("@createNewCard").its("response.statusCode").should("eq", 200);
+
+    // assert copied card was created
+    cy.get("[data-test=ticket-card]").should("have.length.greaterThan", 1);
+
+    ////////// TEST DELETE FIRST CARD/////////
+    //     cy.get("[data-test=ticket-card]").eq(0).focus();
+    //
+    //
+    //     // assert card options trigger visible
+    //     cy.get("[data-test=card-options-trigger]").should("be.visible");
+    //
+    //     // click on card options trigger
+    //     cy.get("[data-test=card-options-trigger]").eq(0).realClick();
+    //
+    //     // assert delete button is visible
+    //     cy.get("[data-test=delete-card-button-option]").should("be.visible");
+    //
+    //     // click on delete button option
+    //     cy.get("[data-test=delete-card-button-option]").eq(0).realClick();
+    //
+    //     // assert open delete modal visible
+    //     cy.get("[data-test=delete-dialog]").should("be.visible");
+    //
+    //     // click on delete button from modal
+    //     cy.get("[data-test=delete-dialog-delete-button]").eq(0).realClick();
+    //
+    //     // assert delete card and files response 200
+    //     cy.wait("@deleteFiles").its("response.statusCode").should("eq", 200);
+    //     cy.wait("@deleteCard").its("response.statusCode").should("eq", 200);
+
+    ////// TEST EDIT CARD TITLE/////
+
+    // focus card
+    cy.get("[data-test=ticket-card]").eq(0).focus();
+
+    // assert card options trigger visible
+    cy.get("[data-test=card-options-trigger]").should("be.visible");
+
+    // click on card options trigger
+    cy.get("[data-test=card-options-trigger]").eq(0).focus().realClick();
+
+    // assert edit title button is visible
+    cy.get("[data-test=card-title-trigger]").should("be.visible");
+    // click on edit title button trigger
+    cy.get("[data-test=card-title-trigger]").eq(0).realClick();
+
+    // assert edit card title input visible
+    cy.get("[data-test=card-title-textarea]").should("be.visible");
+    cy.get("[data-test=card-title-cancel]").should("be.visible");
+    cy.get("[data-test=card-title-submit]").should("be.visible");
+
+    // click on cancel button
+    cy.get("[data-test=card-title-cancel]").eq(0).realClick();
+
+    // assert edit card title input has closed
+    cy.get("[data-test=card-title-textarea]").should("not.exist");
+    cy.get("[data-test=card-title-cancel]").should("not.exist");
+    cy.get("[data-test=card-title-submit]").should("not.exist");
+
+    // click on edit title button trigger again
+    cy.get("[data-test=card-title-trigger]").eq(0).realClick();
+
+    // assert edit card title input visible
+    cy.get("[data-test=card-title-textarea]").should("be.visible");
+    cy.get("[data-test=card-title-cancel]").should("be.visible");
+    cy.get("[data-test=card-title-submit]").should("be.visible");
+
+    // type in title value
+    cy.get("[data-test=card-title-textarea]").realType("Edited title");
+
+    // alias intercept edit card title
+    cy.location("pathname").then((pathname) => {
+      cy.intercept({
+        method: "POST",
+        pathname: pathname,
+      }).as("editCardTitle");
+    });
+
+    // submit with title value
+    cy.get("[data-test=card-title-submit]").eq(0).realClick();
+
+    //wait for card to be edited
+    cy.wait("@editCardTitle").its("response.statusCode").should("eq", 200);
+
+    // assert card title was updated
+    cy.get("[data-test=ticket-card]").eq(0).should("contain", "Edited title");
   });
   it("Card: edit title, priority, assignee", () => {});
 

@@ -1,6 +1,7 @@
 name: Next.js CI
 
-on: #(on trigger events) identifies when we want to run tests
+on:
+  #(on trigger events) identifies when we want to run tests
   push:
     branches:
       - workflow
@@ -16,29 +17,14 @@ jobs:
   install_build:
     runs-on: ubuntu-latest #runs on a server
     steps:
-      - name: Checkout the repo
-        uses: actions/checkout@v6 # clone the repo in the environment machine on ubuntu (linux) actions/ perform predefined setup tasks, built-in steps
-      - name: Print the action name with github object under name var here->>> ${{ github.action }}
-        run: echo ${{ github.action }}  ${{github.action_path}}
-      - name: "Install node"
-        uses: actions/setup-node@v4 # install node, comes from Github actions-> repository / setup-node
-        with:
-          node-version: "latest"
+      - name: Build step
+        run: echo "Building..."
+      - name: Test step
+        run: echo "Tusaneala...<<<<<<"
 
-      - name: Print the action name
-        run: echo ${{ github.action }} action path  ${{github.action_path}} action repo ${{github.action_repository}}  event name ${{github.event_name}}  job name ${{github.job}}
-      - name: Print the branch name
-        run: |
-          echo ${{ github.action }} ${{ github.event_name }} ${{ github.ref }}
-          echo 2 bro
-          echo 3 bro
-      - name: Install dependencies
-        run: npm install
-      - name: Build
-        run: npm run build
-  welcome_job:
+  test:
     runs-on: ubuntu-latest
     needs: install_build
     steps:
-      - name: Print the branch name
-        run: echo Pasol nahui blea 2
+      - name: Test it
+        run: echo "Test job bro"

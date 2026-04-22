@@ -11,7 +11,7 @@ async function OverviewPage({
   const { organizationId } = await params;
 
   return (
-    <div className="w-full ">
+    <div className="w-full" data-test="overview-page">
       <div className="flex gap-2 items-center">
         <h1 className="text-2xl font-medium">Overview</h1>
         <Globe />

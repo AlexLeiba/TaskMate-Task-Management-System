@@ -1,6 +1,7 @@
 "use client";
 import {
   Activity,
+  Bell,
   ChartColumn,
   CreditCard,
   Crown,
@@ -35,6 +36,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { SidebarSkeleton } from "./SidebarSkeleton";
 import { USER_ROLES } from "@/lib/consts/consts";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getUnreadNotificationsAction } from "@/app/actions/notifications";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
+import { NotificationIndicator } from "../Pages/Notifications/NotificationIndicator";
 
 export function Sidebar() {
   const [expandedOrg, setExpandedOrg] = useState<string | null>(null);
@@ -50,6 +55,14 @@ export function Sidebar() {
   function handleExpandCollapseAccordion(item: string) {
     setExpandedOrg((prev) => (prev === item ? null : item));
   }
+
+  const { data: unreadNotifications } = useQuery({
+    queryKey: [QUERY_KEYS.pages.notifications.getUnreadNotifications],
+    queryFn: getUnreadNotificationsAction,
+    refetchOnWindowFocus: true,
+    gcTime: 1000 * 60 * 30,
+    staleTime: 1000 * 60 * 30,
+  });
 
   const organizationsData = user?.organizationMemberships.map((org) => {
     const organizationRole = org.role?.replace("org:", "") === USER_ROLES.admin;
@@ -85,6 +98,11 @@ export function Sidebar() {
           title: "Overview",
           pathname: `/dashboard/${org.organization.id}/overview`,
           icon: <ChartColumn />,
+        },
+        {
+          title: "Notifications",
+          pathname: `/dashboard/${org.organization.id}/notifications`,
+          icon: <Bell />,
         },
       ],
     };
@@ -206,6 +224,13 @@ export function Sidebar() {
                                 <div className="flex gap-2 items-center text-text-primary">
                                   {data?.icon}
                                   {data?.title}
+                                  {data?.title === "Notifications" &&
+                                    unreadNotifications?.data !== undefined &&
+                                    unreadNotifications?.data > 0 && (
+                                      <NotificationIndicator>
+                                        {unreadNotifications.data}
+                                      </NotificationIndicator>
+                                    )}
                                 </div>
                               </Button>
                             );

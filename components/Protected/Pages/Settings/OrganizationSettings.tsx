@@ -1,29 +1,37 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 
 const OrganizationProfile = dynamic(
   () => import("@clerk/nextjs").then((m) => m.OrganizationProfile),
-  { ssr: false },
+  { ssr: false, loading: () => <p>Loading...</p> },
 );
 
 export function OrganizationSettings() {
-  return (
-    <div>
-      <OrganizationProfile
-        appearance={{
-          elements: {
-            cardBox: {
-              boxShadow: "none",
-              width: "100%",
-            },
+  const [mounted, setMounted] = useState(false);
 
-            rootBox: {
-              width: "100%",
-            },
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+  return (
+    <OrganizationProfile
+      appearance={{
+        elements: {
+          cardBox: {
+            boxShadow: "none",
+            width: "100%",
           },
-        }}
-      />
-    </div>
+
+          rootBox: {
+            width: "100%",
+          },
+        },
+      }}
+    />
   );
 }

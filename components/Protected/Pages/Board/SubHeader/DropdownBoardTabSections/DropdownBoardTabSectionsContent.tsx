@@ -1,10 +1,12 @@
 import { IconButton } from "@/components/ui/iconButton";
-import { useGetBoardFilteredData } from "@/hooks/useGetBoardFilteredData";
+import { useDebounce } from "@/hooks/useDebounce";
 import { BOARD_HEADER_TABS } from "@/lib/consts/protected/board";
-
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { BoardTabSectionType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/store/useStore";
+import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { useShallow } from "zustand/shallow";
 
 export function DropdownBoardTabSectionsContent({
@@ -12,33 +14,56 @@ export function DropdownBoardTabSectionsContent({
 }: {
   handleCloseMenu: () => void;
 }) {
-  const { boardTabSections, setBoardTabSections } = useStore(
+  const queryClient = useQueryClient();
+  const [selectedTablocal, setSelectedTabLocal] = useState<BoardTabSectionType>(
+    useStore((state) => state.boardTabSections),
+  );
+
+  const { boardTabSections, setBoardTabSections, setFilterState } = useStore(
     useShallow((state) => ({
       boardTabSections: state.boardTabSections,
       setBoardTabSections: state.setBoardTabSections,
+      setFilterState: state.setFilterState,
     })),
   );
-  const { fetchBoardFilteredListData, loading } = useGetBoardFilteredData();
+
+  const delayedSetTabSection = useDebounce(setBoardTabSections, 100);
 
   function handleSelectTabSection(tab: BoardTabSectionType) {
     handleCloseMenu();
-
-    setBoardTabSections(tab);
+    if (tab !== "refresh") {
+      setSelectedTabLocal(tab);
+      delayedSetTabSection(tab);
+    }
 
     if (tab === "refresh") {
-      fetchBoardFilteredListData("");
+      // list table view
+      if (boardTabSections === "list") {
+        setFilterState({ filters: "all" });
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.hooks.useTableData],
+        });
+      }
+
+      // kanban board view
+      if (boardTabSections === "board") {
+        setFilterState({ filters: "all" });
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.hooks.useBoardListData],
+        });
+      }
     }
   }
+
   return (
     <>
       {BOARD_HEADER_TABS.map((tab) => {
         return (
           <IconButton
-            disabled={loading}
             title={`Open ${tab.label} view`}
             onClick={() => handleSelectTabSection(tab.value)}
             className={cn(
-              boardTabSections === tab.value &&
+              selectedTablocal === tab.value &&
                 "outline-1 outline-gray-300 rounded-md",
               "flex flex-col w-full p-1.5",
             )}

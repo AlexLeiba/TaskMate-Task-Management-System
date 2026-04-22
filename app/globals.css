@@ -127,7 +127,7 @@
   --muted-foreground: oklch(0.708 0 0);
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
+  --destructive: oklch(42.853% 0.15324 25.916);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
@@ -195,7 +195,7 @@ Mental model: These are default visual rules of my app.
     --muted-foreground: oklch(0.708 0 0);
     --accent: oklch(0.269 0 0);
     --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
+    --destructive: oklch(42.853% 0.15324 25.916);
     --border: oklch(1 0 0 / 10%);
     --input: oklch(1 0 0 / 15%);
     --ring: oklch(0.556 0 0);
@@ -249,6 +249,10 @@ Mental model: These are default visual rules of my app.
 }
 .ql-picker-label:hover {
   opacity: 0.5;
+}
+
+.html-content {
+  word-break: break-all;
 }
 
 .quill .ql-container p,
@@ -392,4 +396,47 @@ Mental model: These are default visual rules of my app.
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* CLERK UI */
+.cl-signIn-start .cl-header .cl-headerTitle,
+.cl-signIn-start .cl-header .cl-headerSubtitle,
+.cl-signUp-start .cl-header .cl-headerTitle,
+.cl-signUp-start .cl-header .cl-headerSubtitle {
+  color: var(--primary) !important;
+}
+
+.cl-signIn-start .cl-lastAuthenticationStrategyBadge {
+  color: var(--primary);
+  border: var(--muted-foreground) 1px solid;
+}
+
+.cl-formFieldLabel {
+  color: var(--primary);
+}
+
+.cl-footerActionText {
+  color: var(--primary);
+  font-weight: 500 !important;
+  font-size: 16px !important;
+  line-height: 24px !important;
+}
+
+.cl-organizationProfile-root .cl-userPreviewMainIdentifierText,
+.cl-organizationProfile-root .cl-userPreviewSecondaryIdentifier,
+.cl-organizationProfile-root .cl-headerTitle {
+  color: var(--muted);
+}
+
+.cl-formContainer .cl-formFieldLabel {
+  color: var(--muted);
+}
+
+.cl-userButtonPopoverMain,
+.cl-userPreviewSecondaryIdentifier {
+  color: var(--primary);
+}
+
+.cl-userProfile-root .cl-headerTitle {
+  color: var(--muted);
 }

@@ -8,16 +8,9 @@ import {
 import { Info, Plus } from "lucide-react";
 import { IconButton } from "@/components/ui/iconButton";
 import { useStore } from "@/store/useStore";
-import dynamic from "next/dynamic";
 import { useShallow } from "zustand/shallow";
-
-const DialogBoardDetails = dynamic(() =>
-  import("./DialogBoardDetails").then((m) => m.DialogBoardDetails),
-);
-
-const CreateNewBoardDialog = dynamic(() =>
-  import("./CreateNewBoardDialog").then((m) => m.CreateNewBoardDialog),
-);
+import { CreateNewBoardDialog } from "./CreateNewBoardDialog";
+import { DialogBoardDetails } from "./DialogBoardDetails";
 
 type Props = {
   disabled?: boolean;
@@ -34,9 +27,10 @@ export function CreateNewBoardCard({ disabled = false }: Props) {
     <>
       {/* CREATE CARD */}
       <IconButton
+        data-test="create-new-board-card"
         disabled={disabled}
         classNameChildren="group flex flex-col w-full justify-center items-center "
-        onClick={() => setNewBoardDialogOpen(true)}
+        onClick={() => setNewBoardDialogOpen(true, "dashboard")}
         title="Create new board"
         aria-label="Create new board"
         className="relative group   rounded-md p-2  overflow-hidden text-black  hover:bg-gray-500  bg-gray-200 hover:text-white md:max-w-72.5 w-full"
@@ -64,12 +58,15 @@ export function CreateNewBoardCard({ disabled = false }: Props) {
       </IconButton>
 
       {/* DIALOG CREATE NEW BOARD */}
-      <CreateNewBoardDialog
-        newBoardDialogOpen={newBoardDialogOpen}
-        setNewBoardDialogOpen={setNewBoardDialogOpen}
-      >
-        <DialogBoardDetails />
-      </CreateNewBoardDialog>
+      {newBoardDialogOpen.dashboard && (
+        <CreateNewBoardDialog
+          type="dashboard"
+          newBoardDialogOpen={newBoardDialogOpen}
+          setNewBoardDialogOpen={setNewBoardDialogOpen}
+        >
+          <DialogBoardDetails type="dashboard" />
+        </CreateNewBoardDialog>
+      )}
       {/* CREATE CARD FORM */}
     </>
   );

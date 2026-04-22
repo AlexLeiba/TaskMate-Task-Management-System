@@ -2,7 +2,6 @@ import { useStore } from "@/store/useStore";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { FilterStates, PriorityType } from "@/lib/types";
-import { useGetBoardFilteredData } from "@/hooks/useGetBoardFilteredData";
 import { useResponsive } from "@/hooks/useResponsive";
 import { BREAKPOINTS } from "@/lib/breakpoints";
 import { FilterDropdownMembersContent } from "./FilterDropdownMembersContent";
@@ -21,18 +20,13 @@ export function FilterDropdownContent({
 }: {
   handleCloseMenu: () => void;
 }) {
-  const { fetchBoardFilteredListData } = useGetBoardFilteredData();
   const isTablet = useResponsive(BREAKPOINTS.lg);
 
-  const {
-    prioritiesSelectedFilter,
-    boardSubHeaderFilterSelected,
-    setBoardSubHeaderFilterSelected,
-  } = useStore(
+  const { setFilterState, filterState } = useStore(
     useShallow((state) => ({
-      boardSubHeaderFilterSelected: state.boardSubHeaderFilterSelected,
-      setBoardSubHeaderFilterSelected: state.setBoardSubHeaderFilterSelected,
-      prioritiesSelectedFilter: state.prioritiesSelectedFilter,
+      setFilterState: state.setFilterState,
+      filterState: state.filterState,
+      boardTabSections: state.boardTabSections,
     })),
   );
 
@@ -41,21 +35,17 @@ export function FilterDropdownContent({
     priorityType?: PriorityType | null,
   ) {
     handleCloseMenu();
-    const selectedFilter = setBoardSubHeaderFilterSelected(
-      filterState,
-      priorityType?.value,
-    );
 
-    if (selectedFilter === "theSame") {
-      fetchBoardFilteredListData("", false, "all", priorityType?.value);
-      return;
-    }
-    fetchBoardFilteredListData("", false, selectedFilter, priorityType?.value);
+    // SET FILTER STATE BASED ON SELECTED MEMBER, THIS WILL TRIGGER useTableData and useBoardListData passing filter prop TO FETCH FILTERED DATA
+    setFilterState({
+      filters: filterState,
+      priorityType: priorityType?.value,
+    });
   }
 
   return (
     <>
-      {/* MEMBER FILTERS */}
+      {/* MEMBER FILTERS ON MOBILE AND TABLET */}
       {isTablet && (
         <FilterDropdownMembersContent
           handleCloseMenu={() => handleCloseMenu()}
@@ -66,7 +56,7 @@ export function FilterDropdownContent({
       {FILTERS_DATA.map((data) => {
         if (data.id === "priority") {
           const selectedPriority = CARD_PRIORITIES.find(
-            (p) => p.value === prioritiesSelectedFilter,
+            (p) => p.value === filterState.priorityType,
           );
 
           return (
@@ -80,7 +70,7 @@ export function FilterDropdownContent({
                     variant={"ghost"}
                     className={cn(
                       "border w-full",
-                      boardSubHeaderFilterSelected === data?.id &&
+                      filterState.filters === data?.id &&
                         "border-text-primary ",
                     )}
                   >
@@ -106,7 +96,6 @@ export function FilterDropdownContent({
                         <Button
                           key={priority.value}
                           onClick={() => {
-                            // setBoardSubHeaderFilterSelected(data.id);
                             handleSelectedFilter("priority", priority);
                           }}
                           title={`Filter by ${priority?.label}`}
@@ -143,7 +132,6 @@ export function FilterDropdownContent({
         return (
           <Button
             onClick={() => {
-              // setBoardSubHeaderFilterSelected(data.id);
               handleSelectedFilter(data.id);
             }}
             title={`Filter by ${data?.title}`}
@@ -152,8 +140,7 @@ export function FilterDropdownContent({
             variant={"ghost"}
             className={cn(
               "border",
-              boardSubHeaderFilterSelected === data?.id &&
-                "border-text-primary ",
+              filterState.filters === data?.id && "border-text-primary ",
             )}
           >
             <div
@@ -165,7 +152,7 @@ export function FilterDropdownContent({
                 {data.icon}
                 <p>{data?.title}</p>
               </div>
-              {boardSubHeaderFilterSelected === data?.id && <X />}
+              {filterState.filters === data?.id && <X />}
             </div>
           </Button>
         );

@@ -8,7 +8,7 @@ import {
   RefreshCcw,
   Wifi,
 } from "lucide-react";
-import { BoardTab, FilterData } from "../../types";
+import { BoardTab, FilterData, ListDataTableType } from "../../types";
 
 export const BOARD_HEADER_TABS: BoardTab[] = [
   { id: "1", label: "Overview", value: "overview", icon: <ChartColumn /> },
@@ -49,3 +49,11 @@ export const FILTERS_DATA: FilterData[] = [
     icon: <FolderCheck className="text-yellow-400" />,
   },
 ];
+
+export const INITIAL_FILTERS_STATE: Omit<ListDataTableType, "boardId"> = {
+  filters: "all",
+  selectedMemberEmail: undefined,
+  priorityType: undefined,
+  unassignedCard: false,
+  search: undefined,
+};

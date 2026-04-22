@@ -13,15 +13,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { InputTitleSchema, InputTitleSchemaType } from "@/lib/schemas";
 import { UnsplashImagesType } from "@/lib/types";
 import toast from "react-hot-toast";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { createNewBoardAction } from "@/app/actions/dashboard";
 import { useStore } from "@/store/useStore";
 import { type Board } from "@/lib/generated/prisma/client";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { UNSPLASH_DEFAULT_IMAGES } from "@/lib/consts/protected/files";
+import { useAuth } from "@clerk/nextjs";
 
 type Props = {
-  type?: "dashboard" | "board";
+  type?: "dashboard" | "header";
 };
 export function DialogBoardDetails({ type = "dashboard" }: Props) {
   const navigate = useRouter();
@@ -30,32 +31,28 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
     (state) => state.setNewBoardDialogOpen,
   );
   const queryClient = useQueryClient();
-  const pathname = usePathname();
 
-  const organizationId =
-    type === "dashboard"
-      ? pathname.split("/").at(-1)
-      : pathname.split("/").at(-3);
+  const { orgId } = useAuth();
 
   const { data, isFetching } = useQuery({
     queryFn: getUnsplashImagesAction,
-    queryKey: [QUERY_KEYS.pages.boards.createNewBoard.getImages],
+    queryKey: [QUERY_KEYS.pages.dashboard.createNewBoard.getImages],
     staleTime: 1000 * 60 * 60,
   });
 
   const { mutate: mutateCreateNewBoard, isPending: isPendingCreateNewBoard } =
     useMutation({
-      mutationKey: [QUERY_KEYS.pages.boards.createNewBoard.create],
+      mutationKey: [QUERY_KEYS.pages.dashboard.createNewBoard.create],
       mutationFn: createNewBoardAction,
       onSuccess: ({ data }) => {
         setValue("title", "");
         setSelectedImage(undefined);
-        setNewBoardDialogOpen(false);
+        setNewBoardDialogOpen(false, "dashboard");
 
         toast.success("Board created successfully");
 
-        if (type === "board") {
-          navigate.push(`/dashboard/${organizationId}/board/${data?.id}`);
+        if (type === "header" && data?.id) {
+          navigate.push(`/dashboard/${orgId}/board/${data.id}`);
         }
       },
       onError: ({ message }) => toast.error(message || "Error creating board"),
@@ -74,7 +71,7 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
 
   function handleGetNewImages() {
     queryClient.invalidateQueries({
-      queryKey: [QUERY_KEYS.pages.boards.createNewBoard.getImages],
+      queryKey: [QUERY_KEYS.pages.dashboard.createNewBoard.getImages],
     });
   }
 
@@ -83,7 +80,7 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
       setError("title", { message: "Please select an image" });
       return toast.error("Please select an image");
     }
-    if (!organizationId) {
+    if (!orgId) {
       return toast.error("Please select an organization");
     }
 
@@ -95,13 +92,16 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
       cardImageUrl:
         selectedImage?.urls.small || selectedImage?.urls.regular || "",
       bgImageUrl: selectedImage?.urls.full || selectedImage?.urls.regular || "",
-      orgId: organizationId,
+      orgId: orgId,
     };
     mutateCreateNewBoard(newBoardData);
   }
 
   return (
-    <div className="flex flex-col md:gap-12 gap:4">
+    <div
+      className="flex flex-col md:gap-12 gap:4"
+      data-test={`dialog-board-details-${type}-container`}
+    >
       <div className="grid md:grid-cols-[repeat(auto-fit,minmax(140px,1fr))] grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-2">
         {isFetching ? (
           <DialogBoardCardSkeleton />
@@ -111,7 +111,10 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
               <DialogBoardCard
                 key={image.id}
                 data={image}
-                onClick={() => setSelectedImage(image)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedImage(image);
+                }}
                 selected={selectedImage?.id === image.id}
               />
             );
@@ -139,6 +142,7 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
           </label>
           <Spacer size={1} />
           <Input
+            data-test="dialog-board-details-title-input"
             error={errors.title?.message}
             disabled={isFetching}
             id="title"
@@ -147,6 +151,7 @@ export function DialogBoardDetails({ type = "dashboard" }: Props) {
           />
         </div>
         <Button
+          data-test="dialog-board-details-submit-button"
           disabled={isFetching || isPendingCreateNewBoard}
           loading={isPendingCreateNewBoard}
           onClick={handleSubmit(onSubmitNewBoard)}

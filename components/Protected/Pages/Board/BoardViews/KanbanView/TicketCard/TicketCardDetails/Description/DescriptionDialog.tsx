@@ -43,7 +43,7 @@ export function DescriptionDialog({
 
   const { mutate, isPending } = useMutation({
     mutationKey: [
-      QUERY_KEYS.pages.board.cardDetails.updateDescription,
+      QUERY_KEYS.pages.board.kanbanView.cardDetails.updateDescription,
       cardDetailsId,
     ],
     mutationFn: updateDescriptionAction,
@@ -53,12 +53,16 @@ export function DescriptionDialog({
         setInitialValue(description);
         setCloseQuill();
       }
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.updateDescription);
-      toast.success("Description updated");
+
+      toast.success("Description updated", {
+        id: QUERY_KEYS.pages.board.kanbanView.cardDetails.updateDescription,
+      });
     },
     onError: ({ message }) => {
       toast.error(message || "Error updating description, please try again");
-      toast.dismiss(QUERY_KEYS.pages.board.cardDetails.updateDescription);
+      toast.dismiss(
+        QUERY_KEYS.pages.board.kanbanView.cardDetails.updateDescription,
+      );
     },
   });
 
@@ -76,7 +80,7 @@ export function DescriptionDialog({
     });
 
     toast.loading("Updating description...", {
-      id: QUERY_KEYS.pages.board.cardDetails.updateDescription,
+      id: QUERY_KEYS.pages.board.kanbanView.cardDetails.updateDescription,
     });
   }
 

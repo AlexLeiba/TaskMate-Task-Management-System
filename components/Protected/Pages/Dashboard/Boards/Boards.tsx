@@ -38,7 +38,7 @@ export function Boards({
 
   const { mutate: mutateDeleteBoard, isPending: isDeletePending } = useMutation(
     {
-      mutationKey: [QUERY_KEYS.pages.boards.deleteBoard],
+      mutationKey: [QUERY_KEYS.pages.dashboard.deleteBoard],
       mutationFn: deleteBoardAction,
       onMutate: async (boardId) => {
         await apiDeleteFile(
@@ -48,12 +48,12 @@ export function Boards({
       },
       onSuccess: () => {
         setDeleteDialogOpen(false);
-        toast.dismiss(QUERY_KEYS.pages.boards.deleteBoard);
+        toast.dismiss(QUERY_KEYS.pages.dashboard.deleteBoard);
         toast.success("Board deleted successfully");
       },
       onError: ({ message }) => {
         setDeleteDialogOpen(false);
-        toast.dismiss(QUERY_KEYS.pages.boards.deleteBoard);
+        toast.dismiss(QUERY_KEYS.pages.dashboard.deleteBoard);
         toast.error(message || "Error deleting board");
       },
     },
@@ -76,12 +76,12 @@ export function Boards({
     mutateDeleteBoard(boardId);
 
     toast.loading("Deleting board...", {
-      id: QUERY_KEYS.pages.boards.deleteBoard,
+      id: QUERY_KEYS.pages.dashboard.deleteBoard,
     });
   }
 
   return (
-    <div>
+    <div data-test="dashboard-boards">
       <div className="flex gap-2 items-center">
         <LayoutDashboard />
         <p className="text-xl font-medium">Boards</p>

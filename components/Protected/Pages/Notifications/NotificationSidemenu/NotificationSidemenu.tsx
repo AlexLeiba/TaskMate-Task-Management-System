@@ -23,7 +23,7 @@ export function NotificationSidemenu({ data }: Props) {
     data.at(0);
   return (
     <div className="grid  h-full gap-4 md:grid-cols-[1fr_3fr] lg:grid-cols-[1fr_3fr]">
-      <div className="flex-col border-r h-full p-2 md:flex lg:flex hidden">
+      <div className="flex-col border-r h-full p-2 w-full md:flex lg:flex hidden">
         {data.map((notification) => {
           return (
             <Button
@@ -34,10 +34,12 @@ export function NotificationSidemenu({ data }: Props) {
                 !selectedNotification
                   ? notificationData?.id === notification.id && "ring"
                   : selectedNotification === notification.id && "ring",
-                "text-xl text-left border-b",
+                "text-base text-left border-b ",
               )}
             >
-              {notification.notification.title}
+              <p className="line-clamp-1 max-w-62.5">
+                {notification.notification.title}
+              </p>
             </Button>
           );
         })}
@@ -47,10 +49,12 @@ export function NotificationSidemenu({ data }: Props) {
         <PopoverTrigger asChild>
           <Button
             variant={"secondary"}
-            className="md:hidden lg:hidden flex items-center text-lg w-full text-left "
+            className="md:hidden lg:hidden flex items-center text-lg w-full text-left  "
             classNameChildren="flex justify-between items-center"
           >
-            {notificationData?.notification.title}
+            <p className="line-clamp-1 max-w-75">
+              {notificationData?.notification.title}
+            </p>
             <ChevronDown />
           </Button>
         </PopoverTrigger>
@@ -65,10 +69,12 @@ export function NotificationSidemenu({ data }: Props) {
                   !selectedNotification
                     ? notificationData?.id === notification.id && "ring"
                     : selectedNotification === notification.id && "ring",
-                  "text-xl text-left border-b",
+                  "text-xl text-left border-b   ",
                 )}
               >
-                {notification.notification.title}
+                <p className="line-clamp-1 max-w-75">
+                  {notification.notification.title}
+                </p>
               </Button>
             );
           })}

@@ -73,6 +73,8 @@ export function PriorityContent({
               handleSelectPriority(data);
             }
           }}
+          data-test="priority-content-options"
+          data-selected={data.value}
         >
           <div className="flex gap-2 items-center">
             {data.icon}

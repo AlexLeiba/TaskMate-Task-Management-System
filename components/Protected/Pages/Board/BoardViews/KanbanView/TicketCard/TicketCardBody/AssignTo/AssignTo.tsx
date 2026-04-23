@@ -77,6 +77,8 @@ export function AssignTo({
           }}
           className="hover:ring hover:ring-white   rounded-sm size-7 "
           classNameChildren=" flex justify-center items-center  cursor-pointer hover:opacity-70 rounded-sm"
+          data-test="assign-to-trigger"
+          data-selected={assignedToEmail !== ""}
         >
           {!boardId ? (
             <AssignToUserSkeleton />
@@ -116,6 +118,7 @@ export function AssignTo({
                 className="cursor-pointer hover:opacity-80"
                 title="Close assign"
                 aria-label="Close assign"
+                data-test="assign-to-close-button"
               >
                 <X />
               </IconButton>

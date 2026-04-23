@@ -70,6 +70,8 @@ export function Priority({ priority, boardId, listId, cardId }: Props) {
           }}
           className=""
           classNameChildren="ring ring-white flex justify-center items-center p-2 size-7 cursor-pointer hover:opacity-70 rounded-sm"
+          data-test="priority-trigger"
+          data-selected={priority}
         >
           {priority !== "none" ? (
             <span className="text-lg">
@@ -101,6 +103,7 @@ export function Priority({ priority, boardId, listId, cardId }: Props) {
                 className="cursor-pointer hover:opacity-80"
                 title="Close priority popover"
                 aria-label="Close priority popover"
+                data-test="close-priority-options-button"
               >
                 <X />
               </IconButton>

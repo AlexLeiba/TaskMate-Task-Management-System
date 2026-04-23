@@ -1,5 +1,6 @@
 import { setupClerkTestingToken } from "@clerk/testing/cypress";
 import { LIST_STATUSES_CYPRESS } from "../data/statuses";
+import { CARD_PRIORITIES_CYPRESS } from "../data/priorities";
 
 describe("Board page", () => {
   beforeEach(() => {
@@ -23,13 +24,94 @@ describe("Board page", () => {
     cy.url().should("include", "/dashboard");
   });
 
-  it("List: create, delete, copy", () => {
-    // NAVIGATE TO BOARD PAGE//
+  it("List: create, delete, copy, edit title, status", () => {
+    ////////CREATE NEW BOARD FOR TESTING ALL LIST AND CARD OPERATIONS///////
+    //THE BOARD WILL BE DELETED AT THE END OF ALL TESTS
 
-    // assert board exists
-    cy.get("[data-test=dashboard-board-card]").should("be.visible");
+    //aliases
+    cy.get("[data-test=create-new-board-card]").as("createNewBoardCard");
+    //
 
-    // click on board to redirect to board page
+    // assert new board dialog not exists in the dom
+    cy.get("[data-test=create-new-board-dialog-dashboard]").should("not.exist");
+
+    // assert create new board card visible
+    cy.get("@createNewBoardCard").should("be.visible");
+
+    // event click on create new board card
+    cy.get("@createNewBoardCard").click();
+
+    // assert create new board dialog visible
+    cy.get('[role="dialog"]')
+      .should("be.visible")
+      .and("have.attr", "data-state", "open");
+
+    // intercept loading background images
+    cy.location("pathname").then((pathname) => {
+      const organizationId = pathname.split("/").at(-1);
+      cy.intercept("POST", `/dashboard/${organizationId}`).as("loadImages");
+      cy.wait("@loadImages"); //wait for loading images request
+    });
+
+    // assert all dialog contents to be loaded and visible
+    cy.get("[data-test=create-new-board-dialog-dashboard]").should(
+      "be.visible",
+    );
+    // assert dialog body visible
+    cy.get("[data-test=dialog-board-details-dashboard-container]").should(
+      "be.visible",
+    );
+
+    // assert dialog background images cards are loaded
+    cy.get("[data-test=dialog-board-image-card]")
+      .should("be.visible")
+      .should("have.length.greaterThan", 0);
+
+    // assert dialog submit button visible
+    cy.get("[data-test=dialog-board-details-submit-button]").should(
+      "be.visible",
+    );
+
+    // assert dialog title input visible
+    cy.get("[data-test=dialog-board-details-title-input]").should("be.visible");
+
+    // click on first image card
+    cy.get("[data-test=dialog-board-image-card]").eq(0).realClick();
+
+    // assert image card was selected
+    cy.get("[data-test=dialog-board-image-card]")
+      .eq(0)
+      .should("have.attr", "data-selected", "true");
+
+    //type board title
+    cy.get("[data-test=dialog-board-details-title-input]")
+      .eq(0)
+      .type("Test Board");
+
+    // intercept create board request
+    cy.location("pathname").then((pathname) => {
+      const organizationId = pathname.split("/").at(-1);
+      cy.intercept("POST", `/dashboard/${organizationId}`).as("createBoard");
+    });
+
+    // click on submit button
+    cy.get("[data-test=dialog-board-details-submit-button]").eq(0).realClick();
+
+    // assert create board response 200
+    cy.wait("@createBoard").its("response.statusCode").should("eq", 200);
+
+    // assert create board modal has closed after successfull creation of new board
+    cy.get("[data-test=create-new-board-dialog-dashboard]").should("not.exist");
+
+    //assert there are more than 0 boards on dashboard page
+    cy.get("[data-test=dashboard-board-card]").should(
+      "have.length.greaterThan",
+      0,
+    );
+
+    /////// NAVIGATE TO BOARD PAGE//////
+
+    // click on first created board to redirect to board page
     cy.get("[data-test=dashboard-board-card]").eq(0).realClick();
 
     // assert board page url
@@ -72,9 +154,11 @@ describe("Board page", () => {
     cy.get("[data-test=add-new-list-submit]").eq(0).realClick();
 
     // assert error message is required title within the add new list trigger
-    cy.get("@addNewListTrigger").within(() => {
-      cy.contains(/Is required/i).should("be.visible");
-    });
+    cy.get("@addNewListTrigger")
+      .eq(0)
+      .within(() => {
+        cy.contains(/Is required/i).should("be.visible");
+      });
 
     //type in title value
     cy.get("[data-test=add-new-list-input]").eq(0).realType("Test List");
@@ -196,44 +280,7 @@ describe("Board page", () => {
     //assert new list was created and visible
     cy.get("[data-test=list]").should("have.length.greaterThan", 1);
 
-    //NEW COPIED LIST WILL REMAIN FOR FURTHER CARDS TESTS BEFORE BEING DELETED
-
-    ///////////// CREATE A LIST FOR LATER CARDS TESTS////////////
-
-    //     //type in title value
-    //     cy.get("[data-test=add-new-list-input]")
-    //       .eq(0)
-    //       .realType("Test List with cards");
-    //
-    //     // intercept creating a new list
-    //     cy.location("pathname").then((pathname) => {
-    //       cy.intercept({
-    //         method: "POST",
-    //         pathname: pathname,
-    //       }).as("createList");
-    //     });
-    //
-    //     // click on submit button
-    //     cy.get("[data-test=add-new-list-submit]").eq(0).realClick();
-    //
-    //     cy.wait("@createList").its("response.statusCode").should("eq", 200);
-    //
-    //     // assert list was created
-    //     cy.get("[data-test=list]").should("have.length", 1);
-  });
-  it("List: edit title, status", () => {
-    // NAVIGATE TO BOARD PAGE//
-
-    // assert board exists
-    cy.get("[data-test=dashboard-board-card]").should("be.visible");
-
-    // click on board to redirect to board page
-    cy.get("[data-test=dashboard-board-card]").eq(0).realClick();
-
-    // assert board page url
-    cy.url().should("include", "/board");
-
-    //// TEST EDITING LIST TITLE////
+    /////// TEST EDITING LIST TITLE///////
 
     // assert options menu trigger visible
     cy.get("[data-test=list-options-trigger]").should("be.visible");
@@ -257,9 +304,11 @@ describe("Board page", () => {
     cy.get("[data-test=edit-list-title-submit]").eq(0).realClick();
 
     // assert error message is required title within the edit list modal
-    cy.get("[data-test=edit-list-title-trigger]").within(() => {
-      cy.contains(/Is required/i).should("be.visible");
-    });
+    cy.get("[data-test=edit-list-title-trigger]")
+      .eq(0)
+      .within(() => {
+        cy.contains(/Is required/i).should("be.visible");
+      });
 
     //type in title value
     cy.get("[data-test=edit-list-title-input]").realType(
@@ -321,8 +370,8 @@ describe("Board page", () => {
     );
   });
 
-  it.only("Card: create, delete, copy, edit title", () => {
-    // NAVIGATE TO BOARD PAGE//
+  it.only("Card: create, delete, copy, edit title, priority, assignee", () => {
+    ////// NAVIGATE TO BOARD PAGE//////
 
     // assert board exists on Dashboard page
     cy.get("[data-test=dashboard-board-card]").should("be.visible");
@@ -447,22 +496,29 @@ describe("Board page", () => {
     cy.wait("@deleteFiles").its("response.statusCode").should("eq", 200);
     cy.wait("@deleteCard").its("response.statusCode").should("eq", 200);
 
-    // assert card was deleted
-    // cy.get("[data-test=ticket-card]").should("not.exist");
-
     ///// TEST CARD COPYING//////
 
     //create new card
     cy.get("@addNewCardTrigger").eq(0).realClick();
 
     //type in title value
-    cy.get("[data-test=add-new-card-input]").realType("Test Card");
+    cy.get("[data-test=add-new-card-input]").realType("Test Card to copy");
+
+    // alias intercept create new card to copy
+    cy.location("pathname").then((pathname) => {
+      cy.intercept({
+        method: "POST",
+        pathname: pathname,
+      }).as("createNewCardToCopy");
+    });
 
     // click on submit button
     cy.get("[data-test=add-new-card-submit]").realClick();
 
     //wait for card to be created
-    cy.wait("@createNewCard").its("response.statusCode").should("eq", 200);
+    cy.wait("@createNewCardToCopy")
+      .its("response.statusCode")
+      .should("eq", 200);
 
     // focus card
     cy.get("[data-test=ticket-card]").eq(0).focus();
@@ -471,58 +527,31 @@ describe("Board page", () => {
     cy.get("[data-test=card-options-trigger]").should("be.visible");
 
     // click on card options trigger
-    cy.get("[data-test=card-options-trigger]").eq(0).focus().realClick();
+    cy.get("[data-test=card-options-trigger]").eq(0).realClick();
 
     // assert copy button is visible
     cy.get("[data-test=copy-card-button-option]").should("be.visible");
+
+    // alias intercept create new card to copy
+    cy.location("pathname").then((pathname) => {
+      cy.intercept({
+        method: "POST",
+        pathname: pathname,
+      }).as("copyCard");
+    });
 
     // click on copy button
     cy.get("[data-test=copy-card-button-option]").eq(0).realClick();
 
     //wait for copied card to be created
-    cy.wait("@createNewCard").its("response.statusCode").should("eq", 200);
+    cy.wait("@copyCard").its("response.statusCode").should("eq", 200);
 
     // assert copied card was created
     cy.get("[data-test=ticket-card]").should("have.length.greaterThan", 1);
 
-    ////////// TEST DELETE FIRST CARD/////////
-    //     cy.get("[data-test=ticket-card]").eq(0).focus();
-    //
-    //
-    //     // assert card options trigger visible
-    //     cy.get("[data-test=card-options-trigger]").should("be.visible");
-    //
-    //     // click on card options trigger
-    //     cy.get("[data-test=card-options-trigger]").eq(0).realClick();
-    //
-    //     // assert delete button is visible
-    //     cy.get("[data-test=delete-card-button-option]").should("be.visible");
-    //
-    //     // click on delete button option
-    //     cy.get("[data-test=delete-card-button-option]").eq(0).realClick();
-    //
-    //     // assert open delete modal visible
-    //     cy.get("[data-test=delete-dialog]").should("be.visible");
-    //
-    //     // click on delete button from modal
-    //     cy.get("[data-test=delete-dialog-delete-button]").eq(0).realClick();
-    //
-    //     // assert delete card and files response 200
-    //     cy.wait("@deleteFiles").its("response.statusCode").should("eq", 200);
-    //     cy.wait("@deleteCard").its("response.statusCode").should("eq", 200);
-
     ////// TEST EDIT CARD TITLE/////
 
-    // focus card
-    cy.get("[data-test=ticket-card]").eq(0).focus();
-
-    // assert card options trigger visible
-    cy.get("[data-test=card-options-trigger]").should("be.visible");
-
-    // click on card options trigger
-    cy.get("[data-test=card-options-trigger]").eq(0).focus().realClick();
-
-    // assert edit title button is visible
+    // assert casrd options menu is opened and edit title button is visible
     cy.get("[data-test=card-title-trigger]").should("be.visible");
     // click on edit title button trigger
     cy.get("[data-test=card-title-trigger]").eq(0).realClick();
@@ -567,9 +596,81 @@ describe("Board page", () => {
 
     // assert card title was updated
     cy.get("[data-test=ticket-card]").eq(0).should("contain", "Edited title");
-  });
-  it("Card: edit title, priority, assignee", () => {});
 
-  it("CardDetails: edit description, priority, assignee, due date, list status", () => {});
-  it("CardDetails Tabs: comments, attachments, checklist", () => {});
+    /////TEST CARD PRIORITY/////
+
+    //assert priority button visible
+    cy.get("[data-test=priority-trigger]").should("be.visible");
+
+    //click on priority button
+    cy.get("[data-test=priority-trigger]").eq(0).realClick();
+
+    //assert priority options content visible
+    cy.get("[data-test=priority-content-options]").should("be.visible");
+    // .and("should", "have.length", CARD_PRIORITIES_CYPRESS.length);
+
+    //click on last priority option
+    cy.get("[data-test=priority-content-options]").last().realClick();
+
+    //assert priority content options not visible after submit
+    cy.get("[data-test=priority-content-options]").should("not.exist");
+
+    // assert the right priority was selected in the trigger
+    cy.get("[data-test=priority-trigger]")
+      .eq(0)
+      .should(
+        "have.attr",
+        "data-selected",
+        CARD_PRIORITIES_CYPRESS[CARD_PRIORITIES_CYPRESS.length - 1].value,
+      );
+
+    //click on priority trigger button again
+    cy.get("[data-test=priority-trigger]").eq(0).realClick();
+
+    //assert the right priority was selected in the card
+    cy.get("[data-test=priority-content-options]")
+      .last()
+      .should(
+        "have.attr",
+        "data-selected",
+        CARD_PRIORITIES_CYPRESS[CARD_PRIORITIES_CYPRESS.length - 1].value,
+      );
+
+    ///// TEST CARD ASSIGNEE////
+
+    // assert assignee button visible
+
+    cy.get("[data-test=assign-to-trigger").should("be.visible");
+
+    // click on assignee button trigger
+    cy.get("[data-test=assign-to-trigger").eq(0).realClick();
+
+    // assert assignee popover options content visible and with at least one member
+    cy.get("[data-test=assign-to-user-option-button]")
+      .should("be.visible")
+      .and("have.length.greaterThan", 0);
+
+    // click on last assignee option
+    cy.get("[data-test=assign-to-user-option-button]").last().realClick();
+
+    //assert the list options not exist (has closed) after selection
+    cy.get("[data-test=assign-to-user-option-button]").should("not.exist");
+
+    // assert the selected assignee is different than NONE in the trigger button
+    cy.get("[data-test=assign-to-trigger")
+      .eq(0)
+      .should("have.attr", "data-selected", "true");
+
+    // assert the selected assignee is different than NONE in the list options
+    cy.get("[data-test=assign-to-user-option-button]").should(
+      "have.attr",
+      "data-selected",
+      "true",
+    );
+  });
+
+  it.skip("CardDetails: edit description, priority, assignee, due date, list status", () => {});
+  it.skip("CardDetails Tabs: comments, attachments, checklist", () => {});
+
+  ///AFTER ALL TESTS NAVIGATE TO DASHBOARD AND DELETE THE BOARD
 });

@@ -53,7 +53,7 @@ export function TicketCardHeader({
               "absolute top-0 right-0",
               isOpenedOptions
                 ? "block"
-                : "lg:hidden lg:group-hover:block lg:group-focus-within:block",
+                : "lg:hidden lg:group-focus-within:block",
             )}
             disabled={isLoading}
             title="Card options"

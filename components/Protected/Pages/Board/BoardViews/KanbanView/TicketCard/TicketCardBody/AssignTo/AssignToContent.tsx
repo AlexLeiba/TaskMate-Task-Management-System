@@ -159,6 +159,7 @@ export function AssignToContent({
                 });
               }
             }}
+            data-test="assign-to-user-option-button"
           >
             <UserCard
               data={{

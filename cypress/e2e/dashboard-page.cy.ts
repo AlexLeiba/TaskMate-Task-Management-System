@@ -173,12 +173,9 @@ describe("Dashboard page desktop and tablet view", () => {
     cy.get("[data-test=create-new-board-dialog-dashboard]").should(
       "be.visible",
     );
-    // dialog body
+    // assert dialog body visible
     cy.get("[data-test=dialog-board-details-dashboard-container]").should(
       "be.visible",
-      {
-        timeout: 15000,
-      },
     );
 
     // assert dialog background images cards are loaded
@@ -214,7 +211,7 @@ describe("Dashboard page desktop and tablet view", () => {
     //type board title
     cy.get("[data-test=dialog-board-details-title-input]")
       .eq(0)
-      .realType("Test Board");
+      .type("Test Board");
 
     // intercept create board request
     cy.location("pathname").then((pathname) => {

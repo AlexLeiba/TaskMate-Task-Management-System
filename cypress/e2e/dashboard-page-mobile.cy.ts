@@ -10,13 +10,16 @@ describe("Dashboard page mobile view", () => {
 
     cy.window().its("Clerk.loaded").should("eq", true); //this command (should) will retry until the assertion is true or timeout occurs 4s, until then the next line wont be reached.
 
+    // sign in with Clerk
     cy.clerkSignIn({
       strategy: "email_code",
       identifier: Cypress.env("testUser"),
     });
 
+    // assert the session cookie present in the browser after user sign in
     cy.getCookie("__session").should("exist");
 
+    // assert authorized user is redirected to dashboard
     cy.url().should("include", "/dashboard");
   });
 

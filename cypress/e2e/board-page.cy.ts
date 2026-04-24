@@ -24,9 +24,9 @@ describe("Board page", () => {
     cy.url().should("include", "/dashboard");
   });
 
-  it("List: create, delete, copy, edit title, status", () => {
+  it("List: create, delete, copy, edit title, status. Board: create board", () => {
     ////////CREATE NEW BOARD FOR TESTING ALL LIST AND CARD OPERATIONS///////
-    //THE BOARD WILL BE DELETED AT THE END OF ALL TESTS
+    //THE BOARD WILL BE DELETED AT THE END OF ALL TESTS//
 
     //aliases
     cy.get("[data-test=create-new-board-card]").as("createNewBoardCard");
@@ -46,7 +46,7 @@ describe("Board page", () => {
       .should("be.visible")
       .and("have.attr", "data-state", "open");
 
-    // intercept loading background images
+    // intercept loading board background images
     cy.location("pathname").then((pathname) => {
       const organizationId = pathname.split("/").at(-1);
       cy.intercept("POST", `/dashboard/${organizationId}`).as("loadImages");
@@ -75,7 +75,7 @@ describe("Board page", () => {
     // assert dialog title input visible
     cy.get("[data-test=dialog-board-details-title-input]").should("be.visible");
 
-    // click on first image card
+    // click on first board image card
     cy.get("[data-test=dialog-board-image-card]").eq(0).realClick();
 
     // assert image card was selected
@@ -83,12 +83,12 @@ describe("Board page", () => {
       .eq(0)
       .should("have.attr", "data-selected", "true");
 
-    //type board title
+    //type the board title
     cy.get("[data-test=dialog-board-details-title-input]")
       .eq(0)
       .type("Test Board");
 
-    // intercept create board request
+    //alias intercept create board request
     cy.location("pathname").then((pathname) => {
       const organizationId = pathname.split("/").at(-1);
       cy.intercept("POST", `/dashboard/${organizationId}`).as("createBoard");
@@ -97,7 +97,7 @@ describe("Board page", () => {
     // click on submit button
     cy.get("[data-test=dialog-board-details-submit-button]").eq(0).realClick();
 
-    // assert create board response 200
+    //wait for create board api response 200
     cy.wait("@createBoard").its("response.statusCode").should("eq", 200);
 
     // assert create board modal has closed after successfull creation of new board
@@ -153,7 +153,7 @@ describe("Board page", () => {
     // click on submit button with no title value
     cy.get("[data-test=add-new-list-submit]").eq(0).realClick();
 
-    // assert error message is required title within the add new list trigger
+    // assert error message is present within the Add new list trigger
     cy.get("@addNewListTrigger")
       .eq(0)
       .within(() => {
@@ -163,7 +163,7 @@ describe("Board page", () => {
     //type in title value
     cy.get("[data-test=add-new-list-input]").eq(0).realType("Test List");
 
-    // intercept creating a new list
+    // alias intercept creating a new list
     cy.location("pathname").then((pathname) => {
       cy.intercept({
         method: "POST",
@@ -174,6 +174,7 @@ describe("Board page", () => {
     // click on submit button
     cy.get("[data-test=add-new-list-submit]").eq(0).realClick();
 
+    // wait for list to be created with api response 200
     cy.wait("@createList").its("response.statusCode").should("eq", 200);
 
     // assert list was created
@@ -221,24 +222,21 @@ describe("Board page", () => {
     // click on modal delete button
     cy.get("[data-test=delete-dialog-delete-button]").eq(0).realClick();
 
-    // assert delete list response 200
+    // wait for delete list api response 200
     cy.wait("@deleteList").its("response.statusCode").should("eq", 200);
 
     // assert modal closed
     cy.get("[data-test=delete-dialog]").should("not.exist");
 
-    // assert list deleted
-    // cy.get("[data-test=list]").should("not.exist");
-
     ////// TEST LIST COPY ///////
     cy.get("@addNewListTrigger").eq(0).realClick();
 
-    //type in input of create list form
+    //type in list title
     cy.get("[data-test=add-new-list-input]")
       .eq(0)
       .realType("Test List to be copied");
 
-    // intercept creating a new list
+    //alias intercept creating a new list
     cy.location("pathname").then((pathname) => {
       cy.intercept({
         method: "POST",
@@ -249,6 +247,7 @@ describe("Board page", () => {
     // click on submit button
     cy.get("[data-test=add-new-list-submit]").eq(0).realClick();
 
+    //wait for list to be created with api response 200
     cy.wait("@createList").its("response.statusCode").should("eq", 200);
 
     // assert list was created
@@ -263,7 +262,7 @@ describe("Board page", () => {
     //assert copy button is visible
     cy.get("[data-test=list-options-copy-button]").should("be.visible");
 
-    //intercept copy new list alias
+    //alias intercept copy new list
     cy.location("pathname").then((pathname) => {
       cy.intercept({
         method: "POST",
@@ -274,7 +273,7 @@ describe("Board page", () => {
     // click on copy button
     cy.get("[data-test=list-options-copy-button]").eq(0).realClick();
 
-    //wait for list to be copied
+    //wait for list to be copied with api response 200
     cy.wait("@copyList").its("response.statusCode").should("eq", 200);
 
     //assert new list was created and visible
@@ -303,7 +302,7 @@ describe("Board page", () => {
     cy.get("[data-test=edit-list-title-input]").clear();
     cy.get("[data-test=edit-list-title-submit]").eq(0).realClick();
 
-    // assert error message is required title within the edit list modal
+    // assert error message is present within the edit list modal
     cy.get("[data-test=edit-list-title-trigger]")
       .eq(0)
       .within(() => {
@@ -326,7 +325,7 @@ describe("Board page", () => {
     // submit with title value
     cy.get("[data-test=edit-list-title-submit]").eq(0).realClick();
 
-    //wait for list to be edited
+    //wait for list to be edited with api response 200
     cy.wait("@editListTitle").its("response.statusCode").should("eq", 200);
 
     //assert edit title content not visible
@@ -359,7 +358,7 @@ describe("Board page", () => {
     //click on last list status option
     cy.get("[data-test=select-list-status-button]").last().realClick();
 
-    //wait for list to be edited
+    //wait for list to be edited with api response 200
     cy.wait("@changeListStatus").its("response.statusCode").should("eq", 200);
 
     //assert list status new value is equal to selected status value
@@ -370,7 +369,7 @@ describe("Board page", () => {
     );
   });
 
-  it.only("Card: create, delete, copy, edit title, priority, assignee", () => {
+  it("Card: create, delete, copy, edit title, priority, assignee. Board: delete board", () => {
     ////// NAVIGATE TO BOARD PAGE//////
 
     // assert board exists on Dashboard page
@@ -437,7 +436,7 @@ describe("Board page", () => {
         // click on submit button
         cy.get("[data-test=add-new-card-submit]").realClick();
 
-        //wait for card to be created
+        //wait for card to be created with api response 200
         cy.wait("@createNewCard").its("response.statusCode").should("eq", 200);
       });
 
@@ -602,15 +601,26 @@ describe("Board page", () => {
     //assert priority button visible
     cy.get("[data-test=priority-trigger]").should("be.visible");
 
-    //click on priority button
+    //click on priority button to open popover priority options
     cy.get("[data-test=priority-trigger]").eq(0).realClick();
 
     //assert priority options content visible
     cy.get("[data-test=priority-content-options]").should("be.visible");
     // .and("should", "have.length", CARD_PRIORITIES_CYPRESS.length);
 
+    //alias intercept edit card priority
+    cy.location("pathname").then((pathname) => {
+      cy.intercept({
+        method: "POST",
+        pathname: pathname,
+      }).as("editCardPriority");
+    });
+
     //click on last priority option
     cy.get("[data-test=priority-content-options]").last().realClick();
+
+    //wait for card priority to be edited with api response 200
+    cy.wait("@editCardPriority").its("response.statusCode").should("eq", 200);
 
     //assert priority content options not visible after submit
     cy.get("[data-test=priority-content-options]").should("not.exist");
@@ -639,7 +649,6 @@ describe("Board page", () => {
     ///// TEST CARD ASSIGNEE////
 
     // assert assignee button visible
-
     cy.get("[data-test=assign-to-trigger").should("be.visible");
 
     // click on assignee button trigger
@@ -650,27 +659,83 @@ describe("Board page", () => {
       .should("be.visible")
       .and("have.length.greaterThan", 0);
 
+    // alias intercept assign a ticket card
+    cy.location("pathname").then((pathname) => {
+      cy.intercept({
+        method: "POST",
+        pathname: pathname,
+      }).as("assignCard");
+    });
+
     // click on last assignee option
     cy.get("[data-test=assign-to-user-option-button]").last().realClick();
+
+    //wait for card to be assigned with api response 200
+    cy.wait("@assignCard").its("response.statusCode").should("eq", 200);
 
     //assert the list options not exist (has closed) after selection
     cy.get("[data-test=assign-to-user-option-button]").should("not.exist");
 
-    // assert the selected assignee is different than NONE in the trigger button
+    // assert the selected assignee is present in the trigger button
     cy.get("[data-test=assign-to-trigger")
       .eq(0)
       .should("have.attr", "data-selected", "true");
 
-    // assert the selected assignee is different than NONE in the list options
+    //click on assignee trigger button again to open assignee popover
+    cy.get("[data-test=assign-to-trigger").eq(0).realClick();
+
+    // assert the selected assignee is present in the list options
     cy.get("[data-test=assign-to-user-option-button]").should(
       "have.attr",
       "data-selected",
       "true",
     );
+
+    /////NAVIGATE TO DASHBOARD AND DELETE THE BOARD//////
+
+    //click on logo
+    cy.get("[data-test=logo]").eq(0).realClick();
+
+    // assert dashboard board
+    cy.url().should("include", "/dashboard");
+
+    // aliases
+    cy.get("[data-test=dashboard-boards] [data-test=delete-board-button]")
+      .eq(0)
+      .as("deleteBoardButton");
+    //
+
+    // click on delete board button of first board card
+    cy.get("@deleteBoardButton").eq(0).realClick();
+
+    // assert open delete modal
+    cy.get("[data-test=delete-dialog]").should("be.visible");
+
+    // assert open delete modal visible
+    cy.get("[data-test=delete-dialog]").should("be.visible");
+
+    // intercept deleteting board and its files card api request
+    cy.location("pathname").then((pathname) => {
+      const organizationId = pathname.split("/").at(-1);
+      cy.intercept("POST", `/dashboard/${organizationId}`).as("deleteBoard");
+      cy.intercept("DELETE", "/api/fileupload").as("deleteFile");
+    });
+
+    // click on delete button of the delete modal
+    cy.get("[data-test=delete-dialog-delete-button]").eq(0).realClick();
+
+    // assert delete board api response 200
+    cy.wait("@deleteFile").its("response.statusCode").should("eq", 200);
+    cy.wait("@deleteBoard").its("response.statusCode").should("eq", 200);
+
+    // assert delete modal closed
+    cy.get("[data-test=delete-dialog]").should("not.exist");
   });
 
-  it.skip("CardDetails: edit description, priority, assignee, due date, list status", () => {});
-  it.skip("CardDetails Tabs: comments, attachments, checklist", () => {});
-
-  ///AFTER ALL TESTS NAVIGATE TO DASHBOARD AND DELETE THE BOARD
+  it.skip("CardDetails: edit description, priority, assignee, due date, list status", () => {
+    // TODO
+  });
+  it.skip("CardDetails Tabs: comments, attachments, checklist", () => {
+    // TODO
+  });
 });

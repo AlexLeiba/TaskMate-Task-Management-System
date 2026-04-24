@@ -160,12 +160,14 @@ export function AssignToContent({
               }
             }}
             data-test="assign-to-user-option-button"
+            data-selected={user.email === assignedTo}
           >
             <UserCard
               data={{
                 email: user.email || "",
                 name: user.fullName,
                 avatar: user.imageUrl || "",
+                stripeCustomerId: "",
               }}
               size={"sm"}
             />

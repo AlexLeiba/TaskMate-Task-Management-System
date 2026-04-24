@@ -8,15 +8,18 @@ describe("Dashboard page desktop and tablet view", () => {
 
     cy.window().its("Clerk").should("exist"); //check if clerk exists
 
-    cy.window().its("Clerk.loaded").should("eq", true); //this command (should) will retry until the assertion is true or timeout occurs 4s, until then the next line won't be reached.
+    cy.window().its("Clerk.loaded").should("eq", true); //this command (should) will retry until the assertion is true or timeout occurs 15s, until then the next line won't be reached.
 
+    // sign in with the test user
     cy.clerkSignIn({
       strategy: "email_code",
       identifier: Cypress.env("testUser"),
     });
 
+    // assert the session cookie present in the browser after user sign in
     cy.getCookie("__session").should("exist");
 
+    // assert authorized user is redirected to dashboard
     cy.url().should("include", "/dashboard");
   });
 
@@ -24,68 +27,57 @@ describe("Dashboard page desktop and tablet view", () => {
     // aliases
     cy.url().as("currentUrl");
     cy.get("[data-test=logo]").eq(0).as("logo");
+    //
 
-    // assert dashboard board
+    // assert dashboard board visible
     cy.get("@currentUrl").should("include", "/dashboard");
     cy.get("[data-test=create-new-board-card]").should("be.visible");
 
+    // assert navigation to dashboard pages
     cy.location("pathname").then((pathname) => {
       const organizationId = pathname.split("/").at(-1);
 
-      // assert activity data
+      // assert activity page
       cy.visit(`/dashboard/${organizationId}/activity`)
         .url()
         .should("include", "/activity");
       cy.get("h1").should("be.visible");
 
-      // assert settings data
+      // assert settings page
       cy.visit(`/dashboard/${organizationId}/settings`)
         .url()
         .should("include", "/settings");
       cy.get("h1").should("be.visible");
-      cy.get("[data-clerk-component=OrganizationProfile]").should(
-        "be.visible",
-        {
-          timeout: 15000,
-        },
-      );
+      cy.get("[data-clerk-component=OrganizationProfile]").should("be.visible");
 
-      // assert billing data
+      // assert billing page
       cy.visit(`/dashboard/${organizationId}/billings`)
         .url()
         .should("include", "/billings");
       cy.get("h1").should("be.visible");
 
-      //  assert overview data
+      //  assert overview page
       cy.visit(`/dashboard/${organizationId}/overview`)
         .url()
         .should("include", "/overview");
       cy.get("h1").should("be.visible");
-      cy.get("[data-test=status-overview]").should("be.visible", {
-        timeout: 15000,
-      });
-      cy.get("[data-test=priority-breakdown]").should("be.visible", {
-        timeout: 15000,
-      });
-      cy.get("[data-test=team-workload]").should("be.visible", {
-        timeout: 15000,
-      });
-      cy.get("[data-test=finished-work-overview]").should("be.visible", {
-        timeout: 15000,
-      });
-      cy.get("[data-test=recent-activity]").should("be.visible", {
-        timeout: 15000,
-      });
+      cy.get("[data-test=status-overview]").should("be.visible");
+      cy.get("[data-test=priority-breakdown]").should("be.visible");
+      cy.get("[data-test=team-workload]").should("be.visible");
+      cy.get("[data-test=finished-work-overview]").should("be.visible");
+      cy.get("[data-test=recent-activity]").should("be.visible");
     });
 
+    // click logo to redirect to dashboard
     cy.get("@logo").click();
     cy.get("@currentUrl").should("include", "/dashboard");
 
-    // assert organization data
+    // assert organization page
     cy.visit("/select-organization");
     cy.url().should("include", "/select-organization");
     cy.get("[data-clerk-component=OrganizationList]").should("be.visible");
 
+    // click logo to redirect to dashboard
     cy.get("@logo").click();
     cy.get("@currentUrl").should("include", "/dashboard");
   });
@@ -128,8 +120,6 @@ describe("Dashboard page desktop and tablet view", () => {
       expect(openedAccordions.length).to.eq(1);
     });
 
-    // cy.get("@sidebarAccordionTrigger").filter("[data-state=open]").should("have.length", 1);
-
     // assert click on each organization item and check navigation valid url
     cy.location("pathname").then((pathname) => {
       const organizationId = pathname.split("/").at(-1);
@@ -141,7 +131,7 @@ describe("Dashboard page desktop and tablet view", () => {
     });
   });
 
-  it.only("Board: Create, Delete and Navigate", () => {
+  it.only("Board: create, delete and navigate to created board page", () => {
     cy.url().should("include", "/dashboard");
 
     //aliases
@@ -154,7 +144,7 @@ describe("Dashboard page desktop and tablet view", () => {
     // assert create new board card visible
     cy.get("@createNewBoardCard").should("be.visible");
 
-    // event click on create new board card
+    //click on create new board card
     cy.get("@createNewBoardCard").click();
 
     // assert create new board dialog visible
@@ -162,7 +152,7 @@ describe("Dashboard page desktop and tablet view", () => {
       .should("be.visible")
       .and("have.attr", "data-state", "open");
 
-    // intercept loading background images
+    // intercept loading board background images
     cy.location("pathname").then((pathname) => {
       const organizationId = pathname.split("/").at(-1);
       cy.intercept("POST", `/dashboard/${organizationId}`).as("loadImages");
@@ -213,7 +203,7 @@ describe("Dashboard page desktop and tablet view", () => {
       .eq(0)
       .type("Test Board");
 
-    // intercept create board request
+    // alias intercept create board request
     cy.location("pathname").then((pathname) => {
       const organizationId = pathname.split("/").at(-1);
       cy.intercept("POST", `/dashboard/${organizationId}`).as("createBoard");
@@ -222,7 +212,7 @@ describe("Dashboard page desktop and tablet view", () => {
     // click on submit button
     cy.get("[data-test=dialog-board-details-submit-button]").eq(0).realClick();
 
-    // assert create board response 200
+    // wait for create board response 200
     cy.wait("@createBoard").its("response.statusCode").should("eq", 200);
 
     // assert create board modal has closed after successfull creation of new board
@@ -233,6 +223,8 @@ describe("Dashboard page desktop and tablet view", () => {
       "have.length.greaterThan",
       0,
     );
+
+    ///// TEST DELETE BOARD ////
 
     // aliases
     cy.get("[data-test=dashboard-boards] [data-test=delete-board-button]")
@@ -268,14 +260,14 @@ describe("Dashboard page desktop and tablet view", () => {
     // click on delete button of the delete modal
     cy.get("[data-test=delete-dialog-delete-button]").eq(0).realClick();
 
-    // assert delete board response 200
+    // wait for delete board response 200
     cy.wait("@deleteFile").its("response.statusCode").should("eq", 200);
     cy.wait("@deleteBoard").its("response.statusCode").should("eq", 200);
 
     // assert delete modal closed
     cy.get("[data-test=delete-dialog]").should("not.exist");
 
-    ///////////////HEADER CREATE NEW BOARD WORKFLOW////////////////
+    ///////////////HEADER CREATE NEW BOARD AND AUTO REDIRECT TO CREATED BOARD PAGE////////////////
 
     //aliases
     cy.get("[data-test=header-create-new-board-button]")
@@ -289,7 +281,7 @@ describe("Dashboard page desktop and tablet view", () => {
     // assert create board button visible
     cy.get("@headerCreateNewBoardButton").should("be.visible");
 
-    // create an intercept alias for loading background images before click on create button
+    //alias intercept for loading background images before click on create board button
     cy.location("pathname").then((pathname) => {
       const organizationId = pathname.split("/").at(-1);
       cy.intercept("POST", `/dashboard/${organizationId}`).as("loadImages");
@@ -304,7 +296,8 @@ describe("Dashboard page desktop and tablet view", () => {
       .and("have.attr", "data-state", "open");
     cy.get("[data-test=create-new-board-dialog-header]").should("be.visible");
 
-    cy.wait("@loadImages"); //wait (intersept) for loading images request
+    // wait for loading board images
+    cy.wait("@loadImages");
 
     // assert loaded images visible in dialog
     cy.get("[data-test=dialog-board-image-card]").should("be.visible");
@@ -338,7 +331,7 @@ describe("Dashboard page desktop and tablet view", () => {
       .eq(0)
       .should("have.attr", "data-selected", "true");
 
-    // intercept create board request
+    // alias intercept create board request
     cy.location("pathname").then((pathname) => {
       const organizationId = pathname.split("/").at(-1);
       cy.intercept("POST", `/dashboard/${organizationId}`).as("createBoard");
@@ -347,16 +340,16 @@ describe("Dashboard page desktop and tablet view", () => {
     // click on submit button
     cy.get("[data-test=dialog-board-details-submit-button]").eq(0).realClick();
 
-    // assert create board response Status 200
+    // wait for create board response Status 200
     cy.wait("@createBoard").its("response.statusCode").should("eq", 200);
 
-    //assert that user was redirected to created board
+    //assert that user was auto redirected to created board
     cy.url().should("include", "/board");
 
-    //click logo to redirect to dashboard page
+    //click logo to redirect back to dashboard page
     cy.get("[data-test=logo]").eq(0).realClick();
 
-    // assert dashboard board
+    // assert current location is dashboard page
     cy.url().should("include", "/dashboard");
 
     // assert create new board card button exists
@@ -371,10 +364,10 @@ describe("Dashboard page desktop and tablet view", () => {
     // assert navigation to board page
     cy.url().should("include", "/board");
 
-    //click logo to redirect to dashboard page
+    //click logo to redirect back to dashboard page
     cy.get("[data-test=logo]").eq(0).realClick();
 
-    // assert dashboard board
+    // assert current location is dashboard page
     cy.url().should("include", "/dashboard");
 
     // click on delete board button of first board card

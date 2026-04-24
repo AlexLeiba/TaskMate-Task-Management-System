@@ -4,10 +4,9 @@ import Stripe from "stripe";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(request: NextRequest) {
-  const body = await request.json();
   const bodyRaw = await request.text();
 
-  let event = body; //stripe sends event data in req body where the object is relevant to the triggered event.
+  let event; //stripe sends event data in req body where the object is relevant to the triggered event.
   console.log("🚀 ~ POST ~ event:\n\n\n", event);
 
   //  https://dashboard.stripe.com/webhooks

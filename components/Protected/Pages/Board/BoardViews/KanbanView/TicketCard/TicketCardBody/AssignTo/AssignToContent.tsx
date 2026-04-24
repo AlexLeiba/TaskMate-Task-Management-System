@@ -167,7 +167,6 @@ export function AssignToContent({
                 email: user.email || "",
                 name: user.fullName,
                 avatar: user.imageUrl || "",
-                stripeCustomerId: "",
               }}
               size={"sm"}
             />

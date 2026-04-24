@@ -738,4 +738,7 @@ describe("Board page", () => {
   it.skip("CardDetails Tabs: comments, attachments, checklist", () => {
     // TODO
   });
+  it.skip("Board view navigations", () => {
+    // TODO
+  });
 });

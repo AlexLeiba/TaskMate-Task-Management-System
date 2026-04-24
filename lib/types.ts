@@ -523,3 +523,39 @@ export type ListDataKanbanType = {
   unassignedCard?: boolean;
   filters?: FilterStates;
 };
+
+// STRIPE TYPES
+
+export type StripeProductType = {
+  id: string;
+  description: string;
+  name: string;
+  updated: number;
+  created: number;
+  price: {
+    price_amount: number;
+    payment_type: string;
+    lookup_key: string;
+    priceId: string;
+    recurring: {
+      interval: string;
+      interval_count: number;
+    };
+    tax_behavior: string;
+    currency: string;
+  };
+};
+
+export type StripePriceType = {
+  id: string;
+  created: number;
+  active: boolean;
+  currency: string;
+  product: string; //product id // will get prices for the given product
+  lookup_key: string | null;
+  recurring: {
+    interval: string;
+  };
+  type: string;
+  unit_amount: number;
+};

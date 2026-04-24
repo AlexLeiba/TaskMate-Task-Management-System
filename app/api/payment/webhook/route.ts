@@ -28,6 +28,13 @@ export async function POST(request: NextRequest, res: NextRequest) {
   let status;
   // Handle the event
   switch (event.type) {
+    case "checkout.session.completed":
+      subscription = event.data.object;
+      status = subscription.status;
+      console.log(`Customer data->>> ${event.data.object.customer}.`);
+      // Then define and call a method to handle the subscription trial ending.
+      // handleSubscriptionTrialEnding(subscription);
+      break;
     case "customer.subscription.trial_will_end":
       subscription = event.data.object;
       status = subscription.status;

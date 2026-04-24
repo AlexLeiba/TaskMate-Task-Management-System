@@ -40,6 +40,8 @@ model User {
   reportedCards Card[] @relation("Reported")//inverse relation/ wont be included in req , unless using property include with prisma
   assignedCards Card[] @relation("Assigned")//inverse relation/ wont be included in req , unless using property include with prisma
 
+  stripeCustomerId String  @default("")
+
 
   createdNotifications Notification[] @relation("NotificationAuthor")
   receivedNotifications UserNotification[]

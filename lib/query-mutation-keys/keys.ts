@@ -7,7 +7,13 @@ export const QUERY_KEYS = {
         getImages: "get-images",
       },
     },
-
+    billings: {
+      products: {
+        getProducts: "get-products",
+        createCheckoutSession: "create-checkout-session",
+        createPortalSession: "create-portal-session",
+      },
+    },
     overview: {},
     notifications: {
       getNotification: "get-all-notifications",

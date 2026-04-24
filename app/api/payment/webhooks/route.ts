@@ -5,6 +5,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
+  const bodyRaw = await request.text();
 
   let event = body; //stripe sends event data in req body where the object is relevant to the triggered event.
   console.log("🚀 ~ POST ~ event:\n\n\n", event);
@@ -16,7 +17,11 @@ export async function POST(request: NextRequest) {
     // Get the signature sent by Stripe
     const signature = request.headers.get("stripe-signature")!;
     try {
-      event = stripe.webhooks.constructEvent(body, signature, endpointSecret);
+      event = stripe.webhooks.constructEvent(
+        bodyRaw,
+        signature,
+        endpointSecret,
+      );
     } catch (err: any) {
       console.log(`⚠️  Webhook signature verification failed.`, err.message);
       return NextResponse.json({ error: err.message });

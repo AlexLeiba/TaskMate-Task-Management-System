@@ -1,4 +1,3 @@
-import { prisma } from "@/lib/prisma";
 import { verifyCurrentActiveUser } from "@/lib/server/verifyCurrentActiveUser";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";

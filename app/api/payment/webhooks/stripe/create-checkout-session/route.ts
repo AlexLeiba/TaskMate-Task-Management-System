@@ -9,6 +9,16 @@ type CheckoutBody = {
   lookup_key: string;
 };
 
+// TODO save in DB is user has subscription
+// And when it expires
+// Only after the subscriptions has expire i will make a request to check if he renewed it and will update the expire key
+//SAve in DB
+//customerID // to identify which customer want to review or cancel/update subs.
+//subscriptionStatus (active/inactive)
+//subscriptionPlan (to show on frontend) Standard/Silver/Gold
+//subscriptionId
+//subscriptionEndPeriod ( 20 may 2026)
+
 export async function POST(req: NextRequest) {
   const activeUser = await verifyCurrentActiveUser();
 
@@ -27,6 +37,7 @@ export async function POST(req: NextRequest) {
     const session = await stripe.checkout.sessions.create({
       // customer: activeUser?.data?.activeUser?.id,
       // customer_email: activeUser?.data?.activeUser?.email,
+      metadata: { userId: activeUser?.data?.activeUser?.id },
       mode: "subscription",
       billing_address_collection: "auto",
       line_items: [
@@ -44,15 +55,6 @@ export async function POST(req: NextRequest) {
     console.log("🚀 ~ POST ~ session:", session);
 
     //Save customer id in DB
-    const user = await prisma.user.update({
-      where: {
-        id: activeUser.data.activeUser.id,
-      },
-      data: {
-        stripeCustomerId: session.customer?.toString(),
-      },
-    });
-    console.log("🚀 ~ POST ~ user:", user);
 
     return NextResponse.json({ url: session.url });
   } catch (error: any) {

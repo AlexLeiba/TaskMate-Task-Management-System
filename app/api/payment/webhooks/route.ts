@@ -1,3 +1,4 @@
+import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -6,14 +7,12 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 export async function POST(request: NextRequest, res: NextRequest) {
   const body = await res.json();
 
-  let event = body;
-  // Replace this endpoint secret with your endpoint's unique secret
-  // If you are testing with the CLI, find the secret by running 'stripe listen'
-  // If you are using an endpoint defined with the API or dashboard, look in your webhook settings
-  // at https://dashboard.stripe.com/webhooks
-  const endpointSecret = "whsec_12345";
-  // Only verify the event if you have an endpoint secret defined.
-  // Otherwise use the basic event deserialized with JSON.parse
+  let event = body; //stripe sends event data in req body where the object is relevant to the triggered event.
+  console.log("🚀 ~ POST ~ event:\n\n\n", event);
+
+  //  https://dashboard.stripe.com/webhooks
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SIGNING_SECRET!;
+
   if (endpointSecret) {
     // Get the signature sent by Stripe
     const signature = request.headers.get("stripe-signature")!;
@@ -24,6 +23,7 @@ export async function POST(request: NextRequest, res: NextRequest) {
       return NextResponse.json({ error: err.message });
     }
   }
+
   let subscription;
   let status;
   // Handle the event
@@ -31,9 +31,52 @@ export async function POST(request: NextRequest, res: NextRequest) {
     case "checkout.session.completed":
       subscription = event.data.object;
       status = subscription.status;
+      console.log(`DATA \n\n\n\n->>> ${event.data.object}.`);
+      const session = event.data.object as Stripe.Checkout.Session;
+      const userId = session.metadata?.userId; //id passed in metadata obj when creating checkout session
+
+      const customerId = session.customer as string;
+      const subscriptionId = session.subscription as string;
+
+      // retrieve subs data from stripe and save it to DB using subsId
+      const sub = await stripe.subscriptions.retrieve(subscriptionId);
+      console.log("🚀 ~ POST ~ SUB:\n\n\n\n\n", sub);
+
+      //     await prisma.user.update({
+      //       where: {
+      //         id: userId,
+      //       },
+      //       data: {
+      //     stripeCustomerId: customerId
+      //     stripeSubscriptionId: sub.id,
+      //     subscriptionStatus: sub.status,//paid / unpaid
+      //     priceId: sub.items.data[0].price.id,// plan name
+      //     currentPeriodEnd: new Date(1000 * 1000),//when the subscription will end
+      //     interval:sub.items.data[0].price.recurring?.interval,//monthly / yearly
+      //
+      //       },
+      //     });
+      break;
+    case "checkout.session.updated":
+      subscription = event.data.object;
+      status = subscription.status;
+      console.log(`Customer data->>> ${event.data.object.customer}.`);
+
+      // Then define and call a method to handle the subscription trial ending.
+      // handleSubscriptionTrialEnding(subscription);
+
+      // TODO update in DB the status of the subscription
+
+      break;
+    case "checkout.session.deleted":
+      subscription = event.data.object;
+      status = subscription.status;
       console.log(`Customer data->>> ${event.data.object.customer}.`);
       // Then define and call a method to handle the subscription trial ending.
       // handleSubscriptionTrialEnding(subscription);
+
+      //TODO change the status of the subscription in DB
+
       break;
     case "customer.subscription.trial_will_end":
       subscription = event.data.object;

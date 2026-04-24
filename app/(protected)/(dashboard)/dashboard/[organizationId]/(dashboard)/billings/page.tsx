@@ -135,7 +135,7 @@ const ProductDisplay = () => {
     queryKey: [QUERY_KEYS.pages.billings.products.getProducts],
     queryFn: async () => {
       const response: { data: { data: StripeProductType[] } } =
-        await axiosInstance.get("api/payment/products");
+        await axiosInstance.get("api/payment/webhooks/stripe/products");
 
       return response.data;
     },
@@ -156,14 +156,20 @@ const ProductDisplay = () => {
   const { mutate: createCheckoutSession, isPending } = useMutation({
     mutationFn: async (lookupKey: string) => {
       const response = await axiosInstance.post(
-        "/api/payment/create-checkout-session",
+        "/api/payment/webhooks/stripe/create-checkout-session",
         {
           lookup_key: lookupKey,
         },
       );
-      console.log("🚀 ~ ProductDisplay ~ response:", response);
+      console.log("🚀 ~ ProductDisplay ~ response\n\n:", response);
 
-      window.location.href = response.data.url;
+      if (response.data.url) {
+        window.location.href = response.data.url;
+      } else {
+        toast.error(
+          "Something went wrong,checkout url is missing, please refresh the page and try again",
+        );
+      }
       return response.data;
     },
     mutationKey: [QUERY_KEYS.pages.billings.products.createCheckoutSession],

@@ -1,11 +1,10 @@
-import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-export async function POST(request: NextRequest, res: NextRequest) {
-  const body = await res.json();
+export async function POST(request: NextRequest) {
+  const body = await request.json();
 
   let event = body; //stripe sends event data in req body where the object is relevant to the triggered event.
   console.log("🚀 ~ POST ~ event:\n\n\n", event);

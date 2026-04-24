@@ -47,7 +47,7 @@ const emailVariants = cva("text-gray-300", {
 
 type Props = VariantProps<typeof cardVariants> &
   ComponentProps<"div"> & {
-    data: Omit<User, "id" | "createdAt" | "updatedAt"> | undefined;
+    data: Pick<User, "avatar" | "name" | "email"> | undefined;
     type?: string;
     description?: string;
     createdAt?: string;

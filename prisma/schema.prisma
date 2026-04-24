@@ -42,10 +42,10 @@ model User {
 
 // stripe
   stripeCustomerId String  @default("")
-  stripeSubscriptionId String @default("")
-  subscriptionStatus String @default("unpaid")
-  priceId String @default("")
-  currentPeriodEnd DateTime?
+  // stripeSubscriptionId String @default("")
+  // subscriptionStatus String @default("unpaid")
+  // priceId String @default("")
+  // currentPeriodEnd DateTime?
   //
 
   createdNotifications Notification[] @relation("NotificationAuthor")

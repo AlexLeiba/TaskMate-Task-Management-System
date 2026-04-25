@@ -1,3 +1,5 @@
+import { prisma } from "@/lib/prisma";
+import { getSubscriptionExpiry } from "@/lib/server/getSubscriptionExpiry";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -28,39 +30,40 @@ export async function POST(request: NextRequest) {
         case "checkout.session.completed":
           subscription = event.data.object;
           status = subscription.status;
-          console.log(`DATA \n\n\n\n->>> ${event.data.object}.`);
+
           const session = event.data.object as Stripe.Checkout.Session;
           const userId = session.metadata?.userId; //id passed in metadata obj when creating checkout session
+          if (!userId) {
+            throw new Error("User not found");
+          }
 
           const customerId = session.customer as string;
           const subscriptionId = session.subscription as string;
 
-          // retrieve subs data from stripe and save it to DB using subsId
           const sub = await stripe.subscriptions.retrieve(subscriptionId);
-          console.log("🚀 ~ POST ~ SUB:\n\n\n\n\n", sub);
+          console.log("🚀 ~  SUB-checkout.session.completed :\n\n\n\n\n", sub);
 
-          //     await prisma.user.update({
-          //       where: {
-          //         id: userId,
-          //       },
-          //       data: {
-          //     stripeCustomerId: customerId
-          //     stripeSubscriptionId: sub.id,
-          //     subscriptionStatus: sub.status,//paid / unpaid
-          //     priceId: sub.items.data[0].price.id,// plan name
-          //     currentPeriodEnd: new Date(1000 * 1000),//when the subscription will end
-          //     interval:sub.items.data[0].price.recurring?.interval,//monthly / yearly
-          //
-          //       },
-          //     });
+          const subscriptionExpiresAt = getSubscriptionExpiry(sub);
+
+          await prisma.billing.create({
+            data: {
+              userId: userId,
+              stripeCustomerId: customerId,
+              stripeSubscriptionId: sub.id,
+              subscriptionStatus: sub.status, //active/inactive
+              priceId: sub.items.data[0].price.id, // plan name
+              subscriptionExpiresAt, //when the subscription will end
+              interval: sub.items.data[0].price.recurring?.interval, //monthly / yearly
+            },
+          });
           break;
 
-        case "customer.subscription.trial_will_end":
+        case "checkout.session.expired":
           subscription = event.data.object;
           status = subscription.status;
           console.log(`Subscription status is ${status}.`);
-          // Then define and call a method to handle the subscription trial ending.
-          // handleSubscriptionTrialEnding(subscription);
+          // Then define and call a method to handle the subscription deleted.
+          // handleSubscriptionDeleted(subscriptionDeleted);
           break;
         case "customer.subscription.deleted":
           subscription = event.data.object;
@@ -69,21 +72,43 @@ export async function POST(request: NextRequest) {
           // Then define and call a method to handle the subscription deleted.
           // handleSubscriptionDeleted(subscriptionDeleted);
           break;
-        case "customer.subscription.created":
+        case "customer.subscription.updated":
+          subscription = event.data.object;
+          status = subscription.status;
+          console.log(`Subscription status is ${status}.`);
+          // Then define and call a method to handle the subscription deleted.
+          // handleSubscriptionDeleted(subscriptionDeleted);
+          break;
+        case "invoice.created":
+          subscription = event.data.object;
+          status = subscription.status;
+          console.log(`Subscription status is ${status}.`);
+          // Then define and call a method to handle the subscription trial ending.
+          // handleSubscriptionTrialEnding(subscription);
+          break;
+        case "invoice.paid":
           subscription = event.data.object;
           status = subscription.status;
           console.log(`Subscription status is ${status}.`);
           // Then define and call a method to handle the subscription created.
           // handleSubscriptionCreated(subscription);
           break;
-        case "customer.subscription.updated":
+        case "invoice.finalized":
           subscription = event.data.object;
           status = subscription.status;
           console.log(`Subscription status is ${status}.`);
           // Then define and call a method to handle the subscription update.
           // handleSubscriptionUpdated(subscription);
           break;
-        case "entitlements.active_entitlement_summary.updated":
+        case "invoice.payment_succeeded":
+          subscription = event.data.object;
+          console.log(
+            `Active entitlement summary updated for ${subscription}.`,
+          );
+          // Then define and call a method to handle active entitlement summary updated
+          // handleEntitlementUpdated(subscription);
+          break;
+        case "invoice.payment_failed":
           subscription = event.data.object;
           console.log(
             `Active entitlement summary updated for ${subscription}.`,

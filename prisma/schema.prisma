@@ -41,15 +41,26 @@ model User {
   assignedCards Card[] @relation("Assigned")//inverse relation/ wont be included in req , unless using property include with prisma
 
 // stripe
-  stripeCustomerId String  @default("")
-  // stripeSubscriptionId String @default("")
-  // subscriptionStatus String @default("unpaid")
-  // priceId String @default("")
-  // currentPeriodEnd DateTime?
-  //
+  stripeCustomerId String  @default("")//identify customer
 
+  
+  billing  Billing[]
   createdNotifications Notification[] @relation("NotificationAuthor")
   receivedNotifications UserNotification[]
+}
+
+model Billing {
+  id String @id @default(uuid())
+  userId String
+  stripeCustomerId String  @default("")//identify customer
+  stripeSubscriptionId String @default("") //identify subscription
+  subscriptionStatus String @default("unpaid") //paid or unpaid
+  priceId String @default("") //Subscription price name
+  subscriptionExpiresAt DateTime? //end date of subscription
+  interval String @default("month")
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
 }
 
 model Board {

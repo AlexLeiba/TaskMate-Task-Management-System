@@ -42,6 +42,14 @@ export async function POST(request: NextRequest) {
 
           const sub = await stripe.subscriptions.retrieve(subscriptionId);
           console.log("🚀 ~  SUB-checkout.session.completed :\n\n\n\n\n", sub);
+          console.log(
+            "🚀 ~  SUB-checkout.session.completed :\n\n\n\n\n",
+            sub.items.data[0].plan.product,
+          );
+          console.log(
+            "🚀 ~  SUB-checkout.session.completed :\n\n\n\n\n",
+            sub.items.data[0],
+          );
 
           const subscriptionExpiresAt = getSubscriptionExpiry(sub);
 

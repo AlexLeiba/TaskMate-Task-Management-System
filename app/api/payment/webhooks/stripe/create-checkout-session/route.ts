@@ -24,14 +24,16 @@ export async function POST(req: NextRequest) {
       expand: ["data.product"],
     });
     // retrieve selected product
-    const selectedProduct = await stripe.products.retrieve(prices.data[0].id);
+    // const selectedProduct = await stripe.products.retrieve(
+    //   prices.data[0].product.toString(),
+    // );
 
     const session = await stripe.checkout.sessions.create({
       // customer: activeUser?.data?.activeUser?.id,
       // customer_email: activeUser?.data?.activeUser?.email,
       metadata: {
         userId: activeUser?.data?.activeUser?.id,
-        productName: selectedProduct.name,
+        // productName: selectedProduct.name,
       },
       mode: "subscription",
       billing_address_collection: "auto",
@@ -43,7 +45,7 @@ export async function POST(req: NextRequest) {
         },
       ],
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/${orgId}/billings?success=true`,
-      return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/${orgId}/billings?canceled=true`,
+      // return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/${orgId}/billings?canceled=true`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/${orgId}/billings?canceled=true`,
     });
 

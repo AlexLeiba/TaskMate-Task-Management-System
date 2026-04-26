@@ -105,6 +105,7 @@ function BillingsPage() {
     lookupKey: string | undefined | null;
     name: string;
   }) {
+    console.log("🚀 ~ handleCheckout ~ lookupKey:", lookupKey);
     toast.loading("Loading...", {
       id: QUERY_KEYS.pages.billings.products.createCheckoutSession,
     });

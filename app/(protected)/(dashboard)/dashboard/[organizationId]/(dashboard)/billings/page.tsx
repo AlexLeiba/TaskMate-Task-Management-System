@@ -2,19 +2,21 @@
 import { useEffect, useState } from "react";
 import { SubscriptionProductCard } from "@/components/Protected/Pages/Billings/SubscriptionProductCard";
 import { SuccesfulPaymentDialog } from "@/components/Protected/Pages/Billings/SuccesfulPaymentDialog";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { axiosInstance } from "@/lib/config";
-import { STRIPE_INTERVAL, STRIPE_PRODUCT_NAME } from "@/lib/consts/consts";
+import { STRIPE_INTERVAL } from "@/lib/consts/consts";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { StripeProductsWithPricesType } from "@/lib/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
-
 import { CreditCard } from "lucide-react";
 import toast from "react-hot-toast";
 
 function BillingsPage() {
-  const [success, setSuccess] = useState(false);
+  const [checkoutStatus, setCheckoutStatus] = useState({
+    success: false,
+    canceled: false,
+    open: false,
+  });
   const [selectedPlan, setSelectedPlan] = useState("");
 
   useEffect(() => {
@@ -22,19 +24,22 @@ function BillingsPage() {
     const query = new URLSearchParams(window.location.search);
 
     if (query.get("success")) {
-      // setSuccess(true);
+      setCheckoutStatus({ success: true, canceled: false, open: true });
+
+      const successPlanMessage = `You have successfully subscribed to ${query.get("plan")} plan.`;
+      setSelectedPlan(successPlanMessage);
       // const querySessionId = query.get("session_id");
       // setSessionId(querySessionId || "");
-      toast.success("Payment was successful");
     }
 
     if (query.get("canceled")) {
-      // setSuccess(false);
-      toast.success("Payment was canceled");
+      setCheckoutStatus({ success: false, canceled: true, open: true });
+      const canceledPlanMessage = `You have canceled the subscription to ${query.get("plan")} plan.`;
+      setSelectedPlan(canceledPlanMessage);
     }
 
     return () => {
-      setSuccess(false);
+      setCheckoutStatus({ success: false, canceled: false, open: false });
     };
   }, []);
 
@@ -100,12 +105,10 @@ function BillingsPage() {
   });
   function handleCheckout({
     lookupKey,
-    name,
   }: {
     lookupKey: string | undefined | null;
     name: string;
   }) {
-    console.log("🚀 ~ handleCheckout ~ lookupKey:", lookupKey);
     toast.loading("Loading...", {
       id: QUERY_KEYS.pages.billings.products.createCheckoutSession,
     });
@@ -116,7 +119,6 @@ function BillingsPage() {
       return;
     }
 
-    setSelectedPlan(name);
     createCheckoutSession(lookupKey);
   }
 
@@ -129,17 +131,20 @@ function BillingsPage() {
         </div>
         <Separator className="bg-gray-600 w-full my-4" />
         <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-2">
-          {
-            // add user customer id
-            isCustomerSubscribed && <PortalCustomer />
-          }
           {productsWithPrices?.data &&
             [...productsWithPrices.data]
               .sort((a, b) => a.price - b.price)
               .map((product) => {
                 return (
                   <SubscriptionProductCard
-                    disabled={product.name === STRIPE_PRODUCT_NAME.Standard}
+                    isCustomerSubscribed={!!isCustomerSubscribed}
+                    expiresAt={product.subscriptionExpiresAt}
+                    canceledAt={product.canceledAt}
+                    disabled={
+                      !isCustomerSubscribed
+                        ? false
+                        : !product.isCustomerSubscribed
+                    }
                     currency={product.currency || ""}
                     isPending={isPending}
                     key={product?.name}
@@ -147,6 +152,7 @@ function BillingsPage() {
                     price={product?.price}
                     description={product.description}
                     onSelectPlan={() =>
+                      !isCustomerSubscribed &&
                       handleCheckout({
                         lookupKey: product.lookup_key,
                         name: product.name,
@@ -160,8 +166,10 @@ function BillingsPage() {
         </div>
       </section>
       <SuccesfulPaymentDialog
-        setOpen={setSuccess}
-        open={success}
+        setOpen={() =>
+          setCheckoutStatus({ open: true, canceled: false, success: false })
+        }
+        open={checkoutStatus.canceled || checkoutStatus.success}
         title={selectedPlan}
       />
     </>
@@ -172,35 +180,35 @@ export default BillingsPage;
 
 // TODO
 // show this UI if user alredy has a subscription
-export function PortalCustomer() {
-  const { mutate: createPortalSession, isPending } = useMutation({
-    mutationFn: async () => {
-      const response = await axiosInstance.post(
-        "api/payment/create-portal-session",
-      );
-
-      window.location.href = response.data.url;
-      return response.data;
-    },
-    mutationKey: [QUERY_KEYS.pages.billings.products.createPortalSession],
-    onSuccess: (data) => {
-      toast.success("Portal session created", {
-        id: QUERY_KEYS.pages.billings.products.createPortalSession,
-      });
-
-      window.location.href = data.url;
-    },
-    onError: (error) => {
-      toast.error(error?.message, {
-        id: QUERY_KEYS.pages.billings.products.createPortalSession,
-      });
-    },
-  });
-  return (
-    <div>
-      <Button disabled={isPending} onClick={() => createPortalSession()}>
-        Edit billing details
-      </Button>
-    </div>
-  );
-}
+// export function PortalCustomer() {
+//   const { mutate: createPortalSession, isPending } = useMutation({
+//     mutationFn: async () => {
+//       const response = await axiosInstance.post(
+//         "api/payment/create-portal-session",
+//       );
+//
+//       window.location.href = response.data.url;
+//       return response.data;
+//     },
+//     mutationKey: [QUERY_KEYS.pages.billings.products.createPortalSession],
+//     onSuccess: (data) => {
+//       toast.success("Portal session created", {
+//         id: QUERY_KEYS.pages.billings.products.createPortalSession,
+//       });
+//
+//       window.location.href = data.url;
+//     },
+//     onError: (error) => {
+//       toast.error(error?.message, {
+//         id: QUERY_KEYS.pages.billings.products.createPortalSession,
+//       });
+//     },
+//   });
+//   return (
+//     <div>
+//       <Button disabled={isPending} onClick={() => createPortalSession()}>
+//         Edit billing details
+//       </Button>
+//     </div>
+//   );
+// }

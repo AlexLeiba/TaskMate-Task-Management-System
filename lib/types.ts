@@ -569,4 +569,6 @@ export type StripeProductsWithPricesType = {
   isCustomerSubscribed: boolean;
   price: number;
   description: string;
+  subscriptionExpiresAt: Date | null;
+  canceledAt: number | null;
 };

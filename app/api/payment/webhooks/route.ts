@@ -41,7 +41,9 @@ export async function POST(request: NextRequest) {
           const customerId = session.customer as string;
           const subscriptionId = session.subscription as string;
 
-          const sub = await stripe.subscriptions.retrieve(subscriptionId);
+          const sub = await stripe.subscriptions.retrieve(subscriptionId, {
+            expand: ["items.data.price.product"],
+          });
           console.log(
             "🚀 ~ POST ~ \n\n\n\n selectedProductName:",
             selectedProductName,
@@ -65,7 +67,8 @@ export async function POST(request: NextRequest) {
               stripeSubscriptionId: sub.id,
               subscriptionStatus: sub.status, //active/inactive
               priceId: sub.items.data[0].price.id, // plan name
-              planName: selectedProductName, //to indentify visually in DB user plan
+              // @ts-ignore
+              planName: sub.items.data[0].price.product.name, //to indentify visually in DB user plan
               currency: sub.items.data[0].price.currency,
               subscriptionExpiresAt, //when the subscription will end
               interval: sub.items.data[0].price.recurring?.interval, //monthly / yearly

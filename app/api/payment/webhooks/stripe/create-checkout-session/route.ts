@@ -23,6 +23,8 @@ export async function POST(req: NextRequest) {
       lookup_keys: [body.lookup_key],
       expand: ["data.product"],
     });
+
+    const selectedProduct = prices.data[0].product as Stripe.Product;
     // retrieve selected product
     // const selectedProduct = await stripe.products.retrieve(
     //   prices.data[0].product.toString(),
@@ -44,9 +46,9 @@ export async function POST(req: NextRequest) {
           quantity: 1,
         },
       ],
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/${orgId}/billings?success=true`,
+      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/${orgId}/billings?success=true&plan=${selectedProduct.name}`,
       // return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/${orgId}/billings?canceled=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/${orgId}/billings?canceled=true`,
+      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/${orgId}/billings?canceled=true&plan=${selectedProduct.name}`,
     });
 
     return NextResponse.json({ url: session.url });

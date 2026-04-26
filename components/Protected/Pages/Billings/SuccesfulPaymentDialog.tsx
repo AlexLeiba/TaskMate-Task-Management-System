@@ -30,8 +30,8 @@ export function SuccesfulPaymentDialog({
         aria-describedby={`Success payment dialog`}
       >
         <DialogHeader>
-          <DialogTitle className="text-2xl">
-            You have subscribed successfully to the plan {title}
+          <DialogTitle className="text-2xl text-center">
+            Congratulations You have subscribed successfully to {title} plan.
           </DialogTitle>
         </DialogHeader>
 

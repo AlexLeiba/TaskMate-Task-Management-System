@@ -12,3 +12,16 @@ export const USER_ROLES = {
   admin: "admin",
   member: "member",
 } as const;
+
+export const STRIPE_CURRENCY = {
+  ron: "RON",
+  usd: "$",
+  eur: "€",
+} as const;
+
+export const STRIPE_PRODUCT_NAME = {
+  Standard: "Standard",
+} as const;
+export const STRIPE_INTERVAL = {
+  monthly: "monthly",
+} as const;

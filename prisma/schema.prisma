@@ -58,6 +58,8 @@ model Billing {
   priceId String @default("") //Subscription price name
   subscriptionExpiresAt DateTime? //end date of subscription
   interval String @default("month")
+  planName String @default("")
+  currency String @default("")
 
   user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 

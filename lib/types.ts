@@ -10,6 +10,7 @@ import {
   PriorityType as GeneratedPriorityType,
 } from "./generated/prisma/client";
 import { FILES_MIME_TYPES, IMAGES_MIME_TYPES } from "./consts/protected/files";
+import Stripe from "stripe";
 
 export type ActivityActionType = "created" | "deleted" | "updated";
 
@@ -558,4 +559,14 @@ export type StripePriceType = {
   };
   type: string;
   unit_amount: number;
+};
+
+export type StripeProductsWithPricesType = {
+  name: string;
+  lookup_key: string | null | undefined;
+  currency: string | undefined;
+  interval: Stripe.Price.Recurring.Interval | undefined;
+  isCustomerSubscribed: boolean;
+  price: number;
+  description: string;
 };

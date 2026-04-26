@@ -33,6 +33,7 @@ export async function POST(request: NextRequest) {
 
           const session = event.data.object as Stripe.Checkout.Session;
           const userId = session.metadata?.userId; //id passed in metadata obj when creating checkout session
+          const selectedProductName = session.metadata?.productName;
           if (!userId) {
             throw new Error("User not found");
           }
@@ -41,7 +42,10 @@ export async function POST(request: NextRequest) {
           const subscriptionId = session.subscription as string;
 
           const sub = await stripe.subscriptions.retrieve(subscriptionId);
-          console.log("🚀 ~  SUB-checkout.session.completed :\n\n\n\n\n", sub);
+          console.log(
+            "🚀 ~ POST ~ \n\n\n\n selectedProductName:",
+            selectedProductName,
+          );
           console.log(
             "🚀 ~  SUB-checkout.session.completed :\n\n\n\n\n",
             sub.items.data[0].plan.product,
@@ -50,6 +54,7 @@ export async function POST(request: NextRequest) {
             "🚀 ~  SUB-checkout.session.completed :\n\n\n\n\n",
             sub.items.data[0],
           );
+          console.log("🚀 ~  SUB-checkout.session.completed :\n\n\n\n\n", sub);
 
           const subscriptionExpiresAt = getSubscriptionExpiry(sub);
 
@@ -60,6 +65,8 @@ export async function POST(request: NextRequest) {
               stripeSubscriptionId: sub.id,
               subscriptionStatus: sub.status, //active/inactive
               priceId: sub.items.data[0].price.id, // plan name
+              planName: selectedProductName, //to indentify visually in DB user plan
+              currency: sub.items.data[0].price.currency,
               subscriptionExpiresAt, //when the subscription will end
               interval: sub.items.data[0].price.recurring?.interval, //monthly / yearly
             },

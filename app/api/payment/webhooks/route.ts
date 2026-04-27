@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
           // Then define and call a method to handle the subscription deleted.
           // handleSubscriptionDeleted(subscriptionDeleted);
           break;
-        case "customer.subscription.deleted":
+        case "customer.subscription.created": //whenever a customer sign up for a new plan
           subscription = event.data.object;
           status = subscription.status;
           console.log(`Subscription status is ${status}.`);
@@ -81,7 +81,16 @@ export async function POST(request: NextRequest) {
           console.log(`Subscription status is ${status}.`);
           console.log("🚀 ~ \n\n\n\n\n\n: UPDATEDDDD", event.data);
           break;
-        case "customer.subscription.updated":
+        case "customer.subscription.deleted": //whenever a customer's subscription ends.
+          subscription = event.data.object;
+          status = subscription.status;
+          console.log(`Subscription status is ${status}.`);
+          // Then define and call a method to handle the subscription deleted.
+          // handleSubscriptionDeleted(subscriptionDeleted);
+          console.log(`Subscription status is ${status}.`);
+          console.log("🚀 ~ \n\n\n\n\n\n: UPDATEDDDD", event.data);
+          break;
+        case "customer.subscription.updated": //whenever a customer changes plan.
           subscription = event.data.object;
           status = subscription.status;
           console.log(`Subscription status is ${status}.`);

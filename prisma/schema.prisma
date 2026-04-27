@@ -54,7 +54,7 @@ model Billing {
   userId String
   stripeCustomerId String  @default("")//identify customer
   stripeSubscriptionId String @unique //identify subscription
-  subscriptionStatus String @default("unpaid") //paid or unpaid
+  subscriptionStatus String @default("inactive") //paid or unpaid
   priceId String @default("") //Subscription price name
   subscriptionExpiresAt DateTime? //end date of subscription
   interval String @default("month")

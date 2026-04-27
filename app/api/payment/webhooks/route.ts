@@ -1,3 +1,4 @@
+import { SUBSCRIPTION_STATUS } from "@/lib/consts/consts";
 import { prisma } from "@/lib/prisma";
 import { getSubscriptionExpiry } from "@/lib/server/getSubscriptionExpiry";
 import { NextRequest, NextResponse } from "next/server";
@@ -7,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(request: NextRequest) {
   const bodyRaw = await request.text(); //stripe sends event data in req body where the object is relevant to the triggered event.
-  console.log("🚀 ~ POST ~ bodyRaw:", bodyRaw);
+  console.log("🚀 BODY RAW", bodyRaw);
   // console.log("🚀 ~ POST ~ event:\n\n\n", event);
 
   //  https://dashboard.stripe.com/webhooks
@@ -22,7 +23,7 @@ export async function POST(request: NextRequest) {
         signature,
         endpointSecret,
       );
-      console.log("🚀 ~ POST ~ event:\n\n\n\n", event);
+      console.log("🚀 ~ EVENT:\n\n\n\n", event);
 
       let subscription;
       let status;
@@ -30,9 +31,6 @@ export async function POST(request: NextRequest) {
       switch (event?.type) {
         case "checkout.session.completed":
           {
-            subscription = event.data.object;
-            status = subscription.status;
-
             const session = event.data.object as Stripe.Checkout.Session;
             const userId = session.metadata?.userId; //id passed in metadata obj when creating checkout session
 
@@ -47,20 +45,22 @@ export async function POST(request: NextRequest) {
               expand: ["items.data.price.product"],
             });
 
-            const product = sub.items.data[0].price.product as Stripe.Product;
+            const price = sub.items.data[0].price;
 
-            const subscriptionExpiresAt = getSubscriptionExpiry(sub);
+            let planName = "";
+            if (typeof price.product === "object" && "name" in price.product) {
+              planName = price.product.name;
+            }
 
             await prisma.billing.create({
               data: {
                 userId: userId,
                 stripeCustomerId: customerId,
                 stripeSubscriptionId: sub.id,
-                subscriptionStatus: "processing", //active/inactive
-                priceId: sub.items.data[0].price.id, // plan name
-                planName: product.name, //to indentify visually in DB user plan
+                subscriptionStatus: SUBSCRIPTION_STATUS.processing,
+                priceId: sub.items.data[0].price.id,
+                planName, //to indentify visually in DB user plan
                 currency: sub.items.data[0].price.currency,
-                subscriptionExpiresAt, //when the subscription will end
                 interval: sub.items.data[0].price.recurring?.interval, //monthly / yearly
               },
             });
@@ -68,86 +68,144 @@ export async function POST(request: NextRequest) {
           break;
 
         case "checkout.session.expired":
-          subscription = event.data.object;
-          status = subscription.status;
-          console.log(`Subscription status is ${status}.`);
-          // Then define and call a method to handle the subscription deleted.
-          // handleSubscriptionDeleted(subscriptionDeleted);
+          console.log("CHECKOUT SESSION EXPIRED");
           break;
         case "invoice.paid":
           {
-            //whenever a customer changes plan.
             subscription = event.data.object;
             status = subscription.status;
-            console.log(`Subscription status is ${status}.`);
-            console.log("🚀 ~ \n\n\n\n\n\n: PAID", event.data);
+
             const subscriptionId = event.data.object.parent
               ?.subscription_details?.subscription as string;
             const cutomerId = event.data.object.customer as string;
-            //id passed in metadata obj when
+
+            const sub = await stripe.subscriptions.retrieve(subscriptionId, {
+              expand: ["items.data.price.product"],
+            });
+
+            const subscriptionExpiresAt = getSubscriptionExpiry(sub);
+
             await prisma.billing.update({
               where: {
                 stripeCustomerId: cutomerId,
                 stripeSubscriptionId: subscriptionId,
               },
               data: {
-                subscriptionStatus: "paid", //active/inactive
+                subscriptionStatus: SUBSCRIPTION_STATUS.paid,
+                subscriptionExpiresAt,
               },
             });
-            // Then define and call a method to handle the subscription deleted.
-            // handleSubscriptionDeleted(subscriptionDeleted);
           }
           break;
-        case "invoice.payment_failed": //whenever a customer changes plan.
+        case "invoice.payment_failed":
           subscription = event.data.object;
           status = subscription.status;
-          console.log(`Subscription status is ${status}.`);
-          console.log("🚀 ~ \n\n\n\n\n\n: PAYMENT FAILED", event.data);
-          // Then define and call a method to handle the subscription deleted.
-          // handleSubscriptionDeleted(subscriptionDeleted);
+
           const subscriptionId = event.data.object.parent?.subscription_details
             ?.subscription as string;
           const cutomerId = event.data.object.customer as string;
           //id passed in metadata obj when
           await prisma.billing.update({
-            // @ts-ignore
             where: {
               stripeCustomerId: cutomerId,
               stripeSubscriptionId: subscriptionId,
             },
             data: {
-              subscriptionStatus: "failed", //active/inactive
+              subscriptionStatus: SUBSCRIPTION_STATUS.failed,
             },
           });
           break;
-        case "customer.subscription.created": //whenever a customer sign up for a new plan
-          subscription = event.data.object;
-          status = subscription.status;
-          console.log(`Subscription status is ${status}.`);
-          // Then define and call a method to handle the subscription deleted.
-          // handleSubscriptionDeleted(subscriptionDeleted);
-          console.log(`Subscription status is ${status}.`);
-          console.log("🚀 ~ \n\n\n\n\n\n: CREATED", event.data);
-          break;
-        case "customer.subscription.deleted": //whenever a customer's subscription ends.
-          subscription = event.data.object;
-          status = subscription.status;
-          console.log(`Subscription status is ${status}.`);
-          // Then define and call a method to handle the subscription deleted.
-          // handleSubscriptionDeleted(subscriptionDeleted);
-          console.log(`Subscription status is ${status}.`);
-          console.log("🚀 ~ \n\n\n\n\n\n: DELETED", event.data);
-          break;
-        case "customer.subscription.updated": //whenever a customer changes plan.
-          subscription = event.data.object;
-          status = subscription.status;
-          console.log(`Subscription status is ${status}.`);
-          console.log("🚀 ~ \n\n\n\n\n\n: UPDATEDDDD", event.data);
+        // CREATE
+        // whenever a customer sign up for a new plan
+        case "customer.subscription.created":
+          {
+            const subscription = event.data.object;
+            const price = subscription.items.data[0].price;
 
-          //CHECK IF WAS CANCELED
-          // Then define and call a method to handle the subscription deleted.
-          // handleSubscriptionDeleted(subscriptionDeleted);
+            let planName = "";
+            if (typeof price.product === "object" && "name" in price.product) {
+              planName = price.product.name;
+            }
+
+            const cutomerId = event.data.object.customer as string;
+
+            await prisma.billing.create({
+              data: {
+                stripeSubscriptionId: subscription.id,
+                subscriptionStatus: SUBSCRIPTION_STATUS.processing,
+                priceId: price.id,
+                planName: planName, //to indentify visually in DB user plan
+                currency: price.currency,
+                interval: price.recurring?.interval, //monthly / yearly
+                userId: cutomerId,
+              },
+            });
+          }
           break;
+
+        // DELETED
+        // subscription is fully ended / no more access / user hasn't paid
+        case "customer.subscription.deleted": {
+          subscription = event.data.object;
+          status = subscription.status;
+
+          const subscriptionId = event.data.object.id;
+          // const cutomerId = event.data.object.customer as string;
+
+          await prisma.billing.update({
+            where: {
+              stripeSubscriptionId: subscriptionId,
+            },
+            data: {
+              subscriptionStatus: SUBSCRIPTION_STATUS.inactive,
+            },
+          });
+          break;
+        }
+
+        // UPDATED
+        // plan upgrade / downgrade / cancel at period end / renewal date changes / payment method issues
+        case "customer.subscription.updated": {
+          //whenever a customer changes plan
+          const subscription = event.data.object;
+          const price = subscription.items.data[0].price;
+
+          // const cutomerId = event.data.object.customer as string;
+
+          let planName = "";
+          if (typeof price.product === "object" && "name" in price.product) {
+            planName = price.product.name;
+          }
+
+          const subscriptionExpiresAt = getSubscriptionExpiry(subscription);
+
+          const updateData: any = {
+            subscriptionExpiresAt,
+          };
+
+          const billing = await prisma.billing.findFirst({
+            where: {
+              stripeSubscriptionId: subscription.id,
+            },
+          });
+          //  UPDATE priceId and planName ONLY IF IS DIFFERENT THAN OLD ONE
+          if (billing?.priceId !== price.id) {
+            updateData.priceId = price.id;
+            updateData.planName = planName;
+            updateData.currency = price.currency;
+            updateData.interval = price.recurring?.interval;
+          }
+
+          await prisma.billing.update({
+            where: {
+              stripeSubscriptionId: subscription.id,
+            },
+            data: {
+              ...updateData,
+            },
+          });
+          break;
+        }
 
         default:
           // Unexpected event type

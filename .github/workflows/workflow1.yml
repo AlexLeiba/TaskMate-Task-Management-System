@@ -1,10 +1,30 @@
-name: Hello bro
+name: Next.js CI
 
-on: push
+on:
+  #(on trigger events) identifies when we want to run tests
+  push:
+    branches:
+      - workflow
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - closed
+    branches:
+      - staging
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  install_build:
+    runs-on: ubuntu-latest #runs on a server
     steps:
       - name: Build step
-        run: echo "Building test..."
+        run: echo "Building..."
+      - name: Test step
+        run: echo "Tusaneala...<<<<<<"
+
+  test:
+    runs-on: ubuntu-latest
+    needs: install_build
+    steps:
+      - name: Test it
+        run: echo "Test job bro"

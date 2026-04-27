@@ -1,0 +1,30 @@
+name: conditional workflow
+
+on: [push, pull_request]
+
+jobs:
+    normal_ci:
+        runs-on: ubuntu_latest
+        steps:
+            - name: Print message
+              run: echo "Normal CI"
+
+    pull_request:
+        runs-on: ubuntu_latest
+        if: ${{github.event_name == 'pull_request'}}
+        steps:
+            - name: Pull request here, checkout the repo
+              uses: actions/checkout@v4
+            - name: Install node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "latest"
+            - name: install dependencies
+              run: npm install
+
+    build:
+        runs-on: ubuntu_latest
+        if: ${{github.event_name == 'push'}}
+        steps:
+            - name: Push method here for build
+              run: echo "Build CI"

@@ -10,6 +10,7 @@ import {
   PriorityType as GeneratedPriorityType,
 } from "./generated/prisma/client";
 import { FILES_MIME_TYPES, IMAGES_MIME_TYPES } from "./consts/protected/files";
+import Stripe from "stripe";
 
 export type ActivityActionType = "created" | "deleted" | "updated";
 
@@ -522,6 +523,54 @@ export type ListDataKanbanType = {
   selectedMemberEmail?: string;
   unassignedCard?: boolean;
   filters?: FilterStates;
+};
+
+// STRIPE TYPES
+
+export type StripeProductType = {
+  id: string;
+  description: string;
+  name: string;
+  updated: number;
+  created: number;
+  price: {
+    price_amount: number;
+    payment_type: string;
+    lookup_key: string;
+    priceId: string;
+    recurring: {
+      interval: string;
+      interval_count: number;
+    };
+    tax_behavior: string;
+    currency: string;
+  };
+};
+
+export type StripePriceType = {
+  id: string;
+  created: number;
+  active: boolean;
+  currency: string;
+  product: string; //product id // will get prices for the given product
+  lookup_key: string | null;
+  recurring: {
+    interval: string;
+  };
+  type: string;
+  unit_amount: number;
+};
+
+export type StripeProductsWithPricesType = {
+  name: string;
+  lookup_key: string | null | undefined;
+  currency: string | undefined;
+  interval: Stripe.Price.Recurring.Interval | undefined;
+  isCustomerSubscribed: boolean;
+  price: number;
+  description: string;
+  subscriptionExpiresAt: Date | null;
+  canceledAt: number | null;
 };
 
 export type ListStatusesOptionType = {

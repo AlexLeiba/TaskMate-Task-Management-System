@@ -6,7 +6,7 @@ const ContentSecurityPolicy = `
               style-src 'self' 'unsafe-inline' https:;
               img-src 'self' data: https://*.clerk.com https://img.clerk.com  https://picsum.photos https://images.unsplash.com https://res.cloudinary.com ;
               font-src 'self' https: data: ;
-              connect-src 'self' https://*.clerk.com https://smooth-toucan-0.clerk.accounts.dev  https://clerk-telemetry.com/v1/event;
+              connect-src 'self' https://*.clerk.com https://smooth-toucan-0.clerk.accounts.dev  https://clerk-telemetry.com/v1/event https://checkout.stripe.com/;
               frame-ancestors 'none';
               worker-src 'self' blob:;
               object-src 'none';

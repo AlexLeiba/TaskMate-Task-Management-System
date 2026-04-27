@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useRef, useState } from "react";
 import { IconButton } from "@/components/ui/iconButton";
 import { Image, ImageDown, Plus } from "lucide-react";
@@ -350,6 +351,7 @@ export function Attachments({ cardDetailsId }: Props) {
             aria-label="Upload file"
             onClick={handleOpenFileInput}
             className="px-2"
+            data-test="upload-file-button"
           >
             <Plus className="text-green-600" />
           </IconButton>
@@ -358,6 +360,7 @@ export function Attachments({ cardDetailsId }: Props) {
             className="hidden"
             ref={uploadFileRef}
             onChange={handleChangeUploadedFile}
+            data-test="upload-file-input"
           />
         </div>
       </div>
@@ -394,6 +397,7 @@ export function Attachments({ cardDetailsId }: Props) {
               onClick={handleOpenFileInput}
               variant={"secondary"}
               classNameChildren="flex items-center gap-2"
+              data-test="add-attachment-button"
             >
               <Plus /> Add attachment
             </Button>

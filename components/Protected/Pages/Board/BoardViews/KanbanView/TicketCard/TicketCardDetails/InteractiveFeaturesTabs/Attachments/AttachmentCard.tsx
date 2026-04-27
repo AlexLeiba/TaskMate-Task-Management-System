@@ -29,7 +29,11 @@ export function AttachmentCard({
   handleDownloadFile,
 }: Props) {
   return (
-    <div key={attachment.author.id} className="flex flex-col gap-2">
+    <div
+      key={attachment.author.id}
+      className="flex flex-col gap-2"
+      data-test="attachment-card"
+    >
       <UserCard data={attachment.author} size={"sm"} />
 
       <div className="flex gap-6 mt-4 flex-wrap items-end">

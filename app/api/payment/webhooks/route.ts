@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
         signature,
         endpointSecret,
       );
+      console.log("🚀 ~ POST ~ event:\n\n\n\n", event);
 
       let subscription;
       let status;
@@ -33,7 +34,7 @@ export async function POST(request: NextRequest) {
 
           const session = event.data.object as Stripe.Checkout.Session;
           const userId = session.metadata?.userId; //id passed in metadata obj when creating checkout session
-          const selectedProductName = session.metadata?.productName;
+
           if (!userId) {
             throw new Error("User not found");
           }
@@ -44,19 +45,8 @@ export async function POST(request: NextRequest) {
           const sub = await stripe.subscriptions.retrieve(subscriptionId, {
             expand: ["items.data.price.product"],
           });
-          console.log(
-            "🚀 ~ POST ~ \n\n\n\n selectedProductName:",
-            selectedProductName,
-          );
-          console.log(
-            "🚀 ~  SUB-checkout.session.completed :\n\n\n\n\n",
-            sub.items.data[0].plan.product,
-          );
-          console.log(
-            "🚀 ~  SUB-checkout.session.completed :\n\n\n\n\n",
-            sub.items.data[0],
-          );
-          console.log("🚀 ~  SUB-checkout.session.completed :\n\n\n\n\n", sub);
+
+          const product = sub.items.data[0].price.product as Stripe.Product;
 
           const subscriptionExpiresAt = getSubscriptionExpiry(sub);
 
@@ -67,8 +57,7 @@ export async function POST(request: NextRequest) {
               stripeSubscriptionId: sub.id,
               subscriptionStatus: sub.status, //active/inactive
               priceId: sub.items.data[0].price.id, // plan name
-              // @ts-ignore
-              planName: sub.items.data[0].price.product.name, //to indentify visually in DB user plan
+              planName: product.name, //to indentify visually in DB user plan
               currency: sub.items.data[0].price.currency,
               subscriptionExpiresAt, //when the subscription will end
               interval: sub.items.data[0].price.recurring?.interval, //monthly / yearly
@@ -89,51 +78,18 @@ export async function POST(request: NextRequest) {
           console.log(`Subscription status is ${status}.`);
           // Then define and call a method to handle the subscription deleted.
           // handleSubscriptionDeleted(subscriptionDeleted);
+          console.log(`Subscription status is ${status}.`);
+          console.log("🚀 ~ \n\n\n\n\n\n: UPDATEDDDD", event.data);
           break;
         case "customer.subscription.updated":
           subscription = event.data.object;
           status = subscription.status;
           console.log(`Subscription status is ${status}.`);
+          console.log("🚀 ~ \n\n\n\n\n\n: UPDATEDDDD", event.data);
           // Then define and call a method to handle the subscription deleted.
           // handleSubscriptionDeleted(subscriptionDeleted);
           break;
-        case "invoice.created":
-          subscription = event.data.object;
-          status = subscription.status;
-          console.log(`Subscription status is ${status}.`);
-          // Then define and call a method to handle the subscription trial ending.
-          // handleSubscriptionTrialEnding(subscription);
-          break;
-        case "invoice.paid":
-          subscription = event.data.object;
-          status = subscription.status;
-          console.log(`Subscription status is ${status}.`);
-          // Then define and call a method to handle the subscription created.
-          // handleSubscriptionCreated(subscription);
-          break;
-        case "invoice.finalized":
-          subscription = event.data.object;
-          status = subscription.status;
-          console.log(`Subscription status is ${status}.`);
-          // Then define and call a method to handle the subscription update.
-          // handleSubscriptionUpdated(subscription);
-          break;
-        case "invoice.payment_succeeded":
-          subscription = event.data.object;
-          console.log(
-            `Active entitlement summary updated for ${subscription}.`,
-          );
-          // Then define and call a method to handle active entitlement summary updated
-          // handleEntitlementUpdated(subscription);
-          break;
-        case "invoice.payment_failed":
-          subscription = event.data.object;
-          console.log(
-            `Active entitlement summary updated for ${subscription}.`,
-          );
-          // Then define and call a method to handle active entitlement summary updated
-          // handleEntitlementUpdated(subscription);
-          break;
+
         default:
           // Unexpected event type
           console.log(`Unhandled event type ${event?.type}.`);

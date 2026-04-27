@@ -86,7 +86,6 @@ export async function POST(request: NextRequest) {
             const cutomerId = event.data.object.customer as string;
             //id passed in metadata obj when
             await prisma.billing.update({
-              // @ts-ignore
               where: {
                 stripeCustomerId: cutomerId,
                 stripeSubscriptionId: subscriptionId,

@@ -1,4 +1,5 @@
 export function isValidDateString(dateString: string): boolean {
+  if (!dateString) return false;
   const isoUtcRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
   if (!isoUtcRegex.test(dateString)) return false;
 

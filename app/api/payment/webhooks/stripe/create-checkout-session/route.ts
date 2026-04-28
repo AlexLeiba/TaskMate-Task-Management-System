@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
     // CASE 1: UPDATE EXISTING SUB (EXISTING CUSTOMER)
     // =========================
 
-    if (activeSub) {
+    if (activeSub && activeUser?.data?.stripeCustomerId) {
       const subscriptionItemId = activeSub.items.data[0].id;
       await stripe.subscriptions.update(activeSub.id, {
         items: [

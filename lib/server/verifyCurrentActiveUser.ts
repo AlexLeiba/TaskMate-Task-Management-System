@@ -4,6 +4,7 @@ import { verifyOrganizationMember } from "./verifyOrganizationMember";
 import { redirect } from "next/navigation";
 import { getCurrentActiveUserData } from "./getCurrentActiveUserData";
 import { UserRoleType } from "../types";
+import { SUBSCRIPTION_STATUS } from "../consts/consts";
 
 export async function verifyCurrentActiveUser(
   currentOrgId?: string | undefined | null,
@@ -12,6 +13,7 @@ export async function verifyCurrentActiveUser(
     activeUser: User | null;
     role: UserRoleType;
     stripeCustomerId?: string;
+    isActiveSubscription?: boolean;
   } | null;
   error: { message: string };
 }> {
@@ -46,6 +48,7 @@ export async function verifyCurrentActiveUser(
         billing: {
           select: {
             stripeCustomerId: true,
+            subscriptionStatus: true,
           },
         },
       },
@@ -63,6 +66,7 @@ export async function verifyCurrentActiveUser(
           billing: {
             select: {
               stripeCustomerId: true,
+              subscriptionStatus: true,
             },
           },
         },
@@ -85,6 +89,7 @@ export async function verifyCurrentActiveUser(
           billing: {
             select: {
               stripeCustomerId: true,
+              subscriptionStatus: true,
             },
           },
         },
@@ -96,6 +101,9 @@ export async function verifyCurrentActiveUser(
         activeUser,
         role: memberData.role,
         stripeCustomerId: activeUser?.billing[0]?.stripeCustomerId || undefined,
+        isActiveSubscription:
+          activeUser?.billing[0]?.subscriptionStatus ===
+          SUBSCRIPTION_STATUS.paid,
       },
       error: { message: "" },
     };

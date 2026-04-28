@@ -25,7 +25,7 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install deps
-        run: npm ci
+        run: npm i
 
   component-tests:
     runs-on: ubuntu-latest
@@ -38,7 +38,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - run: npm ci
+      - run: npm i
 
       - name: Run Cypress Component Tests
         uses: cypress-io/github-action@v6
@@ -57,7 +57,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - run: npm ci
+      - run: npm i
 
       - name: Run Cypress E2E Tests
         uses: cypress-io/github-action@v6

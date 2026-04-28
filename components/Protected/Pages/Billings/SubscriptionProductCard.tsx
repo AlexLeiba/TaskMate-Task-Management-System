@@ -9,7 +9,6 @@ type Props = {
   name: string;
   price: number;
   description: string;
-  isPending: boolean;
   currency: string;
   interval: string;
   disabled?: boolean;
@@ -47,7 +46,6 @@ export function SubscriptionProductCard({
   name,
   price,
   description,
-  isPending,
   currency,
   interval,
   disabled,
@@ -59,7 +57,7 @@ export function SubscriptionProductCard({
 }: Props) {
   return (
     <IconButton
-      disabled={isPending || disabled}
+      disabled={disabled}
       className={cn(
         "p-4 rounded-md bg-background-element opacity-70 hover:opacity-100 group",
         active && "opacity-100 ring-fuchsia-400 ring-1",

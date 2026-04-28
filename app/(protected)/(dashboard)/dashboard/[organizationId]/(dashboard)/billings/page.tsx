@@ -10,6 +10,8 @@ import { StripeProductsWithPricesType } from "@/lib/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { CreditCard } from "lucide-react";
 import toast from "react-hot-toast";
+import { SubscriptionProductCardSkeleton } from "@/components/Protected/Pages/Billings/SubscriptionProductCardSkeleton";
+import { AlreadySubscribedDialog } from "@/components/Protected/Pages/Billings/AlreadySubscribedDialog";
 
 function BillingsPage() {
   const [checkoutStatus, setCheckoutStatus] = useState({
@@ -18,6 +20,8 @@ function BillingsPage() {
     open: false,
   });
   const [selectedPlan, setSelectedPlan] = useState("");
+  const [isAlreadySubscribedModalOpen, setIsAlreadySubscribedModalOpen] =
+    useState(false);
 
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
@@ -39,6 +43,8 @@ function BillingsPage() {
     }
 
     return () => {
+      query.delete("success");
+      query.delete("canceled");
       setCheckoutStatus({ success: false, canceled: false, open: false });
     };
   }, []);
@@ -80,13 +86,13 @@ function BillingsPage() {
           lookup_key: lookupKey,
         },
       );
-      console.log("🚀 ~ ProductDisplay ~ response\n\n:", response);
 
       if (response.data.url) {
         window.location.href = response.data.url;
       } else {
         toast.error(
-          "Something went wrong,checkout url is missing, please refresh the page and try again",
+          "Something went wrong, please refresh the page and try again",
+          { id: QUERY_KEYS.pages.billings.products.createCheckoutSession },
         );
       }
       return response.data;
@@ -122,6 +128,10 @@ function BillingsPage() {
     createCheckoutSession(lookupKey);
   }
 
+  if (isLoading) {
+    return <SubscriptionProductCardSkeleton />;
+  }
+
   return (
     <>
       <section className="w-full">
@@ -134,33 +144,47 @@ function BillingsPage() {
           {productsWithPrices?.data &&
             [...productsWithPrices.data]
               .sort((a, b) => a.price - b.price)
-              .map((product) => {
+              .map((product, index) => {
                 return (
-                  <SubscriptionProductCard
-                    isCustomerSubscribed={!!isCustomerSubscribed}
-                    expiresAt={product.subscriptionExpiresAt}
-                    canceledAt={product.canceledAt}
-                    disabled={
-                      !isCustomerSubscribed
-                        ? false
-                        : !product.isCustomerSubscribed
-                    }
-                    currency={product.currency || ""}
-                    isPending={isPending}
-                    key={product?.name}
-                    name={product?.name || ""}
-                    price={product?.price}
-                    description={product.description}
-                    onSelectPlan={() =>
-                      !isCustomerSubscribed &&
-                      handleCheckout({
-                        lookupKey: product.lookup_key,
-                        name: product.name,
-                      })
-                    }
-                    interval={product.interval || STRIPE_INTERVAL.monthly}
-                    active={product.isCustomerSubscribed}
-                  />
+                  <>
+                    <SubscriptionProductCard
+                      key={product?.name}
+                      isCustomerSubscribed={!!isCustomerSubscribed}
+                      expiresAt={product.subscriptionExpiresAt}
+                      canceledAt={product.canceledAt}
+                      disabled={isLoading || isPending}
+                      currency={product.currency || ""}
+                      name={product?.name || ""}
+                      price={product?.price}
+                      description={product.description}
+                      onSelectPlan={() => {
+                        if (isCustomerSubscribed) {
+                          setIsAlreadySubscribedModalOpen(true);
+                          return;
+                        }
+                        handleCheckout({
+                          lookupKey: product.lookup_key,
+                          name: product.name,
+                        });
+                      }}
+                      interval={product.interval || STRIPE_INTERVAL.monthly}
+                      active={product.isCustomerSubscribed}
+                    />
+                    {isAlreadySubscribedModalOpen && (
+                      <AlreadySubscribedDialog
+                        key={product?.name + index}
+                        handleCheckout={() =>
+                          handleCheckout({
+                            lookupKey: product.lookup_key,
+                            name: product.name,
+                          })
+                        }
+                        setOpen={setIsAlreadySubscribedModalOpen}
+                        open={isAlreadySubscribedModalOpen}
+                        title={isCustomerSubscribed?.name || ""}
+                      />
+                    )}
+                  </>
                 );
               })}
         </div>

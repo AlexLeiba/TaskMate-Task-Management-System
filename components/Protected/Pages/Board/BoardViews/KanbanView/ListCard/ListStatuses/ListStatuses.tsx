@@ -37,9 +37,11 @@ export function ListStatuses({ selectedStatus, listId }: Props) {
     <Popover open={isOpenedStatus} onOpenChange={setIsOpenedStatus}>
       <PopoverTrigger asChild disabled={role === USER_ROLES.member}>
         <IconButton
-          title="List Statuses"
-          aria-label="List Statuses"
+          title={`List status - ${statusData?.label}`}
+          aria-label={`List status - ${statusData?.label}`}
           buttonType="card"
+          data-test="list-status-trigger"
+          data-selected={statusData?.value}
         >
           <p>{statusData?.icon}</p>
         </IconButton>
@@ -53,6 +55,7 @@ export function ListStatuses({ selectedStatus, listId }: Props) {
               <IconButton
                 onClick={() => setIsOpenedStatus(false)}
                 title="Close list status"
+                data-test="list-status-close-button"
               >
                 <X />
               </IconButton>

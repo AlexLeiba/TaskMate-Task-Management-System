@@ -71,6 +71,7 @@ export function ListStatusesContent({
             onClick={() => handleSelectStatus(status)}
             key={status.value}
             className="p-2"
+            data-test={`select-list-status-button`}
           >
             <div className="flex justify-between">
               <div className="flex gap-2 items-center ">

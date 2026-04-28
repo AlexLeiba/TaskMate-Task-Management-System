@@ -159,6 +159,8 @@ export function AssignToContent({
                 });
               }
             }}
+            data-test="assign-to-user-option-button"
+            data-selected={user.email === assignedTo}
           >
             <UserCard
               data={{

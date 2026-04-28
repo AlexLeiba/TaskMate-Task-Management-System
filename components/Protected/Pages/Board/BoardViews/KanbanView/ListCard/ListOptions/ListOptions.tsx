@@ -23,7 +23,11 @@ export function ListOptions({ listId }: Props) {
   return (
     <Popover open={isOpenedStatus} onOpenChange={setIsOpenedStatus}>
       <PopoverTrigger asChild>
-        <IconButton aria-label="List options" title="List options">
+        <IconButton
+          aria-label="List options"
+          title="List options"
+          data-test="list-options-trigger"
+        >
           <Ellipsis size={25} />
         </IconButton>
       </PopoverTrigger>
@@ -36,6 +40,7 @@ export function ListOptions({ listId }: Props) {
                 onClick={() => setIsOpenedStatus(false)}
                 title="Close list status"
                 aria-label="Close list status"
+                data-test="list-options-cancel-button"
               >
                 <X />
               </IconButton>

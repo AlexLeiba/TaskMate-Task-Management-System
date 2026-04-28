@@ -62,6 +62,7 @@ export function AddTicketCard({ listId }: Props) {
         label="Add a card"
         setIsOpenedTitleInput={setIsOpenedNewCardInput}
         isOpenedTitleInput={isCardInputOpened}
+        dataTest="add-new-card"
       >
         <IconButton classNameChildren="flex justify-between gap-2">
           <Plus />

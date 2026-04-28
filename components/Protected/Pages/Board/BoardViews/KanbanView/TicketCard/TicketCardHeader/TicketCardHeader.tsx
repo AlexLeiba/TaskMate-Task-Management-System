@@ -51,7 +51,9 @@ export function TicketCardHeader({
           <IconButton
             className={cn(
               "absolute top-0 right-0",
-              isOpenedOptions ? "block" : "lg:hidden md:group-hover:block",
+              isOpenedOptions
+                ? "block"
+                : "lg:hidden lg:group-focus-within:block",
             )}
             disabled={isLoading}
             title="Card options"
@@ -64,6 +66,7 @@ export function TicketCardHeader({
                 e.stopPropagation();
               }
             }}
+            data-test="card-options-trigger"
           >
             <Ellipsis />
           </IconButton>
@@ -86,6 +89,7 @@ export function TicketCardHeader({
                   }}
                   title="Close card options"
                   aria-label="Close card options"
+                  data-test="card-close-options-button"
                 >
                   <X />
                 </IconButton>

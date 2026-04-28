@@ -44,6 +44,7 @@ export function AddNewListCard({ boardId }: Props) {
   return (
     <div className="shrink-0 flex flex-col justify-between  bg-card-foreground text-text-primary w-70 rounded-sm active:bg-card hover:ring-2 hover:ring-gray-400 py-1">
       <TriggerInput
+        dataTest="add-new-list"
         disabled={isPending}
         loading={isPending}
         handleSubmitValue={(v) => handleAddNewList(v)}

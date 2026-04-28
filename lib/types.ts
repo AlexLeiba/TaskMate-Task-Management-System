@@ -192,13 +192,6 @@ export type UnsplashImagesType = {
   title: string;
 };
 
-export function isImageMimeType(type: string): type is ImageMimeType {
-  return IMAGES_MIME_TYPES.includes(type as ImageMimeType);
-}
-export function isFileMimeType(type: string): type is ImageMimeType {
-  return FILES_MIME_TYPES.includes(type as FileMimeType);
-}
-
 // API ROUTES TYPE
 
 export type UploadFileBodyType = {
@@ -571,4 +564,10 @@ export type StripeProductsWithPricesType = {
   description: string;
   subscriptionExpiresAt: Date | null;
   canceledAt: number | null;
+};
+
+export type ListStatusesOptionType = {
+  label: string;
+  value: ListStatusType;
+  icon: React.ReactNode;
 };

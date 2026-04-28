@@ -29,7 +29,11 @@ export function AttachmentCard({
   handleDownloadFile,
 }: Props) {
   return (
-    <div key={attachment.author.id} className="flex flex-col gap-2">
+    <div
+      key={attachment.author.id}
+      className="flex flex-col gap-2"
+      data-test="attachment-card"
+    >
       <UserCard data={attachment.author} size={"sm"} />
 
       <div className="flex gap-6 mt-4 flex-wrap items-end">
@@ -43,17 +47,25 @@ export function AttachmentCard({
                   isAuthor={isAuthor}
                   key={file.id}
                   data={file}
-                  handleDeleteImage={handleDeleteImage}
-                  handleViewImage={handlePreviewImage}
+                  handleDeleteImage={() =>
+                    handleDeleteImage(file.fileId, file?.name || "", file.id)
+                  }
+                  handleViewImage={() =>
+                    handlePreviewImage(file.url, file.name || "")
+                  }
                 />
               ) : (
                 <DownloadFileCard
                   disabled={disabled}
                   isAuthor={isAuthor}
-                  handleDeleteFile={handleDeleteFile}
+                  handleDeleteFile={() =>
+                    handleDeleteFile(file.fileId, file.name || "", file.id)
+                  }
                   key={file.id}
                   data={file}
-                  handleDownloadFile={handleDownloadFile}
+                  handleDownloadFile={() =>
+                    handleDownloadFile(file.url, file.name || "")
+                  }
                 />
                 // DOWNLOAD FILE
               )}

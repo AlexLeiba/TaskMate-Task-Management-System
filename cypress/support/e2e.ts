@@ -17,9 +17,9 @@
 import "./commands";
 
 // Cypress.on("uncaught:exception", (err) => {
-//   if (err.message.includes("Hydration failed")) {
+//   if (err.message.includes("")) {
 //     return false;
 //   }
 // });
 
-// cypress will ignore errors related to hydration
+// cypress will ignore errors related to some specific error messages

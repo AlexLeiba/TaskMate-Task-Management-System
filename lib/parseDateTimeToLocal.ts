@@ -1,4 +1,9 @@
+import { isValidDateString } from "./isValidDateString";
+
 export function parseDateTimeToLocal(date: string, time: string): string {
+  const isValid = isValidDateString(date) || isValidDateString(time);
+  if (!isValid) return "";
+
   const dateData = new Date(date);
   const timeData = new Date(time);
 

@@ -2,7 +2,7 @@
 import { addClerkCommands } from "@clerk/testing/cypress";
 import "cypress-real-events";
 // cypress/support/commands.ts
-import "cypress-file-upload";
+
 // ***********************************************
 // This example commands.ts shows you how to
 // create various custom commands and overwrite

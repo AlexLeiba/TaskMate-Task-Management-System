@@ -25,3 +25,9 @@ export const STRIPE_PRODUCT_NAME = {
 export const STRIPE_INTERVAL = {
   monthly: "monthly",
 } as const;
+export const SUBSCRIPTION_STATUS = {
+  inactive: "inactive",
+  paid: "paid",
+  failed: "failed",
+  processing: "processing",
+} as const;

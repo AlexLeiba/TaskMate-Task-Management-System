@@ -1,3 +1,4 @@
+import { SUBSCRIPTION_STATUS } from "@/lib/consts/consts";
 import { prisma } from "@/lib/prisma";
 import { verifyCurrentActiveUser } from "@/lib/server/verifyCurrentActiveUser";
 import { StripeProductsWithPricesType } from "@/lib/types";
@@ -42,7 +43,7 @@ export async function GET() {
 
           // TODO check which id is associated with subsId
           const isCustomerSubscribedToThisProduct =
-            customer?.subscriptionStatus === "active" &&
+            customer?.subscriptionStatus === SUBSCRIPTION_STATUS.paid &&
             subscription &&
             selectedProduct.id === product?.id;
 

@@ -8,7 +8,11 @@ import { UserRoleType } from "../types";
 export async function verifyCurrentActiveUser(
   currentOrgId?: string | undefined | null,
 ): Promise<{
-  data: { activeUser: User | null; role: UserRoleType } | null;
+  data: {
+    activeUser: User | null;
+    role: UserRoleType;
+    stripeCustomerId?: string;
+  } | null;
   error: { message: string };
 }> {
   // GET CURRENT ACTIVE USER
@@ -38,6 +42,13 @@ export async function verifyCurrentActiveUser(
     // CHECK IF USER EXISTS IN DB
     let activeUser = await prisma.user.findFirst({
       where: { email: data?.email },
+      include: {
+        billing: {
+          select: {
+            stripeCustomerId: true,
+          },
+        },
+      },
     });
 
     // IF USER NOT EXISTS IN DB BUT IS AUTHENTICATED AND AUTHORIZED, CREATE ONE IN DB WITH DATA PROVIDED FROM CLERK AUTH
@@ -47,6 +58,13 @@ export async function verifyCurrentActiveUser(
           name: `${data?.user?.fullName}` || "User",
           email: data?.email,
           avatar: data?.user?.imageUrl || "",
+        },
+        include: {
+          billing: {
+            select: {
+              stripeCustomerId: true,
+            },
+          },
         },
       });
     }
@@ -63,11 +81,22 @@ export async function verifyCurrentActiveUser(
           email: data?.email,
           avatar: data?.user?.imageUrl || "",
         },
+        include: {
+          billing: {
+            select: {
+              stripeCustomerId: true,
+            },
+          },
+        },
       });
     }
 
     return {
-      data: { activeUser, role: memberData.role },
+      data: {
+        activeUser,
+        role: memberData.role,
+        stripeCustomerId: activeUser?.billing[0].stripeCustomerId || "",
+      },
       error: { message: "" },
     };
   } catch (error: any) {

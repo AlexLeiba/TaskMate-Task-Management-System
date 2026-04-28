@@ -31,18 +31,17 @@ export async function POST(req: NextRequest) {
     // );
 
     const session = await stripe.checkout.sessions.create({
-      // customer: activeUser?.data?.activeUser?.id,
-      // customer_email: activeUser?.data?.activeUser?.email,
       metadata: {
         userId: activeUser?.data?.activeUser?.id,
-        // productName: selectedProduct.name,
       },
       mode: "subscription",
+      customer: activeUser?.data?.stripeCustomerId, //stripe will identify registered customer by this id if exists
       billing_address_collection: "auto",
       line_items: [
         {
           price: prices.data[0].id, //Price ID
           // For usage-based billing, don't pass quantity
+
           quantity: 1,
         },
       ],

@@ -43,23 +43,37 @@ export async function POST(request: NextRequest) {
               expand: ["items.data.price.product"],
             });
 
-            const price = sub.items.data[0].price;
+            // const price = sub.items.data[0].price;
 
-            let planName = "";
-            if (typeof price.product === "object" && "name" in price.product) {
-              planName = price.product.name;
-            }
+            // let planName = "";
+            // if (typeof price.product === "object" && "name" in price.product) {
+            //   planName = price.product.name;
+            // }
 
-            await prisma.billing.create({
-              data: {
-                userId: userId,
+            // await prisma.billing.create({
+            //   data: {
+            //     userId: userId,
+            //     stripeCustomerId: customerId,
+            //     stripeSubscriptionId: sub.id,
+            //     subscriptionStatus: SUBSCRIPTION_STATUS.processing,
+            //     priceId: sub.items.data[0].price.id,
+            //     planName, //to indentify visually in DB user plan
+            //     currency: sub.items.data[0].price.currency,
+            //     interval: sub.items.data[0].price.recurring?.interval, //monthly / yearly
+            //   },
+            // });
+
+            await prisma.billing.upsert({
+              where: { stripeCustomerId: customerId },
+              create: {
+                userId,
                 stripeCustomerId: customerId,
                 stripeSubscriptionId: sub.id,
                 subscriptionStatus: SUBSCRIPTION_STATUS.processing,
-                priceId: sub.items.data[0].price.id,
-                planName, //to indentify visually in DB user plan
-                currency: sub.items.data[0].price.currency,
-                interval: sub.items.data[0].price.recurring?.interval, //monthly / yearly
+              },
+              update: {
+                stripeSubscriptionId: sub.id,
+                subscriptionStatus: SUBSCRIPTION_STATUS.processing,
               },
             });
           }

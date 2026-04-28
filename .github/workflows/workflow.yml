@@ -40,7 +40,7 @@ jobs:
 
       - run: npm i
 
-      - name: Run Cypress Component Tests
+      - name: Run Cypress Unit Tests
         uses: cypress-io/github-action@v6
         with:
           component: true
@@ -82,7 +82,7 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install deps
-        run: npm ci
+        run: npm i
 
       - name: Build
         run: npm run build

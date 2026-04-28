@@ -51,9 +51,9 @@ model User {
 
 model Billing {
   id String @id @default(uuid())
-  userId String
-  stripeCustomerId String  @default("")//identify customer
-  stripeSubscriptionId String @unique //identify subscription
+  userId String 
+  stripeCustomerId String  @unique//identify customer
+  stripeSubscriptionId String  //identify subscription
   subscriptionStatus String @default("inactive") //paid or unpaid
   priceId String @default("") //Subscription price name
   subscriptionExpiresAt DateTime? //end date of subscription

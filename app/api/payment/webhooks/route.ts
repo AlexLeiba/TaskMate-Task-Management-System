@@ -25,8 +25,6 @@ export async function POST(request: NextRequest) {
       );
       console.log("🚀 ~ EVENT:\n\n\n\n", event);
 
-      let subscription;
-      let status;
       // Handle the event
       switch (event?.type) {
         case "checkout.session.completed":
@@ -72,9 +70,6 @@ export async function POST(request: NextRequest) {
           break;
         case "invoice.paid":
           {
-            subscription = event.data.object;
-            status = subscription.status;
-
             const subscriptionId = event.data.object.parent
               ?.subscription_details?.subscription as string;
             const cutomerId = event.data.object.customer as string;
@@ -88,7 +83,6 @@ export async function POST(request: NextRequest) {
             await prisma.billing.update({
               where: {
                 stripeCustomerId: cutomerId,
-                stripeSubscriptionId: subscriptionId,
               },
               data: {
                 subscriptionStatus: SUBSCRIPTION_STATUS.paid,
@@ -98,9 +92,6 @@ export async function POST(request: NextRequest) {
           }
           break;
         case "invoice.payment_failed":
-          subscription = event.data.object;
-          status = subscription.status;
-
           const subscriptionId = event.data.object.parent?.subscription_details
             ?.subscription as string;
           const cutomerId = event.data.object.customer as string;
@@ -129,15 +120,29 @@ export async function POST(request: NextRequest) {
 
             const cutomerId = event.data.object.customer as string;
 
-            await prisma.billing.create({
-              data: {
+            // Update customer subscription
+            await prisma.billing.upsert({
+              where: {
+                userId: cutomerId,
+                stripeCustomerId: cutomerId,
+              },
+              update: {
                 stripeSubscriptionId: subscription.id,
                 subscriptionStatus: SUBSCRIPTION_STATUS.processing,
                 priceId: price.id,
                 planName: planName, //to indentify visually in DB user plan
                 currency: price.currency,
                 interval: price.recurring?.interval, //monthly / yearly
+              },
+              create: {
                 userId: cutomerId,
+                stripeCustomerId: cutomerId,
+                stripeSubscriptionId: subscription.id,
+                subscriptionStatus: SUBSCRIPTION_STATUS.processing,
+                priceId: price.id,
+                planName: planName, //to indentify visually in DB user plan
+                currency: price.currency,
+                interval: price.recurring?.interval, //monthly / yearly
               },
             });
           }
@@ -146,15 +151,11 @@ export async function POST(request: NextRequest) {
         // DELETED
         // subscription is fully ended / no more access / user hasn't paid
         case "customer.subscription.deleted": {
-          subscription = event.data.object;
-          status = subscription.status;
-
-          const subscriptionId = event.data.object.id;
-          // const cutomerId = event.data.object.customer as string;
+          const customerId = event.data.object.customer as string;
 
           await prisma.billing.update({
             where: {
-              stripeSubscriptionId: subscriptionId,
+              stripeCustomerId: customerId,
             },
             data: {
               subscriptionStatus: SUBSCRIPTION_STATUS.inactive,
@@ -170,7 +171,7 @@ export async function POST(request: NextRequest) {
           const subscription = event.data.object;
           const price = subscription.items.data[0].price;
 
-          // const cutomerId = event.data.object.customer as string;
+          const cutomerId = event.data.object.customer as string;
 
           let planName = "";
           if (typeof price.product === "object" && "name" in price.product) {
@@ -198,7 +199,7 @@ export async function POST(request: NextRequest) {
 
           await prisma.billing.update({
             where: {
-              stripeSubscriptionId: subscription.id,
+              stripeCustomerId: cutomerId,
             },
             data: {
               ...updateData,

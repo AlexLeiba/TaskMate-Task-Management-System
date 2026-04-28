@@ -195,38 +195,3 @@ function BillingsPage() {
 }
 
 export default BillingsPage;
-
-// TODO
-// show this UI if user alredy has a subscription
-// export function PortalCustomer() {
-//   const { mutate: createPortalSession, isPending } = useMutation({
-//     mutationFn: async () => {
-//       const response = await axiosInstance.post(
-//         "api/payment/create-portal-session",
-//       );
-//
-//       window.location.href = response.data.url;
-//       return response.data;
-//     },
-//     mutationKey: [QUERY_KEYS.pages.billings.products.createPortalSession],
-//     onSuccess: (data) => {
-//       toast.success("Portal session created", {
-//         id: QUERY_KEYS.pages.billings.products.createPortalSession,
-//       });
-//
-//       window.location.href = data.url;
-//     },
-//     onError: (error) => {
-//       toast.error(error?.message, {
-//         id: QUERY_KEYS.pages.billings.products.createPortalSession,
-//       });
-//     },
-//   });
-//   return (
-//     <div>
-//       <Button disabled={isPending} onClick={() => createPortalSession()}>
-//         Edit billing details
-//       </Button>
-//     </div>
-//   );
-// }

@@ -2,12 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { IconButton } from "@/components/ui/iconButton";
 import { Image, ImageDown, Plus } from "lucide-react";
-import {
-  DeleteFileBodyType,
-  isFileMimeType,
-  isImageMimeType,
-  UploadFileBodyType,
-} from "@/lib/types";
+import { DeleteFileBodyType, UploadFileBodyType } from "@/lib/types";
 
 import { Spacer } from "@/components/ui/spacer";
 import { AttachmentCard } from "./AttachmentCard";
@@ -28,6 +23,7 @@ import { useUserData } from "@/hooks/useUserData";
 import { downloadAsZip, DownloadZipTypeProps } from "@/lib/downloadZipFile";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { API_REQ_URL } from "@/lib/consts/links";
+import { isFileMimeType, isImageMimeType } from "@/lib/files/mimeTypeCheck";
 
 type Props = {
   cardDetailsId: string;

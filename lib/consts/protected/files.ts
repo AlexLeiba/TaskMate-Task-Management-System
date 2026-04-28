@@ -23,6 +23,8 @@ export const IMAGES_MIME_TYPES = [
   "image/webp",
   "image/svg+xml",
   "image/jpg",
+  "image/avif",
+  "image/ico",
 ] as const;
 
 export const UNSPLASH_DEFAULT_IMAGES: UnsplashImagesType[] = [

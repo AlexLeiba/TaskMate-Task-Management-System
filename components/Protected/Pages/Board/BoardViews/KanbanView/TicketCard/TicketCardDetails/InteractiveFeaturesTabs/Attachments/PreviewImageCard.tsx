@@ -9,8 +9,8 @@ type Props = {
   data: UploadedFile;
   isAuthor?: boolean;
   disabled?: boolean;
-  handleDeleteImage: (imageId: string, name: string, id: string) => void;
-  handleViewImage: (url: string, name?: string) => void;
+  handleDeleteImage: () => void;
+  handleViewImage: () => void;
 };
 export function PreviewImageCard({
   data,
@@ -27,10 +27,10 @@ export function PreviewImageCard({
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === KEYBOARD.ENTER) {
-          handleViewImage(data.id);
+          handleViewImage();
         }
       }}
-      onClick={() => handleViewImage(data.url, data?.name || "")}
+      onClick={handleViewImage}
       className="relative w-25 border border-px rounded-md cursor-zoom-in group"
     >
       <div className="w-full h-17.5 overflow-hidden p">
@@ -47,7 +47,7 @@ export function PreviewImageCard({
           disabled={disabled}
           onClick={(e) => {
             e.stopPropagation();
-            handleDeleteImage(data.fileId, data?.name || "", data.id);
+            handleDeleteImage();
           }}
           className="absolute -top-6 -right-4 text-gray-300 p-2 hover:bg-gray-600 rounded-full hover:text-white lg:hidden  group-hover:block"
           title="Detele image"

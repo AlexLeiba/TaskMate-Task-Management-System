@@ -57,6 +57,7 @@ export function AlreadySubscribedDialog({
             </Button>
           </DialogClose>
           <Button
+            loading={loading}
             onClick={handleCheckout}
             data-test="already-subscribed-dialog-continue-button"
             disabled={loading || disabled}

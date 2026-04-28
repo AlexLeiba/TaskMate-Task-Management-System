@@ -142,33 +142,31 @@ function BillingsPage() {
               .sort((a, b) => a.price - b.price)
               .map((product) => {
                 return (
-                  <>
-                    <SubscriptionProductCard
-                      key={product?.name}
-                      isCustomerSubscribed={!!isCustomerSubscribed}
-                      expiresAt={product.subscriptionExpiresAt}
-                      canceledAt={product.canceledAt}
-                      disabled={
-                        isLoading ||
-                        isPending ||
-                        product.name === STRIPE_PRODUCT_NAME.Standard
+                  <SubscriptionProductCard
+                    key={product?.lookup_key + product?.name}
+                    isCustomerSubscribed={!!isCustomerSubscribed}
+                    expiresAt={product.subscriptionExpiresAt}
+                    canceledAt={product.canceledAt}
+                    disabled={
+                      isLoading ||
+                      isPending ||
+                      product.name === STRIPE_PRODUCT_NAME.Standard
+                    }
+                    currency={product.currency || ""}
+                    name={product?.name || ""}
+                    price={product?.price}
+                    description={product.description}
+                    onSelectPlan={() => {
+                      if (isCustomerSubscribed) {
+                        setIsAlreadySubscribedModalOpen(true);
+                        setPlanDetails(product.lookup_key || "");
+                        return;
                       }
-                      currency={product.currency || ""}
-                      name={product?.name || ""}
-                      price={product?.price}
-                      description={product.description}
-                      onSelectPlan={() => {
-                        if (isCustomerSubscribed) {
-                          setIsAlreadySubscribedModalOpen(true);
-                          setPlanDetails(product.lookup_key || "");
-                          return;
-                        }
-                        handleCheckout(product.lookup_key || "");
-                      }}
-                      interval={product.interval || STRIPE_INTERVAL.monthly}
-                      active={product.isCustomerSubscribed}
-                    />
-                  </>
+                      handleCheckout(product.lookup_key || "");
+                    }}
+                    interval={product.interval || STRIPE_INTERVAL.monthly}
+                    active={product.isCustomerSubscribed}
+                  />
                 );
               })}
         </div>
@@ -184,6 +182,7 @@ function BillingsPage() {
       )}
       {isAlreadySubscribedModalOpen && (
         <AlreadySubscribedDialog
+          loading={isPending || isLoading}
           handleCheckout={() => handleCheckout(planDetails)}
           setOpen={setIsAlreadySubscribedModalOpen}
           open={isAlreadySubscribedModalOpen}

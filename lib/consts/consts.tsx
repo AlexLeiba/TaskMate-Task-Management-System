@@ -21,6 +21,8 @@ export const STRIPE_CURRENCY = {
 
 export const STRIPE_PRODUCT_NAME = {
   Standard: "Standard",
+  Silver: "Silver",
+  Gold: "Gold",
 } as const;
 export const STRIPE_INTERVAL = {
   monthly: "monthly",

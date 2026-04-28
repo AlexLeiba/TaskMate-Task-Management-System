@@ -34,14 +34,17 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { SidebarSkeleton } from "./SidebarSkeleton";
-import { USER_ROLES } from "@/lib/consts/consts";
+import { STRIPE_PRODUCT_NAME, USER_ROLES } from "@/lib/consts/consts";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getUnreadNotificationsAction } from "@/app/actions/notifications";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { NotificationIndicator } from "../Pages/Notifications/NotificationIndicator";
+import { useSession } from "@/hooks/useSession";
+import toast from "react-hot-toast";
 
 export function Sidebar() {
+  const session = useSession();
   const [expandedOrg, setExpandedOrg] = useState<string | null>(null);
   const { setOpenMobile } = useSidebar();
   const router = useRouter();
@@ -117,6 +120,18 @@ export function Sidebar() {
   }
 
   function handleAddNewOrganization() {
+    if (!session.data?.isActiveSubscription) {
+      return toast.error("Please upgrade your plan to add more organizations");
+    }
+
+    if (
+      session.data?.isActiveSubscription &&
+      session.data?.planName === STRIPE_PRODUCT_NAME.Silver &&
+      (organizationsData?.length || 0) >= 3
+    ) {
+      return toast.error("Please upgrade your plan to add more organizations");
+    }
+
     router.push("/select-organization");
     setOpenMobile(false);
   }

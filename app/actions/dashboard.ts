@@ -1,4 +1,5 @@
 "use server";
+import { STRIPE_PRODUCT_NAME } from "@/lib/consts/consts";
 import { Board } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNewActivity } from "@/lib/server/createActivity";
@@ -56,6 +57,23 @@ export async function createNewBoardAction(
         orgId,
       },
     });
+
+    // CHECK SUBSCRIPTION PLAN
+
+    if (!activeUserData?.isActiveSubscription && countBoards >= 5) {
+      throw new Error(
+        "You have reached the limit of boards, upgrade your subscription plan to create more.",
+      );
+    }
+    if (
+      activeUserData?.isActiveSubscription &&
+      activeUserData?.planName === STRIPE_PRODUCT_NAME.Silver &&
+      countBoards >= 10
+    ) {
+      throw new Error(
+        "You have reached the limit of boards, upgrade your subscription plan to create more.",
+      );
+    }
 
     const newBoardOrder = countBoards + 1;
 

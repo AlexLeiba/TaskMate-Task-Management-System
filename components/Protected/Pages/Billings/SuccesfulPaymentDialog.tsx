@@ -29,7 +29,7 @@ export function SuccesfulPaymentDialog({
         className="px-8"
         aria-describedby={`Success payment dialog`}
       >
-        <DialogHeader>
+        <DialogHeader className="px-4">
           <DialogTitle className="text-2xl">{title}</DialogTitle>
         </DialogHeader>
 

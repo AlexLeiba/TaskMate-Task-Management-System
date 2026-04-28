@@ -57,7 +57,7 @@
     "zustand": "^5.0.10"
   },
   "devDependencies": {
-    "@clerk/testing": "^2.0.12",
+    "@clerk/testing": "^2.0.21",
     "@tailwindcss/postcss": "^4",
     "@tanstack/eslint-plugin-query": "^5.91.3",
     "@types/aos": "^3.0.7",

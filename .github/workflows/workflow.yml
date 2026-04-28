@@ -1,30 +1,72 @@
-name: Next.js CI
+name: Build, Test and Deploy to Vercel
 
 on:
-  #(on trigger events) identifies when we want to run tests
   push:
-    branches:
-      - workflow
+    branches: [ workflow, staging, master ]
+
   pull_request:
-    types:
-      - opened
-      - reopened
-      - closed
-    branches:
-      - staging
+    types: [ opened, reopened, closed ]
+    branches: [ staging, master ]
 
 jobs:
-  install_build:
-    runs-on: ubuntu-latest #runs on a server
-    steps:
-      - name: Build step
-        run: echo "Building..."
-      - name: Test step
-        run: echo "Tusaneala...<<<<<<"
-
   test:
-    runs-on: ubuntu-latest
-    needs: install_build
+    runs-on: ubuntu-latest #type of machine to run the job on.
+
     steps:
-      - name: Test it
-        run: echo "Test job bro"
+      - name: Checkout repo
+        uses: actions/checkout@v4 #cloning the repo
+
+      - name: Setup Node
+        uses: actions/setup-node@v4 #installing node
+        with:
+          #additional node settings
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-files
+          path: .next
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-files
+          path: .next
+
+      - name: Deploy
+        run: echo "Deploy now"

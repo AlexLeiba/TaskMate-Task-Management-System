@@ -4,7 +4,7 @@ import { SubscriptionProductCard } from "@/components/Protected/Pages/Billings/S
 import { SuccesfulPaymentDialog } from "@/components/Protected/Pages/Billings/SuccesfulPaymentDialog";
 import { Separator } from "@/components/ui/separator";
 import { axiosInstance } from "@/lib/config";
-import { STRIPE_INTERVAL } from "@/lib/consts/consts";
+import { STRIPE_INTERVAL, STRIPE_PRODUCT_NAME } from "@/lib/consts/consts";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { StripeProductsWithPricesType } from "@/lib/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -22,6 +22,7 @@ function BillingsPage() {
   const [selectedPlan, setSelectedPlan] = useState("");
   const [isAlreadySubscribedModalOpen, setIsAlreadySubscribedModalOpen] =
     useState(false);
+  const [planDetails, setPlanDetails] = useState<string>("");
 
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
@@ -109,12 +110,7 @@ function BillingsPage() {
       });
     },
   });
-  function handleCheckout({
-    lookupKey,
-  }: {
-    lookupKey: string | undefined | null;
-    name: string;
-  }) {
+  function handleCheckout(lookupKey: string) {
     toast.loading("Loading...", {
       id: QUERY_KEYS.pages.billings.products.createCheckoutSession,
     });
@@ -144,7 +140,7 @@ function BillingsPage() {
           {productsWithPrices?.data &&
             [...productsWithPrices.data]
               .sort((a, b) => a.price - b.price)
-              .map((product, index) => {
+              .map((product) => {
                 return (
                   <>
                     <SubscriptionProductCard
@@ -152,7 +148,11 @@ function BillingsPage() {
                       isCustomerSubscribed={!!isCustomerSubscribed}
                       expiresAt={product.subscriptionExpiresAt}
                       canceledAt={product.canceledAt}
-                      disabled={isLoading || isPending}
+                      disabled={
+                        isLoading ||
+                        isPending ||
+                        product.name === STRIPE_PRODUCT_NAME.Standard
+                      }
                       currency={product.currency || ""}
                       name={product?.name || ""}
                       price={product?.price}
@@ -160,42 +160,36 @@ function BillingsPage() {
                       onSelectPlan={() => {
                         if (isCustomerSubscribed) {
                           setIsAlreadySubscribedModalOpen(true);
+                          setPlanDetails(product.lookup_key || "");
                           return;
                         }
-                        handleCheckout({
-                          lookupKey: product.lookup_key,
-                          name: product.name,
-                        });
+                        handleCheckout(product.lookup_key || "");
                       }}
                       interval={product.interval || STRIPE_INTERVAL.monthly}
                       active={product.isCustomerSubscribed}
                     />
-                    {isAlreadySubscribedModalOpen && (
-                      <AlreadySubscribedDialog
-                        key={product?.name + index}
-                        handleCheckout={() =>
-                          handleCheckout({
-                            lookupKey: product.lookup_key,
-                            name: product.name,
-                          })
-                        }
-                        setOpen={setIsAlreadySubscribedModalOpen}
-                        open={isAlreadySubscribedModalOpen}
-                        title={isCustomerSubscribed?.name || ""}
-                      />
-                    )}
                   </>
                 );
               })}
         </div>
       </section>
-      <SuccesfulPaymentDialog
-        setOpen={() =>
-          setCheckoutStatus({ open: true, canceled: false, success: false })
-        }
-        open={checkoutStatus.canceled || checkoutStatus.success}
-        title={selectedPlan}
-      />
+      {(checkoutStatus.canceled || checkoutStatus.success) && (
+        <SuccesfulPaymentDialog
+          setOpen={() =>
+            setCheckoutStatus({ open: true, canceled: false, success: false })
+          }
+          open={checkoutStatus.canceled || checkoutStatus.success}
+          title={selectedPlan}
+        />
+      )}
+      {isAlreadySubscribedModalOpen && (
+        <AlreadySubscribedDialog
+          handleCheckout={() => handleCheckout(planDetails)}
+          setOpen={setIsAlreadySubscribedModalOpen}
+          open={isAlreadySubscribedModalOpen}
+          title={isCustomerSubscribed?.name || ""}
+        />
+      )}
     </>
   );
 }

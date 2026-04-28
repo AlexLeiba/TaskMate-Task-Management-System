@@ -95,7 +95,7 @@ export async function verifyCurrentActiveUser(
       data: {
         activeUser,
         role: memberData.role,
-        stripeCustomerId: activeUser?.billing[0].stripeCustomerId || "",
+        stripeCustomerId: activeUser?.billing[0]?.stripeCustomerId || "",
       },
       error: { message: "" },
     };

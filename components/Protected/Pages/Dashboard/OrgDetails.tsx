@@ -6,8 +6,10 @@ import Image from "next/image";
 import { OrganizationCardSkeleton } from "./Boards/OrganizationCardSkeleton";
 import { useRole } from "@/hooks/useRole";
 import { USER_ROLES } from "@/lib/consts/consts";
+import { useSession } from "@/hooks/useSession";
 
 export function OrgDetails() {
+  const session = useSession();
   const role = useRole();
   const { organization } = useOrganization();
 
@@ -40,7 +42,11 @@ export function OrgDetails() {
         <p className="text-xl font-medium">{orgDetails.name}</p>
         <div className="flex gap-1 items-center">
           <CreditCard size={15} />
-          <p className="text-xs">Free</p>
+          <p className="text-xs">
+            {session?.data?.isActiveSubscription
+              ? session?.data?.planName
+              : "Free"}
+          </p>
         </div>
       </div>
     </div>

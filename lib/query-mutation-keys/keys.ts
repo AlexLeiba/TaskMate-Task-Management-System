@@ -84,5 +84,6 @@ export const QUERY_KEYS = {
     useMembers: "organization-members",
     useBoardListData: "get-all-list-data",
     useTableData: "get-all-table-data",
+    useSession: "get-user-session-data",
   },
 } as const;

@@ -92,6 +92,13 @@ export async function POST(request: NextRequest) {
               expand: ["items.data.price.product"],
             });
 
+            const price = sub.items.data[0].price;
+
+            let planName = "";
+            if (typeof price.product === "object" && "name" in price.product) {
+              planName = price.product.name;
+            }
+
             const subscriptionExpiresAt = getSubscriptionExpiry(sub);
 
             await prisma.billing.update({
@@ -101,6 +108,7 @@ export async function POST(request: NextRequest) {
               data: {
                 subscriptionStatus: SUBSCRIPTION_STATUS.paid,
                 subscriptionExpiresAt,
+                planName,
               },
             });
           }

@@ -14,6 +14,7 @@ export async function verifyCurrentActiveUser(
     role: UserRoleType;
     stripeCustomerId?: string;
     isActiveSubscription?: boolean;
+    planName?: string;
   } | null;
   error: { message: string };
 }> {
@@ -49,6 +50,7 @@ export async function verifyCurrentActiveUser(
           select: {
             stripeCustomerId: true,
             subscriptionStatus: true,
+            planName: true,
           },
         },
       },
@@ -67,6 +69,7 @@ export async function verifyCurrentActiveUser(
             select: {
               stripeCustomerId: true,
               subscriptionStatus: true,
+              planName: true,
             },
           },
         },
@@ -90,6 +93,7 @@ export async function verifyCurrentActiveUser(
             select: {
               stripeCustomerId: true,
               subscriptionStatus: true,
+              planName: true,
             },
           },
         },
@@ -104,6 +108,7 @@ export async function verifyCurrentActiveUser(
         isActiveSubscription:
           activeUser?.billing[0]?.subscriptionStatus ===
           SUBSCRIPTION_STATUS.paid,
+        planName: activeUser?.billing[0]?.planName,
       },
       error: { message: "" },
     };

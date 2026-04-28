@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
             price: prices.data[0].id,
           },
         ],
-        proration_behavior: "none",
+        proration_behavior: "always_invoice",
       });
 
       return NextResponse.json({

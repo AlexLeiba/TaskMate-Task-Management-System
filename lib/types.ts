@@ -313,11 +313,12 @@ export type HeaderTabsContentType = {
   }[];
   plans: {
     id: string;
-    icon: JSX.Element;
+    icon?: JSX.Element;
     title: string;
     description: string;
-    color: string;
-    link: string;
+    price?: number;
+    interval?: string;
+    currency?: string;
   }[];
 };
 export type HeaderTabsContentMobileType = {
@@ -363,6 +364,9 @@ export type HeaderAdditionalInfoTabsType = {
   plans: {
     title: string;
     description: string;
+    price?: number;
+    interval?: string;
+    currency?: string;
   }[];
 };
 

@@ -34,10 +34,16 @@ export function ExpandedTab({ openedTab }: Props) {
 
         <Separator className="my-4" />
 
-        <div className="grid grid-cols-[2fr_1fr] gap-4">
+        <div
+          className={cn(
+            "grid  gap-4",
+            openedTab === "plans" ? "grid-cols-[1fr]" : "grid-cols-[2fr_1fr]",
+          )}
+        >
           {openedTab && (
             <>
-              <CardTabs type={openedTab} /> <SideTabsContent type={openedTab} />
+              <CardTabs type={openedTab} />
+              {openedTab !== "plans" && <SideTabsContent type={openedTab} />}
             </>
           )}
         </div>

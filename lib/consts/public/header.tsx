@@ -9,6 +9,7 @@ import {
   NotebookPen,
   PackageSearch,
   Palette,
+  Star,
   TicketCheck,
   User,
 } from "lucide-react";
@@ -152,28 +153,41 @@ Since the project was developed for personal use, learning purposes, and as part
   plans: [
     {
       id: "1",
-      title: "Our Future plans",
-      description: `
-Card ticket label:
--label for any card as : bug, task, none      
-
-Plans with Payment system Stripe:
--Will integrate Plans with Stripe, limiting only 5 Boards per organization for free.
--Plans will be: Free, Basic, Premium.
--Dedicated page for all available Plans.
--Dedicated page for all payment history.
-
-New board views:
--Table view of all boards.
-
-Tests with Cypress and Jest:
--Unit tests for all components and pages.
--Integration tests for all features and flows.
--End-to-end tests for all features and flows. 
-`,
-      icon: <></>,
-      link: "",
-      color: "",
+      title: "Standard",
+      description: "Free plan with one Organization and up to 5 Boards",
+      price: 0,
+      interval: "month",
+      currency: "EUR",
+      icon: <Star className="text-green-400" />,
+    },
+    {
+      id: "2",
+      title: "Silver",
+      description:
+        "You can create up to 3 Organizations and 10 Boards per each Organization.",
+      price: 5,
+      interval: "month",
+      currency: "EUR",
+      icon: <Star className="text-gray-400" />,
+    },
+    {
+      id: "3",
+      title: "Gold",
+      description: "Unlimited Organizations and Boards monthly.",
+      price: 10,
+      interval: "month",
+      currency: "EUR",
+      icon: <Star className="text-yellow-400" />,
+    },
+    {
+      id: "4",
+      title: "Diamond",
+      description:
+        "One year of unlimited Organizations and Boards , save 20 euro per year.",
+      price: 100,
+      interval: "year",
+      currency: "EUR",
+      icon: <Star className="text-pink-500" />,
     },
   ],
 };
@@ -230,22 +244,34 @@ export const HEADER_SIDEBAR_INFO_TABS: HeaderAdditionalInfoTabsType = {
   ],
   plans: [
     {
-      title: "Card ticket label",
-      description: "bug, task, none",
+      title: "Standard",
+      description: "Free plan with one Organization and up to 5 Boards",
+      price: 0,
+      interval: "month",
+      currency: "EUR",
     },
     {
-      title: "Payment system",
+      title: "Silver",
       description:
-        "Will integrate payment system with Stripe, limiting only 5 Boards per organization for free.",
+        "You can create up to 3 Organizations and 10 Boards per each Organization.",
+      price: 5,
+      interval: "month",
+      currency: "EUR",
     },
     {
-      title: "Views",
-      description: "Table view of all boards.",
+      title: "Gold",
+      description: "Unlimited Organizations and Boards monthly.",
+      price: 10,
+      interval: "month",
+      currency: "EUR",
     },
     {
-      title: "Tests",
+      title: "Diamond",
       description:
-        "Unit, integration, and end-to-end tests for all features and flows with cypress and jest.",
+        "One year of unlimited Organizations and Boards , save 20 euro per year.",
+      price: 100,
+      interval: "year",
+      currency: "EUR",
     },
   ],
 };

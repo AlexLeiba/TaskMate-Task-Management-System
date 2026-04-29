@@ -1,11 +1,15 @@
 import { IconButton } from "@/components/ui/iconButton";
-import { HEADER_CARD_TABS_FEATURES } from "@/lib/consts/public/header";
+import {
+  HEADER_CARD_TABS_FEATURES,
+  HEADER_SIDEBAR_INFO_TABS,
+} from "@/lib/consts/public/header";
 
 import { TabType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { variantsTabCardColors } from "@/lib/color-variants/variantsTabsCardsColors";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { SubscriptionProductCard } from "./SubscriptionProductCard";
 
 type Props = {
   type: TabType["value"];
@@ -45,11 +49,25 @@ export function CardTabs({ type }: Props) {
           );
         })}
 
-      {(type === "about" || type === "plans") && (
+      {type === "about" && (
         <p className="whitespace-break-spaces text-lg header-tabs">
           {HEADER_CARD_TABS_FEATURES[type][0].description}
         </p>
       )}
+
+      {type === "plans" &&
+        HEADER_SIDEBAR_INFO_TABS[type].map((card) => {
+          return (
+            <SubscriptionProductCard
+              interval={card.interval || ""}
+              name={card.title || ""}
+              price={card.price || 0}
+              description={card.description}
+              currency={card.currency || ""}
+              key={card.title}
+            />
+          );
+        })}
 
       {type !== "about" && type !== "plans" && type !== "solutions" && (
         <Link

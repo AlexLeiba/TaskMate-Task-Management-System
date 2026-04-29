@@ -36,9 +36,13 @@ export function NotificationSidemenu({ data }: Props) {
                   : selectedNotification === notification.id && "ring",
                 "text-base text-left border-b ",
               )}
+              title={notification.notification.title}
+              aria-label={notification.notification.title}
             >
               <p className="line-clamp-1 max-w-62.5">
-                {notification.notification.title}
+                {notification.notification.title.length > 30
+                  ? notification.notification.title.slice(0, 27) + "..."
+                  : notification.notification.title}
               </p>
             </Button>
           );

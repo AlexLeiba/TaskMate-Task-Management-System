@@ -1,0 +1,190 @@
+"use client";
+import { useEffect, useState } from "react";
+import { SubscriptionProductCard } from "@/components/Protected/Pages/Billings/SubscriptionProductCard";
+import { SuccesfulPaymentDialog } from "@/components/Protected/Pages/Billings/SuccesfulPaymentDialog";
+import { Separator } from "@/components/ui/separator";
+import { axiosInstance } from "@/lib/config";
+import { STRIPE_INTERVAL, STRIPE_PRODUCT_NAME } from "@/lib/consts/consts";
+import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
+import { StripeProductsWithPricesType } from "@/lib/types";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { SubscriptionProductCardSkeleton } from "@/components/Protected/Pages/Billings/SubscriptionProductCardSkeleton";
+import { AlreadySubscribedDialog } from "@/components/Protected/Pages/Billings/AlreadySubscribedDialog";
+
+export function SubscriptionPlans() {
+  const [checkoutStatus, setCheckoutStatus] = useState({
+    success: false,
+    canceled: false,
+    open: false,
+  });
+  const [selectedPlan, setSelectedPlan] = useState("");
+  const [isAlreadySubscribedModalOpen, setIsAlreadySubscribedModalOpen] =
+    useState(false);
+  const [planDetails, setPlanDetails] = useState<string>("");
+
+  useEffect(() => {
+    // Check to see if this is a redirect back from Checkout
+    const query = new URLSearchParams(window.location.search);
+
+    if (query.get("success")) {
+      setCheckoutStatus({ success: true, canceled: false, open: true });
+
+      const successPlanMessage = `You have successfully subscribed to ${query.get("plan")} plan.`;
+      setSelectedPlan(successPlanMessage);
+    }
+
+    if (query.get("canceled")) {
+      setCheckoutStatus({ success: false, canceled: true, open: true });
+      const canceledPlanMessage = `You have canceled the subscription to ${query.get("plan")} plan.`;
+      setSelectedPlan(canceledPlanMessage);
+    }
+
+    return () => {
+      query.delete("success");
+      query.delete("canceled");
+      setCheckoutStatus({ success: false, canceled: false, open: false });
+    };
+  }, []);
+
+  const {
+    isLoading,
+    data: productsWithPrices,
+    error,
+  } = useQuery({
+    queryKey: [QUERY_KEYS.pages.billings.products.getProducts],
+    queryFn: async () => {
+      const response: { data: { data: StripeProductsWithPricesType[] } } =
+        await axiosInstance.get("api/payment/webhooks/stripe/products");
+
+      return response.data;
+    },
+  });
+
+  const isCustomerSubscribed = productsWithPrices?.data.find(
+    (product) => product.isCustomerSubscribed,
+  );
+
+  useEffect(() => {
+    // TODO , add skeletons of sub cards
+    if (isLoading)
+      toast.loading("Loading products...", {
+        id: QUERY_KEYS.pages.billings.products.getProducts,
+      });
+
+    toast.dismiss(QUERY_KEYS.pages.billings.products.getProducts);
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (error) toast.error(error?.message);
+  }, [error]);
+
+  const { mutate: createCheckoutSession, isPending } = useMutation({
+    mutationFn: async (lookupKey: string) => {
+      const response = await axiosInstance.post(
+        "/api/payment/webhooks/stripe/create-checkout-session",
+        {
+          lookup_key: lookupKey,
+        },
+      );
+
+      if (response.data.url) {
+        window.location.href = response.data.url;
+      } else {
+        toast.error(
+          "Something went wrong, please refresh the page and try again",
+          { id: QUERY_KEYS.pages.billings.products.createCheckoutSession },
+        );
+      }
+      return response.data;
+    },
+    mutationKey: [QUERY_KEYS.pages.billings.products.createCheckoutSession],
+    onSuccess: () => {
+      toast.success("Checkout session created", {
+        id: QUERY_KEYS.pages.billings.products.createCheckoutSession,
+      });
+    },
+    onError: (error) => {
+      toast.error(error?.message, {
+        id: QUERY_KEYS.pages.billings.products.createCheckoutSession,
+      });
+    },
+  });
+  function handleCheckout(lookupKey: string) {
+    toast.loading("Loading...", {
+      id: QUERY_KEYS.pages.billings.products.createCheckoutSession,
+    });
+    if (!lookupKey) {
+      toast.error(
+        "Something went wrong, please refresh the page and try again",
+      );
+      return;
+    }
+
+    createCheckoutSession(lookupKey);
+  }
+
+  if (isLoading) {
+    return <SubscriptionProductCardSkeleton />;
+  }
+
+  return (
+    <>
+      <div>
+        <Separator className="bg-gray-600 w-full my-4" />
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-2">
+          {productsWithPrices?.data &&
+            [...productsWithPrices.data]
+              .sort((a, b) => a.price - b.price)
+              .map((product) => {
+                return (
+                  <SubscriptionProductCard
+                    key={product?.lookup_key + product?.name}
+                    isCustomerSubscribed={!!isCustomerSubscribed}
+                    expiresAt={product.subscriptionExpiresAt}
+                    canceledAt={product.canceledAt}
+                    disabled={
+                      isLoading ||
+                      isPending ||
+                      product.name === STRIPE_PRODUCT_NAME.Standard
+                    }
+                    currency={product.currency || ""}
+                    name={product?.name || ""}
+                    price={product?.price}
+                    description={product.description}
+                    onSelectPlan={() => {
+                      if (isCustomerSubscribed) {
+                        setIsAlreadySubscribedModalOpen(true);
+                        setPlanDetails(product.lookup_key || "");
+                        return;
+                      }
+                      handleCheckout(product.lookup_key || "");
+                    }}
+                    interval={product.interval || STRIPE_INTERVAL.monthly}
+                    active={product.isCustomerSubscribed}
+                  />
+                );
+              })}
+        </div>
+      </div>
+      {(checkoutStatus.canceled || checkoutStatus.success) && (
+        <SuccesfulPaymentDialog
+          setOpen={() =>
+            setCheckoutStatus({ open: true, canceled: false, success: false })
+          }
+          open={checkoutStatus.canceled || checkoutStatus.success}
+          title={selectedPlan}
+        />
+      )}
+      {isAlreadySubscribedModalOpen && (
+        <AlreadySubscribedDialog
+          loading={isPending || isLoading}
+          handleCheckout={() => handleCheckout(planDetails)}
+          setOpen={setIsAlreadySubscribedModalOpen}
+          open={isAlreadySubscribedModalOpen}
+          title={isCustomerSubscribed?.name || ""}
+        />
+      )}
+    </>
+  );
+}

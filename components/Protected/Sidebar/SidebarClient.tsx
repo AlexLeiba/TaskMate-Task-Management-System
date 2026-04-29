@@ -6,5 +6,9 @@ const Sidebar = dynamic(() => import("./Sidebar").then((m) => m.Sidebar), {
 });
 
 export function SidebarClient() {
-  return <Sidebar />;
+  return (
+    <div className="md:block lg:left-0 lg:fixed z-50">
+      <Sidebar />
+    </div>
+  );
 }

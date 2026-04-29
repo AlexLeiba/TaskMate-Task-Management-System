@@ -42,6 +42,19 @@ import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { NotificationIndicator } from "../Pages/Notifications/NotificationIndicator";
 import { useSession } from "@/hooks/useSession";
 import toast from "react-hot-toast";
+import dynamic from "next/dynamic";
+
+const UpdateSubscriptionDialog = dynamic(() =>
+  import("@/components/Protected/Shared-protected/UpdateSubscriptionDialog/UpdateSubscriptionDialog").then(
+    (m) => m.UpdateSubscriptionDialog,
+  ),
+);
+
+const SubscriptionPlans = dynamic(() =>
+  import("@/components/Protected/Shared-protected/UpdateSubscriptionDialog/SubscriptionPlans").then(
+    (m) => m.SubscriptionPlans,
+  ),
+);
 
 export function Sidebar() {
   const session = useSession();
@@ -54,6 +67,9 @@ export function Sidebar() {
   const { user } = useUser();
   const { orgId: selectedOrgId } = useAuth();
   const { setActive } = useOrganizationList();
+
+  const [updateSubscrptionDialogOpen, setUpdateSubscriptionDialogOpen] =
+    useState(false);
 
   function handleExpandCollapseAccordion(item: string) {
     setExpandedOrg((prev) => (prev === item ? null : item));
@@ -120,16 +136,15 @@ export function Sidebar() {
   }
 
   function handleAddNewOrganization() {
-    if (!session.data?.isActiveSubscription) {
-      return toast.error("Please upgrade your plan to add more organizations");
-    }
-
     if (
-      session.data?.isActiveSubscription &&
-      session.data?.planName === STRIPE_PRODUCT_NAME.Silver &&
-      (organizationsData?.length || 0) >= 3
+      !session.data?.isActiveSubscription ||
+      (session.data?.isActiveSubscription &&
+        session.data?.planName === STRIPE_PRODUCT_NAME.Silver &&
+        (organizationsData?.length || 0) >= 3)
     ) {
-      return toast.error("Please upgrade your plan to add more organizations");
+      toast.error("Please upgrade your plan to add more organizations");
+      setUpdateSubscriptionDialogOpen(true);
+      return;
     }
 
     router.push("/select-organization");
@@ -137,131 +152,147 @@ export function Sidebar() {
   }
 
   return (
-    <SidebarContainer className="top-13">
-      <SidebarContent className="h-50 " data-test="sidebar-content">
-        <SidebarGroup>
-          <div className="flex justify-between mb-2 p-2">
-            <SidebarGroupLabel className="text-lg">
-              Organizations
-            </SidebarGroupLabel>
-            <Button
-              data-test="add-new-organization-button"
-              variant={"secondary"}
-              aria-label="Add New organization"
-              title="Add New organization"
-              // className="rounded-full size-8"
-              onClick={handleAddNewOrganization}
-            >
-              <Plus />
-            </Button>
-          </div>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {organizationsData && organizationsData.length > 0 ? (
-                organizationsData?.map((item) => (
-                  <SidebarMenuItem key={item.id} data-test="sidebar-menu-items">
-                    <Accordion
-                      data-test="sidebar-accordion"
-                      type="single"
-                      collapsible
-                      defaultValue={selectedOrgId === item.id ? item.name : ""}
-                      value={
-                        expandedOrg === item.name || selectedOrgId === item.id
-                          ? item.name
-                          : ""
-                      }
+    <>
+      <SidebarContainer className="top-13">
+        <SidebarContent className="h-50 " data-test="sidebar-content">
+          <SidebarGroup>
+            <div className="flex justify-between mb-2 p-2">
+              <SidebarGroupLabel className="text-lg">
+                Organizations
+              </SidebarGroupLabel>
+              <Button
+                data-test="add-new-organization-button"
+                variant={"secondary"}
+                aria-label="Add New organization"
+                title="Add New organization"
+                // className="rounded-full size-8"
+                onClick={handleAddNewOrganization}
+              >
+                <Plus />
+              </Button>
+            </div>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {organizationsData && organizationsData.length > 0 ? (
+                  organizationsData?.map((item) => (
+                    <SidebarMenuItem
+                      key={item.id}
+                      data-test="sidebar-menu-items"
                     >
-                      <AccordionItem value={item.name}>
-                        <AccordionTrigger
-                          data-test="sidebar-accordion-trigger"
-                          onClick={() =>
-                            handleExpandCollapseAccordion(item.name)
-                          }
-                          title={item.name}
-                          aria-label={item.name}
-                          className={cn(
-                            selectedOrgId === item.id
-                              ? "bg-foreground/90"
-                              : "bg-none",
-                            "p-4 hover:bg-foreground/50 cursor-pointer flex justify-between items-center",
-                            "transition-all duration-200 ease-in-out",
-                          )}
-                        >
-                          <div className="flex gap-2 items-center relative">
-                            {item.image && (
-                              <Image
-                                src={item.image}
-                                alt={item.name}
-                                width={30}
-                                height={30}
-                                className="size-8 rounded-sm"
-                              />
+                      <Accordion
+                        data-test="sidebar-accordion"
+                        type="single"
+                        collapsible
+                        defaultValue={
+                          selectedOrgId === item.id ? item.name : ""
+                        }
+                        value={
+                          expandedOrg === item.name || selectedOrgId === item.id
+                            ? item.name
+                            : ""
+                        }
+                      >
+                        <AccordionItem value={item.name}>
+                          <AccordionTrigger
+                            data-test="sidebar-accordion-trigger"
+                            onClick={() =>
+                              handleExpandCollapseAccordion(item.name)
+                            }
+                            title={item.name}
+                            aria-label={item.name}
+                            className={cn(
+                              selectedOrgId === item.id
+                                ? "bg-foreground/90"
+                                : "bg-none",
+                              "p-4 hover:bg-foreground/50 cursor-pointer flex justify-between items-center",
+                              "transition-all duration-200 ease-in-out",
                             )}
-                            {item.name}
-                          </div>
-                          {item.role && (
-                            <div className="absolute top-0 right-0 text-primary">
-                              <Crown size={15} />
+                          >
+                            <div className="flex gap-2 items-center relative">
+                              {item.image && (
+                                <Image
+                                  src={item.image}
+                                  alt={item.name}
+                                  width={30}
+                                  height={30}
+                                  className="size-8 rounded-sm"
+                                />
+                              )}
+                              {item.name}
                             </div>
-                          )}
-                        </AccordionTrigger>
-                        <AccordionContent
-                          className=" pt-2 flex flex-col gap-1 "
-                          data-test="sidebar-accordion-content"
-                        >
-                          {item.data.map((data) => {
-                            const currentPathname = data?.pathname
-                              .split("/")
-                              .at(-1);
+                            {item.role && (
+                              <div className="absolute top-0 right-0 text-primary">
+                                <Crown size={15} />
+                              </div>
+                            )}
+                          </AccordionTrigger>
+                          <AccordionContent
+                            className=" pt-2 flex flex-col gap-1 "
+                            data-test="sidebar-accordion-content"
+                          >
+                            {item.data.map((data) => {
+                              const currentPathname = data?.pathname
+                                .split("/")
+                                .at(-1);
 
-                            return (
-                              <Button
-                                data-test="sidebar-accordion-content-nav-buttons"
-                                title={`${item.name} - ${data?.title}`}
-                                aria-label={`${item.name} - ${data?.title}`}
-                                onClick={() =>
-                                  handleSelectOrganization(
-                                    item.id,
-                                    data?.pathname,
-                                  )
-                                }
-                                className={cn(
-                                  selectedSidebarPage === currentPathname &&
-                                    selectedOrgId === item.id
-                                    ? "bg-foreground/80"
-                                    : "",
-                                  "w-full justify-start",
-                                )}
-                                size={"lg"}
-                                variant={"ghost"}
-                                key={data?.title}
-                              >
-                                <div className="flex gap-2 items-center text-text-primary">
-                                  {data?.icon}
-                                  {data?.title}
-                                  {data?.title === "Notifications" &&
-                                    unreadNotifications?.data !== undefined &&
-                                    unreadNotifications?.data > 0 && (
-                                      <NotificationIndicator>
-                                        {unreadNotifications.data}
-                                      </NotificationIndicator>
-                                    )}
-                                </div>
-                              </Button>
-                            );
-                          })}
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
-                  </SidebarMenuItem>
-                ))
-              ) : (
-                <SidebarSkeleton />
-              )}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </SidebarContainer>
+                              return (
+                                <Button
+                                  data-test="sidebar-accordion-content-nav-buttons"
+                                  title={`${item.name} - ${data?.title}`}
+                                  aria-label={`${item.name} - ${data?.title}`}
+                                  onClick={() =>
+                                    handleSelectOrganization(
+                                      item.id,
+                                      data?.pathname,
+                                    )
+                                  }
+                                  className={cn(
+                                    selectedSidebarPage === currentPathname &&
+                                      selectedOrgId === item.id
+                                      ? "bg-foreground/80"
+                                      : "",
+                                    "w-full justify-start",
+                                  )}
+                                  size={"lg"}
+                                  variant={"ghost"}
+                                  key={data?.title}
+                                >
+                                  <div className="flex gap-2 items-center text-text-primary">
+                                    {data?.icon}
+                                    {data?.title}
+                                    {data?.title === "Notifications" &&
+                                      unreadNotifications?.data !== undefined &&
+                                      unreadNotifications?.data > 0 && (
+                                        <NotificationIndicator>
+                                          {unreadNotifications.data}
+                                        </NotificationIndicator>
+                                      )}
+                                  </div>
+                                </Button>
+                              );
+                            })}
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                    </SidebarMenuItem>
+                  ))
+                ) : (
+                  <SidebarSkeleton />
+                )}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </SidebarContainer>
+
+      {updateSubscrptionDialogOpen && (
+        <UpdateSubscriptionDialog
+          subscriptionsOpen={updateSubscrptionDialogOpen}
+          setSubscriptionsOpen={setUpdateSubscriptionDialogOpen}
+        >
+          <SubscriptionPlans />
+        </UpdateSubscriptionDialog>
+      )}
+    </>
   );
 }

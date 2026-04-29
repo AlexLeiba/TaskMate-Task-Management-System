@@ -90,7 +90,10 @@ export function Boards({
       <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))]  md:grid-cols-[repeat(auto-fit,minmax(200px,243px))] gap-2">
         {/* CREATE NEW BOARD */}
         {data.data.role === USER_ROLES.admin && (
-          <CreateNewBoardCard disabled={isDeletePending} />
+          <CreateNewBoardCard
+            disabled={isDeletePending}
+            nrOfBoards={data.data.boards.length}
+          />
         )}
 
         {/* BOARDS */}

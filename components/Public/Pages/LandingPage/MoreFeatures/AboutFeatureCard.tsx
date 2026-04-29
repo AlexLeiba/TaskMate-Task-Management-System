@@ -5,7 +5,7 @@ type Props = {
 };
 export function AboutFeatureCard({ data }: Props) {
   return (
-    <div className="rounded-md bg-background-element flex flex-col p-6 gap-4 h-80 justify-between min-w-78 shadow-lg">
+    <div className="rounded-md bg-background-element flex flex-col p-6 gap-4 h-86 justify-between min-w-78 shadow-lg">
       {data.icon}
 
       <div className="flex flex-col gap-2">

@@ -8,7 +8,7 @@ import { STRIPE_INTERVAL, STRIPE_PRODUCT_NAME } from "@/lib/consts/consts";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { StripeProductsWithPricesType } from "@/lib/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CreditCard } from "lucide-react";
+import { CreditCard, Info } from "lucide-react";
 import toast from "react-hot-toast";
 import { SubscriptionProductCardSkeleton } from "@/components/Protected/Pages/Billings/SubscriptionProductCardSkeleton";
 import { AlreadySubscribedDialog } from "@/components/Protected/Pages/Billings/AlreadySubscribedDialog";
@@ -134,6 +134,20 @@ function BillingsPage() {
         <div className="flex gap-2 items-center">
           <h1 className="text-2xl font-medium">Subscription Plans</h1>
           <CreditCard />
+        </div>
+        <Separator className="bg-gray-600 w-full my-4" />
+        <div className="flex items-center gap-2">
+          <Info className="size-10 text-yellow-500" />
+          <p className="text-xl">
+            Any plan can be applied for <b>FREE!</b>
+          </p>
+        </div>
+        <div className="flex flex-col gap-2 text-xl">
+          <p>The payment system is in development mode.</p>
+          <p>
+            Use this fake card data: <b>4242 4242 4242 4242</b> - Exp: 1255 -
+            CVV: 123
+          </p>
         </div>
         <Separator className="bg-gray-600 w-full my-4" />
         <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-2">

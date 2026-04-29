@@ -11,6 +11,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { SubscriptionProductCardSkeleton } from "@/components/Protected/Pages/Billings/SubscriptionProductCardSkeleton";
 import { AlreadySubscribedDialog } from "@/components/Protected/Pages/Billings/AlreadySubscribedDialog";
+import { Info } from "lucide-react";
 
 export function SubscriptionPlans() {
   const [checkoutStatus, setCheckoutStatus] = useState({
@@ -131,6 +132,20 @@ export function SubscriptionPlans() {
   return (
     <>
       <div>
+        <Separator className="bg-gray-600 w-full my-4" />
+        <div className="flex items-center gap-2">
+          <Info className="size-10 text-yellow-500" />
+          <p className="text-xl">
+            Any plan can be applied for <b>FREE!</b>
+          </p>
+        </div>
+        <div className="flex flex-col gap-2 text-xl">
+          <p>The payment system is in development mode.</p>
+          <p>
+            Use this fake card data: <b>4242 4242 4242 4242</b> - Exp: 1255 -
+            CVV: 123
+          </p>
+        </div>
         <Separator className="bg-gray-600 w-full my-4" />
         <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-2">
           {productsWithPrices?.data &&

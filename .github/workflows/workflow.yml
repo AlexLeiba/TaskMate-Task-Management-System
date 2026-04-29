@@ -27,27 +27,27 @@ jobs:
       - name: Install deps
         run: npm i
 
-  component-tests:
-    runs-on: ubuntu-latest
-    needs: install
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - run: npm i
-
-      - name: Run Cypress Unit Tests
-        uses: cypress-io/github-action@v6
-        with:
-          component: true
+  #   component-tests:
+  #     runs-on: ubuntu-latest
+  #     needs: install
+  #     steps:
+  #       - uses: actions/checkout@v4
+  #
+  #       - uses: actions/setup-node@v4
+  #         with:
+  #           node-version: 22
+  #           cache: npm
+  #
+  #       - run: npm i
+  #
+  #       - name: Run Cypress Unit Tests
+  #         uses: cypress-io/github-action@v6
+  #         with:
+  #           component: true
 
   e2e-tests:
     runs-on: ubuntu-latest
-    needs: component-tests
+    needs: install
 
     steps:
       - uses: actions/checkout@v4

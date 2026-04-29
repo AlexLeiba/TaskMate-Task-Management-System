@@ -48,7 +48,8 @@ jobs:
   e2e-tests:
     runs-on: ubuntu-latest
     needs: install
-
+    env:
+      CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
     steps:
       - uses: actions/checkout@v4
 

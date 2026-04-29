@@ -26,7 +26,7 @@ export function BoardMemberFilters() {
 
   useEffect(() => {
     setSelectedLocalMember(filterState?.selectedMemberEmail || "");
-  }, []);
+  }, [filterState?.selectedMemberEmail]);
 
   const delayedSetFilterState = useDebounce(setFilterState, 100);
 

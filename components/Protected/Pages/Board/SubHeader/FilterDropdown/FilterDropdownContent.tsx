@@ -60,73 +60,67 @@ export function FilterDropdownContent({
           );
 
           return (
-            <>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    key={data.id}
-                    title={`Open filter by ${data?.title} options`}
-                    aria-label={`Open filter by ${data?.title} options`}
-                    variant={"ghost"}
+            <Popover key={data.id}>
+              <PopoverTrigger asChild>
+                <Button
+                  title={`Open filter by ${data?.title} options`}
+                  aria-label={`Open filter by ${data?.title} options`}
+                  variant={"ghost"}
+                  className={cn(
+                    "border w-full",
+                    filterState.filters === data?.id && "border-text-primary ",
+                  )}
+                >
+                  <div
                     className={cn(
-                      "border w-full",
-                      filterState.filters === data?.id &&
-                        "border-text-primary ",
+                      "flex items-center justify-between gap-4 px-2 py-1 rounded-md",
                     )}
                   >
-                    <div
-                      className={cn(
-                        "flex items-center justify-between gap-4 px-2 py-1 rounded-md",
-                      )}
-                    >
-                      <div className="flex items-center gap-2 justify-between w-full">
-                        <div className="flex items-center gap-2">
-                          {selectedPriority?.icon || data.icon}
-                          <p>{selectedPriority?.label || data?.title}</p>
-                        </div>
-                        <ChevronDown />
+                    <div className="flex items-center gap-2 justify-between w-full">
+                      <div className="flex items-center gap-2">
+                        {selectedPriority?.icon || data.icon}
+                        <p>{selectedPriority?.label || data?.title}</p>
                       </div>
+                      <ChevronDown />
                     </div>
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent align="start">
-                  <div className="flex flex-col gap-2">
-                    {CARD_PRIORITIES.map((priority) => {
-                      return (
-                        <Button
-                          key={priority.value}
-                          onClick={() => {
-                            handleSelectedFilter("priority", priority);
-                          }}
-                          title={`Filter by ${priority?.label}`}
-                          aria-label={`Filter by ${priority?.label}`}
-                          variant={"ghost"}
+                  </div>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="start">
+                <div className="flex flex-col gap-2">
+                  {CARD_PRIORITIES.map((priority) => {
+                    return (
+                      <Button
+                        key={priority.value}
+                        onClick={() => {
+                          handleSelectedFilter("priority", priority);
+                        }}
+                        title={`Filter by ${priority?.label}`}
+                        aria-label={`Filter by ${priority?.label}`}
+                        variant={"ghost"}
+                        className={cn(
+                          "border",
+                          selectedPriority?.value === priority.value &&
+                            "border-text-primary ",
+                        )}
+                      >
+                        <div
                           className={cn(
-                            "border",
-                            selectedPriority?.value === priority.value &&
-                              "border-text-primary ",
+                            "flex items-center justify-between gap-4 px-2 py-1 rounded-md",
                           )}
                         >
-                          <div
-                            className={cn(
-                              "flex items-center justify-between gap-4 px-2 py-1 rounded-md",
-                            )}
-                          >
-                            <div className="flex items-center gap-2">
-                              {priority.icon}
-                              <p>{priority?.label}</p>
-                            </div>
-                            {selectedPriority?.value === priority.value && (
-                              <X />
-                            )}
+                          <div className="flex items-center gap-2">
+                            {priority.icon}
+                            <p>{priority?.label}</p>
                           </div>
-                        </Button>
-                      );
-                    })}
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </>
+                          {selectedPriority?.value === priority.value && <X />}
+                        </div>
+                      </Button>
+                    );
+                  })}
+                </div>
+              </PopoverContent>
+            </Popover>
           );
         }
         return (
@@ -136,7 +130,7 @@ export function FilterDropdownContent({
             }}
             title={`Filter by ${data?.title}`}
             aria-label={`Filter by ${data?.title}`}
-            key={data.id}
+            key={data.title + data.id}
             variant={"ghost"}
             className={cn(
               "border",

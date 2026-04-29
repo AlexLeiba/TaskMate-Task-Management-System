@@ -25,10 +25,6 @@ export async function POST(req: NextRequest) {
     });
 
     const selectedProduct = prices.data[0].product as Stripe.Product;
-    // retrieve selected product
-    // const selectedProduct = await stripe.products.retrieve(
-    //   prices.data[0].product.toString(),
-    // );
 
     // 1. Check existing active subscription
     const subs = await stripe.subscriptions.list({
@@ -56,7 +52,7 @@ export async function POST(req: NextRequest) {
       });
 
       return NextResponse.json({
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/${orgId}/billings?success=true&plan=${selectedProduct.name}`,
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/${orgId}/billings?success=true&plan=${selectedProduct?.name}`,
       });
     }
 
@@ -77,9 +73,9 @@ export async function POST(req: NextRequest) {
         userId: activeUser?.data?.activeUser?.id,
       },
       billing_address_collection: "auto",
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/${orgId}/billings?success=true&plan=${selectedProduct.name}`,
+      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/${orgId}/billings?success=true&plan=${selectedProduct?.name}`,
       // return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/${orgId}/billings?canceled=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/${orgId}/billings?canceled=true&plan=${selectedProduct.name}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/${orgId}/billings?canceled=true&plan=${selectedProduct?.name}`,
     });
 
     return NextResponse.json({ url: session.url });

@@ -62,6 +62,8 @@ jobs:
 
       - name: Run Cypress E2E Tests
         uses: cypress-io/github-action@v6
+        env:
+          CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
         with:
           start: npm run dev
           wait-on: "http://localhost:3000"

@@ -50,7 +50,14 @@ jobs:
     needs: install
     env:
       CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
+      TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+      TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
     steps:
+      - name: Check secrets
+        run: |
+          echo "EMAIL EXISTS: ${{ secrets.TEST_USER_EMAIL != '' }}"
+          echo "PASS EXISTS: ${{ secrets.TEST_USER_PASSWORD != '' }}"
+          echo "KEY EXISTS: ${{ secrets.CLERK_PUBLISHABLE_KEY != '' }}"
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
@@ -64,6 +71,8 @@ jobs:
         uses: cypress-io/github-action@v6
         env:
           CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
         with:
           start: npm run dev
           wait-on: "http://localhost:3000"

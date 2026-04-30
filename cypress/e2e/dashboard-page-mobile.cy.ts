@@ -16,8 +16,16 @@ describe("Dashboard page mobile view", () => {
       identifier: Cypress.env("testUser"),
     });
 
+    // handle OTP if present
+    cy.get("body").then(($body) => {
+      if ($body.find('input[autocomplete="one-time-code"]').length > 0) {
+        cy.get('input[autocomplete="one-time-code"]').type("424242");
+        cy.get("button.cl-formButtonPrimary").click();
+      }
+    });
+
     // assert the session cookie present in the browser after user sign in
-    cy.getCookie("__session").should("exist");
+    cy.getCookie("__session", { timeout: 15000 }).should("exist");
 
     // assert authorized user is redirected to dashboard
     cy.url().should("include", "/dashboard");

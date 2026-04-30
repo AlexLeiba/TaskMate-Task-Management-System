@@ -440,3 +440,33 @@ Mental model: These are default visual rules of my app.
 .cl-userProfile-root .cl-headerTitle {
   color: var(--muted);
 }
+
+.cl-headerTitle {
+  color: var(--color-white) !important;
+}
+
+.cl-main,
+.cl-headerSubtitle,
+.cl-identityPreview .cl-identityPreviewText {
+  color: var(--color-white) !important;
+}
+
+.cl-alternativeMethodsBlockButton {
+  color: var(--primary) !important;
+}
+
+.cl-otpCodeFieldInputs .cl-otpCodeFieldInput {
+  color: var(--primary) !important;
+  border-top: white 1px solid !important;
+  border-right: white 1px solid !important;
+  border-left: white 1px solid !important;
+  border-bottom: white 1px solid !important;
+}
+
+.cl-dividerRow p {
+  color: var(--color-white) !important;
+}
+
+.cl-dividerLine {
+  background-color: var(--color-white);
+}

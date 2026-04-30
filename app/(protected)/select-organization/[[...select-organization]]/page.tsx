@@ -19,7 +19,10 @@ function SelectOrganizationPage() {
   const session = useSession();
 
   useEffect(() => {
-    if (!session.data?.isActiveSubscription) {
+    if (
+      !session.data?.isActiveSubscription &&
+      (organizationsDataCount || 0) >= 2
+    ) {
       route.push("/");
       return;
     }

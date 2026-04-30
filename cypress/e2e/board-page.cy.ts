@@ -5,7 +5,7 @@ import { CARD_PRIORITIES_CYPRESS } from "../data/priorities";
 describe("Board page", () => {
   beforeEach(() => {
     setupClerkTestingToken();
-    cy.viewport(1280, 800);
+    cy.viewport(1600, 800);
     cy.visit("/");
 
     cy.window().its("Clerk").should("exist"); //check if clerk exists in the global object window
@@ -39,7 +39,7 @@ describe("Board page", () => {
     cy.get("@createNewBoardCard").should("be.visible");
 
     // event click on create new board card
-    cy.get("@createNewBoardCard").click();
+    cy.get("@createNewBoardCard").realClick();
 
     // assert create new board dialog visible
     cy.get('[role="dialog"]')

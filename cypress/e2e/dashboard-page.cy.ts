@@ -3,7 +3,7 @@ import { setupClerkTestingToken } from "@clerk/testing/cypress";
 describe("Dashboard page desktop and tablet view", () => {
   beforeEach(() => {
     setupClerkTestingToken();
-    cy.viewport(1280, 800);
+    cy.viewport(1600, 800);
     cy.visit("/");
 
     cy.window().its("Clerk").should("exist"); //check if clerk exists

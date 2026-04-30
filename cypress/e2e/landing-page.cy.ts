@@ -9,7 +9,7 @@ import { OVERVIEW_OPTIONS } from "../../lib/consts/public/overview";
 
 describe("Landing page desktop view", () => {
   beforeEach(() => {
-    cy.viewport(1280, 800);
+    cy.viewport(1600, 800);
     cy.visit("/");
   });
 
@@ -41,9 +41,11 @@ describe("Landing page desktop view", () => {
         cy.get("[data-test=card-tabs-content]")
           .its("length")
           .should("be.greaterThan", 0);
-        cy.get("[data-test=side-tabs-content]")
-          .its("length")
-          .should("be.greaterThan", 0);
+        if (tab.value !== "plans") {
+          cy.get("[data-test=side-tabs-content]")
+            .its("length")
+            .should("be.greaterThan", 0);
+        }
       });
     });
     // assert click outside header

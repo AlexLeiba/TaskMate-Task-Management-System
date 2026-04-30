@@ -154,7 +154,8 @@ Since the project was developed for personal use, learning purposes, and as part
     {
       id: "1",
       title: "Standard",
-      description: "Free plan with one Organization and up to 5 Boards",
+      description:
+        "Free plan you can create up to 2 Organizations and up to 5 Boards",
       price: 0,
       interval: "month",
       currency: "EUR",
@@ -164,7 +165,7 @@ Since the project was developed for personal use, learning purposes, and as part
       id: "2",
       title: "Silver",
       description:
-        "You can create up to 3 Organizations and 10 Boards per each Organization.",
+        "Silver plan you can create up to 3 Organizations and 10 Boards per each Organization.",
       price: 5,
       interval: "month",
       currency: "EUR",

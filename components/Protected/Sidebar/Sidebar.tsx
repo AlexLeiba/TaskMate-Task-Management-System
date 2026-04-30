@@ -137,10 +137,17 @@ export function Sidebar() {
 
   function handleAddNewOrganization() {
     if (
-      !session.data?.isActiveSubscription ||
-      (session.data?.isActiveSubscription &&
-        session.data?.planName === STRIPE_PRODUCT_NAME.Silver &&
-        (organizationsData?.length || 0) >= 3)
+      !session.data?.isActiveSubscription &&
+      (organizationsData?.length || 0) >= 2
+    ) {
+      toast.error("Please upgrade your plan to add more organizations");
+      setUpdateSubscriptionDialogOpen(true);
+      return;
+    }
+    if (
+      session.data?.isActiveSubscription &&
+      session.data?.planName === STRIPE_PRODUCT_NAME.Silver &&
+      (organizationsData?.length || 0) >= 3
     ) {
       toast.error("Please upgrade your plan to add more organizations");
       setUpdateSubscriptionDialogOpen(true);

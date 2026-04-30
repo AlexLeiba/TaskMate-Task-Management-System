@@ -53,6 +53,7 @@ jobs:
       TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
       TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
       CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+      NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
     steps:
       - name: Check secrets
         run: |
@@ -60,6 +61,7 @@ jobs:
           echo "PASS EXISTS: ${{ secrets.TEST_USER_PASSWORD != '' }}"
           echo "KEY EXISTS: ${{ secrets.CLERK_PUBLISHABLE_KEY != '' }}"
           echo "SECRET EXISTS: ${{ secrets.CLERK_SECRET_KEY != '' }}"
+          echo "BASE URL EXISTS: ${{ secrets.NEXT_PUBLIC_BASE_URL != '' }}"
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
@@ -76,6 +78,7 @@ jobs:
           TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
           TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
         with:
           start: npm run dev
           wait-on: "http://localhost:3000"

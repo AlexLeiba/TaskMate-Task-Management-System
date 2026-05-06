@@ -44,7 +44,6 @@ export function FinishedWorkOverview({ type, orgId }: Props) {
       toast.error(
         error.message || "Error on Finished work overview, please try again",
       );
-      console.log("🚀 ~ fetchBoardFinishedWorkStats ~ error:", error);
 
       return [];
     }
@@ -53,8 +52,8 @@ export function FinishedWorkOverview({ type, orgId }: Props) {
   const { data } = useQuery({
     queryFn: fetchBoardFinishedWorkStats,
     queryKey: [QUERY_KEYS.pages.board.overview.finishedWork, orgId],
-    staleTime: 1000, // TODO : change to 5 min.
-    gcTime: 1000, // TODO : change to 5 min.
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 5,
     refetchOnMount: true,
     enabled: isLoaded && !!user && !!orgId,
   });

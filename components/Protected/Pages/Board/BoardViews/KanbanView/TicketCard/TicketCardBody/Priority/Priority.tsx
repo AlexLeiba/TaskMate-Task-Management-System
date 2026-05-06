@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { IconButton } from "@/components/ui/iconButton";
 import {
   Popover,
@@ -8,7 +9,6 @@ import { useRole } from "@/hooks/useRole";
 import { KEYBOARD, USER_ROLES } from "@/lib/consts/consts";
 import { PrioritiesType } from "@/lib/types";
 import { X } from "lucide-react";
-import { useCallback, useState } from "react";
 import { useMutationState } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
@@ -40,10 +40,6 @@ export function Priority({ priority, boardId, listId, cardId }: Props) {
     cardId: string;
     priority: PrioritiesType;
   };
-
-  const handleClosePopup = useCallback(() => {
-    setIsOpenedOptions(false);
-  }, []);
 
   return (
     <Popover open={isOpenedOptions} onOpenChange={setIsOpenedOptions}>
@@ -110,7 +106,7 @@ export function Priority({ priority, boardId, listId, cardId }: Props) {
             </div>
             {/* CONTENT */}
             <PriorityContent
-              handleClosePopup={handleClosePopup}
+              handleClosePopup={() => setIsOpenedOptions(false)}
               boardId={boardId}
               listId={listId}
               cardId={cardId}

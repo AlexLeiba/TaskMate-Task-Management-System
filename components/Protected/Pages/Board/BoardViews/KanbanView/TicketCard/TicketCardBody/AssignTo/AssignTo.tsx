@@ -36,10 +36,6 @@ export function AssignTo({
   const [isOpenedAssign, setIsOpenedAssign] = useState(false);
   const role = useRole();
 
-  const handleClosePopup = useCallback(() => {
-    setIsOpenedAssign(false);
-  }, []);
-
   const pendingMutations = useMutationState({
     filters: {
       mutationKey: [QUERY_KEYS.pages.board.kanbanView.cards.assignTo],
@@ -124,7 +120,7 @@ export function AssignTo({
               </IconButton>
             </div>
             <AssignToContent
-              handleClosePopup={handleClosePopup}
+              handleClosePopup={() => setIsOpenedAssign(false)}
               assignedTo={assignedToEmail}
               boardId={boardId}
               listId={listId}

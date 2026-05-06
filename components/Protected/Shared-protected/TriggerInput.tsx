@@ -149,6 +149,7 @@ export function TriggerInput({
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === KEYBOARD.ENTER || e.key === KEYBOARD.SPACE) {
+          e.stopPropagation();
           setIsOpenedTitleInput(true);
         }
       }}
@@ -174,7 +175,6 @@ export function TriggerInput({
           )}
 
           <form
-            action=""
             onSubmit={handleSubmit(handleSubmitValue)}
             className="flex gap-2 items-center w-full"
           >

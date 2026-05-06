@@ -1,4 +1,4 @@
-export const revalidate = 30;
+// export const revalidate = 30;
 import { BoardViews } from "@/components/Protected/Pages/Board/BoardViews/BoardViews";
 import { SubHeaderServerRender } from "@/components/Protected/Pages/Board/SubHeaderServerRender";
 

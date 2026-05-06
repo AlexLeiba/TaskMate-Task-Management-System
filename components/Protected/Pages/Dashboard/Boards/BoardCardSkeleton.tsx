@@ -1,12 +1,12 @@
 import { Spacer } from "@/components/ui/spacer";
-import { Grid } from "lucide-react";
+import { LayoutDashboard } from "lucide-react";
 
 export function BoardCardSkeleton() {
   const boards = [1, 2, 3, 4, 5];
   return (
     <>
       <div className="flex gap-2 items-center">
-        <Grid />
+        <LayoutDashboard />
         <p className="text-xl font-medium">Boards</p>
       </div>
       <Spacer size={4} />

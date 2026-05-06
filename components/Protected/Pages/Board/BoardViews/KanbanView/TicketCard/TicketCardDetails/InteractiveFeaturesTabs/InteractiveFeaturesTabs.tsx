@@ -53,26 +53,25 @@ export function InteractiveFeaturesTabs({
       <div className="flex gap-4 flex-wrap" role="tablist">
         {/* TABS */}
         {TAB_ELEMENTS.map((data) => (
-          <div key={data.value} role="tab">
-            <IconButton
-              className={cn()}
-              onClick={() => handleSelectTab(data.value)}
-              title={data.label}
-              aria-label={data.label}
-            >
-              <p
-                className={cn(
-                  selectedTab === data.value ? "text-white" : "text-gray-400",
-                  "text-lg font-medium",
-                )}
-              >
-                {data.label}
-              </p>
-              {selectedTab === data.value && (
-                <Separator className="w-full mt-1 bg-gray-400" />
+          <IconButton
+            role="tab"
+            key={data.value}
+            onClick={() => handleSelectTab(data.value)}
+            title={data.label}
+            aria-label={data.label}
+          >
+            <p
+              className={cn(
+                selectedTab === data.value ? "text-white" : "text-gray-400",
+                "text-lg font-medium",
               )}
-            </IconButton>
-          </div>
+            >
+              {data.label}
+            </p>
+            {selectedTab === data.value && (
+              <Separator className="w-full mt-1 bg-gray-400" />
+            )}
+          </IconButton>
         ))}
       </div>
 

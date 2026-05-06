@@ -1,8 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import dynamic from "next/dynamic";
-import { Droppable, DropResult } from "@hello-pangea/dnd";
+import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   changeCardPositionAction,
@@ -17,9 +16,9 @@ import { useShallow } from "zustand/shallow";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 import { useBoardListData } from "@/hooks/useBoardListData";
 
-const DragDropContext = dynamic(() =>
-  import("@hello-pangea/dnd").then((m) => m.DragDropContext),
-);
+// const DragDropContext = dynamic(() =>
+//   import("@hello-pangea/dnd").then((m) => m.DragDropContext),
+// );
 
 type Props = {
   boardId: string;
@@ -49,8 +48,8 @@ export function KanbanListCards({ boardId }: Props) {
     })),
   );
 
+  // SUBSCRIBE TO BOARD LIST DATA UPDATES ON FILTERS CHANGE
   useEffect(() => {
-    // SUBSCRIBE TO LIST FILTER TRIGGERS OF BOARD LIST CACHED DATA.
     if (listData?.data) {
       setBoardListData(listData.data);
     }

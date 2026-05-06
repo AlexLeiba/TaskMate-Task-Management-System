@@ -11,21 +11,20 @@ import toast from "react-hot-toast";
 import { BoardType } from "@/lib/types";
 import { useMutation } from "@tanstack/react-query";
 import { apiDeleteFile } from "@/lib/api/apiDeleteFile";
-import { useAuth } from "@clerk/nextjs";
 import { USER_ROLES } from "@/lib/consts/consts";
 import { DeleteDialog } from "@/components/Protected/Shared-protected/DeleteDialog/DeleteDialog";
 import { QUERY_KEYS } from "@/lib/query-mutation-keys/keys";
 
 export function Boards({
   data,
+  orgId,
 }: {
   data: {
     error: { message: string };
     data: { role: "admin" | "member"; boards: BoardType[] };
   };
+  orgId: string;
 }) {
-  const { orgId } = useAuth();
-
   const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedBoardToDelete, setSelectedBoardToDelete] = useState("");
@@ -48,13 +47,17 @@ export function Boards({
       },
       onSuccess: () => {
         setDeleteDialogOpen(false);
-        toast.dismiss(QUERY_KEYS.pages.dashboard.deleteBoard);
-        toast.success("Board deleted successfully");
+
+        toast.success("Board deleted successfully", {
+          id: QUERY_KEYS.pages.dashboard.deleteBoard,
+        });
       },
       onError: ({ message }) => {
         setDeleteDialogOpen(false);
-        toast.dismiss(QUERY_KEYS.pages.dashboard.deleteBoard);
-        toast.error(message || "Error deleting board");
+
+        toast.error(message || "Error deleting board", {
+          id: QUERY_KEYS.pages.dashboard.deleteBoard,
+        });
       },
     },
   );

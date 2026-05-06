@@ -199,6 +199,7 @@ export const useStore = create<StoreType>((set, get) => ({
     const updatedBoardListData = prevData.map((list) => {
       if (source.droppableId === list.id.toString()) {
         const cardsToDrag = [...list.cards];
+
         const deletedCard = cardsToDrag.splice(source.index - 1, 1)[0];
         if (!deletedCard) {
           return list;
@@ -232,8 +233,8 @@ export const useStore = create<StoreType>((set, get) => ({
 
     // CLONED SOURCE NESTED CARDS AND  LISTS TO AVOID MUTATION
     const sourceList = {
-      ...newState[sourceListIndex],
-      cards: [...newState[sourceListIndex].cards],
+      ...newState[sourceListIndex], //copy list data from source list
+      cards: [...newState[sourceListIndex].cards], //copy all  cards from source list
     };
 
     const [deletedCard] = sourceList.cards.splice(source.index - 1, 1);

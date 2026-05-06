@@ -29,9 +29,5 @@ export function BoardViews({ boardId }: Props) {
 
   const CurrentSectionView = VIEW_SECTION[selectedTabSection];
 
-  return (
-    <div className="h-full">
-      <CurrentSectionView boardId={boardId} />
-    </div>
-  );
+  return <CurrentSectionView boardId={boardId} />;
 }

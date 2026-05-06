@@ -21,7 +21,7 @@ export function useBoardListData(
 ) {
   const boardId = useBoardId();
 
-  const { setBoardListData, setUnfilteredBoardListData } = useStore(
+  const { setUnfilteredBoardListData } = useStore(
     useShallow((state) => ({
       setBoardListData: state.setBoardListData,
       setUnfilteredBoardListData: state.setUnfilteredBoardListData,
@@ -40,7 +40,7 @@ export function useBoardListData(
       });
 
       // INITIALIZE BOARD LIST DATA GLOBAL STORE used for optimistic Drag and Drop
-      setBoardListData(data?.data);
+      // setBoardListData(data?.data);
 
       // INITIALIZE UNFILTERED BOARD LIST DATA GLOBAL STORE used for diplaying independent data of active filters
       setUnfilteredBoardListData(data?.unfilteredData);

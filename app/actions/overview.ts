@@ -108,8 +108,10 @@ export async function getOverviewStatsAction(
       const today = new Date();
 
       boardData?.lists.forEach((list) => {
+        //status overview
         statusOverview[list?.status || ""] = list.cards.length;
 
+        // completed cards
         if (list.status === "done") {
           completed = list.cards.length;
         }
@@ -150,7 +152,7 @@ export async function getOverviewStatsAction(
             const diffDays = Math.ceil(
               timeDiffInSevenDaysInMilliseconds / oneDayInMilliseconds,
             );
-            //check future days only (pozitive nrs)
+            //check future 7 days
             if (diffDays >= 0 && diffDays <= 7) {
               dueDateInAWeek++;
             }
@@ -172,7 +174,7 @@ export async function getOverviewStatsAction(
         });
       });
 
-      //   TEAM WORKLOAD
+      //  PARSE TEAM WORKLOAD ARRAY DATA
       const teamWorkLoadData: TeamWorkloadType[] = [];
 
       Object.entries(teamWorkload).forEach(([key, value]) => {
@@ -202,7 +204,7 @@ export async function getOverviewStatsAction(
           avatar: "",
         });
       });
-      //   STATUS OVERVIEW
+      //  PARSE STATUS OVERVIEW
       const statusOverviewData: StatusOverviewType[] = [];
       Object.entries(statusOverview).forEach(([keyof, value], index) => {
         statusOverviewData.push({
@@ -212,7 +214,7 @@ export async function getOverviewStatsAction(
         });
       });
 
-      //   PRIORITY BREAKDOWN
+      // PARSE  PRIORITY BREAKDOWN
       const priorityBreakdownData: PriorityBreakdownType[] = [];
       Object.entries(priorityBreakdown).forEach(([keyof, value], index) => {
         priorityBreakdownData.push({
@@ -222,7 +224,7 @@ export async function getOverviewStatsAction(
         });
       });
 
-      //   STATS
+      //  PARSE STATS
       const stats: OverviewStatsType = {
         completed,
         createdInAWeek,
@@ -505,6 +507,7 @@ export async function finishedWorkOverviewAction(
 
     const initialFinishedWorkData: { [key: string]: number } = {};
 
+    // count finished work  by all members
     const countedFinishedWorkObject = finishedWorkData.reduce((acc, card) => {
       acc[card?.assignedToEmail || ""] =
         (acc[card?.assignedToEmail || ""] || 0) + 1;
@@ -513,6 +516,7 @@ export async function finishedWorkOverviewAction(
 
     const finishedWorkOfAllMembersData: FinishedWorkMembersType[] = [];
 
+    // create an array of objects with finished work by all members
     Object.entries(countedFinishedWorkObject).forEach(([Key, value], index) => {
       const authorData = finishedWorkData.find(
         (card) => card?.assignedToEmail === Key,

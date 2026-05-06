@@ -44,18 +44,24 @@ export function Attachments({ cardDetailsId }: Props) {
   const uploadFileRef = useRef<HTMLInputElement>(null);
   // TODO add useQuery instead of useEffect and useState check on Comments
   async function getAttachmentsData() {
-    const response = await getCardDetailsAttachments(cardDetailsId);
+    try {
+      const response = await getCardDetailsAttachments(cardDetailsId);
 
-    if (response?.error?.message) {
-      setIsLoading(false);
-      return toast.error(response.error.message);
-    }
-
-    if (response?.data) {
-      setIsLoading(false);
-      if (response.data) {
-        setAttachmentsData(response.data);
+      if (response?.error?.message) {
+        throw new Error(response.error.message);
       }
+
+      if (response?.data) {
+        if (response.data) {
+          setAttachmentsData(response.data);
+        }
+      }
+    } catch (error: any) {
+      toast.error(
+        error.message || "Error getting attachments, please try again",
+      );
+    } finally {
+      setIsLoading(false);
     }
   }
 

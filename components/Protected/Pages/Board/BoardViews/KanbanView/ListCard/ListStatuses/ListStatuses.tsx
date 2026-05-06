@@ -24,8 +24,9 @@ type Props = {
 export function ListStatuses({ selectedStatus, listId }: Props) {
   const role = useRole();
   const [statusData, setStatusData] = useState<StatusType>(
-    LIST_STATUSES.find((s) => s.value === selectedStatus)!,
+    LIST_STATUSES.find((s) => s.value === selectedStatus) || LIST_STATUSES[0],
   );
+
   const [isOpenedStatus, setIsOpenedStatus] = useState(false);
 
   const handleChangeSelectStatus = useCallback((status: StatusType) => {

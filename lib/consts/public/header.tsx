@@ -246,7 +246,7 @@ export const HEADER_SIDEBAR_INFO_TABS: HeaderAdditionalInfoTabsType = {
   plans: [
     {
       title: "Standard",
-      description: "Free plan with one Organization and up to 5 Boards",
+      description: "Free plan with 2 Organizations and up to 5 Boards",
       price: 0,
       interval: "month",
       currency: "EUR",

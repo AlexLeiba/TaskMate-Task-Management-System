@@ -17,6 +17,7 @@ export default function Error({
 
   return (
     <div className="flex items-center justify-center flex-col h-screen gap-2">
+      <h1>Ups!</h1>
       <h2>Something went wrong!</h2>
       <Button
         size={"lg"}
@@ -25,7 +26,7 @@ export default function Error({
           () => reset()
         }
       >
-        Try again
+        Reload Page
       </Button>
     </div>
   );

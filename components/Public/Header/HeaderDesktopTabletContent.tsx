@@ -33,7 +33,7 @@ export function HeaderDesktopTabletContent() {
     document.addEventListener("click", handleClickOutside);
 
     return () => {
-      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("click", (e) => handleClickOutside(e));
     };
   }, []);
 
@@ -72,12 +72,12 @@ export function HeaderDesktopTabletContent() {
         className={cn(
           openedTabs ? "bg-background-element" : "bg-cyan-950",
           " fixed top-0 left-0 right-0   py-2 z-20 transition-all duration-500 ease-in-out",
-        )}
+        )} //fixed container
       >
         <div
           className={cn(
             "flex justify-between items-center max-w-6xl mx-auto px-4 hover:shadow-2xl p-2 rounded-md transition-all",
-          )}
+          )} //nav content container
         >
           <div className="flex items-center gap-12">
             <Logo />

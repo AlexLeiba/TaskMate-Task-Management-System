@@ -26,9 +26,9 @@ export function useMembers(): {
   } = useQuery({
     queryKey: [QUERY_KEYS.hooks.useMembers],
     queryFn: fetchOrganizationMembers,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 15,
     refetchOnWindowFocus: false,
-    gcTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 15,
   });
 
   return { members, isFetching: isFetching && !isLoading };

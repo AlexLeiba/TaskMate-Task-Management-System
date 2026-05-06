@@ -20,14 +20,13 @@ export default clerkMiddleware(async (auth, req) => {
     }
     return NextResponse.redirect(new URL(redirectPath, req.url));
   }
-
-  // UNAUTHENTICATED USERS ON PROTECTED ROUTE
-  if (isProtectedRoute(req)) await auth.protect(); //will redirect unauthenticated users to the sign-in route
-
-  // AUTHENTICATED USER WITH NO ORGANIZATION
+  // AUTHENTICATED USER WITH NO ORGANIZATION REDIRECT TO SELECT ORGANIZATION
   if (userId && !orgId && req.nextUrl.pathname !== "/select-organization") {
     return NextResponse.redirect(new URL("/select-organization", req.url));
   }
+
+  // UNAUTHENTICATED USERS ON PROTECTED ROUTE
+  if (isProtectedRoute(req)) await auth.protect(); //will redirect unauthenticated users to the sign-in route
 
   // REDIRECT DASHBOARD WITH ORGANIZATION ID
   if (orgId && req.nextUrl.pathname === "/dashboard") {

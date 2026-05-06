@@ -1,10 +1,10 @@
 import type { NextConfig } from "next";
 
 const ContentSecurityPolicy = `
-              default-src 'self';
-              script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.com https://smooth-toucan-0.clerk.accounts.dev https://clerk-telemetry.com/v1/event https://challenges.cloudflare.com/;
+              default-src 'self'; 
+              script-src 'self' 'unsafe-inline'   https://*.clerk.com https://smooth-toucan-0.clerk.accounts.dev https://clerk-telemetry.com/v1/event https://challenges.cloudflare.com/;
               style-src 'self' 'unsafe-inline' https:;
-              img-src 'self' data: https://*.clerk.com https://img.clerk.com  https://picsum.photos https://images.unsplash.com https://res.cloudinary.com ;
+              img-src 'self' data: https://*.clerk.com https://img.clerk.com   https://images.unsplash.com https://res.cloudinary.com ;
               font-src 'self' https: data: ;
               connect-src 'self' https://*.clerk.com https://smooth-toucan-0.clerk.accounts.dev  https://clerk-telemetry.com/v1/event https://checkout.stripe.com/ https://res.cloudinary.com;
               frame-ancestors 'none';
@@ -33,30 +33,26 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: "Cache-Control",
-            value: "private, max-age=0, s-maxage=60, stale-white-revalidate=30",
-            // private - user specific , safe for logged in dashboards
-            // max-age=0 - do not cache for long on client
-            //s-maxage=60 - allow CDN to cache for 1 minute
-            // stale-while-revalidate → fast load even when revalidating
+            value: "private, max-age=0, s-maxage=60, stale-while-revalidate", //cache behaviour (private - only user browser can cache)
           },
           {
             key: "Content-Security-Policy",
             value: ContentSecurityPolicy,
           },
           {
-            key: "X-Frame-Options",
+            key: "X-Frame-Options", //no iframe embedding
             value: "DENY",
           },
           {
-            key: "X-Content-Type-Options",
+            key: "X-Content-Type-Options", // browser no guessing MimeType
             value: "nosniff",
           },
           {
-            key: "Referrer-Policy",
+            key: "Referrer-Policy", //no sensitive url data on different domains
             value: "strict-origin-when-cross-origin",
           },
           {
-            key: "Strict-Transport-Security",
+            key: "Strict-Transport-Security", //forces https
             value: "max-age=63072000; includeSubDomains; preload",
           },
         ],

@@ -54,11 +54,9 @@
   --radius-4xl: calc(var(--radius) + 16px);
 }
 
-/* if browser supports dark mode and detects "dark" then overwrite the theme variables */
-/* body pics up the theme variable in Cascade hierarchy */
-
 :root {
-  /* light theme will be added later  */
+  /* THESE ARE LIGHT THEME VARS, WILL BE ADDED LATER  */
+
   /* --background: oklch(90.975% 0.0001 271.152);
   --background-element: oklch(1 0 0);
   --foreground: oklch(39.042% 0.00004 271.152);
@@ -99,6 +97,7 @@
   --sidebar-ring: oklch(0.708 0 0);
   --quill-active-button-color: rgb(2, 171, 2); */
 
+  /* DEFAULT DARK THEME, WILL BE REMOVED WHEN LIGHT THEME IS ADDED */
   /* backgrounds  */
   --background: oklch(25.197% 0.00003 271.152);
   --background-element: oklch(
@@ -147,17 +146,7 @@
   --quill-active-button-color: rgb(2, 171, 2);
 }
 
-/* this selector overwrites the root variables when detects .dark classname in body */
-
-/* Tailwind has 3 style layers:
-1: base -> resets & defaults
-2: components -> reusable ui pieces
-3: utilities ->atomic utility classes
-
-@apply: lets to reuse TW utilities, But apply them globally.
-These rules affect every page, These rules will exist before component styling.
-Mental model: These are default visual rules of my app.
-*/
+/* base → tailwind global resets & defaults */
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -176,7 +165,7 @@ Mental model: These are default visual rules of my app.
     ); /**for static elements **/
     --foreground: oklch(
       25.197% 0.00003 271.152
-    ); /** for interactive elements/ buttons/skeletons **/
+    ); /** for interactive elements/ popovers / skeletons **/
     --popover-foreground: oklch(28.502% 0.00003 271.152);
     /*  */
     /* text */
@@ -216,7 +205,7 @@ Mental model: These are default visual rules of my app.
   }
 }
 
-/* QUILL RICH EDITOR */
+/*///////// QUILL RICH EDITOR/////////// */
 .quill .ql-toolbar .ql-formats button svg .ql-stroke {
   color: white !important;
   stroke: white !important;
@@ -303,8 +292,7 @@ Mental model: These are default visual rules of my app.
 .ql-editor {
   overflow-y: auto !important;
   padding-bottom: 1rem !important; /* Add space for readability */
-  overflow-y: auto; /* Add vertical scrolling if content is too long */
-  /* padding-top: 62px !important; */
+  overflow-y: auto;
   border: solid 1px rgb(209 213 219 / var(--tw-text-opacity, 1));
   border-bottom-right-radius: 8px;
   border-bottom-left-radius: 8px;
@@ -319,6 +307,8 @@ Mental model: These are default visual rules of my app.
     max-height: calc(100vh - 335px);
   }
 }
+
+/*HTML CONTENT OF QUILL EDITOR */
 
 .html-content a {
   text-decoration: underline;
@@ -336,28 +326,9 @@ Mental model: These are default visual rules of my app.
   list-style-type: decimal; /* Ensure numbers appear */
   margin-left: 40px !important;
 }
-.html-content ul {
-  font-size: 16px !important;
-  list-style-type: decimal; /* Ensure numbers appear */
-  margin-left: 40px !important;
-}
 
 .html-content li {
   margin-bottom: 5px; /* Optional: Add spacing */
-}
-
-/* HEADER */
-.header-chevron-down {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: chevron-down-animated 1s ease forwards;
-}
-
-@keyframes chevron-down-animated {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 @media (max-width: 768px) {
@@ -373,6 +344,7 @@ Mental model: These are default visual rules of my app.
   }
 }
 
+/* PUBLIC OVERVIEW ANIMATIONS */
 .overview-card-image-animation {
   transform: translateY(-50%);
   animation: move-image-down 1s ease forwards;
@@ -384,6 +356,21 @@ Mental model: These are default visual rules of my app.
   }
 }
 
+/* PUBLIC HEADER NAV ICONS ANIMATIONS */
+.header-chevron-down {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: chevron-down-animated 1s ease forwards;
+}
+
+@keyframes chevron-down-animated {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* PUBLIC HEADER TABS ANIMATIONS */
 .header-tabs {
   opacity: 0;
   transform: translateX(-30px);
@@ -398,7 +385,8 @@ Mental model: These are default visual rules of my app.
   }
 }
 
-/* CLERK UI */
+/* ////////CLERK UI/////////// */
+
 .cl-signIn-start .cl-header .cl-headerTitle,
 .cl-signIn-start .cl-header .cl-headerSubtitle,
 .cl-signUp-start .cl-header .cl-headerTitle,

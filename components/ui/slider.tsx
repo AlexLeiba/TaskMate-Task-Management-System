@@ -54,7 +54,7 @@ export function SliderContent({
   const childrenCount = Children.count(children);
 
   const pagination = Array(childrenCount).fill(0);
-  const { sliderIndex, setSliderIndex } = useSlider();
+  const { sliderIndex, setSliderIndex } = useSlider(); //1
 
   function handleLeft() {
     setSliderIndex((prev) => {
@@ -87,11 +87,10 @@ export function SliderContent({
               onClick={() => setSliderIndex(index + 1)}
             >
               <div
-                style={{ width: sliderIndex === index + 1 ? "50px" : "8px" }}
                 className={cn(
                   sliderIndex === index + 1
-                    ? "bg-muted-foreground"
-                    : " bg-white ",
+                    ? "bg-muted-foreground w-12.5"
+                    : " bg-white w-2 ",
                   "h-2 rounded-full transition-all",
                 )}
               />
@@ -138,5 +137,5 @@ export function SliderContent({
 }
 
 export function SliderItem({ children }: SliderItemProps) {
-  return <div className="w-screen rounded-md ">{children}</div>;
+  return <div className="">{children}</div>;
 }

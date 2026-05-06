@@ -61,8 +61,8 @@ export function useBoardListData(
   return useQuery({
     queryKey: [QUERY_KEYS.hooks.useBoardListData, boardId, filters],
     queryFn: fetchBoardFilteredListData,
-    staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 15,
+    gcTime: 1000 * 60 * 15,
     refetchOnMount: true,
   });
 }

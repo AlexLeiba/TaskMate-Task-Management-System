@@ -14,7 +14,6 @@ export function Testimonials() {
         <SliderContent>
           {TESTIMONIALS_DATA.map((item, index) => (
             <SliderItem key={item.id}>
-              {/* <div className={cn(`   bg-black rounded-4xl z-50`)}> */}
               <div
                 className="w-screen  md:h-100  "
                 data-test={`content-item-${index + 1}`}

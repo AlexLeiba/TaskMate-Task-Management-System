@@ -23,7 +23,7 @@ export function ScrollProgressBar() {
   return (
     <div
       style={{ width: `${progress}%` }}
-      className="h-px  bg-yellow-500 absolute left-0 bottom-0"
+      className="h-px  bg-yellow-500 absolute left-0 bottom-0 transition-all"
     ></div>
   );
 }

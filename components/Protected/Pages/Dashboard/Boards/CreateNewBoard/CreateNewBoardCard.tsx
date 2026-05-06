@@ -17,6 +17,16 @@ import { STRIPE_PRODUCT_NAME } from "@/lib/consts/consts";
 import dynamic from "next/dynamic";
 import toast from "react-hot-toast";
 
+const RemainedNrOfCardsToCreate = dynamic(
+  () =>
+    import("./RemainedNrOfCardsToCreate").then(
+      (m) => m.RemainedNrOfCardsToCreate,
+    ),
+  {
+    ssr: false,
+  },
+);
+
 const UpdateSubscriptionDialog = dynamic(() =>
   import("@/components/Protected/Shared-protected/UpdateSubscriptionDialog/UpdateSubscriptionDialog").then(
     (m) => m.UpdateSubscriptionDialog,
@@ -82,7 +92,10 @@ export function CreateNewBoardCard({
 
         <Plus className="size-10  p-1 z-20  text-gray-700 group-hover:text-white" />
 
-        <p className="w-full text-right">5 remained</p>
+        <RemainedNrOfCardsToCreate
+          nrOfBoards={nrOfBoards}
+          sessionData={session?.data}
+        />
 
         <Tooltip>
           <TooltipTrigger
@@ -92,9 +105,14 @@ export function CreateNewBoardCard({
             <Info />
           </TooltipTrigger>
           <TooltipContent>
-            <p className="text-base">Free workspaces can have up to 5 boards</p>
             <p className="text-base">
-              for unlimited boards upgrade to a paid plan.
+              <strong>Free</strong> workspaces can have up to 5 boards
+            </p>
+            <p className="text-base">
+              <strong>Silver</strong> workspaces can have up to 10 boards
+            </p>
+            <p className="text-base">
+              <strong>Gold and Diamand</strong> have unlimited boards
             </p>
           </TooltipContent>
         </Tooltip>

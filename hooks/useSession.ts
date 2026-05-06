@@ -36,9 +36,10 @@ export function useSession(): {
   const { data, isFetching, isLoading } = useQuery({
     queryKey: [QUERY_KEYS.hooks.useSession],
     queryFn: fetchSessionDaa,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0,
+    gcTime: 0,
     refetchOnWindowFocus: false,
-    gcTime: 1000 * 60 * 5,
+    refetchOnMount: true,
   });
 
   return { data, isFetching: isFetching && !isLoading };
